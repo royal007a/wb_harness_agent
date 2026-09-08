@@ -1,0 +1,240 @@
+openapi: 3.1.0
+info:
+  title: HarnessAgent P0 API
+  version: 0.1.0-draft
+  description: Draft API for the controlled CodeAct data-analysis vertical slice.
+servers:
+  - url: /api/v1
+paths:
+  /tasks:
+    post:
+      operationId: createTask
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '202':
+          description: Task and initial Run accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTaskResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /tasks/{taskId}:
+    get:
+      operationId: getTask
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Immutable Task with derived latest Run summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskView'
+        default:
+          $ref: '#/components/responses/Error'
+  /tasks/{taskId}/runs:
+    post:
+      operationId: createRun
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [reason]
+              properties:
+                based_on_run_id:
+                  type: [string, 'null']
+                reason:
+                  enum: [retry, rerun]
+      responses:
+        '202':
+          description: New Run accepted without modifying earlier Run terminal state.
+          content:
+            application/json:
+              schema:
+                $ref: './core-contracts.schema.json#/$defs/run'
+        default:
+          $ref: '#/components/responses/Error'
+  /runs/{runId}:
+    get:
+      operationId: getRun
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+      responses:
+        '200':
+          description: Run snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: './core-contracts.schema.json#/$defs/run'
+        default:
+          $ref: '#/components/responses/Error'
+  /runs/{runId}:cancel:
+    post:
+      operationId: cancelRun
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Cancellation requested.
+        default:
+          $ref: '#/components/responses/Error'
+  /runs/{runId}/events:
+    get:
+      operationId: streamRunEvents
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+        - name: Last-Event-ID
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ordered Server-Sent Events for one Run.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        default:
+          $ref: '#/components/responses/Error'
+  /approvals/{approvalId}:decide:
+    post:
+      operationId: decideApproval
+      parameters:
+        - name: approvalId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [decision, reason]
+              properties:
+                decision:
+                  enum: [approved, rejected]
+                reason:
+                  type: string
+                  minLength: 1
+                constraints:
+                  type: object
+                  additionalProperties: false
+                  required: [expires_at, max_uses]
+                  properties:
+                    expires_at:
+                      type: string
+                      format: date-time
+                    max_uses:
+                      type: integer
+                      minimum: 1
+      responses:
+        '200':
+          description: Approval decided; an approved Run is automatically redispatched.
+          content:
+            application/json:
+              schema:
+                $ref: './core-contracts.schema.json#/$defs/approval'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+    RunId:
+      name: runId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    CreateTaskRequest:
+      $ref: './core-contracts.schema.json#/$defs/task_create'
+    CreateTaskResponse:
+      type: object
+      additionalProperties: false
+      required: [task, initial_run, links]
+      properties:
+        task:
+          $ref: './core-contracts.schema.json#/$defs/task'
+        initial_run:
+          $ref: './core-contracts.schema.json#/$defs/run'
+        links:
+          type: object
+          additionalProperties: false
+          required: [task, run, events]
+          properties:
+            task:
+              type: string
+            run:
+              type: string
+            events:
+              type: string
+    TaskView:
+      type: object
+      additionalProperties: false
+      required: [task, latest_run]
+      properties:
+        task:
+          $ref: './core-contracts.schema.json#/$defs/task'
+        latest_run:
+          oneOf:
+            - $ref: './core-contracts.schema.json#/$defs/run'
+            - type: 'null'
+    Error:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message, retryable, request_id]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            retryable:
+              type: boolean
+            request_id:
+              type: string
+            details:
+              type: object
+  responses:
+    Error:
+      description: Stable error envelope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

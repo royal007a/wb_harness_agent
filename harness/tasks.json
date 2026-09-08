@@ -1,0 +1,143 @@
+{
+  "$schema": "./task.schema.json",
+  "generated_at": "2026-09-08T14:52:58Z",
+  "tasks": [
+    {
+      "id": "HA-0001",
+      "title": "评审并冻结 HarnessAgent P0 规格",
+      "status": "running",
+      "risk": "medium",
+      "scope": [
+        "评审产品范围、PRD、目标架构、API、安全与质量规范",
+        "确认 Harness 仅为研发治理结构",
+        "将未决技术选择转为 ADR 或后续任务"
+      ],
+      "non_goals": [
+        "编写运行时代码",
+        "选择全部候选引擎",
+        "采购或部署外部基础设施"
+      ],
+      "acceptance": [
+        "核心用户、P0 流程、非目标和成功指标获得确认",
+        "任务、事件、工具、批准和适配器边界无已知冲突",
+        "未决项均有负责人、决策证据要求或后续任务"
+      ],
+      "depends_on": [],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0001-spec-review.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0001/2026-09-08-pdf-source-review.md"
+      ]
+    },
+    {
+      "id": "HA-0002",
+      "title": "实现核心契约与模拟纵向切片",
+      "status": "backlog",
+      "risk": "high",
+      "scope": [
+        "实现任务状态机、事件包络和适配器契约",
+        "实现模拟适配器与一个只读工具",
+        "验证幂等、取消、超时、权限拒绝和 Evidence"
+      ],
+      "non_goals": [
+        "接入真实模型服务",
+        "实现完整控制台",
+        "实现多引擎自动路由"
+      ],
+      "acceptance": [
+        "模拟任务可端到端完成并产生结构化结果",
+        "服务重启、重复请求、取消和超时测试通过",
+        "工具调用经策略校验且可关联完整追踪"
+      ],
+      "depends_on": ["HA-0001"],
+      "owner": null,
+      "plan": null,
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
+    {
+      "id": "HA-0003",
+      "title": "验证 Smolagents 与远程沙箱能力",
+      "status": "backlog",
+      "risk": "high",
+      "scope": [
+        "核验 Smolagents 官方版本、许可、维护状态和 CodeAgent 能力",
+        "用 P0 夹具验证事件、错误、取消、用量和产物映射",
+        "验证远程沙箱隔离、禁网、资源限制、销毁与序列化安全"
+      ],
+      "non_goals": [
+        "接入其他候选引擎",
+        "修改候选框架核心代码",
+        "在缺少证据时锁定供应商"
+      ],
+      "acceptance": [
+        "探针记录可复现版本、命令、输入、事件和失败语义",
+        "隔离验证证明不能访问宿主未挂载路径、密钥或公网",
+        "ADR-0006 与 ADR-0007 有接受、修改或拒绝结论"
+      ],
+      "depends_on": ["HA-0001"],
+      "owner": null,
+      "plan": null,
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
+    {
+      "id": "HA-0004",
+      "title": "实现 Smolagents P0 适配器",
+      "status": "backlog",
+      "risk": "high",
+      "scope": [
+        "在统一契约后实现 Smolagents CodeAgent 适配器",
+        "接入已批准远程沙箱和 P0 只读工具",
+        "通过与 Mock 相同的契约、失败和产物测试"
+      ],
+      "non_goals": [
+        "启用联网搜索或多 Agent",
+        "修改 Smolagents 核心",
+        "引入其他 Agent 框架"
+      ],
+      "acceptance": [
+        "P0 CSV 场景端到端产生报告、图表和 manifest",
+        "取消、超时、资源越限和沙箱失败映射稳定",
+        "没有适配器直写控制面事实存储"
+      ],
+      "depends_on": ["HA-0002", "HA-0003"],
+      "owner": null,
+      "plan": null,
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
+    {
+      "id": "HA-0005",
+      "title": "验证 Doubao 图片理解路由",
+      "status": "backlog",
+      "risk": "high",
+      "scope": [
+        "用账户内实际 endpoint 验证 doubao-seed-2.1-turbo 图片输入能力",
+        "测试 OCR、表格、图表、多图、结构化输出和错误语义",
+        "记录费用、地域、保留规则和内容安全行为"
+      ],
+      "non_goals": [
+        "把图片生成能力并入图片理解路由",
+        "静默回退到其他模型",
+        "上传未经授权的敏感图片"
+      ],
+      "acceptance": [
+        "能力矩阵包含可复现固定夹具和实际部署 ID",
+        "能力不匹配返回 MODEL_CAPABILITY_MISMATCH",
+        "ADR-0008 有接受、修改或拒绝结论"
+      ],
+      "depends_on": ["HA-0001"],
+      "owner": null,
+      "plan": null,
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    }
+  ]
+}

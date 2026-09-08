@@ -1,0 +1,96 @@
+$schema: ./permissions.schema.json
+version: 1
+status: documented_only
+default_effect: deny
+
+risk_levels:
+  low:
+    description: Read-only local inspection with no sensitive content or side effects.
+    approval: none
+  medium:
+    description: Reversible changes inside an explicitly scoped workspace.
+    approval: task_scope
+  high:
+    description: External writes, sensitive data access, executable code, or material data changes.
+    approval: per_action
+  critical:
+    description: Irreversible destructive actions, identity changes, secret access, or broad production impact.
+    approval: per_action_and_operator
+
+actions:
+  read_repository:
+    risk: low
+    effect: allow
+    constraints:
+      - stay_within_declared_workspace
+      - do_not_collect_secrets
+
+  draft_specification:
+    risk: low
+    effect: allow
+
+  write_workspace_files:
+    risk: medium
+    effect: allow
+    constraints:
+      - task_scope_must_name_targets
+      - preserve_unrelated_changes
+      - prefer_recoverable_operations
+
+  execute_local_commands:
+    risk: medium
+    effect: allow
+    constraints:
+      - command_must_be_required_by_task
+      - enforce_timeout_and_output_limit
+      - no_dynamic_code_from_untrusted_content
+
+  access_network:
+    risk: medium
+    effect: allow
+    constraints:
+      - destination_must_be_task_relevant
+      - use_authoritative_sources_for_dependencies
+      - never_transmit_secrets_or_restricted_data
+
+  invoke_external_write:
+    risk: high
+    effect: conditional
+    requires:
+      - per_action_approval
+      - exact_target_and_payload_summary
+      - idempotency_key
+      - audit_event
+
+  execute_generated_code:
+    risk: high
+    effect: conditional
+    requires:
+      - per_action_approval
+      - isolated_sandbox
+      - cpu_memory_disk_network_and_time_limits
+
+  access_restricted_data:
+    risk: critical
+    effect: conditional
+    requires:
+      - explicit_data_authorization
+      - approved_processing_region
+      - short_lived_credentials
+      - complete_audit
+
+  destructive_or_identity_change:
+    risk: critical
+    effect: conditional
+    requires:
+      - per_action_and_operator_approval
+      - resolved_exact_targets
+      - recovery_or_compensation_plan
+      - post_action_verification
+
+precedence:
+  - explicit_deny_overrides_allow
+  - narrower_scope_overrides_broader_scope
+  - expired_approval_is_denied
+  - changed_parameters_require_new_decision
+  - unknown_action_is_denied

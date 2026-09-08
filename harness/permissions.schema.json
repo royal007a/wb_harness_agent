@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/permissions.schema.json",
+  "title": "HarnessAgent Permission Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "status", "default_effect", "risk_levels", "actions", "precedence"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["documented_only", "enforced"]},
+    "default_effect": {"const": "deny"},
+    "risk_levels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["low", "medium", "high", "critical"],
+      "properties": {
+        "low": {"$ref": "#/$defs/risk_level"},
+        "medium": {"$ref": "#/$defs/risk_level"},
+        "high": {"$ref": "#/$defs/risk_level"},
+        "critical": {"$ref": "#/$defs/risk_level"}
+      }
+    },
+    "actions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/action"}
+    },
+    "precedence": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "risk_level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "approval"],
+      "properties": {
+        "description": {"type": "string", "minLength": 1},
+        "approval": {"enum": ["none", "task_scope", "per_action", "per_action_and_operator"]}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["risk", "effect"],
+      "properties": {
+        "risk": {"enum": ["low", "medium", "high", "critical"]},
+        "effect": {"enum": ["allow", "deny", "conditional"]},
+        "constraints": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "requires": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
