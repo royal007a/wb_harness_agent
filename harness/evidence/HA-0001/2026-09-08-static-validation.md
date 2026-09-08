@@ -17,7 +17,7 @@
 | OpenAPI 3.1 基本结构和 28 个 `$ref` 文件/片段 | PASS |
 | 5 个 Harness Work Item ID、依赖存在与 DAG 无环 | PASS |
 | 8 个 ADR 文件、索引与状态一致 | PASS |
-| 40 个 Markdown 文件、52 个 Markdown 链接 | PASS，本地目标均存在 |
+| 41 个 Markdown 文件、52 个 Markdown 链接 | PASS，本地目标均存在 |
 | 6 个 Mermaid fence 与全部代码 fence 成对 | PASS |
 | `AGENTS.md` 行数 | PASS，76 行 |
 | 参考系统禁用名称 | PASS，0 命中 |

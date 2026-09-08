@@ -1,6 +1,6 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-08T15:22:15Z",
+  "generated_at": "2026-09-08T15:27:13Z",
   "tasks": [
     {
       "id": "HA-0001",
@@ -29,7 +29,8 @@
       "recovery_condition": null,
       "evidence": [
         "harness/evidence/HA-0001/2026-09-08-pdf-source-review.md",
-        "harness/evidence/HA-0001/2026-09-08-static-validation.md"
+        "harness/evidence/HA-0001/2026-09-08-static-validation.md",
+        "harness/evidence/HA-0001/2026-09-08-claude-review.md"
       ]
     },
     {

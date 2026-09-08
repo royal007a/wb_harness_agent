@@ -47,11 +47,11 @@ Git 基线已建立。规格变更通过独立提交回滚；回滚时保留 Evi
 
 - `harness/evidence/HA-0001/2026-09-08-pdf-source-review.md`
 - `harness/evidence/HA-0001/2026-09-08-static-validation.md`
-- `harness/evidence/HA-0001/2026-09-08-claude-review.md`（收到 review 后生成）
+- `harness/evidence/HA-0001/2026-09-08-claude-review.md`
 
 ## 当前退出条件
 
 - L0 验证无错误；
-- Claude review 的必须修复项已处置或登记；
+- Claude review 已 Approved，非阻塞建议已处置；
 - 用户确认 P0 边界及 Proposed ADR 的下一步；
 - 建立可追踪的版本控制基线（已满足）。

@@ -30,7 +30,7 @@
       "additionalProperties": false,
       "required": [
         "id", "project_id", "objective", "agent_spec_version", "context",
-        "engine_policy", "model_policy", "permissions", "limits", "created_at"
+        "engine_policy", "model_policy", "requested_permissions", "limits", "created_at"
       ],
       "properties": {
         "id": {"type": "string", "pattern": "^task_[A-Za-z0-9]+$"},
@@ -64,7 +64,7 @@
             "allow_fallback": {"const": false}
           }
         },
-        "permissions": {"$ref": "#/$defs/task_permissions"},
+        "requested_permissions": {"$ref": "#/$defs/requested_permissions"},
         "limits": {"$ref": "#/$defs/limits"},
         "metadata": {"type": "object"},
         "created_at": {"type": "string", "format": "date-time"}
@@ -75,7 +75,7 @@
       "additionalProperties": false,
       "required": [
         "project_id", "objective", "agent_spec_version", "context",
-        "engine_policy", "model_policy", "permissions", "limits"
+        "engine_policy", "model_policy", "requested_permissions", "limits"
       ],
       "properties": {
         "project_id": {"type": "string", "pattern": "^prj_[A-Za-z0-9]+$"},
@@ -108,7 +108,7 @@
             "allow_fallback": {"const": false}
           }
         },
-        "permissions": {"$ref": "#/$defs/task_permissions"},
+        "requested_permissions": {"$ref": "#/$defs/requested_permissions"},
         "limits": {"$ref": "#/$defs/limits"},
         "metadata": {"type": "object"}
       }
@@ -122,7 +122,7 @@
         "variables": {"type": "object"}
       }
     },
-    "task_permissions": {
+    "requested_permissions": {
       "type": "object",
       "additionalProperties": false,
       "required": ["profile", "profile_version", "allow_tools", "deny_capabilities"],
@@ -131,6 +131,18 @@
         "profile_version": {"const": 1},
         "allow_tools": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "deny_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "effective_permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "profile_version", "allowed_tools", "denied_capabilities", "decision_digest"],
+      "properties": {
+        "profile_id": {"const": "analysis_read_only"},
+        "profile_version": {"const": 1},
+        "allowed_tools": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "denied_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "decision_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
       }
     },
     "run": {
@@ -149,7 +161,7 @@
         "status": {"enum": ["queued", "running", "waiting_approval", "succeeded", "failed", "cancelled", "expired"]},
         "selected_engine": {"type": "string", "minLength": 1},
         "selected_models": {"type": "object", "additionalProperties": {"type": "string"}},
-        "effective_permissions": {"$ref": "#/$defs/task_permissions"},
+        "effective_permissions": {"$ref": "#/$defs/effective_permissions"},
         "effective_limits": {"$ref": "#/$defs/limits"},
         "attempt_number": {"type": "integer", "minimum": 1},
         "latest_sequence": {"type": "integer", "minimum": 0, "default": 0},

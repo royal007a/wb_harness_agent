@@ -64,7 +64,7 @@
     "max_input_tokens": 100000,
     "max_cost_minor": 5000
   },
-  "permissions": {
+  "requested_permissions": {
     "profile": "analysis_read_only",
     "profile_version": 1,
     "allow_tools": ["resource.inspect", "artifact.publish", "run.final_answer"],
@@ -98,7 +98,7 @@
       "vision": null,
       "allow_fallback": false
     },
-    "permissions": {
+    "requested_permissions": {
       "profile": "analysis_read_only",
       "profile_version": 1,
       "allow_tools": ["resource.inspect", "artifact.publish", "run.final_answer"],
@@ -122,10 +122,11 @@
       "text_and_code": "model_unresolved"
     },
     "effective_permissions": {
-      "profile": "analysis_read_only",
+      "profile_id": "analysis_read_only",
       "profile_version": 1,
-      "allow_tools": ["resource.inspect", "artifact.publish", "run.final_answer"],
-      "deny_capabilities": ["network", "external_write", "package_install"]
+      "allowed_tools": ["resource.inspect", "artifact.publish", "run.final_answer"],
+      "denied_capabilities": ["network", "external_write", "package_install"],
+      "decision_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     },
     "effective_limits": {
       "max_turns": 20,

@@ -15,6 +15,7 @@
     "rules": {
       "type": "object",
       "minProperties": 1,
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"},
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,

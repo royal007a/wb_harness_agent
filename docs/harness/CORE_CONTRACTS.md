@@ -18,12 +18,12 @@ Task
 ├── agent spec version
 ├── engine policy
 ├── model policy
-├── permissions snapshot
+├── requested permissions
 ├── budgets
 └── runs[]
 ```
 
-Task 创建后，目标、输入版本、权限快照和预算上限不可原地修改。变更需求创建新 Task，并用 `parent_task_id` 关联。Task 不保存执行状态；列表中的 `latest_run_status` 是派生字段。
+Task 创建后，目标、输入版本、请求权限和预算上限不可原地修改。变更需求创建新 Task，并用 `parent_task_id` 关联。Task 不保存执行状态；列表中的 `latest_run_status` 是派生字段。
 
 ## Run
 
@@ -46,7 +46,7 @@ stateDiagram-v2
 
 终态为 `succeeded`、`failed`、`cancelled`、`expired`，不可覆盖。瞬时模型或工具错误属于 Step retry，不新增 `retrying` 状态；重新执行则创建新 Run，并设置 `based_on_run_id`。
 
-每个 Run 固化带版本的 `effective_permissions` 与 `effective_limits`：它们只能等于或严于 Task 上限。Child Run 因而可以缩小工具、能力和预算，但不能扩大父 Task/Run 的权限；这种“子集”关系由控制面验证，JSON Schema 只验证单个对象形状。
+Task 的 `requested_permissions` 表示调用方请求的上限；控制面解析版本化 Policy Profile 后，把最终允许项、拒绝项和决策摘要写入 Run 的 `effective_permissions`。每个 Run 同时固化 `effective_limits`，两者只能等于或严于 Task 上限。Child Run 可以继续收窄但不能扩大；这种“子集”关系由控制面验证，JSON Schema 只验证单个对象形状。
 
 ## Child Run
 
