@@ -17,23 +17,23 @@
 
 下表是完整目标面，不代表 P0 全部实现；`specs/v1/openapi.yaml` 当前只覆盖 Task/Run、事件、取消与批准的 P0 Draft。
 
-| 资源 | 主要接口 | 说明 |
-|---|---|---|
-| Projects | `POST/GET /projects` | 项目和环境边界 |
-| Agent Specs | `POST/GET /agent-specs` | 版本化 Agent 定义 |
-| Engines | `GET /engines` | 能力、限制、健康和版本 |
-| Model Routes | `GET /model-routes` | 模态到逻辑模型与部署的显式映射 |
-| Skills | `POST/GET /skills` | 版本化技能包与元数据 |
-| Tools | `POST/GET /tools` | 输入输出 Schema、风险等级 |
-| MCP Servers | `POST/GET /mcp-servers` | 连接配置的密钥引用 |
-| Resources | `POST/GET /resources` | 文件、数据源和上下文引用 |
-| Tasks | `POST/GET /tasks` | 提交、查询与列表 |
-| Runs | `POST/GET /tasks/{id}/runs` | 创建和查询执行尝试 |
-| Run Events | `GET /runs/{id}/events` | SSE 或游标拉取 |
-| Artifacts | `GET /tasks/{id}/artifacts` | 结果、文件、引用和摘要 |
-| Approvals | `POST /approvals/{id}:decide` | 批准或拒绝一次动作 |
-| Workflows | `POST/GET /workflows` | 后续 DAG 能力 |
-| Evaluations | `POST/GET /evaluations` | 数据集、运行和比较 |
+| 资源 | 阶段 | 主要接口 | 说明 |
+|---|---|---|---|
+| Projects | P0-min | `POST/GET /projects` | 项目和环境边界 |
+| Agent Specs | P0-min | `POST/GET /agent-specs` | 版本化 Agent 定义 |
+| Engines | P0 | `GET /engines` | 能力、限制、健康和版本 |
+| Model Routes | P0-min / P0.1 | `GET /model-routes` | 模态到逻辑模型与部署的显式映射 |
+| Skills | P1 | `POST/GET /skills` | 版本化技能包与元数据 |
+| Tools | P0 | `POST/GET /tools` | 输入输出 Schema、风险等级 |
+| MCP Servers | P1 | `POST/GET /mcp-servers` | 连接配置的密钥引用 |
+| Resources | P0 | `POST/GET /resources` | 文件、数据源和上下文引用 |
+| Tasks | P0 | `POST/GET /tasks` | 提交、查询与列表 |
+| Runs | P0 | `POST/GET /tasks/{id}/runs` | 创建和查询执行尝试 |
+| Run Events | P0 | `GET /runs/{id}/events` | SSE 或游标拉取 |
+| Artifacts | P0 | `GET /tasks/{id}/artifacts` | 结果、文件、引用和摘要 |
+| Approvals | P1 | `POST /approvals/{id}:decide` | 批准或拒绝一次动作 |
+| Workflows | P2 | `POST/GET /workflows` | 后续 DAG 能力 |
+| Evaluations | P0 | `POST/GET /evaluations` | 数据集、运行和比较 |
 
 ## 创建任务
 

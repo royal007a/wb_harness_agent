@@ -7,7 +7,7 @@
 - 类型使用 `PascalCase`，函数与变量使用对应语言惯例。
 - ID 前缀稳定且可辨识，如 `task_`、`run_`、`evt_`、`art_`。
 - `HA-xxxx` 仅表示研发治理 Work Item；`task_...` 与 `run_...` 仅表示未来产品运行时对象。
-- 事件名使用 `<domain>.<entity>.<past-tense>`，例如 `task.run.started`。
+- 事件名至少两段：简单生命周期用 `<entity>.<past-tense>`，例如 `run.started`；子动作使用 `<domain>.<entity>.<past-tense>`，例如 `tool.call.completed`。
 - 布尔字段以 `is_`、`has_`、`can_`、`should_` 开头。
 
 ## 目录边界
