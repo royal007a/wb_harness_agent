@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/policy-profile.schema.json",
+  "title": "HarnessAgent Runtime Policy Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "status", "default_effect", "sandbox_profile", "rules"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "version": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["proposed", "active", "retired"]},
+    "default_effect": {"const": "deny"},
+    "sandbox_profile": {"type": "string", "minLength": 1},
+    "rules": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["effect"],
+        "properties": {
+          "effect": {"enum": ["allow", "deny", "conditional"]},
+          "requires": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+        }
+      }
+    }
+  }
+}

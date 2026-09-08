@@ -34,7 +34,7 @@ flowchart LR
 ## 共享契约，不共享实现
 
 - **Agent Spec**：固定引擎、模型、Skill、工具和版本摘要。
-- **Task/Run**：Task 保存不可变意图；每个框架的一次执行都是 Run，子 Agent 是 Child Run。
+- **Task/Run**：Task 保存不可变意图；每个框架的一次执行都是 Run，Run 固化有效权限与预算，子 Agent 是权限/预算只能收窄的 Child Run。
 - **Tool Capability**：平台签发最小能力；框架内置权限提示不能替代平台策略。
 - **Events**：Adapter 映射为平台事件，但无权提交 `run.succeeded`。
 - **Checkpoint**：只保存版本化引用；恢复前核验 Adapter、工具、权限和资源兼容性。
@@ -66,4 +66,3 @@ flowchart LR
 3. 不满足能力、数据地域或安全约束时创建失败结果，不自动换框架。
 4. 同一 Task 的框架对比必须创建不同 Run，使用相同输入版本和评测器。
 5. 新 Adapter 先在探针分支通过统一契约测试，再进入可选路由。
-

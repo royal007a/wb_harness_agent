@@ -44,7 +44,7 @@ P0 只提供三个 Platform Tool：
 
 具体数值由容量探针确定并版本化，API 请求只能在平台上限内进一步收紧。
 
-用户创建 P0 Task 时一次性授权 `codeact-data-analysis-v1` Profile；授权只覆盖本 Run 的登记输入、固定镜像和 `/outputs`，不覆盖网络、宿主路径、依赖安装或外部写入。超出 Profile 的动作仍逐项拒绝或批准。
+用户创建 P0 Task 时一次性授权 `codeact-data-analysis-v1` Profile；授权只覆盖本 Run 的登记输入、固定镜像和 `/outputs`，不覆盖网络、宿主路径、依赖安装或外部写入。超出 Profile 的动作仍逐项拒绝或批准。机器可读 Draft 见 `specs/v1/policies/analysis-read-only.yaml`。
 
 ## 数据交换
 

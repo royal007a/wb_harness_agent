@@ -115,9 +115,10 @@
     "task_permissions": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["profile", "allow_tools", "deny_capabilities"],
+      "required": ["profile", "profile_version", "allow_tools", "deny_capabilities"],
       "properties": {
         "profile": {"const": "analysis_read_only"},
+        "profile_version": {"const": 1},
         "allow_tools": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "deny_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
       }
@@ -127,7 +128,7 @@
       "additionalProperties": false,
       "required": [
         "id", "task_id", "status", "selected_engine", "selected_models",
-        "attempt_number", "created_at", "updated_at"
+        "effective_permissions", "effective_limits", "attempt_number", "created_at", "updated_at"
       ],
       "properties": {
         "id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
@@ -138,6 +139,8 @@
         "status": {"enum": ["queued", "running", "waiting_approval", "succeeded", "failed", "cancelled", "expired"]},
         "selected_engine": {"type": "string", "minLength": 1},
         "selected_models": {"type": "object", "additionalProperties": {"type": "string"}},
+        "effective_permissions": {"$ref": "#/$defs/task_permissions"},
+        "effective_limits": {"$ref": "#/$defs/limits"},
         "attempt_number": {"type": "integer", "minimum": 1},
         "latest_sequence": {"type": "integer", "minimum": 0, "default": 0},
         "exit_reason": {"type": ["string", "null"]},

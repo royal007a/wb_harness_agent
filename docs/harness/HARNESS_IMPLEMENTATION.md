@@ -26,7 +26,7 @@
 | `tasks.json` | 唯一机器任务状态 | 执行器更新 |
 | `state.json` | 当前阶段、运行和检查点 | 执行器更新 |
 | `progress.md` | 给人阅读的状态摘要 | 从 JSON 自动生成 |
-| `permissions.yaml` | 风险等级和授权策略 | 安全评审后更新 |
+| `permissions.yaml` | 研发过程风险等级和授权策略 | 安全评审后更新；不进入产品请求链路 |
 | `evidence/` | 测试、评测、发布与健康证据 | 自动生成优先 |
 | `tech-debt-tracker.md` | 技术债、影响、触发条件 | 评审维护 |
 

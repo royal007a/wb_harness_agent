@@ -32,11 +32,11 @@
 - `exec-plans/completed/`：已验收计划和证据链接。
 - `exec-plans/blocked/`：阻塞原因和恢复条件。
 - `harness/task.schema.json`：任务数据格式。
-- `harness/permissions.schema.json`：研发授权策略格式。
+- `harness/permissions.schema.json`：研发授权策略格式；不得用作产品运行时策略。
 - `harness/tasks.json`：唯一机器任务状态。
 - `harness/state.json`：当前阶段、运行与检查点。
 - `harness/progress.md`：计划由机器状态生成；生成器完成前为标记清楚的快照。
-- `harness/permissions.yaml`：风险等级和授权策略。
+- `harness/permissions.yaml`：研发过程风险和授权策略，不是产品运行时策略。
 - `harness/evidence/`：结构化验证证据。
 - `tech-debt-tracker.md`：技术债及触发条件。
 

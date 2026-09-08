@@ -1,0 +1,51 @@
+$schema: ../policy-profile.schema.json
+id: analysis_read_only
+version: 1
+status: proposed
+default_effect: deny
+sandbox_profile: codeact-data-analysis-v1
+
+rules:
+  resource.inspect:
+    effect: allow
+    requires:
+      - registered_resource
+      - task_resource_membership
+      - read_only_handle
+
+  code.execute:
+    effect: conditional
+    requires:
+      - task_scope_consent
+      - approved_sandbox_profile
+      - fixed_dependency_image
+      - network_denied
+      - resource_limits_enforced
+
+  artifact.publish:
+    effect: allow
+    requires:
+      - outputs_directory_only
+      - artifact_validation
+      - content_digest
+
+  run.final_answer:
+    effect: allow
+    requires:
+      - artifact_ids_belong_to_run
+      - deterministic_checks_pass
+
+  network.access:
+    effect: deny
+
+  package.install:
+    effect: deny
+
+  external.write:
+    effect: deny
+
+  host_path.access:
+    effect: deny
+
+  secret.access:
+    effect: deny

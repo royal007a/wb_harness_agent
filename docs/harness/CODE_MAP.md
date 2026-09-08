@@ -10,13 +10,13 @@
 | `docs/harness/` | 产品与工程规格 | 当前有效 |
 | `docs/research/` | 来源阅读、官方核验与设计输入 | 研究证据 |
 | `docs/decisions/` | 重要决策及后果 | 当前有效 |
-| `specs/v1/` | Product Task/Run JSON Schema 与 OpenAPI | Draft，未冻结 |
+| `specs/v1/` | Product Task/Run、OpenAPI 与运行时策略 | Draft，未冻结 |
 | `harness/task.schema.json` | 原子任务 Schema | 当前有效 |
 | `harness/permissions.schema.json` | 研发授权策略 Schema | Draft |
 | `harness/tasks.json` | 机器任务真相 | 当前有效 |
 | `harness/state.json` | 当前阶段与检查点 | 当前有效 |
 | `harness/progress.md` | 人类可读状态摘要 | 派生文件 |
-| `harness/permissions.yaml` | 风险和授权策略 | 当前有效 |
+| `harness/permissions.yaml` | 研发过程风险和授权策略 | 当前有效，不属于产品运行时 |
 | `exec-plans/` | active/completed/blocked 计划 | 当前有效 |
 | `harness/evidence/` | 结构化验证证据 | 当前有效 |
 | `tech-debt-tracker.md` | 技术债和触发条件 | 当前有效 |

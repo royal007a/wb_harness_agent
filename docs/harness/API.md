@@ -66,6 +66,7 @@
   },
   "permissions": {
     "profile": "analysis_read_only",
+    "profile_version": 1,
     "allow_tools": ["resource.inspect", "artifact.publish", "run.final_answer"],
     "deny_capabilities": ["network", "external_write", "package_install"]
   },
@@ -99,6 +100,7 @@
     },
     "permissions": {
       "profile": "analysis_read_only",
+      "profile_version": 1,
       "allow_tools": ["resource.inspect", "artifact.publish", "run.final_answer"],
       "deny_capabilities": ["network", "external_write", "package_install"]
     },
@@ -117,8 +119,19 @@
     "status": "queued",
     "selected_engine": "engine_smolagents_code",
     "selected_models": {
-      "text_and_code": "model_unresolved",
-      "vision": "doubao-seed-2.1-turbo"
+      "text_and_code": "model_unresolved"
+    },
+    "effective_permissions": {
+      "profile": "analysis_read_only",
+      "profile_version": 1,
+      "allow_tools": ["resource.inspect", "artifact.publish", "run.final_answer"],
+      "deny_capabilities": ["network", "external_write", "package_install"]
+    },
+    "effective_limits": {
+      "max_turns": 20,
+      "timeout_seconds": 900,
+      "max_input_tokens": 100000,
+      "max_cost_minor": 5000
     },
     "attempt_number": 1,
     "latest_sequence": 0,

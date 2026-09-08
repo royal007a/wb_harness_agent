@@ -17,7 +17,7 @@ harnessagent/
 │   ├── research/                # PDF 阅读与官方资料核验
 │   └── decisions/               # 架构决策记录
 ├── specs/
-│   └── v1/                      # Draft 核心 Schema 与 OpenAPI
+│   └── v1/                      # Draft 核心 Schema、OpenAPI 与运行时策略
 ├── exec-plans/
 │   ├── active/
 │   ├── completed/

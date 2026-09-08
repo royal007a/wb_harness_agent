@@ -46,6 +46,8 @@ stateDiagram-v2
 
 终态为 `succeeded`、`failed`、`cancelled`、`expired`，不可覆盖。瞬时模型或工具错误属于 Step retry，不新增 `retrying` 状态；重新执行则创建新 Run，并设置 `based_on_run_id`。
 
+每个 Run 固化带版本的 `effective_permissions` 与 `effective_limits`：它们只能等于或严于 Task 上限。Child Run 因而可以缩小工具、能力和预算，但不能扩大父 Task/Run 的权限；这种“子集”关系由控制面验证，JSON Schema 只验证单个对象形状。
+
 ## Child Run
 
 多 Agent 不创建第二套状态模型。子 Agent 是一个 Child Run：
