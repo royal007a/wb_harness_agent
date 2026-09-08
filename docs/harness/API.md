@@ -51,7 +51,7 @@
   },
   "model_policy": {
     "text_and_code": "model_unresolved",
-    "vision": "doubao-seed-2.1-turbo",
+    "vision": null,
     "allow_fallback": false
   },
   "context": {
@@ -94,7 +94,7 @@
     },
     "model_policy": {
       "text_and_code": "model_unresolved",
-      "vision": "doubao-seed-2.1-turbo",
+      "vision": null,
       "allow_fallback": false
     },
     "permissions": {

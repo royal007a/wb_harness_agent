@@ -1,11 +1,11 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-08T14:52:58Z",
+  "generated_at": "2026-09-08T15:09:10Z",
   "tasks": [
     {
       "id": "HA-0001",
       "title": "评审并冻结 HarnessAgent P0 规格",
-      "status": "running",
+      "status": "waiting_approval",
       "risk": "medium",
       "scope": [
         "评审产品范围、PRD、目标架构、API、安全与质量规范",
@@ -28,7 +28,8 @@
       "blocked_reason": null,
       "recovery_condition": null,
       "evidence": [
-        "harness/evidence/HA-0001/2026-09-08-pdf-source-review.md"
+        "harness/evidence/HA-0001/2026-09-08-pdf-source-review.md",
+        "harness/evidence/HA-0001/2026-09-08-static-validation.md"
       ]
     },
     {

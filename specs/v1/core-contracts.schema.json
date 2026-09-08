@@ -55,7 +55,7 @@
           "required": ["text_and_code", "vision", "allow_fallback"],
           "properties": {
             "text_and_code": {"type": "string", "minLength": 1},
-            "vision": {"type": "string", "minLength": 1},
+            "vision": {"type": ["string", "null"], "minLength": 1},
             "allow_fallback": {"const": false}
           }
         },
@@ -94,7 +94,7 @@
           "required": ["text_and_code", "vision", "allow_fallback"],
           "properties": {
             "text_and_code": {"type": "string", "minLength": 1},
-            "vision": {"type": "string", "minLength": 1},
+            "vision": {"type": ["string", "null"], "minLength": 1},
             "allow_fallback": {"const": false}
           }
         },

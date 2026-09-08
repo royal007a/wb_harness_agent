@@ -62,13 +62,19 @@ actions:
       - idempotency_key
       - audit_event
 
-  execute_generated_code:
+  execute_generated_code_in_approved_sandbox:
     risk: high
     effect: conditional
     requires:
-      - per_action_approval
+      - task_scope_approval
       - isolated_sandbox
       - cpu_memory_disk_network_and_time_limits
+      - read_only_registered_inputs
+      - no_long_lived_credentials
+
+  execute_generated_code_outside_approved_sandbox:
+    risk: critical
+    effect: deny
 
   access_restricted_data:
     risk: critical

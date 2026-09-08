@@ -18,7 +18,7 @@
 | 12 | 技能 | P1 | `/skills` | skills | Skill Loader | 技能目录 | 版本、签名 |
 | 13 | 工具 | P0 | `/tools` | tools | Tool Adapter | 后续 | Schema、超时 |
 | 14 | MCP 连接 | P1 | `/mcp-servers` | mcp | MCP Client | MCP 设置 | 协议、权限 |
-| 15 | 资源 | P0 | `/resources` | resources | Resource Adapter | 资源管理 | CSV、扫描、只读挂载 |
+| 15 | 资源 | P0 | `/resources` | resources | Resource Adapter | 资源管理 | CSV、只读挂载；扫描件为 P0.1 |
 | 16 | 产物 | P0 | `/artifacts` | artifacts | Artifact Mapper | 产物预览 | 完整性、权限 |
 | 17 | 知识 | P2 | `/knowledge` | knowledge | Index Adapter | 知识空间 | 检索、删除 |
 | 18 | 批准 | P1 | `/approvals` | approvals | 无 | 待审批 | 绑定、过期 |

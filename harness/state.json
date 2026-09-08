@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "spec_review",
+  "phase": "spec_approval",
   "implementation_started": false,
   "active_task_id": "HA-0001",
   "active_plan": "exec-plans/active/HA-0001-spec-review.md",
-  "last_checkpoint": "P0 narrowed to controlled CodeAct data analysis; contracts, sandbox and vision route drafted",
-  "last_updated_at": "2026-09-08T14:52:58Z",
-  "next_action": "Run L0 validation and obtain independent Claude review",
+  "last_checkpoint": "Design integrated, self-review fixes applied, L0 validation passed, Git baseline established",
+  "last_updated_at": "2026-09-08T15:09:10Z",
+  "next_action": "Obtain independent Claude review and user decision on P0 scope",
   "release": null
 }

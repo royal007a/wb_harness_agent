@@ -105,7 +105,7 @@ sequenceDiagram
     C-->>U: report, charts, manifest, trace
 ```
 
-P0 默认无网络、无 Child Run、无外部写入。图片模型只在输入含截图/扫描件或显式图表解读时调用；用户指定路由见 [MODEL_ROUTING.md](MODEL_ROUTING.md)。
+P0 基线默认无网络、无 Child Run、无外部写入，也不发送图片。HA-0005 通过后，P0.1 才在输入含截图/扫描件或显式图表解读时调用用户指定图片路由，见 [MODEL_ROUTING.md](MODEL_ROUTING.md)。
 
 ## 多框架演进
 

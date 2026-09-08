@@ -41,12 +41,12 @@
 
 ## 回滚方案
 
-当前没有版本控制基线。冻结前应初始化 Git 并形成首个可审阅提交；在此之前只通过逐文件反向补丁回滚，因此这也是 HA-0001 的准入缺口。
+Git 基线已建立。规格变更通过独立提交回滚；回滚时保留 Evidence 和任务历史，以新记录说明原因，不改写已发生事实。
 
 ## Evidence 位置
 
 - `harness/evidence/HA-0001/2026-09-08-pdf-source-review.md`
-- `harness/evidence/HA-0001/2026-09-08-static-validation.md`（验证后生成）
+- `harness/evidence/HA-0001/2026-09-08-static-validation.md`
 - `harness/evidence/HA-0001/2026-09-08-claude-review.md`（收到 review 后生成）
 
 ## 当前退出条件
@@ -54,5 +54,4 @@
 - L0 验证无错误；
 - Claude review 的必须修复项已处置或登记；
 - 用户确认 P0 边界及 Proposed ADR 的下一步；
-- 建立可追踪的版本控制基线。
-
+- 建立可追踪的版本控制基线（已满足）。
