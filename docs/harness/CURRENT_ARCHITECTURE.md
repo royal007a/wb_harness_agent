@@ -12,6 +12,7 @@
 harnessagent/
 ├── AGENTS.md
 ├── README.md
+├── plan.md                      # P2 长期记忆规划（Proposed）
 ├── docs/
 │   ├── harness/                 # 当前有效规格
 │   ├── research/                # PDF 阅读与官方资料核验

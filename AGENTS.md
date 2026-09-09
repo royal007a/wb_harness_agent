@@ -24,6 +24,7 @@
 
 ## 项目地图
 
+- `plan.md`：P2 长期记忆的设计、治理、阶段路线与验收计划。
 - `docs/harness/`：产品、架构、API、规范、质量、安全、运维。
 - `docs/research/`：来源阅读与官方资料核验。
 - `docs/decisions/`：一项重要技术决策一篇 ADR。

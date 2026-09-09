@@ -6,6 +6,7 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 
 ## 文档入口
 
+- [P2 长期记忆规划](plan.md)
 - [产品范围](docs/harness/PRODUCT_SCOPE.md)
 - [产品需求](docs/harness/PRD.md)
 - [P0 数据分析场景](docs/harness/P0_DATA_ANALYSIS.md)
