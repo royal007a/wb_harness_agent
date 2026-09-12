@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "awaiting_model_configuration",
+  "phase": "local_orchestration_preview",
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0007 completed: 59 tests, 12 browser checks, Skill validation; local service updated; real model route disabled",
-  "last_updated_at": "2026-09-12T08:16:00Z",
+  "last_checkpoint": "HA-0009 completed: 88 tests, 9 research and 12 baseline browser checks; bounded local Child Runs deployed; Claude configuration verified offline, real model route disabled",
+  "last_updated_at": "2026-09-12T08:49:00Z",
   "next_action": "HA-0008: obtain approved model endpoint, model ID, credential reference and test budget",
   "release": "0.1.0-local"
 }

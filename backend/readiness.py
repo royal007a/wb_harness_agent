@@ -22,6 +22,8 @@ def readiness():
     except (OSError, ValueError):
         probe = {'status': 'not_run', 'real_model': False}
     return {'baseline': 'available', 'smolagents_version': sdk, 'sandbox_probe': probe,
+            'research_demo': {'status':'available', 'real_model':False, 'max_children':9, 'max_concurrency':3,
+                              'url':'/research', 'execution':'fixed_functions'},
             'model_route_enabled': False,
             'blocking_items': ['approved_model_endpoint_and_credentials', 'live_model_budget_and_cancel_probe',
                                'production_adapter_contract_acceptance'],

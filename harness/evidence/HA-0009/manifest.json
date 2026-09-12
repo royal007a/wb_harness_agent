@@ -1,0 +1,40 @@
+{
+  "checked_at": "2026-09-12T08:48:56.216007+00:00",
+  "status": "passed",
+  "mode": "local_fixed_function_orchestration",
+  "real_model": false,
+  "tests": {
+    "tests": 88,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser_checks": 9,
+  "baseline_browser_checks": 12,
+  "health": {
+    "status": "ok",
+    "version": "0.1.0",
+    "mode": "local_single_user",
+    "model_calls_enabled": false
+  },
+  "sample_root_run_id": "run_e50212fec26a4fe3b4eee537dd69aecc",
+  "sample_children": 9,
+  "sdk_versions": {
+    "claude-agent-sdk": "0.2.152",
+    "smolagents": "1.26.0",
+    "mcp": "2.2.0"
+  },
+  "source_sha256": {
+    "backend/research.py": "7ce834c941b3d43c54ba298187a30acb91d99f54995710d528605cc7b5d09313",
+    "adapters/research_demo.py": "0ea55b16964a368010a1ad73e8f41eaa6cc19680192457282f7164498172d40d",
+    "adapters/claude_config.py": "99238874d12bdd03db5960716f7056f88f8d8f4d1cb85d6434823d7ef0b1a895",
+    "specs/v1/research-request.schema.json": "517d9824170e4c86e78087638e6e0075236984e212d6dbcdbdedaba140d04f50",
+    "frontend/research.js": "464e0e808803e835dfcda94648920d91fde86f58c99d3aae1f5843b9271eba1a"
+  },
+  "limitations": [
+    "synthetic company fixtures",
+    "no Claude query or subagent execution",
+    "no financial/news source retrieval",
+    "thread context separation is not OS isolation"
+  ]
+}

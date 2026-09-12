@@ -42,6 +42,8 @@ class Service:
         self.stopping = threading.Event()
         self.thread = None
         self.adapters = {'engine_mock_analytics': LocalAnalyticsAdapter()}
+        from .research import Research
+        self.research = Research(self)
 
     def resource(self, name, raw):
         if not isinstance(name, str) or not name.lower().endswith('.csv') or len(name) > 180 or '/' in name or '\\' in name:
@@ -89,7 +91,9 @@ class Service:
             raise Problem('VALIDATION_ERROR', '目标长度必须为 1–2000 字。', 422)
         if body['limits']['timeout_seconds'] > 300:
             raise Problem('VALIDATION_ERROR', '本地运行超时上限为 300 秒。', 422)
-        self.store.get('resources', body['context']['resource_ids'][0])
+        resource = self.store.get('resources', body['context']['resource_ids'][0])
+        if not resource['name'].lower().endswith('.csv'):
+            raise Problem('INVALID_RESOURCE', '固定分析器只接受 CSV，不接受研究演示资料。', 422)
         if body.get('parent_task_id'):
             self.store.get('tasks', body['parent_task_id'])
 
@@ -101,6 +105,8 @@ class Service:
         return self.idempotent('tasks', key, body, create)
 
     def new_run(self, db, task, based_on=None):
+        if task['engine_policy']['engine_id'] == 'engine_local_research_demo':
+            return self.research.new_run(db, task, based_on)
         active = [r for r in self.store.listing('runs') if r['status'] not in TERMINAL]
         if len(active) >= 32:
             raise Problem('RATE_LIMITED', '本地待执行队列已满（32）。', 429)
@@ -131,6 +137,8 @@ class Service:
         return self.idempotent('rerun:' + task_id, key, body, lambda db: self.new_run(db, task, based))
 
     def cancel(self, run_id):
+        if self.store.get('runs', run_id)['selected_engine'] == 'engine_local_research_demo':
+            return self.research.cancel(run_id)
         with self.store.transaction() as db:
             run = self.store.get('runs', run_id)
             if run['status'] not in TERMINAL:
@@ -161,6 +169,8 @@ class Service:
             self.store.event(db, run, 'tool.call.completed', {'tool': tool, 'implementation': 'deterministic'}, step_id)
 
     def execute(self, run_id):
+        if self.store.get('runs', run_id)['selected_engine'] == 'engine_local_research_demo':
+            return self.research.execute(run_id)
         adapter = None
         try:
             with self.store.transaction() as db:
@@ -239,6 +249,7 @@ class Service:
                 self.store.event(db, run, 'run.' + run['status'], {'error_code': code})
 
     def recover(self):
+        self.research.recover()
         with self.store.transaction() as db:
             for run in self.store.listing('runs'):
                 if run['status'] == 'running':
@@ -252,7 +263,7 @@ class Service:
                 for run in reversed(self.store.listing('runs')):
                     if self.stopping.is_set():
                         return
-                    if run['status'] == 'queued':
+                    if run['status'] == 'queued' and not run.get('parent_run_id'):
                         self.execute(run['id'])
         self.thread = threading.Thread(target=loop, name='local-worker', daemon=True)
         self.thread.start()

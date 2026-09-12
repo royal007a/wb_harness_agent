@@ -99,7 +99,7 @@ async function refreshResources() {
   const previous = $("#resource-select").value;
   $("#resource-select").innerHTML =
     '<option value="">请选择数据资源</option>' +
-    data.items
+    data.items.filter((r) => r.name.toLowerCase().endsWith(".csv"))
       .map(
         (r) =>
           `<option value="${esc(r.id)}">${esc(r.name)} · ${r.row_count} 行</option>`,
@@ -231,7 +231,7 @@ async function refresh() {
   state.busy = true;
   try {
     const data = await api("/api/v1/tasks");
-    state.tasks = data.items;
+    state.tasks = data.items.filter((item) => item.task.agent_spec_version === "local_analytics@1");
     renderTasks();
     await refreshRun();
     $("#connection").textContent = "控制面已连接";

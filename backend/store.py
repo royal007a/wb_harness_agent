@@ -72,7 +72,7 @@ class Store:
         event = {'event_id': uid('evt'), 'event_type': kind, 'event_version': 1,
                  'workspace_id': 'ws_local', 'project_id': task['project_id'], 'task_id': run['task_id'],
                  'run_id': run['id'], 'sequence': run['latest_sequence'], 'occurred_at': now(),
-                 'trace_id': 'trace_' + run['id'][4:], 'step_id': step_id, 'data': data or {}}
+                 'trace_id': 'trace_' + (run.get('parent_run_id') or run['id'])[4:], 'step_id': step_id, 'data': data or {}}
         db.execute('INSERT INTO events VALUES(?,?,?)', (run['id'], event['sequence'], dumps(event)))
         db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(run), run['id']))
 

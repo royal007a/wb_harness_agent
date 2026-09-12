@@ -1,0 +1,28 @@
+.demo-banner { background:#ecf0e5; border:1px solid #dce4d2; border-radius:10px; padding:16px 20px; line-height:1.7; margin-bottom:24px; }
+.research-layout { display:grid; grid-template-columns:290px minmax(0,1fr); gap:24px; align-items:start; }
+.research-controls,.research-root { padding:24px; }
+.research-controls h2,.research-root h2 { margin:0 0 20px; font-size:17px; }
+.research-controls fieldset { border:0; padding:0; margin:0 0 24px; }
+.research-controls legend { font-weight:600; margin-bottom:10px; }
+.research-controls fieldset label { display:flex; align-items:center; gap:9px; margin:10px 0; }
+.research-controls input[type=checkbox] { width:16px; height:16px; accent-color:var(--green); }
+.research-controls>label,.research-root>label { display:block; font-weight:600; margin:18px 0 8px; }
+.research-controls select,.research-root select { width:100%; max-width:100%; padding:11px; border:1px solid var(--line); border-radius:7px; background:white; }
+.research-controls .primary { width:100%; padding:12px; }
+.muted { color:var(--muted); line-height:1.7; }
+.research-results { min-width:0; display:grid; gap:20px; }
+.root-heading { display:flex; justify-content:space-between; gap:10px; align-items:start; }
+.root-heading h2 { margin-bottom:10px; }
+.research-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.research-actions button,.child-cancel { background:white; border:1px solid var(--line); padding:9px 12px; border-radius:7px; }
+.research-summary { background:var(--soft); padding:16px; border-radius:8px; margin:18px 0; line-height:1.7; }
+.research-children { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.research-child { padding:20px; background:white; border:1px solid var(--line); border-radius:10px; min-width:0; }
+.research-child h3 { font-size:15px; margin:15px 0 8px; }
+.research-child p { font-size:12px; line-height:1.7; }
+.research-child a { display:block; margin:12px 0; text-decoration:underline; }
+.research-child .mono,#root-id { overflow-wrap:anywhere; font-size:11px; }
+.research-events { max-height:280px; overflow:auto; padding-left:22px; font-size:12px; line-height:2; overflow-wrap:anywhere; }
+#research-message:not(:empty) { margin:0 0 18px; border-left:3px solid var(--green); padding:12px; background:white; }
+@media(max-width:1100px) { .research-children { grid-template-columns:1fr; } }
+@media(max-width:800px) { .research-layout { grid-template-columns:1fr; } .research-controls,.research-root { padding:20px; } .research-children { grid-template-columns:1fr; } }

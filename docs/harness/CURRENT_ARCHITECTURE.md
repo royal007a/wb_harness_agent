@@ -2,7 +2,7 @@
 
 ## 结论
 
-当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器和 launchd 部署。新增独立的 Colima VM 沙箱、真实 SDK + 脚本模型探针以及离线 Skill CLI；这些尚未加入产品 Run 的真实模型路由。没有接入真实模型、Claude SDK 或长期记忆。
+当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排以及 Claude SDK 离线配置契约探针；尚无真实模型、原生 Claude 子 Agent 执行或长期记忆。
 
 ```mermaid
 flowchart LR
@@ -20,6 +20,8 @@ flowchart LR
 独立开发验证链路：`harness/probe.py → ScriptedProbeModel → Smolagents CodeAgent → SandboxExecutor → Colima VM`，与生产 Run 路由隔离。脚本模型不会被注册为用户可选引擎。探针范围见 [ENGINE_PROBES.md](ENGINE_PROBES.md)，项目 Skill 示例见 [SKILL_EXECUTION.md](SKILL_EXECUTION.md)。
 
 因此，本文只描述可验证的现状。目标能力见 [ARCHITECTURE.md](ARCHITECTURE.md)，不得把目标图当作已实现系统。
+
+本地研究演示由 `Service → Research → bounded executor pool → ResearchDemoExecutor` 执行，同一 SQLite 保存父子 Run/事件/产物。最多 9 个子任务、全局 3 个并发，原始输入在 Task 中固定，子执行器只接收各自资源，主任务汇总结构化引用。上下文分发隔离不是线程级安全沙箱。恢复和部分失败语义见 [MULTI_AGENT.md](MULTI_AGENT.md)。
 
 ## 当前文件结构
 

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Harness / 多专项编排</title>
+  <link rel="stylesheet" href="/static/styles.css"><link rel="stylesheet" href="/static/research.css">
+  <script src="/static/research.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/"><span class="brand-icon">H</span> harness<span class="version">LOCAL</span></a>
+    <div class="workspace"><span class="avatar">L</span><div>Local workspace<small>本地开发工作空间</small></div></div>
+    <p class="nav-label">WORKSPACE</p>
+    <nav><a class="nav-item" href="/">◫ 分析工作台</a><a class="nav-item active" href="/research">⑂ 多专项编排</a></nav>
+    <div class="sidebar-bottom"><span class="online-dot"></span> 确定性演示执行器<small>无外部模型 · 无联网抓取</small></div>
+  </aside>
+  <main>
+    <header class="topbar"><div>Workspace <span>/</span> <strong>多专项编排</strong></div><span class="local-badge">● LOCAL DEMO</span></header>
+    <section class="page">
+      <div class="page-heading"><div class="eyebrow">ONE TASK · INDEPENDENT EVIDENCE</div><h1>分工执行，汇总有据。</h1><p>将公司与专项拆成独立 Child Run，观察并发、失败与结果如何收敛。</p></div>
+      <div class="demo-banner">演示模式：使用项目自建模拟资料与固定函数，不是 Claude SubAgent 实际运行，不提供真实财报、最新资讯或投资建议。</div>
+      <div id="research-message" role="status" aria-live="polite"></div>
+      <div class="research-layout">
+        <form id="research-form" class="panel research-controls">
+          <h2>创建研究任务</h2>
+          <fieldset><legend>演示公司</legend>
+            <label><input type="checkbox" name="companies" value="demo_a" checked> 演示公司 A</label>
+            <label><input type="checkbox" name="companies" value="demo_b"> 演示公司 B</label>
+            <label><input type="checkbox" name="companies" value="demo_c"> 演示公司 C</label>
+          </fieldset>
+          <fieldset><legend>专项分工</legend>
+            <label><input type="checkbox" name="roles" value="financial" checked> 财务指标</label>
+            <label><input type="checkbox" name="roles" value="industry" checked> 行业资料</label>
+            <label><input type="checkbox" name="roles" value="risk" checked> 风险资料覆盖</label>
+          </fieldset>
+          <label for="concurrency">并发上限</label><select id="concurrency"><option value="3">3 个子任务</option><option value="2">2 个子任务</option><option value="1">1 个（串行）</option></select>
+          <label for="failure-policy">失败策略</label><select id="failure-policy"><option value="continue_with_warning">保留有效结果，明确披露缺口</option><option value="fail_parent">任何子任务失败则父任务失败</option></select>
+          <label for="scenario">资料场景</label><select id="scenario"><option value="complete">提供全部演示输入</option><option value="missing_risk">缺失风险输入（验证部分失败）</option></select>
+          <p class="muted">最多 9 个子任务；60 秒总时限。步骤预算按任务数预留，模型费用为零。</p>
+          <button id="research-submit" class="primary" type="submit">创建并行演示</button>
+        </form>
+        <div class="research-results">
+          <section class="panel research-root">
+            <div class="root-heading"><h2>父任务与运行树</h2><span id="root-status" class="status">尚未运行</span></div>
+            <label for="research-history">运行历史</label><select id="research-history"><option value="">暂无研究运行</option></select>
+            <p id="root-id" class="mono muted">每次重跑生成新 Run，不覆盖已有证据。</p>
+            <p id="research-configuration" class="muted">左侧表单用于创建新任务，运行历史保留自己的配置。</p>
+            <div class="research-actions"><button id="research-cancel" type="button" disabled>取消整棵运行树</button><button id="research-rerun" type="button" disabled>重新运行</button></div>
+            <div id="research-summary" class="research-summary">选择公司与专项后创建任务。</div>
+            <div id="research-downloads" class="artifact-links"></div>
+          </section>
+          <div id="research-children" class="research-children"></div>
+          <section class="panel research-root"><h2>父任务事件</h2><ol id="research-events" class="research-events"><li>尚无事件</li></ol></section>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

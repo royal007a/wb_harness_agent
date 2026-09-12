@@ -12,6 +12,10 @@
 - `adapters/smolagents_probe.py`：仅测试的真实 SDK 与脚本模型桥接；
 - `backend/sandbox.py`、`sandbox/`：Colima VM 容器执行协议与镜像，不在宿主执行模型代码；
 - `backend/readiness.py`、`harness/probe.py`：只读就绪状态与显式探针命令；
+- `backend/research.py`：固定深度 Child Run 扇出、全树预算、并发、失败/取消/重跑/恢复；
+- `adapters/research_demo.py`：自建 synthetic 资料与固定专项函数，非真实研报；
+- `adapters/claude_config.py`：实际 SDK AgentDefinition 离线配置验证，无 query/CLI 启动；
+- `frontend/research.*`：多专项演示页面；`tests/test_research.py` 和 `browser_research.py` 验证；
 - `skills/csv-group-analysis/`：项目内 Skill 与确定性 CLI，无自动全局安装；
 - `frontend/`：原生浏览器工作台与本地 API 说明；
 - `tests/`：后端契约/故障测试与真实浏览器验收；

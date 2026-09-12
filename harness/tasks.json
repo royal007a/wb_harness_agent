@@ -1,7 +1,16 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-12T08:16:00Z",
+  "generated_at": "2026-09-12T08:49:00Z",
   "tasks": [
+    {
+      "id":"HA-0009", "title":"一小时多专项 Child Run 编排切片", "status":"completed", "risk":"high",
+      "scope":["材料核验与 P1 准备规格", "离线演示扇出、持久状态、配额、取消与失败汇总", "API/UI、本地部署与回归证据"],
+      "non_goals":["真实 Claude/第三方模型调用", "未审查 ClawHub 安装", "真实投资或 ST 判断"],
+      "acceptance":["上下文/引用与权限隔离验证", "并发、预算、取消、失败和恢复通过", "浏览器可运行且明确标记为演示"],
+      "depends_on":["HA-0007"], "owner":"mymaccodex",
+      "plan":"exec-plans/completed/HA-0009-child-run-orchestration.md", "blocked_reason":null, "recovery_condition":null,
+      "evidence":["harness/evidence/HA-0009/acceptance.md", "harness/evidence/HA-0009/manifest.json", "harness/evidence/HA-0009/all-tests.xml", "harness/evidence/HA-0009/browser.json", "harness/evidence/HA-0009/baseline/browser.json", "harness/evidence/HA-0009/claude-configuration.json"]
+    },
     {
       "id": "HA-0007",
       "title": "引擎契约、VM 沙箱与 Skill 脚本验证",

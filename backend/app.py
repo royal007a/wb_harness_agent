@@ -108,6 +108,7 @@ def create_app(db_path=None, run_worker=True):
     def engines():
         return {'items': [
             {'id': 'engine_mock_analytics', 'name': 'Local Analytics', 'status': 'available', 'description': '固定统计 · 真实计算 · 无模型调用'},
+            {'id': 'engine_local_research_demo', 'name': 'Research Orchestration', 'status': 'available', 'description': '离线编排演示 · 最多 9 个 Child Run / 3 并发 · 非 Claude 运行'},
             {'id': 'engine_smolagents_code', 'name': 'Smolagents', 'status': 'blocked', 'description': 'CodeAct · 真实模型尚未接入 · SDK/VM 探针状态见 /api/v1/readiness'},
             {'id': 'engine_claude', 'name': 'Claude Agent SDK', 'status': 'planned', 'description': '研报与复杂编排 · P1'},
             {'id': 'engine_deepagents', 'name': 'Deep Agents', 'status': 'planned', 'description': '动态知识与记忆 · P2'},
@@ -120,6 +121,24 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/api/v1/resources')
     def resources():
         return {'items': app.state.service.store.listing('resources')}
+
+    @app.post('/api/local/research', status_code=202)
+    async def research_create(request: Request):
+        return app.state.service.research.create(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/research')
+    def research_list():
+        store = app.state.service.store
+        return {'items': [r for r in store.listing('runs')
+                          if r['selected_engine'] == 'engine_local_research_demo' and not r.get('parent_run_id')]}
+
+    @app.get('/api/local/research/{run_id}')
+    def research_detail(run_id: str):
+        return app.state.service.research.detail(run_id)
+
+    @app.get('/research', include_in_schema=False)
+    def research_page():
+        return FileResponse(ROOT / 'frontend/research.html')
 
     @app.post('/api/v1/resources', status_code=201)
     async def upload(request: Request, name: str = 'data.csv'):
@@ -148,7 +167,7 @@ def create_app(db_path=None, run_worker=True):
     def tasks():
         store = app.state.service.store
         runs = store.listing('runs')
-        return {'items': [{'task': t, 'latest_run': next((r for r in runs if r['task_id'] == t['id']), None)} for t in store.listing('tasks')]}
+        return {'items': [{'task': t, 'latest_run': next((r for r in runs if r['task_id'] == t['id'] and not r.get('parent_run_id')), None)} for t in store.listing('tasks')]}
 
     @app.get('/api/v1/tasks/{task_id}')
     def task_detail(task_id: str):
@@ -203,6 +222,8 @@ def create_app(db_path=None, run_worker=True):
 
     app.mount('/static', StaticFiles(directory=ROOT / 'frontend'), name='static')
     generated = app.openapi()
+    generated['paths']['/api/local/research']['post']['requestBody'] = {
+        'required': True, 'content': {'application/json': {'schema': json.loads((ROOT / 'specs/v1/research-request.schema.json').read_text())}}}
     definitions = json.loads(json.dumps(BUNDLE['$defs']).replace('#/$defs/', '#/components/schemas/'))
     generated.setdefault('components', {}).setdefault('schemas', {}).update(definitions)
     generated['paths']['/api/v1/tasks']['post']['requestBody'] = {
@@ -212,7 +233,7 @@ def create_app(db_path=None, run_worker=True):
             'type': 'object', 'additionalProperties': False, 'required': ['resource_id', 'objective'],
             'properties': {'resource_id': {'type': 'string'}, 'objective': {'type': 'string', 'minLength': 1, 'maxLength': 2000},
                            'timeout_seconds': {'type': 'integer', 'minimum': 1, 'maximum': 300}}}}}}
-    for path in ('/api/v1/tasks', '/api/local/tasks', '/api/v1/tasks/{task_id}/runs'):
+    for path in ('/api/v1/tasks', '/api/local/tasks', '/api/v1/tasks/{task_id}/runs', '/api/local/research'):
         generated['paths'][path]['post'].setdefault('parameters', []).append({
             'in': 'header', 'name': 'Idempotency-Key', 'required': True, 'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
     return app

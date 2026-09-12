@@ -3,7 +3,7 @@
 ## 两类“任务”必须隔离
 
 - **Harness Work Item**：`HA-0001` 这类研发治理任务，只存在于 `harness/tasks.json`。
-- **Product Task**：`task_...` 这类用户提交的 Agent 意图，只存在于未来运行时。
+- **Product Task**：`task_...` 这类用户提交的 Agent 意图，保存在产品控制面（当前为本地 SQLite），不写入 Harness 任务登记表。
 
 文档中必须使用全称或 ID 前缀，不得把两套状态词汇混用。
 

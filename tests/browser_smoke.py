@@ -35,7 +35,7 @@ with sync_playwright() as p:
     page.get_by_role('button', name='数据资源', exact=True).click()
     expect(page.locator('#resource-table')).to_contain_text('sales.csv')
     page.get_by_role('button', name='引擎与能力', exact=True).click()
-    expect(page.locator('.engine-card')).to_have_count(5)
+    expect(page.locator('.engine-card')).to_have_count(6)
     expect(page.locator('.engine-card').filter(has_text='Smolagents')).to_contain_text('待接入')
     page.screenshot(path=str(OUTPUT / 'engines-desktop.png'), full_page=True)
     page.get_by_role('button', name='分析工作台', exact=True).click()

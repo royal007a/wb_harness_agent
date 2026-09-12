@@ -13,6 +13,7 @@
 | [ADR-0007](../decisions/ADR-0007-remote-sandbox-for-model-code.md) | Proposed | 模型生成代码使用远程隔离沙箱 |
 | [ADR-0008](../decisions/ADR-0008-vision-model-route.md) | Proposed | 图片理解路由使用 Doubao-Seed-2.1-Turbo，探针通过后启用 |
 | [ADR-0010](../decisions/ADR-0010-adapter-sandbox-probes.md) | Accepted（开发探针） | Adapter 边界、Colima VM 和明确标记的脚本模型探针；不开放真实路由 |
+| [ADR-0011](../decisions/ADR-0011-local-child-run-orchestration.md) | Accepted（本地演示） | 一层 Child Run 扇出、最多 3 并发、固定资料、失败/取消/预算/恢复 |
 
 ## 待决策
 

@@ -4,6 +4,8 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 
 本机地址：**http://127.0.0.1:8765**。进入页面选择示例 CSV，即可跑通一次分析。
 
+多专项编排演示：**http://127.0.0.1:8765/research**。最多三家模拟公司 × 三个专项，展示有界并发、父子 Run、失败汇总、取消和整树重跑。此功能运行固定函数与 synthetic 资料，不是实际 Claude 多 Agent 或真实研报。
+
 ```sh
 sh harness/init.sh
 sh harness/start.sh
@@ -17,6 +19,7 @@ sh harness/start.sh
 
 - [Skill/CLI 执行样例与边界](docs/harness/SKILL_EXECUTION.md)
 - [引擎与 VM 探针使用](docs/harness/ENGINE_PROBES.md)
+- [多专项编排架构与 API](docs/harness/MULTI_AGENT.md)
 
 - [P2 长期记忆规划](plan.md)
 - [产品范围](docs/harness/PRODUCT_SCOPE.md)

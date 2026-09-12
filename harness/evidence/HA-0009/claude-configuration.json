@@ -1,0 +1,69 @@
+{
+  "sdk_version": "0.2.152",
+  "mode": "offline_configuration_only",
+  "real_model": false,
+  "runtime_enabled": false,
+  "agents": {
+    "financial-analyzer": {
+      "description": "财务专项",
+      "prompt": "仅基于分配的财务证据输出指标与来源；缺失口径时停止推断。",
+      "tools": [],
+      "disallowedTools": null,
+      "model": "inherit",
+      "skills": [],
+      "memory": null,
+      "mcpServers": [],
+      "initialPrompt": null,
+      "maxTurns": 3,
+      "background": null,
+      "effort": null,
+      "permissionMode": null
+    },
+    "industry-collector": {
+      "description": "行业专项",
+      "prompt": "仅整理分配的行业资料，区分资料时间与当前时间，不虚构新闻。",
+      "tools": [],
+      "disallowedTools": null,
+      "model": "inherit",
+      "skills": [],
+      "memory": null,
+      "mcpServers": [],
+      "initialPrompt": null,
+      "maxTurns": 3,
+      "background": null,
+      "effort": null,
+      "permissionMode": null
+    },
+    "risk-reviewer": {
+      "description": "风险专项",
+      "prompt": "输出已覆盖与缺失的证据，资料不足时标记未评估，不推断无风险。",
+      "tools": [],
+      "disallowedTools": null,
+      "model": "inherit",
+      "skills": [],
+      "memory": null,
+      "mcpServers": [],
+      "initialPrompt": null,
+      "maxTurns": 3,
+      "background": null,
+      "effort": null,
+      "permissionMode": null
+    }
+  },
+  "parent": {
+    "tools": [
+      "Agent"
+    ],
+    "allowed_tools": [],
+    "setting_sources": [],
+    "skills": [],
+    "max_turns": 4,
+    "max_budget_usd": 0
+  },
+  "limitations": [
+    "No subagent spawned",
+    "No skills loaded",
+    "No third-party model compatibility verified",
+    "Live use requires approved model, tool policy, environment isolation and event mapping"
+  ]
+}

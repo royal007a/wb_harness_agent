@@ -1,0 +1,15 @@
+{
+  "browser": "151.0.7922.34",
+  "errors": [],
+  "checks": [
+    "demo_label",
+    "nine_children",
+    "success",
+    "artifact_download",
+    "rerun_new_tree",
+    "partial_failure",
+    "event_trace",
+    "reload",
+    "mobile_layout"
+  ]
+}

@@ -51,6 +51,8 @@ flowchart LR
 
 Skill、脚本和受控工具分层见 [Skill 执行边界](SKILL_EXECUTION.md)。已有项目内离线脚本样例，但不代表 Claude SDK 已接入；固定流程的强制门禁仍由平台代码负责。
 
+本地多专项 Child Run 编排与真实 SDK 离线配置探针见 [MULTI_AGENT.md](MULTI_AGENT.md)。固定函数演示可用，原生 Claude Agent Tool 调度仍未启用。
+
 官方 SDK 提供交互会话、自定义工具/Hook 和进程内 MCP 工具；官方 Skills 是包含说明、脚本和资源的版本化能力，并依赖代码执行环境。Adapter 必须固定 SDK/CLI/Skill 版本，Skill 变更视为供应链变更。来源：[Python SDK](https://github.com/anthropics/claude-agent-sdk-python)、[Agent Skills](https://platform.claude.com/docs/en/build-with-claude/skills-guide)。
 
 ### Deep Agents
