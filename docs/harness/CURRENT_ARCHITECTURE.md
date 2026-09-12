@@ -2,7 +2,20 @@
 
 ## 结论
 
-当前仓库处于 **规格评审阶段**，只有治理文档和机器可读任务文件；没有应用代码、运行时、依赖锁、数据库、部署配置或已接入的 Agent 引擎。
+当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析工具和 launchd 部署。尚未接入真实 Agent 引擎、模型、远程沙箱或长期记忆。
+
+```mermaid
+flowchart LR
+  UI[本地浏览器] --> API[FastAPI / 同源边界]
+  API --> SVC[Service / 权限 / 幂等 / Run]
+  SVC --> DB[(SQLite / 资源 / 状态 / 事件 / 产物)]
+  SVC --> W[单 Worker / 固定统计函数]
+  W --> V[数值回算 / 产物验证]
+  V --> DB
+  DB --> UI
+```
+
+服务地址、运行限制、重启语义与当前接口见 [LOCAL_WORKBENCH.md](LOCAL_WORKBENCH.md)。此前规格阶段的治理结构保留如下。
 
 因此，本文只描述可验证的现状。目标能力见 [ARCHITECTURE.md](ARCHITECTURE.md)，不得把目标图当作已实现系统。
 
@@ -13,6 +26,10 @@ harnessagent/
 ├── AGENTS.md
 ├── README.md
 ├── plan.md                      # P2 长期记忆规划（Proposed）
+├── backend/                     # 本地 API / 控制面 / SQLite / 固定工具
+├── frontend/                    # 工作台 / API 说明
+├── tests/                       # 契约 / 故障 / 浏览器测试
+├── deploy/                      # 本机 launchd 配置
 ├── docs/
 │   ├── harness/                 # 当前有效规格
 │   ├── research/                # PDF 阅读与官方资料核验
@@ -58,15 +75,15 @@ flowchart LR
 - 三份 CodeAct/Smolagents PDF 的阅读记录与部分官方文档核验；
 - active/completed/blocked 计划目录与 Evidence 约定。
 
-## 尚未具备
+## 尚未具备（完整目标能力）
 
-- 可执行服务、控制台、Worker 或 SDK；
+- 生产服务、完整控制台、多进程 Worker 或 SDK；
 - 引擎、模型、工具、MCP 或知识系统接入；
-- 数据库 Schema、迁移、队列和对象存储；
+- 生产数据库迁移、独立队列与对象存储；
 - 身份系统、租户隔离和密钥系统；
-- 测试、评测、CI/CD、监控、告警和发布环境。
+- 完整 CI/CD、生产监控、告警和发布环境；本地测试已建立。
 
-## 进入实现前的门槛
+## 真实 Agent 实现门槛（本地切片以 ADR-0009 为准）
 
 1. 产品范围、P0 场景和非目标获批。
 2. 统一 Task/Run、事件、适配器和工具契约通过契约测试并定稿。

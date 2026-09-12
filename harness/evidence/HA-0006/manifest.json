@@ -1,0 +1,25 @@
+{
+  "task_id": "HA-0006",
+  "version": "0.1.0-local",
+  "date": "2026-09-12",
+  "scope": "Local single-user frontend/backend and macOS deployment",
+  "authorization": {
+    "implementation_message": "om_x100b657a7fc2f8a4c291a194abeffda",
+    "deployment_message": "om_x100b657a08607ca4de2f1f1f18e8869"
+  },
+  "environment": {"python": "3.14.6", "node": "22.23.0", "browser": "Chromium 151.0.7922.34", "os": "macOS arm64"},
+  "checks": [
+    {"command": ".venv/bin/python -m pytest -q --junitxml=harness/evidence/HA-0006/test-results.xml", "result": "passed", "tests": 31, "failures": 0, "warnings": 2, "artifact": "test-results.xml"},
+    {"command": ".venv/bin/python tests/browser_smoke.py", "result": "passed", "javascript_errors": 0, "checks": ["sample_upload", "create", "artifacts", "events", "policy", "download", "rerun", "resources", "engines", "reload", "mobile_layout"]},
+    {"command": "node --check frontend/app.js", "result": "passed"},
+    {"command": "git diff --check", "result": "passed"},
+    {"command": ".venv/bin/python -m pip check", "result": "No broken requirements found"},
+    {"command": "plutil -lint deploy/local.macos.plist", "result": "OK"},
+    {"check": "launchd bootstrap and restart", "result": "passed", "label": "local.harnessagent.workbench", "host": "127.0.0.1", "port": 8765},
+    {"check": "GET health, tasks, docs, openapi.json after restart", "result": "HTTP 200"}
+  ],
+  "performance_probe": {"kind": "single local deterministic analysis, not production load test", "rows": 20000, "columns": 5, "input_bytes": 200010, "analysis_ms": 41.0, "expected_first_column_sum": 20000},
+  "screenshots": {"desktop": "workbench-desktop.png", "mobile": "workbench-mobile.png", "note": "Generated locally; binary evidence ignored by Git and reproducible with browser_smoke.py"},
+  "limitations": ["No real model or remote sandbox", "No production authentication or multi-tenancy", "No model checkpoint resume", "No independent L3 human security review", "Two upstream test-client deprecation warnings tracked as TD-014"],
+  "verdict": "Local prototype acceptance passed; full P0 and production gates remain separate"
+}

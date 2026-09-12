@@ -5,10 +5,11 @@ __pycache__/
 node_modules/
 dist/
 coverage/
+.local/
+.pytest_cache/
 
 # Keep structured evidence; omit bulky generated/rendered binaries.
 harness/evidence/**/*.png
 harness/evidence/**/*.pdf
 harness/evidence/**/*.zip
 harness/evidence/**/*.tar.gz
-

@@ -2,7 +2,18 @@
 
 ## 当前地图
 
-当前没有实现代码。有效文件及读取顺序如下：
+当前本地实现采用 ADR-0009 的精简布局，后续目录提案尚未迁移：
+
+- `backend/app.py`：HTTP 传输、同源边界、资源/任务/事件/产物接口；
+- `backend/service.py`：契约校验、权限、幂等、Run 状态、固定工具 Worker；
+- `backend/store.py`：SQLite 事务、事件序列、对象读写；
+- `backend/analysis.py`：受界限约束的 CSV 统计、报告、SVG、manifest；不执行外部代码；
+- `frontend/`：原生浏览器工作台与本地 API 说明；
+- `tests/`：后端契约/故障测试与真实浏览器验收；
+- `deploy/local.macos.plist`：本机 launchd 服务；
+- `harness/init.sh`、`start.sh`、`verify.sh`：初始化、启动、验证。
+
+其余有效文件及读取顺序如下：
 
 | 路径 | 作用 | 状态 |
 |---|---|---|

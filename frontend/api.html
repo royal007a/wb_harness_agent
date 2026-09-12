@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Harness API</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <section class="page">
+      <div class="page-heading">
+        <a href="/">← 返回工作台</a>
+        <h1>Local API · v0.1</h1>
+        <p>
+          服务仅供本机单用户使用。请求模型见
+          <a href="/openapi.json">OpenAPI JSON ↗</a>
+        </p>
+      </div>
+      <article class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>方法</th>
+              <th>路径</th>
+              <th>用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>POST</td>
+              <td>/api/v1/resources?name=data.csv</td>
+              <td>上传 CSV 原始字节，最多 2 MiB</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td>/api/local/tasks</td>
+              <td>
+                简化任务创建：resource_id、objective、可选 timeout_seconds
+              </td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td>/api/v1/tasks</td>
+              <td>严格 Task 契约创建</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td>/api/v1/tasks</td>
+              <td>任务与最新 Run</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td>/api/v1/tasks/{id}</td>
+              <td>不可变任务与全部运行</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td>/api/v1/tasks/{id}/runs</td>
+              <td>新建运行，body: {based_on_run_id, reason}</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td>/api/v1/runs/{id}:cancel</td>
+              <td>幂等取消</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td>/api/v1/runs/{id}/events?after=0</td>
+              <td>JSON 事件游标，每页最多 500 条</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td>/api/v1/runs/{id}/artifacts</td>
+              <td>列出运行产物</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td>/api/v1/artifacts/{id}/content?download=true</td>
+              <td>下载不可变产物</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td>/api/v1/engines</td>
+              <td>引擎可用性</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td>/api/v1/health</td>
+              <td>健康与运行模式</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+      <article class="panel roadmap">
+        <h2>创建一个本地分析</h2>
+        <pre class="policy-block">
+POST /api/local/tasks
+Content-Type: application/json
+Idempotency-Key: a-unique-request-key
+
+{
+  "resource_id": "res_...",
+  "objective": "检查数据质量并汇总数值",
+  "timeout_seconds": 60
+}</pre
+        >
+        <p>
+          Task 与 Run 创建要求
+          Idempotency-Key；相同键和请求重放响应，不同内容返回 409。仅支持
+          prj_local / local_analytics@1 / engine_mock_analytics。
+        </p>
+        <p>
+          目标作为任务记录保存，当前执行固定数值统计；尚未接入真实模型与代码沙箱。
+        </p>
+      </article>
+    </section>
+  </body>
+</html>

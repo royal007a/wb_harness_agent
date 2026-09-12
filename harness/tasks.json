@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-08T15:27:13Z",
+  "generated_at": "2026-09-12T05:52:00Z",
   "tasks": [
+    {
+      "id": "HA-0006",
+      "title": "实现并本地部署前后端工作台",
+      "status": "completed",
+      "risk": "medium",
+      "scope": ["按用户 2026-09-12 授权实现本地单用户前后端", "CSV 固定分析、持久 Task/Run、事件与产物", "取消、重跑、契约/故障测试和 launchd 部署"],
+      "non_goals": ["完整 CodeAct P0 验收", "真实模型、远程沙箱、多租户和长期记忆"],
+      "acceptance": ["浏览器完成 CSV 上传、分析、报告下载与重跑", "持久化、幂等、取消、失败和重启测试通过", "本机 8765 服务可访问，具备启动停止与恢复文档"],
+      "depends_on": [],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0006-local-workbench.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0006/manifest.json", "harness/evidence/HA-0006/test-results.xml"]
+    },
     {
       "id": "HA-0001",
       "title": "评审并冻结 HarnessAgent P0 规格",

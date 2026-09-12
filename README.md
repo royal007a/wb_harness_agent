@@ -1,6 +1,15 @@
-# HarnessAgent Spec
+# HarnessAgent
 
-HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。本仓库目前只建立规格、架构、接口、执行计划和证据规则，不包含业务实现。
+HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。当前包含本地前后端工作台：CSV 上传、固定统计分析、持久 Task/Run、事件、取消/重跑和可验证产物。
+
+本机地址：**http://127.0.0.1:8765**。进入页面选择示例 CSV，即可跑通一次分析。
+
+```sh
+sh harness/init.sh
+sh harness/start.sh
+```
+
+运行 `sh harness/verify.sh` 执行后端验证与前端语法检查。后台部署、停止、恢复、浏览器验收与边界说明见 [本地工作台指南](docs/harness/LOCAL_WORKBENCH.md)。首版执行固定统计，不调用模型；真实 Agent 和长期记忆按路线图逐步接入。
 
 项目目标是用统一任务契约连接不同 Agent 引擎，并提供持久状态、权限控制、工具执行、可观测性和评测能力。各引擎通过可选适配器接入，不要求部署在同一进程，也不允许隐式跨引擎跳转。
 
@@ -37,4 +46,4 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 - `exec-plans/` 保存可审计的执行计划。
 - `harness/evidence/` 保存测试、评测、发布和健康检查证据。
 
-当前 Proposed 的首个真实引擎适配器是 Smolagents CodeAgent，图片理解路由按用户要求指定为 `doubao-seed-2.1-turbo`，两者都必须先通过官方版本核验、能力探针和评审。在规格评审通过前，不引入运行时依赖、不开始实现。
+当前首个真实引擎候选仍是 Smolagents CodeAgent，图片理解候选为 `doubao-seed-2.1-turbo`，均需版本核验和能力探针。本地固定工具切片按 ADR-0009 实施；它不等于完整 CodeAct P0 已验收。

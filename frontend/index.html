@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Harness / Agent 工作台</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/"
+        ><span class="brand-icon">H</span> harness<span class="version"
+          >LOCAL</span
+        ></a
+      >
+      <div class="workspace">
+        <span class="avatar">L</span>
+        <div>Local workspace<small>本地开发工作空间</small></div>
+        <span>⌄</span>
+      </div>
+      <p class="nav-label">WORKSPACE</p>
+      <nav>
+        <button
+          class="nav-item active"
+          data-page="workbench"
+          aria-label="分析工作台"
+        >
+          ◫ <span>分析工作台</span></button
+        ><button class="nav-item" data-page="resources" aria-label="数据资源">
+          ▤ <span>数据资源</span></button
+        ><button class="nav-item" data-page="engines" aria-label="引擎与能力">
+          ◇ <span>引擎与能力</span>
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="online-dot"></span
+        ><span id="connection">正在连接控制面</span
+        ><small>v0.1 · 单用户本地预览</small>
+      </div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div>
+          Workspace <span>/</span> <strong id="breadcrumb">分析工作台</strong>
+        </div>
+        <span class="local-badge">● LOCAL ENVIRONMENT</span>
+      </header>
+      <div id="notice" role="status" aria-live="polite" hidden></div>
+      <section id="page-workbench" class="page">
+        <div class="page-heading">
+          <div class="eyebrow">BUILD WITH EVIDENCE</div>
+          <h1>把分析，变成可追溯的工作。</h1>
+          <p>从一份数据开始。每一次运行，都留下清晰的过程与结果。</p>
+        </div>
+        <div class="metrics">
+          <article>
+            <span>全部任务</span><strong id="count-total">0</strong
+            ><small>持久化分析目标</small>
+          </article>
+          <article>
+            <span>正在执行</span><strong id="count-running">0</strong
+            ><small>排队与运行中的任务</small>
+          </article>
+          <article>
+            <span>已完成</span><strong id="count-success">0</strong
+            ><small>产物已通过验证</small>
+          </article>
+          <article>
+            <span>模型调用</span><strong>0 <i>次</i></strong
+            ><small>固定统计工具 · 无 API 费用</small>
+          </article>
+        </div>
+        <div class="work-grid">
+          <section class="panel composer">
+            <div class="panel-title">
+              <h2>新建分析</h2>
+              <span class="subtle">01 / INPUT</span>
+            </div>
+            <form id="create-form">
+              <label class="field-label"
+                >数据来源 <span>CSV · 最大 2 MiB</span></label
+              >
+              <label class="dropzone" id="dropzone"
+                ><input id="csv-file" type="file" accept=".csv,text/csv" /><span
+                  class="upload-icon"
+                  >↥</span
+                ><strong id="upload-title">选择或拖入 CSV 文件</strong
+                ><small id="upload-subtitle"
+                  >UTF-8 / GB18030 · 最多 20,000 行</small
+                ></label
+              >
+              <div class="source-actions">
+                <button type="button" id="sample" class="text-button">
+                  使用示例销售数据 ↗</button
+                ><a href="/api/local/sample" class="text-button">下载示例</a>
+              </div>
+              <label class="field-label" for="resource-select"
+                >或选择已有资源</label
+              ><select id="resource-select">
+                <option value="">请选择数据资源</option>
+              </select>
+              <label class="field-label" for="objective">分析目标</label
+              ><textarea
+                id="objective"
+                maxlength="2000"
+                required
+                placeholder="例如：检查销售数据的完整性与关键数值概况"
+              >
+检查数据质量，汇总数值字段，生成可追溯报告。</textarea
+              >
+              <div class="engine-select">
+                <span class="engine-logo">◇</span>
+                <div>
+                  <strong>Local Analytics</strong
+                  ><small>固定数据概览 · 无模型调用</small>
+                </div>
+                <span class="tag">就绪</span>
+              </div>
+              <p class="form-hint">
+                本版输出字段统计与完整率；目标作为任务记录保存。
+              </p>
+              <button id="submit" class="primary" type="submit">
+                创建并运行 <span>↗</span>
+              </button>
+              <div class="trust-line">
+                ◈ 本地存储 &nbsp; · &nbsp; 输入只读 &nbsp; · &nbsp; 可复现
+              </div>
+            </form>
+          </section>
+          <section class="panel tasks-panel">
+            <div class="panel-title">
+              <h2>任务记录 <span id="task-count" class="counter">0</span></h2>
+              <select id="filter" aria-label="筛选任务状态">
+                <option value="all">全部状态</option>
+                <option value="succeeded">已完成</option>
+                <option value="running">执行中</option>
+                <option value="failed">失败</option>
+                <option value="cancelled">已取消</option>
+              </select>
+            </div>
+            <div id="task-list" class="task-list"></div>
+          </section>
+        </div>
+        <section class="panel detail-panel">
+          <div id="detail-empty" class="empty">
+            <span>⌁</span>
+            <h3>每一次运行，都有据可查</h3>
+            <p>运行一个分析，或选择上方任务，查看过程、产物与权限。</p>
+          </div>
+          <div id="detail" hidden>
+            <div class="detail-heading">
+              <div>
+                <div class="eyebrow">RUN INSPECTOR</div>
+                <h2 id="detail-title"></h2>
+                <div id="run-meta" class="mono"></div>
+              </div>
+              <div class="run-actions">
+                <select id="run-select" aria-label="选择运行记录"></select
+                ><button id="cancel" class="secondary">取消运行</button
+                ><button id="rerun" class="secondary">重新运行 ↻</button>
+              </div>
+            </div>
+            <div class="tabs" role="tablist">
+              <button role="tab" class="selected" data-tab="overview">
+                分析结果</button
+              ><button role="tab" data-tab="events">
+                执行事件 <span id="event-count">0</span></button
+              ><button role="tab" data-tab="policy">权限与配置</button>
+            </div>
+            <div id="tab-overview" class="tab-content"></div>
+            <div id="tab-events" class="tab-content" hidden></div>
+            <div id="tab-policy" class="tab-content" hidden></div>
+          </div>
+        </section>
+        <footer>
+          HARNESS / 用统一契约连接执行，让每个结果都留下证据。<span
+            >LOCAL FIRST · EVIDENCE DRIVEN</span
+          >
+        </footer>
+      </section>
+      <section id="page-resources" class="page" hidden>
+        <div class="page-heading">
+          <div class="eyebrow">INPUT REGISTRY</div>
+          <h1>数据资源</h1>
+          <p>不可变输入与内容摘要，让每次运行都有相同的起点。</p>
+        </div>
+        <div class="panel" id="resource-table"></div>
+      </section>
+      <section id="page-engines" class="page" hidden>
+        <div class="page-heading">
+          <div class="eyebrow">EXPLICIT ROUTING</div>
+          <h1>引擎与能力</h1>
+          <p>当前可用能力与后续接入计划。运行不会静默切换引擎。</p>
+        </div>
+        <div id="engines" class="engine-grid"></div>
+        <div class="panel roadmap">
+          <h2>后续能力</h2>
+          <p>图片理解：doubao-seed-2.1-turbo，等待端点能力探针。</p>
+          <p>长期记忆：P2 规划，Retain / Recall / Reflect，尚未接入。</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

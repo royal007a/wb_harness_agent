@@ -1,5 +1,7 @@
 # API 规格
 
+当前本地 v0.1 实现范围、JSON 事件轮询和简化表单端点见 [LOCAL_WORKBENCH.md](LOCAL_WORKBENCH.md)。下文为完整目标规格，未实现接口不能据此视为可调用。
+
 > P0 机器契约以 `specs/v1/openapi.yaml` 与 `specs/v1/core-contracts.schema.json` 为准；本文是与其同步维护的叙事说明。两者若漂移，HA-0001 不得冻结。
 
 ## 通用约定

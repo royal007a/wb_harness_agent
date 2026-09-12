@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>local.harnessagent.workbench</string>
+<key>ProgramArguments</key><array><string>/Users/weberzhao/code/ai/harnessagent/.venv/bin/python</string><string>-m</string><string>uvicorn</string><string>backend.app:app</string><string>--host</string><string>127.0.0.1</string><string>--port</string><string>8765</string><string>--workers</string><string>1</string></array>
+<key>WorkingDirectory</key><string>/Users/weberzhao/code/ai/harnessagent</string>
+<key>RunAtLoad</key><true/>
+<key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
+<key>ThrottleInterval</key><integer>10</integer>
+<key>StandardOutPath</key><string>/Users/weberzhao/code/ai/harnessagent/.local/server.stdout.log</string>
+<key>StandardErrorPath</key><string>/Users/weberzhao/code/ai/harnessagent/.local/server.stderr.log</string>
+</dict></plist>
