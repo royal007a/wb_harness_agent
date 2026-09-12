@@ -1,7 +1,37 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-12T05:52:00Z",
+  "generated_at": "2026-09-12T08:16:00Z",
   "tasks": [
+    {
+      "id": "HA-0007",
+      "title": "引擎契约、VM 沙箱与 Skill 脚本验证",
+      "status": "completed",
+      "risk": "high",
+      "scope": ["固定分析器生命周期边界", "Colima 隔离探针和脚本模型 SDK 验证", "本地 Skill 确定性脚本与就绪状态"],
+      "non_goals": ["真实模型效果验收", "启用 Claude 或金融联网抓取", "生产隔离认证"],
+      "acceptance": ["固定分析器回归及伪造事件拒绝", "隔离、取消、超时、SDK 多轮探针通过", "Skill 脚本可重复计算，缺失模型时不启用真实路由"],
+      "depends_on": ["HA-0006"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0007-engine-boundary.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0007/probe.json", "harness/evidence/HA-0007/all-tests.xml", "harness/evidence/HA-0007/browser.json", "harness/evidence/HA-0007/acceptance.md"]
+    },
+    {
+      "id": "HA-0008",
+      "title": "批准模型连接并验证真实 Agent",
+      "status": "blocked",
+      "risk": "high",
+      "scope": ["批准端点的模型能力、费用和取消探针", "单列分组聚合真实适配器准入"],
+      "non_goals": ["静默复用其他项目凭证", "多引擎并行扩展"],
+      "acceptance": ["真实模型输入输出及用量可追溯", "结果独立回算、预算和取消验证后开放显式路由"],
+      "depends_on": ["HA-0007"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0008-model-connection.md",
+      "blocked_reason": "未配置本项目获准使用的模型端点、模型 ID、凭证引用和测试预算",
+      "recovery_condition": "用户指定模型连接配置引用和预算，不在聊天发送密钥正文",
+      "evidence": []
+    },
     {
       "id": "HA-0006",
       "title": "实现并本地部署前后端工作台",

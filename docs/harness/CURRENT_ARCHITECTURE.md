@@ -2,20 +2,22 @@
 
 ## 结论
 
-当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析工具和 launchd 部署。尚未接入真实 Agent 引擎、模型、远程沙箱或长期记忆。
+当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器和 launchd 部署。新增独立的 Colima VM 沙箱、真实 SDK + 脚本模型探针以及离线 Skill CLI；这些尚未加入产品 Run 的真实模型路由。没有接入真实模型、Claude SDK 或长期记忆。
 
 ```mermaid
 flowchart LR
   UI[本地浏览器] --> API[FastAPI / 同源边界]
   API --> SVC[Service / 权限 / 幂等 / Run]
   SVC --> DB[(SQLite / 资源 / 状态 / 事件 / 产物)]
-  SVC --> W[单 Worker / 固定统计函数]
+  SVC --> W[单 Worker / LocalAnalyticsAdapter]
   W --> V[数值回算 / 产物验证]
   V --> DB
   DB --> UI
 ```
 
 服务地址、运行限制、重启语义与当前接口见 [LOCAL_WORKBENCH.md](LOCAL_WORKBENCH.md)。此前规格阶段的治理结构保留如下。
+
+独立开发验证链路：`harness/probe.py → ScriptedProbeModel → Smolagents CodeAgent → SandboxExecutor → Colima VM`，与生产 Run 路由隔离。脚本模型不会被注册为用户可选引擎。探针范围见 [ENGINE_PROBES.md](ENGINE_PROBES.md)，项目 Skill 示例见 [SKILL_EXECUTION.md](SKILL_EXECUTION.md)。
 
 因此，本文只描述可验证的现状。目标能力见 [ARCHITECTURE.md](ARCHITECTURE.md)，不得把目标图当作已实现系统。
 

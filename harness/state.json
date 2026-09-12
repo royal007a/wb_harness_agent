@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "local_preview",
+  "phase": "awaiting_model_configuration",
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0006 completed: local frontend/backend deployed, 31 backend tests and 11 browser checks passed",
-  "last_updated_at": "2026-09-12T05:52:00Z",
-  "next_action": "Use local workbench; continue full adapter contracts and remote sandbox probes as separate work items",
+  "last_checkpoint": "HA-0007 completed: 59 tests, 12 browser checks, Skill validation; local service updated; real model route disabled",
+  "last_updated_at": "2026-09-12T08:16:00Z",
+  "next_action": "HA-0008: obtain approved model endpoint, model ID, credential reference and test budget",
   "release": "0.1.0-local"
 }

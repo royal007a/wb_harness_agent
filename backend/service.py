@@ -2,12 +2,15 @@
 import json
 import threading
 import math
+import copy
 from datetime import datetime
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, FormatChecker
 
-from .analysis import Problem, analyze, artifacts, digest, parse_csv
+from .analysis import Problem, artifacts, digest, parse_csv
+from adapters.contracts import AdapterRequest, validate_event, validate_result
+from adapters.local import LocalAnalyticsAdapter
 from .store import dumps, now, uid
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +41,7 @@ class Service:
         self.store = store
         self.stopping = threading.Event()
         self.thread = None
+        self.adapters = {'engine_mock_analytics': LocalAnalyticsAdapter()}
 
     def resource(self, name, raw):
         if not isinstance(name, str) or not name.lower().endswith('.csv') or len(name) > 180 or '/' in name or '\\' in name:
@@ -109,7 +113,10 @@ class Service:
                'exit_reason': None, 'created_at': now(), 'updated_at': now()}
         validate('run', run)
         db.execute('INSERT INTO runs VALUES(?,?,?)', (run['id'], task['id'], dumps(run)))
-        self.store.event(db, run, 'run.queued', {'engine': run['selected_engine']})
+        descriptor = self.adapters[run['selected_engine']].describe()
+        validate('adapter_description', descriptor)
+        self.store.event(db, run, 'run.queued', {'engine': run['selected_engine'], 'adapter': descriptor,
+                                               'adapter_digest': digest(dumps(descriptor).encode())})
         return run
 
     def rerun(self, task_id, body, key):
@@ -129,7 +136,10 @@ class Service:
             if run['status'] not in TERMINAL:
                 run['status'], run['exit_reason'] = 'cancelled', 'USER_CANCELLED'
                 self.store.event(db, run, 'run.cancelled')
-            return run
+        adapter = self.adapters.get(run['selected_engine'])
+        if adapter and run['status'] == 'cancelled':
+            adapter.cancel_run(run_id)
+        return run
 
     def check(self, run_id):
         run = self.store.get('runs', run_id)
@@ -151,6 +161,7 @@ class Service:
             self.store.event(db, run, 'tool.call.completed', {'tool': tool, 'implementation': 'deterministic'}, step_id)
 
     def execute(self, run_id):
+        adapter = None
         try:
             with self.store.transaction() as db:
                 run = self.store.get('runs', run_id)
@@ -159,15 +170,30 @@ class Service:
                 self.check(run_id)
                 run['status'] = 'running'
                 self.store.event(db, run, 'run.started')
-            if run['effective_limits']['max_turns'] < 3:
-                raise Problem('BUDGET_EXCEEDED', '固定分析需要 3 个工具步骤。')
+            adapter = self.adapters.get(run['selected_engine'])
+            if adapter is None:
+                raise Problem('ENGINE_UNAVAILABLE', '运行绑定引擎不可用。')
+            accepted = self.store.events(run_id)[0]['data'].get('adapter_digest')
+            if accepted and accepted != digest(dumps(adapter.describe()).encode()):
+                raise Problem('ADAPTER_VERSION_MISMATCH', '排队后适配器版本发生变化。')
             task = self.store.get('tasks', run['task_id'])
             resource = self.store.get('resources', task['context']['resource_ids'][0])
             raw = self.store.raw(resource['id'])
             if digest(raw) != resource['sha256']:
                 raise Problem('RESOURCE_INTEGRITY_ERROR', '资源摘要校验失败。')
-            result = analyze(raw, lambda: self.check(run_id))
-            self.stage(run_id, 'resource.inspect')
+            def emit(kind, data):
+                validate_event(kind, data)
+                self.stage(run_id, data['tool'])
+            proposed = adapter.start_run(AdapterRequest(copy.deepcopy(task), copy.deepcopy(run), copy.deepcopy(resource), raw),
+                                         emit, lambda: self.check(run_id))
+            validate_result(proposed)
+            result = proposed.metrics
+            # Cleanup must succeed before a successful terminal result is committed.
+            try:
+                adapter.cleanup(run_id)
+            except Exception:
+                raise Problem('CLEANUP_FAILED', '适配器清理未确认完成。') from None
+            adapter = None
             outputs = artifacts(resource, result, task['objective'], run_id)
             # Independently recompute totals with math.fsum rather than trusting adapter output.
             headers, rows, _ = parse_csv(raw)
@@ -195,11 +221,19 @@ class Service:
                 run['status'], run['exit_reason'] = 'succeeded', 'COMPLETED'
                 self.store.event(db, run, 'run.succeeded', {'usage': {'model_calls': 0, 'cost_minor': 0}})
         except Exception as exc:
+            cleanup_failed = False
+            if adapter is not None:
+                try:
+                    adapter.cleanup(run_id)
+                except Exception:
+                    cleanup_failed = True
             with self.store.transaction() as db:
                 run = self.store.get('runs', run_id)
+                if cleanup_failed:
+                    self.store.event(db, run, 'adapter.cleanup.failed', {'error_code': 'CLEANUP_FAILED'})
                 if run['status'] in TERMINAL:
                     return
-                code = exc.code if isinstance(exc, Problem) else 'INTERNAL_ERROR'
+                code = 'CLEANUP_FAILED' if cleanup_failed else (exc.code if isinstance(exc, Problem) else 'INTERNAL_ERROR')
                 run['status'] = 'expired' if run['status'] == 'queued' and code == 'TIMEOUT' else 'failed'
                 run['exit_reason'] = code
                 self.store.event(db, run, 'run.' + run['status'], {'error_code': code})

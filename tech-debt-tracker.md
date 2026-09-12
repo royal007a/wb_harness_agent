@@ -23,6 +23,8 @@
 | TD-012 | 列表未分页、资源无自动保留清理 | 长期大量数据会降低性能 / P1 | 超过 1000 个任务或用户正式使用前 | mymaccodex；分页与保留期测试 |
 | TD-013 | 单进程恢复为明确失败/重跑，无模型 checkpoint | 不支持中途继续模型状态 / P1 | HA-0002 完整契约验收前 | mymaccodex；checkpoint 契约测试 |
 | TD-014 | 两个依赖弃用警告 | 当前测试通过，升级时需处理 / P2 | 下一次依赖升级 | mymaccodex；Starlette 测试客户端兼容验证 |
+| TD-015 | VM 探针不是生产沙箱；Docker daemon 故障时清理需人工核对，尚无崩溃回收器 | 残留容器/磁盘资源风险 / P0 | 产品真实路由开放前 | mymaccodex；创建超时、daemon 断联、worker 崩溃清理故障注入 |
+| TD-016 | 真实模型、Token/费用与 SDK 网络取消未验证 | 不能开放 CodeAct / P0 | HA-0008 | mymaccodex；获准连接与真实测试证据 |
 
 ## 维护规则
 

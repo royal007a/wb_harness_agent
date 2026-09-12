@@ -12,6 +12,7 @@
 | [ADR-0006](../decisions/ADR-0006-controlled-codeact-p0.md) | Proposed | 以受控 CodeAct 数据分析作为 P0 |
 | [ADR-0007](../decisions/ADR-0007-remote-sandbox-for-model-code.md) | Proposed | 模型生成代码使用远程隔离沙箱 |
 | [ADR-0008](../decisions/ADR-0008-vision-model-route.md) | Proposed | 图片理解路由使用 Doubao-Seed-2.1-Turbo，探针通过后启用 |
+| [ADR-0010](../decisions/ADR-0010-adapter-sandbox-probes.md) | Accepted（开发探针） | Adapter 边界、Colima VM 和明确标记的脚本模型探针；不开放真实路由 |
 
 ## 待决策
 

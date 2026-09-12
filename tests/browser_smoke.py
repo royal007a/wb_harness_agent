@@ -5,7 +5,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / 'harness/evidence/HA-0006'
+OUTPUT = Path(os.environ.get('HARNESS_BROWSER_EVIDENCE', ROOT / 'harness/evidence/HA-0006'))
 OUTPUT.mkdir(parents=True, exist_ok=True)
 with sync_playwright() as p:
     browser = p.chromium.launch()
@@ -36,6 +36,8 @@ with sync_playwright() as p:
     expect(page.locator('#resource-table')).to_contain_text('sales.csv')
     page.get_by_role('button', name='引擎与能力', exact=True).click()
     expect(page.locator('.engine-card')).to_have_count(5)
+    expect(page.locator('.engine-card').filter(has_text='Smolagents')).to_contain_text('待接入')
+    page.screenshot(path=str(OUTPUT / 'engines-desktop.png'), full_page=True)
     page.get_by_role('button', name='分析工作台', exact=True).click()
     page.reload()
     expect(page.locator('.artifact-link')).to_have_count(3)
@@ -45,5 +47,7 @@ with sync_playwright() as p:
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Mobile horizontal overflow'
     page.screenshot(path=str(OUTPUT / 'workbench-mobile.png'), full_page=True)
     assert not errors, errors
-    print(json.dumps({'browser': browser.version, 'errors': errors, 'checks': ['sample_upload', 'create', 'artifacts', 'events', 'policy', 'download', 'rerun', 'resources', 'engines', 'reload', 'mobile_layout']}, ensure_ascii=False))
+    report = {'browser': browser.version, 'errors': errors, 'checks': ['sample_upload', 'create', 'artifacts', 'events', 'policy', 'download', 'rerun', 'resources', 'engines', 'model_route_blocked', 'reload', 'mobile_layout']}
+    (OUTPUT / 'browser.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+    print(json.dumps(report, ensure_ascii=False))
     browser.close()

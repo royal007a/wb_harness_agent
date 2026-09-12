@@ -1,0 +1,18 @@
+{
+  "browser": "151.0.7922.34",
+  "errors": [],
+  "checks": [
+    "sample_upload",
+    "create",
+    "artifacts",
+    "events",
+    "policy",
+    "download",
+    "rerun",
+    "resources",
+    "engines",
+    "model_route_blocked",
+    "reload",
+    "mobile_layout"
+  ]
+}

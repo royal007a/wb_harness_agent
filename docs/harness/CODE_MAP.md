@@ -8,6 +8,11 @@
 - `backend/service.py`：契约校验、权限、幂等、Run 状态、固定工具 Worker；
 - `backend/store.py`：SQLite 事务、事件序列、对象读写；
 - `backend/analysis.py`：受界限约束的 CSV 统计、报告、SVG、manifest；不执行外部代码；
+- `adapters/contracts.py`、`local.py`：固定分析器生命周期与受校验事件/结果边界；
+- `adapters/smolagents_probe.py`：仅测试的真实 SDK 与脚本模型桥接；
+- `backend/sandbox.py`、`sandbox/`：Colima VM 容器执行协议与镜像，不在宿主执行模型代码；
+- `backend/readiness.py`、`harness/probe.py`：只读就绪状态与显式探针命令；
+- `skills/csv-group-analysis/`：项目内 Skill 与确定性 CLI，无自动全局安装；
 - `frontend/`：原生浏览器工作台与本地 API 说明；
 - `tests/`：后端契约/故障测试与真实浏览器验收；
 - `deploy/local.macos.plist`：本机 launchd 服务；

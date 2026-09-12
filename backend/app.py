@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from .analysis import MAX_BYTES, Problem
 from .service import BUNDLE, ROOT, Service, local_task
 from .store import Store, uid
+from .readiness import readiness
 
 
 def create_app(db_path=None, run_worker=True):
@@ -107,10 +108,14 @@ def create_app(db_path=None, run_worker=True):
     def engines():
         return {'items': [
             {'id': 'engine_mock_analytics', 'name': 'Local Analytics', 'status': 'available', 'description': '固定统计 · 真实计算 · 无模型调用'},
-            {'id': 'engine_smolagents_code', 'name': 'Smolagents', 'status': 'planned', 'description': 'CodeAct · 等待远程沙箱探针'},
+            {'id': 'engine_smolagents_code', 'name': 'Smolagents', 'status': 'blocked', 'description': 'CodeAct · 真实模型尚未接入 · SDK/VM 探针状态见 /api/v1/readiness'},
             {'id': 'engine_claude', 'name': 'Claude Agent SDK', 'status': 'planned', 'description': '研报与复杂编排 · P1'},
             {'id': 'engine_deepagents', 'name': 'Deep Agents', 'status': 'planned', 'description': '动态知识与记忆 · P2'},
             {'id': 'engine_pi', 'name': 'Pi', 'status': 'planned', 'description': 'TypeScript 审查 · P2'}]}
+
+    @app.get('/api/v1/readiness')
+    def engine_readiness():
+        return readiness()
 
     @app.get('/api/v1/resources')
     def resources():

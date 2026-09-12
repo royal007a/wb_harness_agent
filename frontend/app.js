@@ -368,10 +368,14 @@ document.querySelectorAll("[data-page]").forEach((b) =>
 guard(async () => {
   await refreshResources();
   const engines = await api("/api/v1/engines");
+  const readiness = await api("/api/v1/readiness");
+  const sandboxStatus = readiness.sandbox_probe.status === "passed_at_probe"
+    ? "隔离/SDK 历史探针通过；真实模型、预算和路由验收待完成"
+    : "隔离/SDK 探针未完成或版本已变化；真实模型未启用";
   $("#engines").innerHTML = engines.items
     .map(
       (e) =>
-        `<article class="engine-card"><span class="status ${e.status === "available" ? "succeeded" : ""}">${e.status === "available" ? "可用" : "规划中"}</span><h2>${esc(e.name)}</h2><p>${esc(e.description)}</p><small class="mono">${esc(e.id)}</small></article>`,
+        `<article class="engine-card"><span class="status ${e.status === "available" ? "succeeded" : ""}">${e.status === "available" ? "可用" : e.status === "blocked" ? "待接入" : "规划中"}</span><h2>${esc(e.name)}</h2><p>${esc(e.id === "engine_smolagents_code" ? sandboxStatus : e.description)}</p><small class="mono">${esc(e.id)}</small></article>`,
     )
     .join("");
   await refresh();

@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "checked_at": "2026-09-12T08:11:39.110284+00:00",
+  "profile_sha256": "9edb54cf50fb4eade7460f1897904b21d9560b875a07f17b1b76fe84717f08e0",
+  "image_id": "sha256:46e5df0f219cbfad3a6d7af973a467488d866fcc8124770513c1b64b84ae3342",
+  "smolagents_version": "1.26.0",
+  "mode": "scripted_model_real_sdk_real_vm",
+  "real_model": false,
+  "tests": {
+    "tests": 23,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "limitations": [
+    "no model provider called",
+    "no natural-language quality evaluation",
+    "no production sandbox certification",
+    "SDK route stays disabled"
+  ]
+}

@@ -8,6 +8,8 @@
 
 当前执行固定统计，不解析自然语言意图；计算行列数、缺失、不同值及数值列最小/最大/均值/合计，产出报告、完整率 SVG 和 analysis-manifest。目标原样作为 Task 意图保存。模型调用和费用均为零。Smolagents、Claude、Deep Agents、Pi、视觉和长期记忆是明确标记的后续能力。
 
+HA-0007 增加 Adapter 生命周期、`GET /api/v1/readiness` 历史探针报告和引擎待接入状态。[VM/SDK 探针](ENGINE_PROBES.md)与[Skill CLI](SKILL_EXECUTION.md)可以单独运行；它们不自动启用产品模型执行，也不改变本页固定统计语义。
+
 ## 启动和停止
 
 ```sh

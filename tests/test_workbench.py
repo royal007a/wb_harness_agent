@@ -121,17 +121,50 @@ def test_cancel_queued(client, app):
     assert app.state.service.store.artifact_list(run_id) == []
 
 
+@pytest.mark.parametrize('fault,expected', [('event', 'ADAPTER_PROTOCOL_ERROR'),
+                                          ('result', 'ADAPTER_PROTOCOL_ERROR'),
+                                          ('version', 'ADAPTER_VERSION_MISMATCH'),
+                                          ('cleanup', 'CLEANUP_FAILED')])
+def test_adapter_boundaries(client, app, monkeypatch, fault, expected):
+    data, _ = submit(client)
+    run_id = data['initial_run']['id']
+    adapter = app.state.service.adapters['engine_mock_analytics']
+    if fault == 'event':
+        monkeypatch.setattr(adapter, 'start_run', lambda req, emit, check: emit('run.succeeded', {}))
+    elif fault == 'result':
+        monkeypatch.setattr(adapter, 'start_run', lambda *args: {'success': True})
+    elif fault == 'version':
+        monkeypatch.setattr(adapter, 'describe', lambda: {'adapter_version': 'changed'})
+    else:
+        def broken_cleanup(run_id):
+            raise RuntimeError('cleanup failure')
+        monkeypatch.setattr(adapter, 'cleanup', broken_cleanup)
+    app.state.service.execute(run_id)
+    run = app.state.service.store.get('runs', run_id)
+    assert run['status'] == 'failed' and run['exit_reason'] == expected
+    assert app.state.service.store.artifact_list(run_id) == []
+
+
+def test_readiness_never_enables_model(client):
+    report = client.get('/api/v1/readiness')
+    assert report.status_code == 200
+    assert report.json()['model_route_enabled'] is False
+    assert report.json()['blocking_items']
+    engines = client.get('/api/v1/engines').json()['items']
+    assert [e for e in engines if e['id'] == 'engine_smolagents_code'][0]['status'] == 'blocked'
+
+
 def test_cancel_running_prevents_publication(client, app, monkeypatch):
     data, _ = submit(client)
     run_id = data['initial_run']['id']
     started, release = threading.Event(), threading.Event()
-    from backend import service
-    original = service.analyze
+    from adapters import local
+    original = local.analyze
     def slow(raw, check):
         started.set()
         assert release.wait(3)
         return original(raw, check)
-    monkeypatch.setattr(service, 'analyze', slow)
+    monkeypatch.setattr(local, 'analyze', slow)
     worker = threading.Thread(target=app.state.service.execute, args=(run_id,))
     worker.start()
     assert started.wait(3)

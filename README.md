@@ -15,6 +15,9 @@ sh harness/start.sh
 
 ## 文档入口
 
+- [Skill/CLI 执行样例与边界](docs/harness/SKILL_EXECUTION.md)
+- [引擎与 VM 探针使用](docs/harness/ENGINE_PROBES.md)
+
 - [P2 长期记忆规划](plan.md)
 - [产品范围](docs/harness/PRODUCT_SCOPE.md)
 - [产品需求](docs/harness/PRD.md)

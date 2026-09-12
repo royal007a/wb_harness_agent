@@ -1,0 +1,2 @@
+# Optional integration dependency; core workbench works without it.
+smolagents==1.26.0

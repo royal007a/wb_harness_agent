@@ -110,7 +110,8 @@ Idempotency-Key: a-unique-request-key
           prj_local / local_analytics@1 / engine_mock_analytics。
         </p>
         <p>
-          目标作为任务记录保存，当前执行固定数值统计；尚未接入真实模型与代码沙箱。
+          目标作为任务记录保存，当前执行固定数值统计；真实模型路由未启用。
+          GET /api/v1/readiness 返回 SDK/VM 历史探针和接入阻塞项，不触发模型或容器运行。
         </p>
       </article>
     </section>
