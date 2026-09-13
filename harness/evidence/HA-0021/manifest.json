@@ -1,0 +1,73 @@
+{
+  "task": "HA-0021",
+  "checked_at": "2026-09-13T13:11:29.675451+00:00",
+  "status": "passed",
+  "scope": "ADR-0020 Gap State for the ADR-0019 deterministic local Replan only",
+  "gap_state": {
+    "source_failure_code": "ARTIFACT_PUBLICATION_FAILED",
+    "required_by": "node_publish",
+    "type": "evidence",
+    "severity": "core",
+    "resolvable_action_ids": [
+      "artifact.publish"
+    ],
+    "created_atomically_with_failure_event": true,
+    "proposal_requires_open_gap": true,
+    "resolved_only_after_bound_recovery_success": true,
+    "try_cancel_and_failed_recovery_leave_open": true
+  },
+  "runtime_capabilities": {
+    "model_calls": 0,
+    "network_calls_by_adapter": 0,
+    "arbitrary_code_calls": 0,
+    "new_failure_kinds": false,
+    "caller_editable_gap": false
+  },
+  "test_summary": {
+    "tests": 163,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 11
+  },
+  "browser_report": {
+    "browser": "chromium",
+    "checks": [
+      "temporary_deployment",
+      "artifact_failure_event_fixture",
+      "replan_proposed",
+      "try_no_run",
+      "confirm_creates_bound_run",
+      "source_terminal_unchanged",
+      "artifacts_published",
+      "checkpoint_verified",
+      "gap_created_and_resolved",
+      "no_reinspect"
+    ],
+    "source_run_id": "run_cf951f3c94f5430697a7d69de887c908",
+    "restored_run_id": "run_c4e3edb9eb964d3da4270935245290a2",
+    "errors": [],
+    "model_calls": 0,
+    "network_calls_by_adapter": 0,
+    "arbitrary_code_calls": 0
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "edab85bd2d13f0fe099928cb4aa3546ba90723bb20b8b9bf44e65c5d0102bcc9"
+    },
+    "browser-replan-gap.json": {
+      "sha256": "6330a0a3166eabb9322b8b48ed225642aa3f181e6481e6d2fdb95d43baa7ec19"
+    },
+    "replan-gap-try-ready.png": {
+      "sha256": "58566800ea65c21bf998fe200ebb146419b1247241fea73ae24aa583a074c4ee"
+    },
+    "replan-gap-confirm-ready.png": {
+      "sha256": "4722f39acff25ccdf75fa8288686b1731f639f15633ddfc94adced6b23c495d5"
+    },
+    "replan-gap-restored-workbench.png": {
+      "sha256": "97e7e261a6385c6ca3e8f8b783da34d6acb05144fd5f992275f34bb65575ef13"
+    },
+    "acceptance.md": {
+      "sha256": "66fd6c5fefd1890d328cf4ae1c2ae8d001cd740b5b01f5934e3eab6cf5d0c2ee"
+    }
+  }
+}

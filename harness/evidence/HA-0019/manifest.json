@@ -1,0 +1,115 @@
+{
+  "task": "HA-0019",
+  "checked_at": "2026-09-13T12:31:25.021336+00:00",
+  "status": "passed",
+  "scope": "ADR-0018 constrained fixed analytics Product checkpoint/restore only",
+  "source_run_statuses": [
+    "failed",
+    "expired"
+  ],
+  "forbidden_source_run_statuses": [
+    "queued",
+    "running",
+    "cancelled",
+    "succeeded"
+  ],
+  "runtime_capabilities": {
+    "checkpoint_boundary": "after_resource_inspect",
+    "same_task_only": true,
+    "dynamic_replan_enabled": false,
+    "model_calls": 0,
+    "network_calls_by_adapter": 0,
+    "arbitrary_code_enabled": false
+  },
+  "binding_checks": [
+    "checkpoint",
+    "state",
+    "source_run",
+    "Task",
+    "resource",
+    "adapter",
+    "effective_permissions",
+    "source_effective_limits",
+    "remaining_limits"
+  ],
+  "test_summary": {
+    "tests": 153,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 11
+  },
+  "browser_report": {
+    "browser": "chromium",
+    "checks": [
+      "temporary_deployment",
+      "checkpoint_visible_after_fixture_failure",
+      "restore_button",
+      "new_run_created",
+      "source_terminal_unchanged",
+      "artifacts_published",
+      "no_reinspect"
+    ],
+    "source_run_id": "run_fdc84213e6c14d5aa9ceb94031cbe5a2",
+    "restored_run_id": "run_3767cc2f7dae426eb50aa090e25a038f",
+    "errors": [],
+    "model_calls": 0,
+    "network_calls_by_adapter": 0
+  },
+  "adapter_descriptor": {
+    "adapter_id": "local_analytics",
+    "adapter_version": "1.1.0",
+    "protocol_version": "1.0.0",
+    "engine": "engine_mock_analytics",
+    "capabilities": {
+      "actions.tool_call": true,
+      "artifacts.files": true,
+      "output.structured": true,
+      "control.cancel": {
+        "supported": true,
+        "granularity": "column_checkpoint"
+      },
+      "state.checkpoint": {
+        "supported": true,
+        "format": "local_analytics_checkpoint@1",
+        "boundary": "after_resource_inspect",
+        "max_per_run": 1
+      },
+      "state.restore": {
+        "supported": true,
+        "source_statuses": [
+          "failed",
+          "expired"
+        ],
+        "cross_task": false,
+        "plan_changes": false
+      },
+      "actions.code": false,
+      "agents.managed": false
+    }
+  },
+  "offline_dynamic_replan_admission": {
+    "adapter_id": "local_analytics",
+    "adapter_version": "1.1.0",
+    "engine": "engine_mock_analytics",
+    "status": "eligible_for_runtime_probe",
+    "missing_capabilities": [],
+    "runtime_enabled": false
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "6adadddb0a60d9cb9f76491998f516fcca5f26ddb7936496c538d43ae8980df7"
+    },
+    "browser-checkpoint-restore.json": {
+      "sha256": "0812c2a39e7250ac5ebab797b23ba13850504aa549fae2c6e3d4bd8e81e666d2"
+    },
+    "checkpoint-restore-eligible.png": {
+      "sha256": "4e0fd14ee3e5383456dca8c55d020bb542eb3d96d8f64c31cfbc988538edc83d"
+    },
+    "checkpoint-restore-workbench.png": {
+      "sha256": "29a91b235ce6de9a3cccdfa8add2a742a822b250d89135d309ba436fd8761a14"
+    },
+    "acceptance.md": {
+      "sha256": "d33b32e81f7b9930fbd2d3ed3fa6b572e3f68e1c394fd642f3f38d0db33b3315"
+    }
+  }
+}

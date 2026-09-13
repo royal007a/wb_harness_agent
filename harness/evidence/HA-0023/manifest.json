@@ -1,0 +1,44 @@
+{
+  "task": "HA-0023",
+  "checked_at": "2026-09-13T15:09:21.692592+00:00",
+  "status": "passed",
+  "scope": "P0 CodeAct development-pilot activation decision brief only",
+  "source_facts": {
+    "p0_requires_four_fixture_categories": true,
+    "ha_0008_blocked": true,
+    "sdk_vm_probe_mode": "scripted_model_real_sdk_real_vm",
+    "sdk_vm_probe_real_model": false,
+    "local_markdown_files_checked": 97
+  },
+  "runtime_inventory": {
+    "adapters": [
+      "engine_mock_analytics"
+    ],
+    "model_calls_enabled": false,
+    "engines": {
+      "engine_mock_analytics": "available",
+      "engine_local_research_demo": "available",
+      "engine_smolagents_code": "blocked",
+      "engine_claude": "planned",
+      "engine_deepagents": "planned",
+      "engine_pi": "planned"
+    },
+    "model_calls": 0,
+    "network_calls_by_adapter": 0,
+    "arbitrary_code_calls": 0
+  },
+  "test_summary": {
+    "tests": 163,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 11
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "8e5516d5f5a7036f7ffe508c45d5024bddeca5a8fd9b37edd9e778392d47c0cc"
+    },
+    "acceptance.md": {
+      "sha256": "c3ebf79310fb9394804e62234b3b64bd3dc38cd1006ef756704a20272045906c"
+    }
+  }
+}

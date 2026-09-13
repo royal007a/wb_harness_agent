@@ -1,0 +1,39 @@
+{
+  "task": "HA-0015",
+  "checked_at": "2026-09-13T11:45:13.070830+00:00",
+  "status": "passed",
+  "scope": "offline execution-control contract and synthetic evaluation only",
+  "model_calls_by_harness": 0,
+  "product_run_created_or_restored": false,
+  "runtime_replan_api_exposed": false,
+  "test_summary": {
+    "tests": 141,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "fixture": {
+    "version": "execution-control-evaluation@1",
+    "classification": "synthetic_deidentified",
+    "case_count": 13,
+    "sha256": "63ad49787e612e58e51d8d46c7472126a3b5ecf1226f8ee7b2b1d697d3631b3a"
+  },
+  "contract": {
+    "sha256": "35a72d896526e969b852dd105976f547095cf6d0682e8b36074ecfd37a2cd4bc"
+  },
+  "reducer": {
+    "sha256": "3634b8ecda26143937eb7581b5d9cbd2c667bc99a9e4eb2b6632ee60347ebbe9",
+    "runtime_imports": false
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "e80f27c0f234a9a9d9dff5cda99a755038771f2b813c4b107ef76e570e87e337"
+    },
+    "evaluation-results.json": {
+      "sha256": "f5f37b573a9b02e274ef8919e596ea9aa6e29114861ed71de2473f391068d97f"
+    },
+    "acceptance.md": {
+      "sha256": "04f66d47526248d60e33736bc83bb69baf3bd12389848404147a02280ab297a2"
+    }
+  }
+}

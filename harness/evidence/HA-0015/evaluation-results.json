@@ -1,0 +1,21 @@
+{
+  "evaluation_version": "execution-control-evaluation@1",
+  "classification": "synthetic_deidentified",
+  "case_count": 13,
+  "passed_case_ids": [
+    "finish_with_verified_evidence",
+    "continue_registered_action",
+    "clarify_core_gap",
+    "retry_transient_idempotent_failure",
+    "replan_invalidated_assumption",
+    "interrupt_when_no_safe_action",
+    "invalid_dependency_propagates",
+    "dirty_dependency_propagates",
+    "try_rejects_current_local_adapter",
+    "try_rejects_expanded_permissions_and_budget",
+    "try_accepts_compatible_recovery",
+    "tcc_try_confirm",
+    "tcc_cancel_is_independent"
+  ],
+  "failed_case_ids": []
+}

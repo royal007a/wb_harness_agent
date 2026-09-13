@@ -1,0 +1,20 @@
+{
+  "browser": "chromium",
+  "checks": [
+    "temporary_deployment",
+    "artifact_failure_event_fixture",
+    "replan_proposed",
+    "try_no_run",
+    "confirm_creates_bound_run",
+    "source_terminal_unchanged",
+    "artifacts_published",
+    "checkpoint_verified",
+    "no_reinspect"
+  ],
+  "source_run_id": "run_98995467cb4946e6be3f50780dd9a412",
+  "restored_run_id": "run_feb36ca1f79543b2bd0fb507196c9ed3",
+  "errors": [],
+  "model_calls": 0,
+  "network_calls_by_adapter": 0,
+  "arbitrary_code_calls": 0
+}

@@ -1,0 +1,59 @@
+{
+  "task": "HA-0018",
+  "checked_at": "2026-09-13T12:02:42.782614+00:00",
+  "status": "passed",
+  "scope": "isolated deterministic checkpoint/restore probe only",
+  "model_calls_by_harness": 0,
+  "tool_calls_by_harness": 0,
+  "network_calls_by_harness": 0,
+  "product_run_created_or_restored": false,
+  "runtime_route_registered": false,
+  "test_summary": {
+    "tests": 143,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "probe_report": {
+    "mode": "isolated_deterministic_checkpoint_restore_probe",
+    "adapter_admission": {
+      "adapter_id": "checkpoint_probe",
+      "adapter_version": "0.1.0",
+      "engine": "engine_checkpoint_probe",
+      "status": "eligible_for_runtime_probe",
+      "missing_capabilities": [],
+      "runtime_enabled": false
+    },
+    "replan_statuses": [
+      "proposed",
+      "trying",
+      "awaiting_confirmation",
+      "confirmed"
+    ],
+    "restored_next_node_id": "node_publish",
+    "restored_completed_node_ids": [
+      "node_inspect"
+    ],
+    "model_calls": 0,
+    "tool_calls": 0,
+    "network_calls": 0,
+    "product_run_created_or_restored": false,
+    "runtime_route_registered": false
+  },
+  "rejected_tampered_binding_fields": [
+    "checkpoint_digest",
+    "state_digest",
+    "adapter_digest",
+    "resource_digest",
+    "effective_permissions_digest",
+    "remaining_limits_digest"
+  ],
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "1e52aff3189cf9ab0ad8e779fe0b6540209ce7ecab8be8a3fa8a458656055a72"
+    },
+    "acceptance.md": {
+      "sha256": "9ac1849ced9adf352f0fa3bee0b838b84c9033650af43cf5b48dd47b2c454c20"
+    }
+  }
+}

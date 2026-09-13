@@ -1,0 +1,15 @@
+{
+  "browser": "151.0.7922.34",
+  "errors": [],
+  "checks": [
+    "zero_call_runtime",
+    "provider_profile",
+    "model_profile",
+    "agent_profile",
+    "session",
+    "post_sse",
+    "persistent_history",
+    "abort_ui",
+    "mobile_layout"
+  ]
+}

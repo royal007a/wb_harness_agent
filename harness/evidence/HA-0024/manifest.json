@@ -1,0 +1,40 @@
+{
+  "task_id": "HA-0024",
+  "generated_at": "2026-09-13T15:12:23.020341Z",
+  "status": "passed",
+  "scope": "Local Agent Lab configuration/session/POST-SSE preparation",
+  "checks": {
+    "agent_lab_tests": "3 passed, 1 warning in 0.79s",
+    "frontend_syntax": "passed",
+    "static_openapi_yaml": "ok",
+    "task_registry_schema": "passed",
+    "local_markdown_links_checked": 110,
+    "browser_checks": [
+      "zero_call_runtime",
+      "provider_profile",
+      "model_profile",
+      "agent_profile",
+      "session",
+      "post_sse",
+      "persistent_history",
+      "abort_ui",
+      "mobile_layout"
+    ]
+  },
+  "runtime_assertions": {
+    "model_calls": 0,
+    "provider_calls": 0,
+    "network_calls": 0,
+    "tool_calls": 0,
+    "credential_fields_accepted": false,
+    "product_task_run_mutated": false
+  },
+  "not_covered": [
+    "real provider connectivity",
+    "credentials or credential references",
+    "model/SDK invocation",
+    "tool/MCP execution",
+    "RAG or long-term memory",
+    "production identity or multi-tenant isolation"
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "task": "HA-0020",
+  "checked_at": "2026-09-13T13:00:27.525034+00:00",
+  "status": "passed",
+  "scope": "ADR-0019 deterministic local analytics Replan TCC only",
+  "admission": {
+    "source_failure_code": "ARTIFACT_PUBLICATION_FAILED",
+    "source_statuses": [
+      "failed"
+    ],
+    "candidate_plan_nodes": [
+      "checkpoint.verify",
+      "artifact.publish",
+      "run.final_answer"
+    ],
+    "caller_plan_or_goal_input": false
+  },
+  "tcc": {
+    "try_creates_product_run": false,
+    "confirm_creates_one_bound_product_run": true,
+    "cancel_creates_product_run": false,
+    "confirm_compare_and_swap": [
+      "candidate_plan",
+      "checkpoint",
+      "Task",
+      "resource",
+      "adapter",
+      "effective_permissions",
+      "remaining_limits"
+    ],
+    "post_try_drift_expires_confirmation": true
+  },
+  "runtime_capabilities": {
+    "model_calls": 0,
+    "network_calls_by_adapter": 0,
+    "arbitrary_code_calls": 0,
+    "cross_task_or_engine_restore": false,
+    "resource_reinspect": false
+  },
+  "test_summary": {
+    "tests": 162,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 11
+  },
+  "browser_report": {
+    "browser": "chromium",
+    "checks": [
+      "temporary_deployment",
+      "artifact_failure_event_fixture",
+      "replan_proposed",
+      "try_no_run",
+      "confirm_creates_bound_run",
+      "source_terminal_unchanged",
+      "artifacts_published",
+      "checkpoint_verified",
+      "no_reinspect"
+    ],
+    "source_run_id": "run_98995467cb4946e6be3f50780dd9a412",
+    "restored_run_id": "run_feb36ca1f79543b2bd0fb507196c9ed3",
+    "errors": [],
+    "model_calls": 0,
+    "network_calls_by_adapter": 0,
+    "arbitrary_code_calls": 0
+  },
+  "adapter_descriptor": {
+    "adapter_id": "local_analytics",
+    "adapter_version": "1.1.0",
+    "protocol_version": "1.0.0",
+    "engine": "engine_mock_analytics",
+    "capabilities": {
+      "actions.tool_call": true,
+      "artifacts.files": true,
+      "output.structured": true,
+      "control.cancel": {
+        "supported": true,
+        "granularity": "column_checkpoint"
+      },
+      "state.checkpoint": {
+        "supported": true,
+        "format": "local_analytics_checkpoint@1",
+        "boundary": "after_resource_inspect",
+        "max_per_run": 1
+      },
+      "state.restore": {
+        "supported": true,
+        "source_statuses": [
+          "failed",
+          "expired"
+        ],
+        "cross_task": false,
+        "plan_changes": false
+      },
+      "actions.code": false,
+      "agents.managed": false
+    }
+  },
+  "offline_dynamic_replan_admission": {
+    "adapter_id": "local_analytics",
+    "adapter_version": "1.1.0",
+    "engine": "engine_mock_analytics",
+    "status": "eligible_for_runtime_probe",
+    "missing_capabilities": [],
+    "runtime_enabled": false
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "d60ca7cd81372b4678e54bf15a13b5bad05cc82ab13a510df0a600d62541ef40"
+    },
+    "browser-replan-tcc.json": {
+      "sha256": "95806e6b6287a4f37348870858c317329ba5ce27a2a95e8ff89cd6bb15d10b1a"
+    },
+    "replan-try-ready.png": {
+      "sha256": "0c345b459ceaa79a30d935193a86ccc04104fb14d598fe10cfbbecb0157293fe"
+    },
+    "replan-confirm-ready.png": {
+      "sha256": "e1ed1a040b60606d81236d5f238f155eea05e359c0b91379ec8c365de7d528e2"
+    },
+    "replan-restored-workbench.png": {
+      "sha256": "0deb0cdd924943a7d5fed1647f06f1250b6df48ab5467b05cefdd2529a8d9589"
+    },
+    "acceptance.md": {
+      "sha256": "46ab46640fa3f653df7dbeae0cca66fc24f7afd0a94c95cd83e9dedf72ec03dd"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "browser": "chromium",
+  "checks": [
+    "temporary_deployment",
+    "checkpoint_visible_after_fixture_failure",
+    "restore_button",
+    "new_run_created",
+    "source_terminal_unchanged",
+    "artifacts_published",
+    "no_reinspect"
+  ],
+  "source_run_id": "run_fdc84213e6c14d5aa9ceb94031cbe5a2",
+  "restored_run_id": "run_3767cc2f7dae426eb50aa090e25a038f",
+  "errors": [],
+  "model_calls": 0,
+  "network_calls_by_adapter": 0
+}

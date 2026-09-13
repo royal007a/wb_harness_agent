@@ -1,0 +1,35 @@
+{
+  "task": "HA-0017",
+  "checked_at": "2026-09-13T11:55:37.864225+00:00",
+  "status": "passed",
+  "scope": "offline descriptor admission only",
+  "model_calls_by_harness": 0,
+  "adapter_probe_executed": false,
+  "product_run_created_or_restored": false,
+  "runtime_replan_api_exposed": false,
+  "test_summary": {
+    "tests": 142,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "local_adapter_admission": {
+    "adapter_id": "local_analytics",
+    "adapter_version": "1.0.0",
+    "engine": "engine_mock_analytics",
+    "status": "ineligible",
+    "missing_capabilities": [
+      "state.checkpoint",
+      "state.restore"
+    ],
+    "runtime_enabled": false
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "4a2ee8fa2b42b8fb0c0036c08242db45baf1780701c8040b66cbdbd1193f65e1"
+    },
+    "acceptance.md": {
+      "sha256": "0a21a92f9afc057ed9a0596884de0e2d5bf2d7acc1c6f4a6515e32a254fbc2de"
+    }
+  }
+}

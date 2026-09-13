@@ -1,0 +1,37 @@
+{
+  "task": "HA-0016",
+  "checked_at": "2026-09-13T11:52:09.689761+00:00",
+  "status": "passed",
+  "scope": "offline execution-control contract hardening only",
+  "model_calls_by_harness": 0,
+  "product_run_created_or_restored": false,
+  "runtime_replan_api_exposed": false,
+  "test_summary": {
+    "tests": 141,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "fixture": {
+    "sha256": "63ad49787e612e58e51d8d46c7472126a3b5ecf1226f8ee7b2b1d697d3631b3a",
+    "case_count": 13,
+    "classification": "synthetic_deidentified"
+  },
+  "contract_sha256": "7fca554866d0c1562277a0700932cedfe69e4058991930756321b3bb40cfd3ae",
+  "rejected_contract_states": [
+    "supported_claim_without_evidence",
+    "restorable_checkpoint_without_restore",
+    "confirmed_replan_without_binding"
+  ],
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "965de6ad2127fc27b64804034cf7457a1820d0460246cc9059679a5458db7a1c"
+    },
+    "evaluation-results.json": {
+      "sha256": "f5f37b573a9b02e274ef8919e596ea9aa6e29114861ed71de2473f391068d97f"
+    },
+    "acceptance.md": {
+      "sha256": "31e3b45f9dc8f071d5d606361a6d2f65dd26ee866920a40cd572b5ed18502e5a"
+    }
+  }
+}

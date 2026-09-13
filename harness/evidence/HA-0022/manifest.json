@@ -1,0 +1,54 @@
+{
+  "task": "HA-0022",
+  "checked_at": "2026-09-13T15:09:21.373674+00:00",
+  "status": "passed",
+  "scope": "Plan / TAO / State / Replan capability coverage audit only",
+  "coverage": {
+    "matrix_markers": [
+      "图谱对应与能力覆盖",
+      "固定选择",
+      "Action State",
+      "Gap State",
+      "离线合同",
+      "TD-023"
+    ],
+    "technical_debt_markers": [
+      "HA-0014 已完成",
+      "ADR-0019/0020",
+      "TD-023",
+      "动态 Agent Loop"
+    ],
+    "local_markdown_files_checked": 97
+  },
+  "runtime_inventory": {
+    "adapters": [
+      "engine_mock_analytics"
+    ],
+    "model_calls_enabled": false,
+    "engines": {
+      "engine_mock_analytics": "available",
+      "engine_local_research_demo": "available",
+      "engine_smolagents_code": "blocked",
+      "engine_claude": "planned",
+      "engine_deepagents": "planned",
+      "engine_pi": "planned"
+    },
+    "model_calls": 0,
+    "network_calls_by_adapter": 0,
+    "arbitrary_code_calls": 0
+  },
+  "test_summary": {
+    "tests": 163,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 11
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "28e96c5f0779a7ba4e767eff977e93f0cffce624ee12cef45df974ae5fe8aa1e"
+    },
+    "acceptance.md": {
+      "sha256": "805272f26b10f2d70756eb2c840b1afa7f9e85b433e463985d1e485520b2ea22"
+    }
+  }
+}
