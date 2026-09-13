@@ -16,6 +16,8 @@
 | [ADR-0011](../decisions/ADR-0011-local-child-run-orchestration.md) | Accepted（本地演示） | 一层 Child Run 扇出、最多 3 并发、固定资料、失败/取消/预算/恢复 |
 | [ADR-0012](../decisions/ADR-0012-baidu-netdisk-oauth-connector.md) | Accepted（本地 OAuth 准备） | 官方 OAuth 授权码、Keychain 凭证、无密 SQLite 审计；不爬取分享链接 |
 | [ADR-0013](../decisions/ADR-0013-baidu-netdisk-local-configuration-helper.md) | Accepted（本机准备） | TTY 无回显配置助手将 Secret 写入 Keychain；不通过聊天/文件传递凭证 |
+| [ADR-0015](../decisions/ADR-0015-local-deterministic-intent-preflight.md) | Accepted（本地受限实现） | 只识别 CSV 分析的无模型 Intent Contract、缺槽澄清与显式提交门禁 |
+| [ADR-0016](../decisions/ADR-0016-intent-model-evaluation-gate.md) | Proposed | 模型化意图路由先通过合成去标识离线评测与影子门禁 |
 
 ## 待决策
 

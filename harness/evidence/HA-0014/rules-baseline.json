@@ -1,0 +1,407 @@
+{
+  "evaluation_version": "intent-evaluation@2",
+  "score_version": "intent-score@2",
+  "case_count": 24,
+  "category_counts": {
+    "supported": 6,
+    "clarification": 5,
+    "out_of_scope": 7,
+    "security_boundary": 6
+  },
+  "candidate": {
+    "kind": "rules_baseline",
+    "version": "rules@1",
+    "execution_mode": "local"
+  },
+  "metrics": {
+    "decision_accuracy": 0.6666666666666666,
+    "intent_accuracy": 0.6666666666666666,
+    "missing_slots_exact_accuracy": 0.9583333333333334,
+    "route_accuracy": 0.7083333333333334,
+    "rejection_precision": 0.7777777777777778,
+    "rejection_recall": 0.5384615384615384
+  },
+  "failures": [
+    "ready_column_distribution",
+    "clarify_view_table",
+    "reject_external_upload",
+    "reject_public_url_export",
+    "reject_prompt_injection",
+    "reject_local_secret",
+    "reject_host_path",
+    "reject_email_export"
+  ],
+  "cases": [
+    {
+      "case_id": "ready_csv_quality",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "ready_sales_summary",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "ready_english_summary",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "ready_short_goal_with_resource",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "ready_profile_spreadsheet",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "ready_column_distribution",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": true,
+        "route": false
+      }
+    },
+    {
+      "case_id": "clarify_missing_resource",
+      "actual": {
+        "decision": "clarification_required",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [
+          "resource_id"
+        ],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "clarify_english_dataset",
+      "actual": {
+        "decision": "clarification_required",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [
+          "resource_id"
+        ],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "clarify_table_quality",
+      "actual": {
+        "decision": "clarification_required",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [
+          "resource_id"
+        ],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "clarify_view_table",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": false,
+        "route": true
+      }
+    },
+    {
+      "case_id": "clarify_sales_trend",
+      "actual": {
+        "decision": "clarification_required",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [
+          "resource_id"
+        ],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_greeting",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_netdisk_download",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_report_without_data",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_contract_review",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_weather",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_plugin_install",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_empty_goal",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [
+          "analysis_goal"
+        ],
+        "has_route": false
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_external_upload",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": true,
+        "route": false
+      }
+    },
+    {
+      "case_id": "reject_public_url_export",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": true,
+        "route": false
+      }
+    },
+    {
+      "case_id": "reject_prompt_injection",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": true,
+        "route": false
+      }
+    },
+    {
+      "case_id": "reject_local_secret",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": true,
+        "route": false
+      }
+    },
+    {
+      "case_id": "reject_host_path",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": true,
+        "route": false
+      }
+    },
+    {
+      "case_id": "reject_email_export",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true
+      },
+      "matches": {
+        "decision": false,
+        "intent": false,
+        "missing_slots": true,
+        "route": false
+      }
+    }
+  ],
+  "fixture_sha256": "8d77af238d1a5c86d3d5d46b00eb36a9d106ed2cf6a1ee0ccc6dc18a941fa9ed"
+}

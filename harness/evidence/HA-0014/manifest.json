@@ -1,0 +1,51 @@
+{
+  "task": "HA-0014",
+  "checked_at": "2026-09-13T10:15:35.218809+00:00",
+  "status": "passed",
+  "scope": "synthetic deidentified offline and shadow evaluation preparation only",
+  "model_calls_by_harness": 0,
+  "production_data_accessed": false,
+  "rules_baseline_is_model_candidate": false,
+  "fixture": {
+    "version": "intent-evaluation@2",
+    "sha256": "8d77af238d1a5c86d3d5d46b00eb36a9d106ed2cf6a1ee0ccc6dc18a941fa9ed",
+    "case_count": 24,
+    "classification": "synthetic_deidentified"
+  },
+  "policy_version": "intent-evaluation-policy@1",
+  "test_summary": {
+    "tests": 135,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "baseline_metrics": {
+    "decision_accuracy": 0.6666666666666666,
+    "intent_accuracy": 0.6666666666666666,
+    "missing_slots_exact_accuracy": 0.9583333333333334,
+    "route_accuracy": 0.7083333333333334,
+    "rejection_precision": 0.7777777777777778,
+    "rejection_recall": 0.5384615384615384
+  },
+  "baseline_gap_case_ids": [
+    "clarify_view_table",
+    "ready_column_distribution",
+    "reject_email_export",
+    "reject_external_upload",
+    "reject_host_path",
+    "reject_local_secret",
+    "reject_prompt_injection",
+    "reject_public_url_export"
+  ],
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "3ceea71e378fdcac3fcf08768e688b8f820010aa4114f43002b46f24bf3750ce"
+    },
+    "rules-baseline.json": {
+      "sha256": "d7b39eb61ff4589d2953893c274180ba9bbb9675dc5652a2928c4db25fe58ed8"
+    },
+    "acceptance.md": {
+      "sha256": "b3afce519df239e088dd59184c97f6006d22190baff98de246ee7b7df28deb8d"
+    }
+  }
+}

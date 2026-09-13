@@ -22,6 +22,7 @@ sh harness/start.sh
 - [多专项编排架构与 API](docs/harness/MULTI_AGENT.md)
 - [百度网盘 OAuth 连接器](docs/harness/BAIDU_NETDISK_CONNECTOR.md)
 - [本地意图契约与规则路由](docs/harness/INTENT_ROUTING.md)
+- [模型化意图路由的离线评测与影子门禁](docs/harness/INTENT_MODEL_EVALUATION.md)
 
 - [P2 长期记忆规划](plan.md)
 - [产品范围](docs/harness/PRODUCT_SCOPE.md)

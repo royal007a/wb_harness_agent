@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/intent-evaluation.schema.json",
+  "title": "Intent Model Evaluation Contracts",
+  "$defs": {
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "intent_id", "missing_slots", "has_route"],
+      "properties": {
+        "decision": {"enum": ["ready", "clarification_required", "rejected"]},
+        "intent_id": {"type": ["string", "null"], "maxLength": 80},
+        "missing_slots": {
+          "type": "array",
+          "items": {"enum": ["analysis_goal", "resource_id"]},
+          "uniqueItems": true
+        },
+        "has_route": {"type": "boolean"}
+      }
+    },
+    "fixture_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "request", "expected"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,79}$"},
+        "category": {"enum": ["supported", "clarification", "out_of_scope", "security_boundary"]},
+        "request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["objective", "has_resource"],
+          "properties": {
+            "objective": {"type": "string", "maxLength": 2000},
+            "has_resource": {"type": "boolean"}
+          }
+        },
+        "expected": {"$ref": "#/$defs/expected"}
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_version", "dataset", "cases"],
+      "properties": {
+        "fixture_version": {"const": "intent-evaluation@2"},
+        "dataset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "purpose", "classification", "provenance", "contains_production_user_content", "contains_personal_data", "contains_secrets"],
+          "properties": {
+            "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{2,79}$"},
+            "purpose": {"type": "string", "minLength": 1, "maxLength": 240},
+            "classification": {"const": "synthetic_deidentified"},
+            "provenance": {"const": "hand_authored"},
+            "contains_production_user_content": {"const": false},
+            "contains_personal_data": {"const": false},
+            "contains_secrets": {"const": false}
+          }
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/fixture_case"}
+        }
+      }
+    },
+    "candidate_prediction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "decision", "intent_id", "missing_slots", "has_route"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,79}$"},
+        "decision": {"enum": ["ready", "clarification_required", "rejected"]},
+        "intent_id": {"type": ["string", "null"], "maxLength": 80},
+        "missing_slots": {
+          "type": "array",
+          "items": {"enum": ["analysis_goal", "resource_id"]},
+          "uniqueItems": true
+        },
+        "has_route": {"type": "boolean"}
+      }
+    },
+    "candidate_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_contract_version", "fixture_sha256", "candidate", "execution", "predictions"],
+      "properties": {
+        "candidate_contract_version": {"const": "intent-shadow-candidate@1"},
+        "fixture_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "candidate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "execution_mode", "provider_ref", "model_ref"],
+          "properties": {
+            "kind": {"const": "model_shadow"},
+            "execution_mode": {"const": "shadow"},
+            "provider_ref": {"type": "string", "pattern": "^provider:[a-z][a-z0-9_-]{0,63}$"},
+            "model_ref": {"type": "string", "pattern": "^model:[A-Za-z0-9._/-]{1,120}$"}
+          }
+        },
+        "execution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["input_classification", "prompt_template_sha256", "tool_call_count", "model_call_count"],
+          "properties": {
+            "input_classification": {"const": "synthetic_deidentified"},
+            "prompt_template_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "tool_call_count": {"const": 0},
+            "model_call_count": {"type": "integer", "minimum": 1}
+          }
+        },
+        "predictions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/candidate_prediction"}
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy_version", "fixture_version", "minimum_case_count", "required_category_counts", "minimum_metrics", "required_execution_mode"],
+      "properties": {
+        "policy_version": {"const": "intent-evaluation-policy@1"},
+        "fixture_version": {"const": "intent-evaluation@2"},
+        "minimum_case_count": {"type": "integer", "minimum": 1},
+        "required_category_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["supported", "clarification", "out_of_scope", "security_boundary"],
+          "properties": {
+            "supported": {"type": "integer", "minimum": 1},
+            "clarification": {"type": "integer", "minimum": 1},
+            "out_of_scope": {"type": "integer", "minimum": 1},
+            "security_boundary": {"type": "integer", "minimum": 1}
+          }
+        },
+        "minimum_metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["decision_accuracy", "intent_accuracy", "missing_slots_exact_accuracy", "route_accuracy", "rejection_precision", "rejection_recall"],
+          "properties": {
+            "decision_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+            "intent_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+            "missing_slots_exact_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+            "route_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+            "rejection_precision": {"type": "number", "minimum": 0, "maximum": 1},
+            "rejection_recall": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "required_execution_mode": {"const": "shadow"}
+      }
+    }
+  }
+}

@@ -1,7 +1,27 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-13T08:59:49Z",
+  "generated_at": "2026-09-13T10:16:00Z",
   "tasks": [
+    {
+      "id": "HA-0014",
+      "title": "建立模型化意图路由离线评测与影子门禁",
+      "status": "completed",
+      "risk": "medium",
+      "scope": ["合成去标识评测语料与机器契约", "影子候选输出、评分、阈值与覆盖校验", "模型调用前的隐私、回滚和 Evidence 门禁"],
+      "non_goals": ["配置或调用任何模型端点", "读取真实聊天、Task、资源或网盘数据", "改变 rules@1、自动创建 Task 或用户可见路由"],
+      "acceptance": ["fixture、候选输出和策略均可 Schema 验证且不含原文回显路径", "评分器可检测摘要/覆盖/预测一一对应/阈值问题", "扩展语料与规则诊断、L2 回归、文档和 Evidence 完整"],
+      "depends_on": ["HA-0013"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0014-intent-model-evaluation-preparation.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0014/manifest.json",
+        "harness/evidence/HA-0014/all-tests.xml",
+        "harness/evidence/HA-0014/rules-baseline.json",
+        "harness/evidence/HA-0014/acceptance.md"
+      ]
+    },
     {
       "id": "HA-0013",
       "title": "实现本地意图契约、槽位澄清与规则路由",
