@@ -8,6 +8,8 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 
 本地 Agent Lab：**http://127.0.0.1:8765/agent-lab**。它验证无密 Provider/Model/Agent Profile、SQLite 会话与 POST SSE 前端链路；回复是明确标记的本地确定性演示，模型、Provider、网络和工具调用均为 0，不改变 Product Task/Run/Replan。
 
+本地 Agent Runtime：**http://127.0.0.1:8765/agent-runtime**。它是独立的 Provider → Model → Agent → Session/Exchange 系统，带受控的 OpenAI-compatible SSE Adapter、上下文窗口、失败状态与 POST SSE。默认禁用外部模型调用；没有激活门禁时会返回可审计错误，绝不伪造模型回复。详见 [Agent Runtime](docs/harness/AGENT_RUNTIME.md)。
+
 ```sh
 sh harness/init.sh
 sh harness/start.sh
@@ -27,6 +29,7 @@ sh harness/start.sh
 - [模型化意图路由的离线评测与影子门禁](docs/harness/INTENT_MODEL_EVALUATION.md)
 - [Plan / Replan 执行控制合同](docs/harness/PLAN_REPLAN_CONTROL.md)
 - [Provider / Agent / 对话引擎六篇阅读总结](docs/research/CLAUDE_CODE_PROVIDER_AGENT_CHAT_SIX_PDFS.md)
+- [Local Provider / Agent / Chat Runtime](docs/harness/AGENT_RUNTIME.md)
 - [P0 CodeAct 激活决策包](docs/harness/P0_ACTIVATION_DECISION.md)
 
 - [P2 长期记忆规划](plan.md)

@@ -33,6 +33,7 @@
 | TD-022 | 通用 Plan/Replan 仍仅有离线 Schema、纯 reducer 与合成评测；ADR-0019/0020 只实现单一产物失败的固定候选 TCC 与 `gap@1` | 不得把该白名单路径描述为 Plan 编辑、自动根因判断、通用动态 Action 或跨引擎恢复 / P1 | 首个非固定 Plan 或真实 Agent adapter 接入前 | mymaccodex；能力探针、L3 恢复/取消/副作用故障注入、CAS 确认与生产回滚演练 |
 | TD-023 | 图中的 TAO / Action State / Observation State 尚未作为通用运行时状态机落地；当前只有固定本地节点、只追加 Event 和离线 reducer | 不得将固定本地流水线称为动态 Agent Loop / P1 | 申请接入首个真实 Agent 或动态 Action 选择前 | mymaccodex；批准目标引擎、持久 Action/Observation 合同、L3 副作用/取消/恢复故障注入和回滚演练 |
 | TD-024 | ADR-0021 Agent Lab 只验证无密配置、SQLite Session 与本地确定性 SSE；没有 Provider Adapter、凭证治理、真实流取消、热上下文缓存、模型输出治理或生产数据留存策略 | 不得把 Agent Lab 称为真实对话、Provider 集成或 Agent Loop / P1 | 申请任何真实模型/Provider 路由前 | mymaccodex；独立 ADR、端点/SDK 探针、Keychain/Vault 引用、数据分类、预算/取消/恢复和 L3 故障演练 |
+| TD-025 | ADR-0022 已具备受控 OpenAI-compatible SSE Adapter 与独立 Runtime，但默认没有已批准的真实 Provider、远程身份系统、数据外发评审、Provider 健康请求、成本计量或端到端取消探针 | 远程部署只能用于受认证的无模型配置/会话验证；不得以此开放真实对话 / P1 | 任何 `HARNESS_AGENT_RUNTIME=enabled` 或真实用户数据输入前 | mymaccodex；Provider/模型授权、Keychain/Vault 运行探针、L3 网络/取消/预算/保留/身份审查和回滚演练 |
 
 ## 维护规则
 

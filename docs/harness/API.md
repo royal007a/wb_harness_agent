@@ -30,6 +30,7 @@
 | MCP Servers | P1 | `POST/GET /mcp-servers` | 连接配置的密钥引用 |
 | 外部连接器 | P1 | `GET/POST /local/connectors/{provider}` | 本地开发连接状态与显式 OAuth 授权 |
 | Local Agent Lab | ADR-0021 本地准备 | `GET/POST /local/agent-lab/*` | 无密配置、Session 与确定性 POST SSE；不调用模型/Provider |
+| Local Agent Runtime | ADR-0022 受控聊天运行时 | `GET/POST /local/agent-runtime/*` | 独立 Provider/Model/Agent/Session/Exchange、上下文窗口与 POST SSE；默认外部模型调用关闭 |
 | Resources | P0 | `POST/GET /resources` | 文件、数据源和上下文引用 |
 | Tasks | P0 | `POST/GET /tasks` | 提交、查询与列表 |
 | Runs | P0 | `POST/GET /tasks/{id}/runs` | 创建和查询执行尝试 |
@@ -176,6 +177,15 @@
 - `POST /api/local/agent-lab/sessions/{id}/messages`：请求要求 `Accept: text/event-stream` 与 `Idempotency-Key`，返回 `delta` 后接 `done`。响应固定声明 `model_calls=provider_calls=0`。
 
 请求/响应以 [`local-agent-lab.schema.json`](../../specs/v1/local-agent-lab.schema.json) 为准。未知字段、凭证样式输入、外部 HTTP 地址、禁用依赖、归档会话和幂等键冲突使用稳定错误信号拒绝。Base URL 不会被连通性测试或模型请求使用。此路径不产生 Product Event/Evidence，也不能读写 Task、Run、Plan、权限或预算。
+
+## Local Agent Runtime（ADR-0022）
+
+- `GET/POST /api/local/agent-runtime/providers`：保存协议类型、无密 Base URL 与可选 `keychain://harnessagent/<name>` 引用；`GET /providers/{id}/readiness` 只解释激活状态，网络调用恒为 0。
+- `GET/POST /api/local/agent-runtime/models`、`agents`：显式 Provider→Model→Agent 配置链；Agent 的工具绑定恒为 0。
+- `GET/POST /api/local/agent-runtime/sessions`、`GET /sessions/{id}`：独立、有序的消息与 Exchange 历史。
+- `POST /sessions/{id}/messages`：要求 `Accept: text/event-stream` 和 `Idempotency-Key`，输出 `delta`、`done` 或 `error`。默认产生 `MODEL_RUNTIME_DISABLED`，并且不会写 assistant 演示文本。
+
+请求/响应以 [`agent-runtime.schema.json`](../../specs/v1/agent-runtime.schema.json) 为准。Provider Adapter 仅翻译协议；外部请求还要求环境开关、可用引用与 Keychain 解析，详见 [Agent Runtime](AGENT_RUNTIME.md)。该路径不读写 Product Task/Run/Plan/Evidence/Checkpoint。
 
 ## Task 与 Run 动作
 

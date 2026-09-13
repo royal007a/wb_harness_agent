@@ -62,3 +62,9 @@ SLO 与告警阈值须基于容量测试和业务影响另行批准，不能在�
 - 队列采用背压、公平调度、并发上限和熔断。
 - 预算耗尽必须产生稳定退出原因，不能继续隐性消费。
 - 扩容策略基于队列年龄和服务时间，不只看 CPU。
+
+## 本地 Runtime 的远程镜像部署
+
+ADR-0022 的远程镜像使用 systemd 绑定 `127.0.0.1:8765`，再由 nginx 在受认证的 `/harness/` 路径代理；模板见 [`deploy/harnessagent.service`](../../deploy/harnessagent.service) 与 [`deploy/nginx-harnessagent.conf`](../../deploy/nginx-harnessagent.conf)。必须保留 `HARNESS_AGENT_RUNTIME=disabled`，除非有单独的数据外发授权和 L3 证据。部署检查至少包含：`systemctl is-active harnessagent`、本机 `/api/v1/health`、代理路径 `/harness/agent-runtime`、SSE 响应头、Basic Auth 拒绝未认证请求，以及 nginx 配置测试。远程镜像不得复用本机 SQLite 文件或 Keychain 凭证。
+
+Ubuntu 24.04 的当前镜像源可安装 `uvicorn==0.44.0`，因此 `requirements.txt` 固定该版本；更新依赖前应在本地与目标 Python 版本重新跑完整验证，不能把开发机中不可复现的版本直接当作部署锁。

@@ -1,0 +1,23 @@
+[Unit]
+Description=HarnessAgent local Provider Agent Chat Runtime
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/harnessagent
+Environment=HARNESS_DB=/var/lib/harnessagent/harness.db
+# Keep omitted or any value other than `enabled` for the safe default.  Do not
+# add a model credential here; the runtime only accepts a Keychain reference.
+Environment=HARNESS_AGENT_RUNTIME=disabled
+ExecStart=/opt/harnessagent/.venv/bin/uvicorn backend.app:app --host 127.0.0.1 --port 8765 --workers 1
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ReadWritePaths=/opt/harnessagent /var/lib/harnessagent
+
+[Install]
+WantedBy=multi-user.target

@@ -33,6 +33,8 @@
 
 ADR-0021 Local Agent Lab 不保存 API Key、Token、Cookie、`credential_ref` 或认证 JSON；它还拒绝明显凭证样式文本、URL 用户信息和外部 HTTP Base URL。Profile 的 Base URL 仅是未执行的配置字段，绝不能被误解为已完成连通性验证。Session/Message 只允许可信本机用户输入非敏感演示文本，使用纯文本渲染，不进入 Product Event/Evidence/Prompt 或真实模型上下文。
 
+ADR-0022 Agent Runtime 只接受格式化的 `keychain://harnessagent/<name>` **引用**，不接受秘密值。SQLite、SSE、浏览器、错误信息和 Evidence 都不能包含 Keychain 内容；只有显式启用的传输边界才会解析引用。默认模型运行时关闭，Provider readiness 不进行网络请求。若部署到远程主机，必须在反向代理或应用层增加身份认证、TLS、最小访问范围及备份/保留策略后才允许输入非演示内容；本机单用户边界不能自动外推为公网授权。
+
 ## Prompt 与上下文安全
 
 - 系统策略与外部内容使用结构化边界，不拼接为同等优先级文本。

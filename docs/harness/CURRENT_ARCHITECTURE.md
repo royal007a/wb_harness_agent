@@ -2,7 +2,7 @@
 
 ## 结论
 
-当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器、无模型 Intent Contract 预检和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、Claude SDK 离线配置契约探针、合成去标识的模型化意图离线/影子评测门禁、无密 Provider/Model/Agent Profile + 本地确定性 POST SSE Agent Lab，以及已验证 OAuth 连通但数据面关闭的百度网盘连接器；尚无真实模型、原生 Claude 子 Agent 执行、网盘数据访问或长期记忆。
+当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器、无模型 Intent Contract 预检和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、Claude SDK 离线配置契约探针、合成去标识的模型化意图离线/影子评测门禁、无密 Provider/Model/Agent Profile + 本地确定性 POST SSE Agent Lab、ADR-0022 的独立 Provider/Model/Agent/Session/Exchange Runtime，以及已验证 OAuth 连通但数据面关闭的百度网盘连接器；默认仍无真实模型调用、原生 Claude 子 Agent 执行、网盘数据访问或长期记忆。
 
 ```mermaid
 flowchart LR
@@ -32,6 +32,8 @@ Plan/Replan 的通用控制合同仍以 `execution-control.schema.json → pure 
 百度网盘连接器由 `Service → BaiduNetdiskConnector → openapi.baidu.com / macOS Keychain` 组成。SQLite 仅保存 state 摘要、期限和无密状态；Client Secret、access token 和 refresh token 留在 Keychain。当前仅 OAuth 连接，不启用目录、下载或分享链接。见 [BAIDU_NETDISK_CONNECTOR.md](BAIDU_NETDISK_CONNECTOR.md)。
 
 ADR-0021 的 Agent Lab 由 `FastAPI → LocalAgentLab → SQLite profile/session/message/exchange` 组成，与 Product `Task/Run/Event/Evidence/Checkpoint/Replan` 表严格分离。配置中没有凭证或 `credential_ref`；Provider URL 从不被请求；Local Demo Responder 只流式发送固定声明文本。浏览器通过 POST + `fetch` 读取 `delta/done` SSE，支持 AbortController 停止显示。它是 UI、会话和持久化准备，不是模型、Provider Adapter、SDK 或 Agent Loop 路由。
+
+ADR-0022 的 Agent Runtime 由 `FastAPI → AgentRuntime → ProviderAdapterRegistry → SQLite runtime_*` 表组成，同样与 Product 控制面和 Agent Lab 分离。它实现 OpenAI-compatible Chat Completions SSE 的协议翻译，但默认 `HARNESS_AGENT_RUNTIME` 不为 `enabled`，Keychain 也只在最后传输边界解析无密 `credential_ref`。因此默认消息仅产生 `MODEL_RUNTIME_DISABLED` Exchange，不请求 Provider，也不创建虚构 assistant 消息。完整边界见 [Agent Runtime](AGENT_RUNTIME.md)。
 
 ## 当前文件结构
 

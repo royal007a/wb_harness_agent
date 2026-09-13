@@ -1,5 +1,5 @@
 fastapi==0.138.0
-uvicorn==0.49.0
+uvicorn==0.44.0
 jsonschema==4.26.0
 httpx==0.28.1
 keyring==25.7.0

@@ -40,6 +40,7 @@
 - ADR-0019 的本地 TCC 切片还必须覆盖：失败 Event 白名单、非空请求拒绝与控制对象脱敏、Try/Cancel 无 adapter/Product Run/工具副作用、Confirm 的 CAS 去重、Cancel 无 Run、Try 后绑定漂移过期、重启与浏览器 `checkpoint.verify` / 不重复 `resource.inspect`。
 - ADR-0020 的本地 Gap State 还必须覆盖：失败 Event 与唯一 core Gap 的原子创建、缺失/已解决/字段不兼容 Gap 的提案拒绝、Try/Cancel/漂移/恢复失败不解决 Gap，以及仅成功绑定恢复在新 Run 写入 `gap.resolved`；浏览器 Evidence 必须确认该状态转换且模型、网络、任意代码调用仍为零。
 - ADR-0021 Local Agent Lab 必须覆盖：严格 Schema/未知字段、凭证样式输入拒绝、Provider/Model/Agent 启用依赖、Session 隔离、消息顺序与幂等冲突；POST SSE 必须出现 `delta → done`，浏览器使用 `fetch` 而不是 EventSource；页面取消仅停止显示，且模型/Provider/网络/工具调用始终为零。
+- ADR-0022 Agent Runtime 必须覆盖：独立 `runtime_*` 表、严格 credential reference 格式、默认 `MODEL_RUNTIME_DISABLED` 的 Exchange 失败、无 synthetic assistant 内容、Provider readiness 零网络、同键回放、最近 `2 × max_context_turns` 上下文、协议 Adapter 成功/空响应/超时错误映射与断开后的可审计终态。真实 Provider 启用前还必须补齐 L3 凭证解析、请求最小化、取消、预算、网络失败、TLS 和数据外发审查。
 
 ## 完成定义 DoD
 

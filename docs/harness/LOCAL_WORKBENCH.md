@@ -20,6 +20,12 @@
 
 HA-0007 增加 Adapter 生命周期、`GET /api/v1/readiness` 历史探针报告和引擎待接入状态。[VM/SDK 探针](ENGINE_PROBES.md)与[Skill CLI](SKILL_EXECUTION.md)可以单独运行；它们不自动启用产品模型执行，也不改变本页固定统计语义。
 
+## Local Agent Runtime（ADR-0022）
+
+入口为 http://127.0.0.1:8765/agent-runtime。它实现独立的 Provider、Model、Agent、Session/Message 和 Exchange 状态，及 `fetch` POST SSE 页面。与 Agent Lab 不同，它**没有**确定性 assistant 回复：默认环境将每个请求结束为 `MODEL_RUNTIME_DISABLED`，保留用户消息与 Exchange 失败状态但不伪造模型内容。
+
+要允许一次真实 Provider 请求，进程必须显式以 `HARNESS_AGENT_RUNTIME=enabled` 启动，并且 Provider 是已实现协议、Profile 均启用、存在格式正确的 `keychain://harnessagent/<name>` 引用且 Keychain 在请求时可解析。该开关不是本地产品功能开关，也不构成数据外发授权；在实际启用前应另行完成数据范围、成本、超时、取消、健康与 L3 安全验证。现有部署不设置该条件。
+
 ## 启动和停止
 
 ```sh
