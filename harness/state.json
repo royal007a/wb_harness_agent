@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "local_agent_lab_verified",
+  "phase": "provider_agent_chat_runtime_deployed",
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0024 已验收：六份 Provider/Skill/Agent/Chat PDF 的结论已映射为独立、无模型的本地 Agent Lab。Profile、Session、POST SSE、幂等、浏览器与 launchd 都已验证；模型/Provider/网络/工具调用为 0，Product Task/Run/Replan 未变。",
-  "last_updated_at": "2026-09-13T15:12:00Z",
-  "next_action": "若要接入真实 Provider/模型/SDK，先按 TD-016、TD-017、TD-022、TD-023、TD-024 提交独立 ADR、凭证引用、数据范围、预算、能力探针和 L3 验证；不得直接解锁 Agent Lab。",
+  "last_checkpoint": "HA-0025 已验收并部署：ADR-0022 的独立 Provider/Model/Agent/Session/Exchange Runtime 在本机与受认证远程镜像通过验证。默认模型运行时关闭，模型/Provider/网络/工具调用均为 0；Product Task/Run 未变。",
+  "last_updated_at": "2026-09-13T15:50:00Z",
+  "next_action": "若要启用真实 Provider，先完成 TD-025 的独立授权：Provider/模型/数据范围/Keychain 或 Vault 引用、成本与超时、取消、身份与 L3 网络/数据外发验证；不得仅靠 HARNESS_AGENT_RUNTIME 开关开放。",
   "release": "0.1.0-local"
 }

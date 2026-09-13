@@ -1,0 +1,25 @@
+{
+  "task_id": "HA-0025",
+  "deployment": "authenticated Ubuntu 24.04 remote mirror",
+  "service": {
+    "unit": "harnessagent.service",
+    "state": "active",
+    "bind": "127.0.0.1:8765",
+    "runtime_enabled": false
+  },
+  "proxy": {
+    "path": "/harness/agent-runtime",
+    "tls": "existing host certificate",
+    "basic_auth_required": true,
+    "unauthenticated_status": 401,
+    "authenticated_page_status": 200,
+    "sse_proxy_buffering": "off"
+  },
+  "runtime": {
+    "model_calls": 0,
+    "provider_calls": 0,
+    "network_calls": 0,
+    "tool_binding_count": 0
+  },
+  "secrets_recorded": false
+}

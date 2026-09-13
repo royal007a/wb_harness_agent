@@ -3,6 +3,40 @@
   "generated_at": "2026-09-13T15:12:00Z",
   "tasks": [
     {
+      "id": "HA-0025",
+      "title": "实现本地 Provider、Agent 与流式聊天运行时",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "独立 Provider/Model/Agent/Session/Message/Exchange 契约与持久化",
+        "默认关闭的 Provider Adapter、上下文窗口、POST SSE 与取消显示",
+        "规格、测试、浏览器与本机和远程部署 Evidence"
+      ],
+      "non_goals": [
+        "读取或保存真实凭证，调用外部模型或自动发现远端模型",
+        "Tools、MCP、Skills、ReAct、子 Agent、RAG、长期记忆或 Product Task/Run 改动",
+        "将 Agent Lab 演示当作真实运行时"
+      ],
+      "acceptance": [
+        "Provider/Model/Agent 依赖、credential reference、激活门禁和 Adapter 状态受机器契约约束",
+        "会话历史按上下文上限裁剪；失败不伪造 assistant 内容；SSE/幂等/取消有回归验证",
+        "默认环境模型/Provider/网络/工具调用均为零，并有 L2/L3、浏览器和部署证据"
+      ],
+      "depends_on": ["HA-0024"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0025-provider-agent-chat-runtime.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0025/manifest.json",
+        "harness/evidence/HA-0025/all-tests.xml",
+        "harness/evidence/HA-0025/browser-agent-runtime.json",
+        "harness/evidence/HA-0025/remote/browser-agent-runtime.json",
+        "harness/evidence/HA-0025/remote-deployment.json",
+        "harness/evidence/HA-0025/acceptance.md"
+      ]
+    },
+    {
       "id": "HA-0024",
       "title": "实现本地 Agent Lab 的 Provider、Agent 与流式对话准备切片",
       "status": "completed",

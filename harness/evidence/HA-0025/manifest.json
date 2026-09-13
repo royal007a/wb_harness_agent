@@ -1,0 +1,50 @@
+{
+  "task_id": "HA-0025",
+  "generated_at": "2026-09-13T15:44:54.892396Z",
+  "status": "passed",
+  "scope": "Isolated Provider/Model/Agent/Session/Exchange runtime and authenticated remote mirror",
+  "checks": {
+    "agent_runtime_tests": "3 passed, 1 warning in 0.33s",
+    "frontend_syntax": "passed",
+    "static_openapi_yaml": "ok",
+    "task_registry_schema": "passed",
+    "local_markdown_links_checked": 118,
+    "browser_local_checks": [
+      "default_runtime_gate",
+      "provider_readiness_zero_network",
+      "profile_chain",
+      "session",
+      "post_sse_error",
+      "no_synthetic_answer",
+      "persistent_exchange",
+      "mobile_layout"
+    ],
+    "browser_remote_checks": [
+      "default_runtime_gate",
+      "provider_readiness_zero_network",
+      "profile_chain",
+      "session",
+      "post_sse_error",
+      "no_synthetic_answer",
+      "persistent_exchange",
+      "mobile_layout"
+    ]
+  },
+  "runtime_assertions": {
+    "default_runtime_enabled": false,
+    "default_model_calls": 0,
+    "default_provider_calls": 0,
+    "default_network_calls": 0,
+    "tool_binding_count": 0,
+    "credential_values_persisted": false,
+    "synthetic_assistant_response_on_failure": false,
+    "product_task_run_mutated": false
+  },
+  "not_covered": [
+    "approved real provider/model invocation",
+    "real credential value or Keychain resolution",
+    "provider health network request",
+    "tools/MCP/Skills/ReAct/subagents/RAG/long-term memory",
+    "multi-tenant identity, production data classification or external model data egress approval"
+  ]
+}
