@@ -438,6 +438,136 @@ paths:
             text/event-stream:
               schema: {$ref: './local-agent-lab.schema.json#/$defs/stream_event'}
         default: {$ref: '#/components/responses/Error'}
+  /local/agent-runtime/providers:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentRuntimeProviders
+      responses: {'200': {description: Provider Profiles and the current zero-call runtime status.}}
+    post:
+      operationId: createLocalAgentRuntimeProvider
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './agent-runtime.schema.json#/$defs/provider_create_request'}
+      responses:
+        '201':
+          description: A credential-reference-only Provider Profile is persisted; no health request is made.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/provider_profile'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-runtime/providers/{providerId}/readiness:
+    servers: [{url: /api}]
+    get:
+      operationId: getLocalAgentRuntimeProviderReadiness
+      description: Explains activation/adapter/credential-reference state without a network request.
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          schema: {type: string}
+      responses: {'200': {description: Zero-network provider readiness result.}, default: {$ref: '#/components/responses/Error'}}
+  /local/agent-runtime/models:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentRuntimeModels
+      responses: {'200': {description: Explicit local Model Profiles.}}
+    post:
+      operationId: createLocalAgentRuntimeModel
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './agent-runtime.schema.json#/$defs/model_create_request'}
+      responses:
+        '201':
+          description: Model Profile persisted without model discovery.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/model_profile'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-runtime/agents:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentRuntimeAgents
+      responses: {'200': {description: Agent Profiles with zero Tool/MCP/Skill bindings.}}
+    post:
+      operationId: createLocalAgentRuntimeAgent
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './agent-runtime.schema.json#/$defs/agent_create_request'}
+      responses:
+        '201':
+          description: Agent Profile persisted.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/agent_profile'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-runtime/sessions:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentRuntimeSessions
+      responses: {'200': {description: Runtime sessions.}}
+    post:
+      operationId: createLocalAgentRuntimeSession
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './agent-runtime.schema.json#/$defs/session_create_request'}
+      responses:
+        '201':
+          description: Session created for an enabled Agent/Profile stack.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/chat_session'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-runtime/sessions/{sessionId}:
+    servers: [{url: /api}]
+    get:
+      operationId: getLocalAgentRuntimeSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: {type: string}
+      responses: {'200': {description: Ordered messages and auditable Exchanges.}, default: {$ref: '#/components/responses/Error'}}
+  /local/agent-runtime/sessions/{sessionId}/messages:
+    servers: [{url: /api}]
+    post:
+      operationId: streamLocalAgentRuntimeMessage
+      description: >-
+        Persists a user message and Exchange, then emits protocol-backed SSE only if
+        runtime and credential gates are met. No demo answer or fallback is used.
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: {type: string}
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: Accept
+          in: header
+          required: true
+          schema: {const: text/event-stream}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './agent-runtime.schema.json#/$defs/send_message_request'}
+      responses:
+        '200':
+          description: Delta, done or auditable error SSE event.
+          content:
+            text/event-stream:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/runtime_stream_event'}
+        default: {$ref: '#/components/responses/Error'}
 components:
   parameters:
     IdempotencyKey:

@@ -74,9 +74,11 @@ class Service:
         from .research import Research
         from .baidu_netdisk import BaiduNetdiskConnector
         from .agent_lab import LocalAgentLab
+        from .agent_runtime import AgentRuntime
         self.research = Research(self)
         self.baidu_netdisk = BaiduNetdiskConnector(store)
         self.agent_lab = LocalAgentLab(store)
+        self.agent_runtime = AgentRuntime(store)
 
     def resource(self, name, raw):
         if not isinstance(name, str) or not name.lower().endswith('.csv') or len(name) > 180 or '/' in name or '\\' in name:

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Harness / Agent Runtime</title>
+    <link rel="stylesheet" href="static/agent-runtime.css" />
+    <script src="static/agent-runtime.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="./agent-runtime"><span>H</span> harness <small>RUNTIME</small></a>
+      <p class="workspace">LOCAL PROVIDER / MODEL / AGENT</p>
+      <nav><a class="nav active" href="./agent-runtime">◌ <b>Agent Runtime</b></a><a class="nav" href="./agent-lab">◇ Agent Lab（演示）</a></nav>
+      <footer><i></i><span id="connection">正在连接本地服务</span><small>v0.1 · 明确激活边界</small></footer>
+    </aside>
+    <main>
+      <header><span>Workspace / <strong>Provider Agent Chat Runtime</strong></span><span id="runtime-badge">检查运行时门禁中…</span></header>
+      <div id="notice" role="status" aria-live="polite" hidden></div>
+      <section class="page">
+        <div class="intro"><span>PROVIDER → MODEL → AGENT → SESSION → SSE</span><h1>配置可见，运行授权也必须可见。</h1><p>这是独立的聊天运行时，不读取或写入 Product Task / Run。默认禁止外部模型调用；不会以本地回复替代真实模型结果。</p></div>
+        <div id="runtime" class="runtime" aria-live="polite"></div>
+        <div class="grid">
+          <section class="panel config"><header><div><span>01 / CONFIGURE</span><h2>Provider、Model 与 Agent</h2></div><em>无工具绑定</em></header><div class="scroll">
+            <form id="provider-form" class="card"><h3>Provider Profile</h3><p>凭证只接受 Keychain 引用，不保存 Token；连通性检查不发网络请求。</p>
+              <label>名称<input name="name" maxlength="100" required placeholder="受控 OpenAI 兼容端点" /></label>
+              <label>类型<select name="type"><option value="openai_compatible">OpenAI compatible（已实现协议）</option><option value="anthropic">Anthropic（待实现）</option><option value="ollama">Ollama（待实现）</option></select></label>
+              <label>Base URL<input name="base_url" type="url" maxlength="500" required value="https://example.invalid" /></label>
+              <label>Keychain credential reference <small>可选，例：keychain://harnessagent/provider-prod；不是密钥本身</small><input name="credential_ref" maxlength="128" placeholder="keychain://harnessagent/provider-name" /></label>
+              <button type="submit" class="secondary">保存 Provider</button>
+            </form><div id="provider-list" class="profiles"></div>
+            <form id="model-form" class="card"><h3>Model Profile</h3><p>模型标识由你显式维护；本系统不从远端同步列表。</p>
+              <label>Provider<select id="model-provider" name="provider_profile_id" required></select></label><label>展示名<input name="display_name" maxlength="100" required placeholder="主分析模型" /></label><label>模型标识<input name="model_id" maxlength="180" required placeholder="model-id" /></label><label>上下文窗口<input name="context_window" type="number" min="256" max="2000000" required value="32768" /></label><button type="submit" class="secondary">保存 Model</button>
+            </form><div id="model-list" class="profiles"></div>
+            <form id="agent-form" class="card"><h3>Agent Profile</h3><p>系统提示词、上下文轮数及输出限制是显式配置；Tools / MCP / Skills 均为 0。</p>
+              <label>名称<input name="name" maxlength="100" required placeholder="研究助手" /></label><label>说明<textarea name="description" maxlength="500" placeholder="该 Agent 的职责边界"></textarea></label><label>Model<select id="agent-model" name="model_profile_id" required></select></label><label>System Prompt<textarea name="system_prompt" maxlength="12000" required>你是一个审慎的研究助手。只基于可用事实回答，并明确不确定性。</textarea></label><div class="two"><label>Temperature<input name="temperature" type="number" min="0" max="1" step="0.1" value="0.3" required /></label><label>最大输出<input name="max_output_tokens" type="number" min="1" max="16384" value="1024" required /></label></div><label>最大上下文轮数<input name="max_context_turns" type="number" min="1" max="100" value="8" required /></label><button type="submit" class="secondary">保存 Agent</button>
+            </form><div id="agent-list" class="profiles"></div>
+          </div></section>
+          <section class="panel chat"><header><div><span>02 / CONVERSE</span><h2>有状态 POST SSE 对话</h2></div><button id="new-session" class="secondary">新建会话</button></header><div class="chat-grid"><aside><label for="session-agent">使用 Agent</label><select id="session-agent"></select><div id="session-list" class="sessions"></div></aside><section class="conversation"><div id="empty" class="empty"><strong>尚未创建会话</strong><p>依次创建 Provider、Model、Agent 和 Session。模型未获授权时，系统会返回明确错误，不会伪造回答。</p></div><div id="messages" class="messages" hidden aria-live="polite"></div><form id="chat-form" class="composer" hidden><label class="sr-only" for="chat-input">消息内容</label><textarea id="chat-input" maxlength="12000" required placeholder="输入消息；系统会在发送前检查运行时门禁…"></textarea><div><small>纯文本安全显示 · 会话独立持久化 · 工具调用为 0</small><span><button id="stop" type="button" class="secondary" hidden>停止显示</button><button id="send" type="submit" class="primary">发送 ↗</button></span></div></form></section></div></section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

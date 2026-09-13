@@ -50,6 +50,12 @@ class Store:
             CREATE TABLE IF NOT EXISTS chat_sessions(id TEXT PRIMARY KEY, agent_profile_id TEXT NOT NULL REFERENCES agent_profiles(id), doc TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS chat_messages(id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES chat_sessions(id), sequence INTEGER NOT NULL, doc TEXT NOT NULL, UNIQUE(session_id, sequence));
             CREATE TABLE IF NOT EXISTS chat_exchanges(id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES chat_sessions(id), idempotency_key TEXT NOT NULL, request_digest TEXT NOT NULL, doc TEXT NOT NULL, UNIQUE(session_id, idempotency_key));
+            CREATE TABLE IF NOT EXISTS runtime_provider_profiles(id TEXT PRIMARY KEY, doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS runtime_model_profiles(id TEXT PRIMARY KEY, provider_profile_id TEXT NOT NULL REFERENCES runtime_provider_profiles(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS runtime_agent_profiles(id TEXT PRIMARY KEY, model_profile_id TEXT NOT NULL REFERENCES runtime_model_profiles(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS runtime_chat_sessions(id TEXT PRIMARY KEY, agent_profile_id TEXT NOT NULL REFERENCES runtime_agent_profiles(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS runtime_chat_messages(id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES runtime_chat_sessions(id), sequence INTEGER NOT NULL, doc TEXT NOT NULL, UNIQUE(session_id, sequence));
+            CREATE TABLE IF NOT EXISTS runtime_chat_exchanges(id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES runtime_chat_sessions(id), idempotency_key TEXT NOT NULL, request_digest TEXT NOT NULL, doc TEXT NOT NULL, UNIQUE(session_id, idempotency_key));
         ''')
 
     @contextmanager
@@ -105,6 +111,41 @@ class Store:
             row = self.db.execute('SELECT doc FROM chat_exchanges WHERE session_id=? AND idempotency_key=?',
                                   (session_id, idempotency_key)).fetchone()
         return json.loads(row['doc']) if row else None
+
+    def runtime_get(self, table, ident):
+        if table not in ('runtime_provider_profiles', 'runtime_model_profiles', 'runtime_agent_profiles',
+                         'runtime_chat_sessions', 'runtime_chat_messages', 'runtime_chat_exchanges'):
+            raise ValueError('Unknown runtime table')
+        with self.lock:
+            row = self.db.execute(f'SELECT doc FROM {table} WHERE id=?', (ident,)).fetchone()
+        if not row:
+            raise Problem('NOT_FOUND', '对象不存在。', 404)
+        return json.loads(row['doc'])
+
+    def runtime_listing(self, table):
+        if table not in ('runtime_provider_profiles', 'runtime_model_profiles', 'runtime_agent_profiles', 'runtime_chat_sessions'):
+            raise ValueError('Unknown runtime listing table')
+        with self.lock:
+            rows = self.db.execute(f'SELECT doc FROM {table} ORDER BY rowid DESC').fetchall()
+        return [json.loads(row['doc']) for row in rows]
+
+    def runtime_messages(self, session_id):
+        self.runtime_get('runtime_chat_sessions', session_id)
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM runtime_chat_messages WHERE session_id=? ORDER BY sequence', (session_id,)).fetchall()
+        return [json.loads(row['doc']) for row in rows]
+
+    def runtime_exchange(self, session_id, idempotency_key):
+        with self.lock:
+            row = self.db.execute('SELECT doc FROM runtime_chat_exchanges WHERE session_id=? AND idempotency_key=?',
+                                  (session_id, idempotency_key)).fetchone()
+        return json.loads(row['doc']) if row else None
+
+    def runtime_exchanges(self, session_id):
+        self.runtime_get('runtime_chat_sessions', session_id)
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM runtime_chat_exchanges WHERE session_id=? ORDER BY rowid', (session_id,)).fetchall()
+        return [json.loads(row['doc']) for row in rows]
 
     def event(self, db, run, kind, data=None, step_id=None):
         run['latest_sequence'] += 1

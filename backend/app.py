@@ -127,6 +127,77 @@ def create_app(db_path=None, run_worker=True):
     def agent_lab_runtime():
         return app.state.service.agent_lab.runtime_status()
 
+    @app.get('/api/local/agent-runtime/runtime')
+    def agent_runtime_status():
+        return app.state.service.agent_runtime.runtime_status()
+
+    @app.get('/api/local/agent-runtime/providers')
+    def agent_runtime_providers():
+        return app.state.service.agent_runtime.providers()
+
+    @app.post('/api/local/agent-runtime/providers', status_code=201)
+    async def agent_runtime_provider_create(request: Request):
+        return app.state.service.agent_runtime.create_provider(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-runtime/providers/{provider_id}/readiness')
+    def agent_runtime_provider_readiness(provider_id: str):
+        return app.state.service.agent_runtime.provider_readiness(provider_id)
+
+    @app.get('/api/local/agent-runtime/models')
+    def agent_runtime_models():
+        return app.state.service.agent_runtime.models()
+
+    @app.post('/api/local/agent-runtime/models', status_code=201)
+    async def agent_runtime_model_create(request: Request):
+        return app.state.service.agent_runtime.create_model(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-runtime/agents')
+    def agent_runtime_agents():
+        return app.state.service.agent_runtime.agents()
+
+    @app.post('/api/local/agent-runtime/agents', status_code=201)
+    async def agent_runtime_agent_create(request: Request):
+        return app.state.service.agent_runtime.create_agent(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-runtime/sessions')
+    def agent_runtime_sessions():
+        return app.state.service.agent_runtime.sessions()
+
+    @app.post('/api/local/agent-runtime/sessions', status_code=201)
+    async def agent_runtime_session_create(request: Request):
+        return app.state.service.agent_runtime.create_session(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-runtime/sessions/{session_id}')
+    def agent_runtime_session_detail(session_id: str):
+        return app.state.service.agent_runtime.session_detail(session_id)
+
+    @app.post('/api/local/agent-runtime/sessions/{session_id}/messages')
+    async def agent_runtime_message_create(session_id: str, request: Request):
+        if 'text/event-stream' not in request.headers.get('accept', ''):
+            raise Problem('VALIDATION_ERROR', '消息接口要求 Accept: text/event-stream。', 406)
+        exchange = app.state.service.agent_runtime.prepare_exchange(
+            session_id, await json_body(request), request.headers.get('idempotency-key')
+        )
+
+        async def stream():
+            disconnected = False
+            try:
+                async for payload in app.state.service.agent_runtime.stream_exchange(exchange['id']):
+                    if await request.is_disconnected():
+                        disconnected = True
+                        return
+                    yield 'data: ' + json.dumps(payload, ensure_ascii=False) + '\n\n'
+            except asyncio.CancelledError:
+                disconnected = True
+                raise
+            finally:
+                if disconnected:
+                    app.state.service.agent_runtime.cancel_exchange(exchange['id'])
+
+        return StreamingResponse(stream(), media_type='text/event-stream', headers={
+            'X-Accel-Buffering': 'no', 'Cache-Control': 'no-store', 'Connection': 'keep-alive',
+        })
+
     @app.get('/api/local/agent-lab/providers')
     def agent_lab_providers():
         return app.state.service.agent_lab.providers()
@@ -250,6 +321,10 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/agent-lab', include_in_schema=False)
     def agent_lab_page():
         return FileResponse(ROOT / 'frontend/agent-lab.html')
+
+    @app.get('/agent-runtime', include_in_schema=False)
+    def agent_runtime_page():
+        return FileResponse(ROOT / 'frontend/agent-runtime.html')
 
     @app.get('/connectors/baidu-netdisk', include_in_schema=False)
     def baidu_netdisk_page():
@@ -445,6 +520,36 @@ def create_app(db_path=None, run_worker=True):
     })
     generated['paths']['/api/local/agent-lab/sessions/{session_id}/messages']['post']['responses']['200']['content'] = {
         'text/event-stream': {'schema': {'$ref': '#/components/schemas/stream_event'}}}
+    runtime_schema = json.loads((ROOT / 'specs/v1/agent-runtime.schema.json').read_text())
+    runtime_definitions = json.loads(json.dumps(runtime_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(runtime_definitions)
+    generated['components']['schemas']['agent_runtime_status'] = {
+        'type': 'object', 'additionalProperties': False,
+        'required': ['mode', 'runtime_enabled', 'credential_resolution', 'model_calls', 'provider_calls', 'network_calls', 'tool_binding_count', 'note'],
+        'properties': {
+            'mode': {'const': 'provider_agent_chat_runtime@1'}, 'runtime_enabled': {'type': 'boolean'},
+            'credential_resolution': {'const': 'deferred_to_keychain_at_transport_boundary'}, 'model_calls': {'const': 0},
+            'provider_calls': {'const': 0}, 'network_calls': {'const': 0}, 'tool_binding_count': {'const': 0}, 'note': {'type': 'string'},
+        },
+    }
+    for path, definition in (
+        ('/api/local/agent-runtime/providers', 'provider_create_request'),
+        ('/api/local/agent-runtime/models', 'model_create_request'),
+        ('/api/local/agent-runtime/agents', 'agent_create_request'),
+        ('/api/local/agent-runtime/sessions', 'session_create_request'),
+        ('/api/local/agent-runtime/sessions/{session_id}/messages', 'send_message_request'),
+    ):
+        generated['paths'][path]['post']['requestBody'] = {
+            'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/' + definition}}}}
+        generated['paths'][path]['post'].setdefault('parameters', []).append({
+            'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+            'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+        })
+    generated['paths']['/api/local/agent-runtime/sessions/{session_id}/messages']['post']['parameters'].append({
+        'in': 'header', 'name': 'Accept', 'required': True, 'schema': {'const': 'text/event-stream'},
+    })
+    generated['paths']['/api/local/agent-runtime/sessions/{session_id}/messages']['post']['responses']['200']['content'] = {
+        'text/event-stream': {'schema': {'$ref': '#/components/schemas/runtime_stream_event'}}}
     restore_schema = json.loads((ROOT / 'specs/v1/local-checkpoint-restore.schema.json').read_text())
     generated.setdefault('components', {}).setdefault('schemas', {}).update(restore_schema['$defs'])
     generated['paths']['/api/local/runs/{run_id}:restore']['post']['requestBody'] = {
