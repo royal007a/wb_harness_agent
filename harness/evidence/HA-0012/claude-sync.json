@@ -1,0 +1,8 @@
+{
+  "checked_at": "2026-09-13T05:32:34Z",
+  "status": "passed",
+  "mode": "symbolic_link",
+  "link": "/Users/weberzhao/.claude/skills/baidu-netdisk-download",
+  "target": "/Users/weberzhao/code/ai/harnessagent/skills/baidu-netdisk-download",
+  "copied_sensitive_data": false
+}

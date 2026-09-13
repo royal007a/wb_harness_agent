@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "baidu_netdisk_oauth_verified",
+  "phase": "baidu_share_link_client_handoff_ready",
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0011 已完成官方 OAuth 连通及一次无数据面 refresh；数据面仍关闭",
+  "last_checkpoint": "HA-0011 已完成官方 OAuth 连通及一次无数据面 refresh；HA-0012 已完成官方客户端分享链接交接 Skill 和 Claude 同步",
   "last_updated_at": "2026-09-13T05:32:34Z",
-  "next_action": "如需分享链接下载，先设计独立的官方客户端交接边界；文件 API/内容解析仍需独立授权",
+  "next_action": "等待用户在官方百度网盘客户端确认下载并提供明确本地文件路径；文件 API/内容解析仍需独立授权",
   "release": "0.1.0-local"
 }

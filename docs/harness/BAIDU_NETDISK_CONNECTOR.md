@@ -8,6 +8,8 @@
 
 禁止项：复用浏览器 Cookie、模拟登录、处理验证码、绕过会员/限速/访问控制、从分享链接推断私人文件，或向模型暴露 token 和原始 OAuth 响应。
 
+对于用户在当前聊天中明确提供的分享链接，另有 `skills/baidu-netdisk-download/`：它只将链接交给本机官方客户端，用户仍须自行完成下载。此交接不是 OAuth 数据面能力，不能用于列目录、直链下载或导入分享文件；详细边界见 [Skill 执行边界](SKILL_EXECUTION.md)。
+
 ## 用户准备
 
 1. 在[百度网盘开放平台](https://yun.baidu.com/open/platform)创建应用并开通网盘授权能力。
