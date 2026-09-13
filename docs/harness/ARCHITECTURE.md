@@ -24,6 +24,7 @@ flowchart LR
       PS[Policy & Budget]
       ST[Skill / Tool / MCP Registry]
       EV[Event & Artifact Service]
+      EC[Plan / Evidence / Gap / Checkpoint Control]
       MR[Model & Modality Router]
     end
 
@@ -31,6 +32,7 @@ flowchart LR
     G --> TS
 
     TS --> AB[Adapter Boundary]
+    TS --> EC
     RT --> AB
     AB --> A1[Mock Adapter]
     AB -. optional .-> A2[Smolagents Adapter]
@@ -73,16 +75,17 @@ flowchart LR
 | Adapter Boundary | 统一开始、恢复、取消、事件和结果 | 核心产品规则 |
 | Tool Runtime | Schema 校验、隔离、超时、审计 | 自行提升权限 |
 | Event & Artifact | 事件流、产物、引用、Evidence | 修改历史事件 |
+| 执行控制 | PlanRevision、Evidence/Claim、Gap、Checkpoint 与 Replan Gate | 绕过 Task/Run 不变量或执行具体工具 |
 | Model Router | 按模态、数据策略和预算解析固定部署 | 运行中静默换模型 |
 | Code Sandbox | 执行模型生成代码并限制文件、网络和资源 | 保存平台长期凭证 |
 
 ## 标准执行循环
 
 ```text
-load Run checkpoint → build bounded context → call engine
+load Run checkpoint + verified Plan/Evidence/Gap projection → build bounded context → call engine
 → receive code/tool proposal → validate and authorize
 → execute code in disposable sandbox or call Tool Runtime
-→ persist observation/event/checkpoint → continue or exit
+→ persist observation/event/evidence/checkpoint → choose one legal exit
 ```
 
 标准退出原因包括：完成、达到轮次上限、取消、超时、权限拒绝、预算耗尽、沙箱违规和不可恢复工具错误。适配器必须映射为平台统一 Run 终态或等待状态。
@@ -121,6 +124,7 @@ P0 基线默认无网络、无 Child Run、无外部写入，也不发送图片�
 4. 工具调用请求先落审计，再判断策略；批准后生成一次性执行令牌。
 5. 事件仅追加；产物使用内容摘要和不可变版本关联。
 6. 适配器只能提出结果；验证通过后，控制面写 Run 终态、结果摘要和 Evidence 索引，再发布终态事件。
+7. 动态适配器的候选 Action 必须经过注册、硬前置条件、权限、预算与 Evidence Gate；Replan 仅从已验证兼容 Checkpoint 创建新 Run。
 
 ## 部署边界
 

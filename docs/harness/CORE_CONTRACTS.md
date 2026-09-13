@@ -89,6 +89,16 @@ Checkpoint 属于 Run，包含：
 
 Checkpoint 只追加、带内容摘要。恢复必须验证适配器版本、工具版本、权限和输入资源仍兼容；不兼容时明确失败，不能猜测恢复。
 
+本地 `engine_mock_analytics` 已按 ADR-0018 实现一个更窄的 Product 切片：仅在固定 `resource.inspect` 后持久化一份确定性统计状态。该 Checkpoint 绑定不可变 Task 摘要、CSV 资源 ID/SHA-256、适配器 descriptor、有效权限与剩余预算；状态本身不保存原始 CSV、目标正文、Prompt 或凭证。只有 `failed`/`expired` 的源 Run 可由本地用户显式创建同 Task 的新恢复 Run；原 Run 永不改写，`cancelled`/`succeeded` 不可恢复。
+
+## Plan、Evidence、Gap 与 Replan（Proposed 扩展）
+
+PlanRevision、Evidence、Claim、Gap、CheckpointProjection 与 ReplanAttempt 的机器合同见 [Plan / Replan 执行控制](PLAN_REPLAN_CONTROL.md)。它们是现有 Task/Run/Step/Event/Artifact 的可追溯投影，不引入第二个 Run 状态机：Task 仍不可变，旧 Run 的终态仍不可覆盖。
+
+Replan 必须先通过无副作用的 Try；Confirm 绑定候选计划、Checkpoint、资源、策略和剩余预算摘要后才创建新 Run；Cancel 只取消 Attempt。ADR-0019 已为固定分析器的单一、已知产物构建失败实现此序列：候选 Plan 只能是控制面生成的 `checkpoint.verify → artifact.publish → run.final_answer`，并写入 `Run.plan_revision_id` 与 `Run.replan_attempt_id`。ADR-0018 的直接本地恢复仍不接受候选 Plan；两条入口共享 Checkpoint 去重，不能创建两个恢复 Run。
+
+ADR-0020 让该唯一失败路径生成一个 `gap@1`：它标识 `node_publish` 缺少已验证产物，且只允许 `artifact.publish` 消除。Gap 不是自由文本错误报告，也不修改源 Run；仅绑定恢复 Run 成功后可以 resolved。
+
 ## Approval
 
 Approval 绑定 `run_id + step_id + tool_version + arguments_digest`。批准决定为 `approved` 或 `rejected`；有次数和有效期。参数或版本变化会使批准失效。批准后由控制面自动重新投递同一 Run，不提供面向用户的独立 `resume` 动作。

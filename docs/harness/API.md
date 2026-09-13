@@ -2,7 +2,7 @@
 
 当前本地 v0.1 实现范围、JSON 事件轮询和简化表单端点见 [LOCAL_WORKBENCH.md](LOCAL_WORKBENCH.md)。下文为完整目标规格，未实现接口不能据此视为可调用。
 
-> P0 机器契约以 `specs/v1/openapi.yaml` 与 `specs/v1/core-contracts.schema.json` 为准；本文是与其同步维护的叙事说明。两者若漂移，HA-0001 不得冻结。
+> P0 机器契约以 `specs/v1/openapi.yaml` 与 `specs/v1/core-contracts.schema.json` 为准；ADR-0019 的本地受限 Replan 还引用 `execution-control.schema.json` 与 `local-replan.schema.json`。本文是与其同步维护的叙事说明。它们若漂移，HA-0001 不得冻结。
 
 ## 通用约定
 
@@ -17,7 +17,7 @@
 
 ## 路线图资源接口
 
-下表是完整目标面，不代表 P0 全部实现；`specs/v1/openapi.yaml` 当前只覆盖 Task/Run、事件、取消与批准的 P0 Draft。
+下表是完整目标面，不代表 P0 全部实现；`specs/v1/openapi.yaml` 当前覆盖 Task/Run、事件、取消、批准，以及 ADR-0019 的本地白名单 Replan TCC Draft。
 
 | 资源 | 阶段 | 主要接口 | 说明 |
 |---|---|---|---|
@@ -29,6 +29,7 @@
 | Tools | P0 | `POST/GET /tools` | 输入输出 Schema、风险等级 |
 | MCP Servers | P1 | `POST/GET /mcp-servers` | 连接配置的密钥引用 |
 | 外部连接器 | P1 | `GET/POST /local/connectors/{provider}` | 本地开发连接状态与显式 OAuth 授权 |
+| Local Agent Lab | ADR-0021 本地准备 | `GET/POST /local/agent-lab/*` | 无密配置、Session 与确定性 POST SSE；不调用模型/Provider |
 | Resources | P0 | `POST/GET /resources` | 文件、数据源和上下文引用 |
 | Tasks | P0 | `POST/GET /tasks` | 提交、查询与列表 |
 | Runs | P0 | `POST/GET /tasks/{id}/runs` | 创建和查询执行尝试 |
@@ -36,6 +37,7 @@
 | Artifacts | P0 | `GET /tasks/{id}/artifacts` | 结果、文件、引用和摘要 |
 | Approvals | P1 | `POST /approvals/{id}:decide` | 批准或拒绝一次动作 |
 | Workflows | P2 | `POST/GET /workflows` | 后续 DAG 能力 |
+| Plan Revisions / Replans | P1 | `POST/GET /runs/{id}/replans` | 版本化计划、Evidence/Gap Gate 与受控恢复；本地仅实现 ADR-0019 的白名单 TCC 切片 |
 | Evaluations | P0 | `POST/GET /evaluations` | 数据集、运行和比较 |
 
 ## 创建任务
@@ -163,6 +165,18 @@
 
 `POST /api/local/tasks` 在创建前会重做该预检：缺槽返回 `INTENT_CLARIFICATION_REQUIRED`，不支持请求返回 `INTENT_REJECTED`。严格 `POST /api/v1/tasks` 保持显式 Task/引擎契约，不被该本地便利入口改写。
 
+## Local Agent Lab（ADR-0021 已实现，零模型调用）
+
+该独立本机端点不属于 `/api/v1` Product Task/Run 面：
+
+- `GET/POST /api/local/agent-lab/providers`：无密 Provider Profile；只接受 `name/type/base_url/enabled`。
+- `GET/POST /api/local/agent-lab/models`：Model Profile；必须引用已启用 Provider。
+- `GET/POST /api/local/agent-lab/agents`：Agent 配置模板；必须引用已启用 Model，工具绑定恒为 0。
+- `GET/POST /api/local/agent-lab/sessions`，`GET /api/local/agent-lab/sessions/{id}`：本地有状态会话与有序纯文本消息。
+- `POST /api/local/agent-lab/sessions/{id}/messages`：请求要求 `Accept: text/event-stream` 与 `Idempotency-Key`，返回 `delta` 后接 `done`。响应固定声明 `model_calls=provider_calls=0`。
+
+请求/响应以 [`local-agent-lab.schema.json`](../../specs/v1/local-agent-lab.schema.json) 为准。未知字段、凭证样式输入、外部 HTTP 地址、禁用依赖、归档会话和幂等键冲突使用稳定错误信号拒绝。Base URL 不会被连通性测试或模型请求使用。此路径不产生 Product Event/Evidence，也不能读写 Task、Run、Plan、权限或预算。
+
 ## Task 与 Run 动作
 
 - `GET /tasks/{id}`：返回不可变 Task 和独立的 `latest_run` 快照；列表接口可另行提供派生的 `latest_run_status`。
@@ -171,7 +185,22 @@
 - `GET /runs/{id}`：返回 Run 状态、版本、限制消耗、结果摘要和链接。
 - `GET /runs/{id}/events`：使用 SSE 或游标读取该 Run 的事件。
 
+本地 v0.1 另实现一个更窄的恢复接口：`GET /api/local/runs/{id}/restore` 只返回当前 Checkpoint 是否可恢复；`POST /api/local/runs/{id}:restore` 接受空 JSON 对象和 `Idempotency-Key`，只允许 `engine_mock_analytics` 的 `failed`/`expired` 源 Run 创建同 Task 的新恢复 Run。调用方不能提交 Plan、资源、目标、权限或预算；任何摘要绑定不兼容返回稳定错误码且不创建 Run。它不是以下动态 Replan 目标接口的替代。
+
 面向用户的 API 不提供 `resume`。批准后控制面校验 Checkpoint，并自动重新投递同一 Run；服务故障恢复属于内部协议。
+
+## Plan / Replan（本地受限切片 + 通用目标）
+
+动态执行器通过 `PlanRevision` 绑定一个 Run 的候选 Action、硬前置条件和 Evidence 要求。`ReplanAttempt` 是 Run 的独立控制对象，不能修改原 Task 或终态 Run：
+
+- `POST /runs/{id}/replans`：基于已记录失败事件创建 `proposed` Attempt；请求必须指定失败事件、候选计划摘要与回滚 Checkpoint 引用。
+- `POST /replans/{id}:try`：仅运行无副作用的兼容性/权限/剩余预算/失效集合校验。
+- `POST /replans/{id}:confirm`：以计划、checkpoint、适配器/工具/资源、权限和剩余预算摘要的比较并交换确认；成功才创建新的恢复 Run。
+- `POST /replans/{id}:cancel`：仅取消该 Attempt 并使确认失效，不取消原 Run，也不自动补偿。
+
+ADR-0019 已把同一路径以受限本地接口接入：`POST/GET /api/v1/runs/{id}/replans`、`GET /api/v1/replans/{id}` 与 `POST /api/v1/replans/{id}:try|confirm|cancel`。所有写入请求都使用空 JSON 对象和 `Idempotency-Key`。控制面只接受 `ARTIFACT_PUBLICATION_FAILED` 的固定分析源 Run，并自行派生唯一候选计划；Try 无副作用，Confirm 才创建恢复 Run，Cancel 只废弃 Attempt。调用者不能提交目标、Plan、资源、权限、预算、Prompt 或代码。
+
+除上述白名单路径外，通用接口在当前本地 v0.1 **仍不存在**。只有声明并验证 checkpoint、restore、cancel 的适配器可申请扩展。完整合同与六出口见 [Plan / Replan 执行控制](PLAN_REPLAN_CONTROL.md)。
 
 ## 本地百度网盘 OAuth 连接器
 
@@ -237,7 +266,7 @@ SSE 客户端使用 `Last-Event-ID` 恢复；服务端必须说明事件保留�
 }
 ```
 
-稳定错误码至少包括 `VALIDATION_ERROR`、`UNAUTHENTICATED`、`FORBIDDEN`、`NOT_FOUND`、`CONFLICT`、`RATE_LIMITED`、`ENGINE_UNAVAILABLE`、`MODEL_CAPABILITY_MISMATCH`、`PERMISSION_REQUIRED`、`BUDGET_EXCEEDED`、`EVENT_CURSOR_EXPIRED`、`SANDBOX_VIOLATION`、`TIMEOUT` 和 `INTERNAL_ERROR`。
+稳定错误码至少包括 `VALIDATION_ERROR`、`UNAUTHENTICATED`、`FORBIDDEN`、`NOT_FOUND`、`CONFLICT`、`RATE_LIMITED`、`ENGINE_UNAVAILABLE`、`MODEL_CAPABILITY_MISMATCH`、`PERMISSION_REQUIRED`、`BUDGET_EXCEEDED`、`CHECKPOINT_NOT_FOUND`、`CHECKPOINT_NOT_RESTORABLE`、`CHECKPOINT_INCOMPATIBLE`、`CHECKPOINT_STATE_INVALID`、`EVENT_CURSOR_EXPIRED`、`SANDBOX_VIOLATION`、`TIMEOUT` 和 `INTERNAL_ERROR`。
 
 ## 兼容规则
 

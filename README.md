@@ -1,17 +1,19 @@
 # HarnessAgent
 
-HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。当前包含本地前后端工作台：CSV 上传、固定统计分析、持久 Task/Run、事件、取消/重跑和可验证产物。
+HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。当前包含本地前后端工作台：CSV 上传、固定统计分析、持久 Task/Run、事件、取消/重跑、受限固定 Checkpoint 恢复和可验证产物。
 
 本机地址：**http://127.0.0.1:8765**。进入页面选择示例 CSV，即可跑通一次分析。
 
 多专项编排演示：**http://127.0.0.1:8765/research**。最多三家模拟公司 × 三个专项，展示有界并发、父子 Run、失败汇总、取消和整树重跑。此功能运行固定函数与 synthetic 资料，不是实际 Claude 多 Agent 或真实研报。
+
+本地 Agent Lab：**http://127.0.0.1:8765/agent-lab**。它验证无密 Provider/Model/Agent Profile、SQLite 会话与 POST SSE 前端链路；回复是明确标记的本地确定性演示，模型、Provider、网络和工具调用均为 0，不改变 Product Task/Run/Replan。
 
 ```sh
 sh harness/init.sh
 sh harness/start.sh
 ```
 
-运行 `sh harness/verify.sh` 执行后端验证与前端语法检查。后台部署、停止、恢复、浏览器验收与边界说明见 [本地工作台指南](docs/harness/LOCAL_WORKBENCH.md)。首版执行固定统计，不调用模型；真实 Agent 和长期记忆按路线图逐步接入。
+运行 `sh harness/verify.sh` 执行后端验证与前端语法检查。后台部署、停止、恢复、浏览器验收与边界说明见 [本地工作台指南](docs/harness/LOCAL_WORKBENCH.md)。首版执行固定统计，不调用模型；ADR-0018 允许同 Task 的固定统计 Checkpoint 恢复，ADR-0019/0020 仅为已知产物构建失败提供固定候选的 Try/Confirm/Cancel Replan 与持久 `gap@1`。Gap 只有在绑定恢复 Run 成功后才会解决。它们均不等同通用 Agent 计划编辑。真实 Agent 和长期记忆按路线图逐步接入。
 
 项目目标是用统一任务契约连接不同 Agent 引擎，并提供持久状态、权限控制、工具执行、可观测性和评测能力。各引擎通过可选适配器接入，不要求部署在同一进程，也不允许隐式跨引擎跳转。
 
@@ -23,6 +25,9 @@ sh harness/start.sh
 - [百度网盘 OAuth 连接器](docs/harness/BAIDU_NETDISK_CONNECTOR.md)
 - [本地意图契约与规则路由](docs/harness/INTENT_ROUTING.md)
 - [模型化意图路由的离线评测与影子门禁](docs/harness/INTENT_MODEL_EVALUATION.md)
+- [Plan / Replan 执行控制合同](docs/harness/PLAN_REPLAN_CONTROL.md)
+- [Provider / Agent / 对话引擎六篇阅读总结](docs/research/CLAUDE_CODE_PROVIDER_AGENT_CHAT_SIX_PDFS.md)
+- [P0 CodeAct 激活决策包](docs/harness/P0_ACTIVATION_DECISION.md)
 
 - [P2 长期记忆规划](plan.md)
 - [产品范围](docs/harness/PRODUCT_SCOPE.md)

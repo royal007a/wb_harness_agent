@@ -15,6 +15,7 @@
 
 - **契约**：请求/响应 Schema、未知字段、版本兼容、稳定错误码。
 - **状态机**：合法迁移、并发租约、重试、取消、超时、恢复、终态不可变。
+- **执行控制**：候选 Action 白名单、硬前提、六出口、Evidence/Gap/Checkpoint 可信状态传播、TCC 与失效集合。
 - **适配器**：能力声明、事件映射、检查点、取消传递、错误分类。
 - **工具**：输入校验、权限拒绝、超时、幂等、副作用范围和输出清理。
 - **CodeAct**：禁网、只读输入、输出路径、资源上限、取消、沙箱销毁和数值回算。
@@ -33,6 +34,12 @@
 - 图表中的关键数字必须从源数据回算，不能只从视觉模型回答采信。
 - 评测集和生产请求隔离，防止答案泄漏和过拟合。
 - 模型化意图路由先使用版本化合成去标识夹具；候选结果只保存 case ID 和结构化预测，必须经过摘要绑定、类别覆盖、阈值与影子模式校验，不能以固定样例通过替代生产准入。
+- Replan 评测必须覆盖失败点与根因不一致、Checkpoint/资源/策略不兼容、权限或预算扩大、取消竞态、失效传播与无效恢复拒绝；固定函数引擎不能以审计点冒充可恢复 Checkpoint。
+- ADR-0018 的本地恢复必须额外覆盖 Checkpoint 后故障、同 Task 新 Run、原 Run 终态不可变、SQLite 重启、幂等、资源/Task/适配器/权限/预算/状态摘要篡改拒绝与 cancelled 拒绝；固定统计状态须重新回算，不能把不匹配状态降级成新分析结果。
+- `supported` Claim 的 Evidence 必须存在、已验证且没有未解决反证；`restorable` Checkpoint 与 `confirmed` Replan 必须通过摘要绑定的反例契约测试。
+- ADR-0019 的本地 TCC 切片还必须覆盖：失败 Event 白名单、非空请求拒绝与控制对象脱敏、Try/Cancel 无 adapter/Product Run/工具副作用、Confirm 的 CAS 去重、Cancel 无 Run、Try 后绑定漂移过期、重启与浏览器 `checkpoint.verify` / 不重复 `resource.inspect`。
+- ADR-0020 的本地 Gap State 还必须覆盖：失败 Event 与唯一 core Gap 的原子创建、缺失/已解决/字段不兼容 Gap 的提案拒绝、Try/Cancel/漂移/恢复失败不解决 Gap，以及仅成功绑定恢复在新 Run 写入 `gap.resolved`；浏览器 Evidence 必须确认该状态转换且模型、网络、任意代码调用仍为零。
+- ADR-0021 Local Agent Lab 必须覆盖：严格 Schema/未知字段、凭证样式输入拒绝、Provider/Model/Agent 启用依赖、Session 隔离、消息顺序与幂等冲突；POST SSE 必须出现 `delta → done`，浏览器使用 `fetch` 而不是 EventSource；页面取消仅停止显示，且模型/Provider/网络/工具调用始终为零。
 
 ## 完成定义 DoD
 

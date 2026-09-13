@@ -18,6 +18,11 @@
 | [ADR-0013](../decisions/ADR-0013-baidu-netdisk-local-configuration-helper.md) | Accepted（本机准备） | TTY 无回显配置助手将 Secret 写入 Keychain；不通过聊天/文件传递凭证 |
 | [ADR-0015](../decisions/ADR-0015-local-deterministic-intent-preflight.md) | Accepted（本地受限实现） | 只识别 CSV 分析的无模型 Intent Contract、缺槽澄清与显式提交门禁 |
 | [ADR-0016](../decisions/ADR-0016-intent-model-evaluation-gate.md) | Proposed | 模型化意图路由先通过合成去标识离线评测与影子门禁 |
+| [ADR-0017](../decisions/ADR-0017-plan-evidence-gap-checkpoint-control.md) | Proposed | Plan/Evidence/Gap/Checkpoint 统一为执行控制面，Replan 采用 TCC |
+| [ADR-0018](../decisions/ADR-0018-local-fixed-analytics-checkpoint-restore.md) | Accepted（受限本地切片，已验收） | 固定统计边界的同 Task Checkpoint / Restore；不开放通用 Replan |
+| [ADR-0019](../decisions/ADR-0019-local-deterministic-replan-tcc.md) | Accepted（受限本地切片） | 仅产物构建失败的固定候选 Plan 与 Try/Confirm/Cancel；不开放 Plan 编辑或通用 Agent Replan |
+| [ADR-0020](../decisions/ADR-0020-local-replan-gap-state.md) | Accepted（受限本地切片，已验收） | 为唯一白名单失败持久化 `gap@1`；仅成功绑定恢复可解决 |
+| [ADR-0021](../decisions/ADR-0021-local-agent-lab-preparation.md) | Accepted（本地准备切片） | 无密 Profile、SQLite Session 与确定性 POST SSE；真实模型/Provider 仍未启用 |
 
 ## 待决策
 

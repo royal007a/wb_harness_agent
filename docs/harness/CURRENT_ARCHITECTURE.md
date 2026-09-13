@@ -2,7 +2,7 @@
 
 ## 结论
 
-当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器、无模型 Intent Contract 预检和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、Claude SDK 离线配置契约探针、合成去标识的模型化意图离线/影子评测门禁，以及已验证 OAuth 连通但数据面关闭的百度网盘连接器；尚无真实模型、原生 Claude 子 Agent 执行、网盘数据访问或长期记忆。
+当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器、无模型 Intent Contract 预检和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、Claude SDK 离线配置契约探针、合成去标识的模型化意图离线/影子评测门禁、无密 Provider/Model/Agent Profile + 本地确定性 POST SSE Agent Lab，以及已验证 OAuth 连通但数据面关闭的百度网盘连接器；尚无真实模型、原生 Claude 子 Agent 执行、网盘数据访问或长期记忆。
 
 ```mermaid
 flowchart LR
@@ -27,7 +27,11 @@ flowchart LR
 
 模型化意图路由仅有离线/影子评测准备：`fixture → candidate-output validator → evaluator → policy gate`。夹具是手写合成去标识数据；没有模型客户端、生产文本或 API 路由接入。候选即使通过也只可申请下一阶段影子回放，详见 [INTENT_MODEL_EVALUATION.md](INTENT_MODEL_EVALUATION.md)。
 
+Plan/Replan 的通用控制合同仍以 `execution-control.schema.json → pure reducer → synthetic evaluation` 为主。ADR-0018 实现固定 Checkpoint 直接恢复；ADR-0019/0020 额外实现一个严格白名单的 Product TCC 路径：只有 checkpoint 后的 `ARTIFACT_PUBLICATION_FAILED` 能生成持久 PlanRevision、Event Evidence、ReplanAttempt 和 `gap@1`。该 Gap 固定为 `node_publish` 缺少已验证产物，Try/Cancel/失败恢复保持 open，只有绑定恢复 Run 成功才写 `gap.resolved`。Confirm 的新 Run 只做 `checkpoint.verify → artifact.publish → run.final_answer`，不重检资源、不调用模型或网络，也不接受调用方编辑 Plan。研究演示仍只支持取消和整树重跑。详见 [Plan / Replan 执行控制](PLAN_REPLAN_CONTROL.md)。
+
 百度网盘连接器由 `Service → BaiduNetdiskConnector → openapi.baidu.com / macOS Keychain` 组成。SQLite 仅保存 state 摘要、期限和无密状态；Client Secret、access token 和 refresh token 留在 Keychain。当前仅 OAuth 连接，不启用目录、下载或分享链接。见 [BAIDU_NETDISK_CONNECTOR.md](BAIDU_NETDISK_CONNECTOR.md)。
+
+ADR-0021 的 Agent Lab 由 `FastAPI → LocalAgentLab → SQLite profile/session/message/exchange` 组成，与 Product `Task/Run/Event/Evidence/Checkpoint/Replan` 表严格分离。配置中没有凭证或 `credential_ref`；Provider URL 从不被请求；Local Demo Responder 只流式发送固定声明文本。浏览器通过 POST + `fetch` 读取 `delta/done` SSE，支持 AbortController 停止显示。它是 UI、会话和持久化准备，不是模型、Provider Adapter、SDK 或 Agent Loop 路由。
 
 ## 当前文件结构
 

@@ -22,6 +22,10 @@
 
 该 Skill 已以符号链接同步到 `~/.claude/skills/baidu-netdisk-download`，因此 Claude 使用的是项目版本而非副本。它不启用 HA-0010/0011 的文件数据面，也不允许 Cookie、验证码、浏览器自动化或直链 API；直接下载仍受 TD-020 约束。
 
+## Local Agent Lab 交付 SOP
+
+`skills/local-agent-lab-delivery/SKILL.md` 固化 ADR-0021 的交付顺序：先契约与安全边界，再 Profile/Session/SSE 实现，最后执行幂等、SSE、浏览器与零调用验收。它是项目内方法文档，不自动安装，也不向模型/Provider/网络/Tool 赋权。真实对话接入仍受 TD-024 与独立 L3 准入约束。
+
 ## 目标职责
 
 | 层 | 责任 | 不能代替 |

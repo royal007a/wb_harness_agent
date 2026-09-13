@@ -1,7 +1,256 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-13T10:16:00Z",
+  "generated_at": "2026-09-13T15:12:00Z",
   "tasks": [
+    {
+      "id": "HA-0024",
+      "title": "实现本地 Agent Lab 的 Provider、Agent 与流式对话准备切片",
+      "status": "completed",
+      "risk": "medium",
+      "scope": [
+        "无密 Provider/Model/Agent 配置、会话和消息的独立持久化",
+        "POST SSE 的本地确定性演示、取消与前端时间线",
+        "规格、API、测试、浏览器 Evidence 与本地部署验证"
+      ],
+      "non_goals": [
+        "模型、网络、Provider 健康检查、凭证或远端模型同步",
+        "ReAct、工具调用、MCP、RAG、多 Agent、长期记忆或动态 Plan",
+        "修改 Product Task/Run/Replan 控制闭环或将演示说成真实模型回答"
+      ],
+      "acceptance": [
+        "Profile、Session、Message 与幂等 exchange 均通过严格 Schema/字段/隔离验证，且不保存凭证",
+        "浏览器通过 fetch 接收 POST SSE delta/done，取消/错误可恢复，刷新后会话历史仍存在",
+        "L2 回归、浏览器、链接/Schema/安全检查和 launchd 健康检查通过，模型/Provider/网络调用为零"
+      ],
+      "depends_on": ["HA-0023"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0024-local-agent-lab.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0024/manifest.json",
+        "harness/evidence/HA-0024/all-tests.xml",
+        "harness/evidence/HA-0024/browser-agent-lab.json",
+        "harness/evidence/HA-0024/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0023",
+      "title": "形成 P0 CodeAct 开发试点激活决策包",
+      "status": "completed",
+      "risk": "medium",
+      "scope": [
+        "P0 规格、本地实现和 VM/SDK 探针的事实矩阵",
+        "模型开发试点的最小授权字段、停止条件与非目标",
+        "文档/任务/Evidence 对齐"
+      ],
+      "non_goals": [
+        "模型、网络、任意代码或真实适配器调用",
+        "保存凭证、解锁引擎或宣布生产 P0"
+      ],
+      "acceptance": [
+        "固定统计、脚本模型探针和真实 CodeAct 不混淆",
+        "HA-0008 所需授权信息可审计且不含秘密",
+        "回归、链接、任务 Schema 与零运行时能力变化 Evidence 完整"
+      ],
+      "depends_on": ["HA-0022"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0023-p0-activation-decision-brief.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0023/manifest.json",
+        "harness/evidence/HA-0023/all-tests.xml",
+        "harness/evidence/HA-0023/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0022",
+      "title": "完成规划/执行图谱能力覆盖审计",
+      "status": "completed",
+      "risk": "medium",
+      "scope": [
+        "Plan/TAO/State/Replan 图谱与真实实现的覆盖矩阵",
+        "技术债与运行时事实对齐",
+        "L0 文档、链接和任务状态 Evidence"
+      ],
+      "non_goals": [
+        "模型、网络、任意代码、动态 Action 或新 API 行为",
+        "关闭 HA-0001/HA-0008 或代替用户批准真实 Agent"
+      ],
+      "acceptance": [
+        "图谱模块的已实现、离线合同和未授权边界可定位且不混淆",
+        "TD-021/022 更新，通用 TAO runtime 缺口登记为 TD-023",
+        "文档链接、任务 Schema 和现有回归通过且运行时能力未变"
+      ],
+      "depends_on": ["HA-0021"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0022-plan-execution-coverage-audit.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0022/manifest.json",
+        "harness/evidence/HA-0022/all-tests.xml",
+        "harness/evidence/HA-0022/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0021",
+      "title": "实现本地 Replan 的持久 Gap State 纵向切片",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "失败 Event 关联的 gap@1 持久状态",
+        "Replan 提案/详情与恢复成功的 Gap 状态机",
+        "Schema/API/UI、L3 反例和浏览器 Evidence"
+      ],
+      "non_goals": [
+        "模型根因分析、用户编辑 Gap、自由 Plan 或新失败恢复路径",
+        "跨 Task/资源/权限/预算/引擎恢复或修改源 Run/Checkpoint",
+        "把 Gap resolved 当作业务结论正确"
+      ],
+      "acceptance": [
+        "仅 ARTIFACT_PUBLICATION_FAILED 创建一次 core open Gap；无效 Gap 不能 Replan",
+        "Try/Cancel/失败路径不解决 Gap，成功绑定恢复才解决并写事件",
+        "全量/浏览器/Schema/安全与零模型网络任意代码 Evidence 完整"
+      ],
+      "depends_on": ["HA-0020"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0021-local-replan-gap-state.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0021/manifest.json",
+        "harness/evidence/HA-0021/all-tests.xml",
+        "harness/evidence/HA-0021/browser-replan-gap.json",
+        "harness/evidence/HA-0021/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0020",
+      "title": "实现本地固定分析器确定性 Plan/Replan TCC 纵向切片",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "持久 PlanRevision、失败 Event Evidence 与 ReplanAttempt",
+        "白名单候选 Plan 的 Try/Confirm/Cancel API/UI",
+        "L3 绑定、取消、幂等、重启与浏览器 Evidence"
+      ],
+      "non_goals": [
+        "模型、网络、任意代码、用户/模型编辑 Plan",
+        "非产物构建失败的自动 Replan 或跨 Task/资源/引擎恢复",
+        "取消已确认 Attempt 或改写源 Run/产物"
+      ],
+      "acceptance": [
+        "仅真实 ARTIFACT_PUBLICATION_FAILED 与完整绑定 Checkpoint 可走 Try；Try 无 Run/工具副作用",
+        "Confirm CAS 只能创建一个同 Task 的恢复 Run；Cancel 只终结未确认 Attempt",
+        "计划、Evidence、API/UI、L3 故障/浏览器回归与零模型/网络/任意代码 Evidence 完整"
+      ],
+      "depends_on": ["HA-0019"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0020-local-deterministic-replan-tcc.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0020/manifest.json",
+        "harness/evidence/HA-0020/all-tests.xml",
+        "harness/evidence/HA-0020/browser-replan-tcc.json",
+        "harness/evidence/HA-0020/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0019",
+      "title": "实现本地固定分析器 Checkpoint / Restore 产品纵向切片",
+      "status": "completed",
+      "risk": "high",
+      "scope": ["固定统计后的单一持久 Checkpoint", "同 Task 的严格绑定恢复 Run", "本地 API/UI、L3 故障注入与浏览器验收"],
+      "non_goals": ["通用 Replan、动态 Plan 或模型执行", "跨引擎/跨 Task/跨资源恢复", "从 cancelled/succeeded Run 恢复或改写旧 Run"],
+      "acceptance": ["checkpoint/restore 必须机械绑定 Task、资源、适配器、权限、预算与状态摘要", "兼容恢复创建新 Run 且旧 Run 不变；不兼容无副作用拒绝", "L3 回归、故障注入、重启和浏览器 Evidence 通过且模型/网络/任意代码调用为零"],
+      "depends_on": ["HA-0018"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0019-local-checkpoint-restore-vertical-slice.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0019/manifest.json", "harness/evidence/HA-0019/all-tests.xml", "harness/evidence/HA-0019/browser-checkpoint-restore.json", "harness/evidence/HA-0019/acceptance.md"]
+    },
+    {
+      "id": "HA-0018",
+      "title": "实现隔离 Checkpoint / Restore 的 Replan 纵向探针",
+      "status": "completed",
+      "risk": "high",
+      "scope": ["确定性内存 checkpoint/restore probe", "Plan→Try→Confirm→restore 端到端演练", "摘要篡改拒绝与无运行时副作用 Evidence"],
+      "non_goals": ["注册 Product adapter、API 或数据库迁移", "创建/恢复 Product Run", "调用模型、工具、网络或开放用户 Replan"],
+      "acceptance": ["probe 的 restore 只能在摘要绑定一致时恢复正确下一节点", "篡改 checkpoint 的 resource/adapter/权限/预算/状态摘要被拒绝", "完整 L2 回归与 Evidence 证明 runtime_enabled=false 且无 Product 副作用"],
+      "depends_on": ["HA-0017"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0018-isolated-checkpoint-restore-probe.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0018/manifest.json",
+        "harness/evidence/HA-0018/all-tests.xml",
+        "harness/evidence/HA-0018/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0017",
+      "title": "建立 checkpoint-enabled Replan 适配器准入评估",
+      "status": "completed",
+      "risk": "high",
+      "scope": ["读取 Adapter descriptor 的离线能力判定", "当前本地分析器的 restore 不可用证据", "合成完整 descriptor 的 runtime probe 边界测试"],
+      "non_goals": ["探测或执行适配器", "开放 API、注册引擎或修改 Product Run", "把准入评估等同真实运行时批准"],
+      "acceptance": ["缺少 checkpoint/restore/cancel/structured output 的 descriptor 必须 ineligible", "当前 LocalAnalyticsAdapter 的真实 descriptor 被机械拒绝", "完整合成 descriptor 最多获得 eligible_for_runtime_probe，L2 Evidence 明确 runtime_enabled=false"],
+      "depends_on": ["HA-0016"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0017-replan-adapter-admission.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0017/manifest.json",
+        "harness/evidence/HA-0017/all-tests.xml",
+        "harness/evidence/HA-0017/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0016",
+      "title": "硬化 Plan / Replan 的证据、Checkpoint 与 Confirm 摘要绑定",
+      "status": "completed",
+      "risk": "high",
+      "scope": ["Claim 的证据与可靠性条件", "Checkpoint 的兼容/资源/权限/预算摘要绑定", "Replan Try/Confirm 的摘要和新 Run 引用约束"],
+      "non_goals": ["新增 API、数据库迁移或运行时恢复", "调用模型、工具或外部服务", "改变固定 CSV 或研究演示的执行语义"],
+      "acceptance": ["Schema 拒绝无证据的 supported Claim、不可恢复 Checkpoint 和未绑定的 confirmed Replan", "固定评测、反例测试、全量 L2 回归与独立 Evidence 通过", "文档和状态明确仍为 Proposed 的离线合同"],
+      "depends_on": ["HA-0015"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0016-execution-control-contract-hardening.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0016/manifest.json",
+        "harness/evidence/HA-0016/all-tests.xml",
+        "harness/evidence/HA-0016/evaluation-results.json",
+        "harness/evidence/HA-0016/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0015",
+      "title": "建立 Plan / Evidence / Gap / Checkpoint 的 Replan 控制合同",
+      "status": "completed",
+      "risk": "high",
+      "scope": ["G4C、TAO、六出口与 TCC 的机器契约", "纯确定性状态 reducer 与合成故障/恢复评测", "ADR、架构/API/质量/安全文档与 Evidence"],
+      "non_goals": ["修改现有 CSV 或研究演示 Run 语义", "调用模型、工具或外部服务", "开放用户 Replan API 或从本地 Checkpoint 恢复"],
+      "acceptance": ["PlanRevision、Evidence、Claim、Gap、CheckpointProjection、ReplanAttempt 可由 Schema 验证且无原文/密钥字段", "候选 Action、可信状态传播、Try 与 TCC 均有合成夹具与单元测试", "L2 回归、敏感信息检查、文档和结构化 Evidence 完整；现有运行时边界未被夸大"],
+      "depends_on": ["HA-0014"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0015-plan-replan-control-contract.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0015/manifest.json",
+        "harness/evidence/HA-0015/all-tests.xml",
+        "harness/evidence/HA-0015/evaluation-results.json",
+        "harness/evidence/HA-0015/acceptance.md"
+      ]
+    },
     {
       "id": "HA-0014",
       "title": "建立模型化意图路由离线评测与影子门禁",

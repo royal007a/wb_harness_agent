@@ -21,7 +21,7 @@
 | TD-010 | 单用户、单进程、无生产身份认证 | 仅允许可信本机演示 / P0 | 任何远程或多用户部署前 | mymaccodex；身份与 L3 独立审查 |
 | TD-011 | 固定工具尚未接真实 Agent/沙箱 | 自然语言目标只记录 / P0 | CodeAct 接入前 | mymaccodex；HA-0003/0004 探针 |
 | TD-012 | 列表未分页、资源无自动保留清理 | 长期大量数据会降低性能 / P1 | 超过 1000 个任务或用户正式使用前 | mymaccodex；分页与保留期测试 |
-| TD-013 | 单进程恢复为明确失败/重跑，无模型 checkpoint | 不支持中途继续模型状态 / P1 | HA-0002 完整契约验收前 | mymaccodex；checkpoint 契约测试 |
+| TD-013 | ADR-0018 仅恢复固定统计状态；无模型/解释器/跨引擎 checkpoint | 不支持中途继续模型状态 / P1 | 真实 Agent 或远程沙箱接入前 | mymaccodex；版本化 checkpoint、取消、沙箱和恢复契约测试 |
 | TD-014 | 两个依赖弃用警告 | 当前测试通过，升级时需处理 / P2 | 下一次依赖升级 | mymaccodex；Starlette 测试客户端兼容验证 |
 | TD-015 | VM 探针不是生产沙箱；Docker daemon 故障时清理需人工核对，尚无崩溃回收器 | 残留容器/磁盘资源风险 / P0 | 产品真实路由开放前 | mymaccodex；创建超时、daemon 断联、worker 崩溃清理故障注入 |
 | TD-016 | 真实模型、Token/费用与 SDK 网络取消未验证 | 不能开放 CodeAct / P0 | HA-0008 | mymaccodex；获准连接与真实测试证据 |
@@ -29,7 +29,10 @@
 | TD-018 | 演示编排为可信固定函数线程池，不是 OS 隔离；无法强杀任意阻塞第三方代码 | 不得直接装入外部 Skill/任意工具 / P0 | 替换 research_demo 执行器前 | mymaccodex；隔离进程/VM、强制终止和清理故障测试 |
 | TD-019 | 研究输入为 synthetic 夹具，coverage 仅衡量任务完成度，不代表风险资料完备 | 不得用于实际投资判断 / P0 | 真实金融场景接入前 | mymaccodex；授权数据源、时效/引用/指标回算与未知风险评测 |
 | TD-020 | 百度网盘数据面文件 API、权限范围和数据保留尚未按用户应用版本实测；官方客户端分享链接交接不构成数据面验收 | 不得开放列目录、脚本/API 下载或分享链接导入 / P0 | OAuth 应用连通后 | mymaccodex；官方版本、最小 scope、真实测试账号和删除/审计证据 |
-| TD-021 | 意图识别仅有 `rules@1` 确定性本地预检；HA-0014 正在补合成评测、候选 Schema、阈值和影子门禁，但尚无真实候选基线、隐私审查或线上漂移监控 | 不得将模型置信度、语义检索或自动跨引擎路由开放给用户 / P1 | 准备接入轻量/深度模型或向量检索前 | mymaccodex；版本化语料、拒识阈值、真实候选离线基线、隐私审查、影子回放与回滚演练 |
+| TD-021 | 意图识别仅有 `rules@1` 确定性本地预检；HA-0014 已完成合成评测、候选 Schema、阈值和影子门禁，但仍无真实候选基线、隐私审查或线上漂移监控 | 不得将模型置信度、语义检索或自动跨引擎路由开放给用户 / P1 | 准备接入轻量/深度模型或向量检索前 | mymaccodex；版本化语料、拒识阈值、真实候选离线基线、隐私审查、影子回放与回滚演练 |
+| TD-022 | 通用 Plan/Replan 仍仅有离线 Schema、纯 reducer 与合成评测；ADR-0019/0020 只实现单一产物失败的固定候选 TCC 与 `gap@1` | 不得把该白名单路径描述为 Plan 编辑、自动根因判断、通用动态 Action 或跨引擎恢复 / P1 | 首个非固定 Plan 或真实 Agent adapter 接入前 | mymaccodex；能力探针、L3 恢复/取消/副作用故障注入、CAS 确认与生产回滚演练 |
+| TD-023 | 图中的 TAO / Action State / Observation State 尚未作为通用运行时状态机落地；当前只有固定本地节点、只追加 Event 和离线 reducer | 不得将固定本地流水线称为动态 Agent Loop / P1 | 申请接入首个真实 Agent 或动态 Action 选择前 | mymaccodex；批准目标引擎、持久 Action/Observation 合同、L3 副作用/取消/恢复故障注入和回滚演练 |
+| TD-024 | ADR-0021 Agent Lab 只验证无密配置、SQLite Session 与本地确定性 SSE；没有 Provider Adapter、凭证治理、真实流取消、热上下文缓存、模型输出治理或生产数据留存策略 | 不得把 Agent Lab 称为真实对话、Provider 集成或 Agent Loop / P1 | 申请任何真实模型/Provider 路由前 | mymaccodex；独立 ADR、端点/SDK 探针、Keychain/Vault 引用、数据分类、预算/取消/恢复和 L3 故障演练 |
 
 ## 维护规则
 

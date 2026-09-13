@@ -12,6 +12,7 @@
 |---|---|---|
 | `describe` | 无 | 适配器版本、协议版本、能力、限制、健康信息 |
 | `start_run` | Task 快照、Run、工具描述、资源句柄、预算 | 有序 Engine Events |
+| `checkpoint_run` | Task/Run/资源快照与已验证中间状态 | 版本化、无密且可摘要绑定的 Adapter State；平台负责持久化 |
 | `restore_run` | Run、兼容的 Checkpoint、剩余预算 | 后续 Engine Events |
 | `cancel_run` | Run、原因、截止时间 | 已接收/已终止/无法终止 |
 | `probe` | 标准能力探针 | 结构化探针结果 |
@@ -35,6 +36,12 @@
 - `telemetry.usage`
 
 每项取值不能只写 true/false，还需声明限制，例如支持的语言、最大并发、是否保持解释器状态、取消粒度和结构化输出版本。
+
+## Replan 准入（Proposed）
+
+`assess_replan_adapter` 只读取 `describe()` 的 capability descriptor，不发起探针或执行。它把同时支持 `state.checkpoint`、`state.restore`、`control.cancel`、`output.structured` 的 Adapter 标为 `eligible_for_runtime_probe`；任何缺失均为 `ineligible`。两种结论都不等于用户可用或生产批准，`runtime_enabled` 始终为 false。
+
+`LocalAnalyticsAdapter.describe()` 现已声明一个版本化固定 Checkpoint 格式与同 Task restore 能力。ADR-0018 批准 `resource.inspect` 后的确定性统计状态恢复；ADR-0019 仅在 `ARTIFACT_PUBLICATION_FAILED` 时使用相同状态创建白名单候选 Plan，并要求失败 Event Evidence、Try/Confirm/Cancel、摘要绑定、L3 故障注入与显式用户动作；它们都不是通用 Replan 准入。其他适配器仍必须先通过独立 L3 checkpoint/恢复/取消/副作用故障注入与用户批准。
 
 ## 输入约束
 
