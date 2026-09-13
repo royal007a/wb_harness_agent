@@ -23,6 +23,7 @@ with sync_playwright() as p:
     page.get_by_role('button', name='创建并运行').click()
     expect(page.locator('#detail')).to_be_visible()
     expect(page.locator('.artifact-link')).to_have_count(3, timeout=15000)
+    expect(page.locator('#restore')).to_be_hidden()
     expect(page.locator('#tab-overview')).to_contain_text('12')
     page.get_by_role('tab', name='执行事件').click()
     expect(page.locator('#tab-events')).to_contain_text('run.succeeded')
@@ -50,7 +51,7 @@ with sync_playwright() as p:
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Mobile horizontal overflow'
     page.screenshot(path=str(OUTPUT / 'workbench-mobile.png'), full_page=True)
     assert not errors, errors
-    report = {'browser': browser.version, 'errors': errors, 'checks': ['sample_upload', 'intent_preflight', 'create', 'artifacts', 'events', 'policy', 'download', 'rerun', 'resources', 'engines', 'model_route_blocked', 'reload', 'mobile_layout']}
+    report = {'browser': browser.version, 'errors': errors, 'checks': ['sample_upload', 'intent_preflight', 'create', 'artifacts', 'restore_hidden_on_success', 'events', 'policy', 'download', 'rerun', 'resources', 'engines', 'model_route_blocked', 'reload', 'mobile_layout']}
     (OUTPUT / 'browser.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(report, ensure_ascii=False))
     browser.close()

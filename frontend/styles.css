@@ -581,6 +581,20 @@ textarea {
   align-items: center;
   flex-wrap: wrap;
 }
+.replan-control {
+  margin: 0 24px 18px;
+  padding: 12px 14px;
+  border: 1px solid #d7e4d0;
+  border-left: 3px solid #6d8d5d;
+  border-radius: 6px;
+  background: #f7faf4;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+}
+.replan-control strong { color: #46643b; font-size: 12px; }
+.replan-control p { margin: 4px 0 0; color: #66745f; font-size: 11px; }
 .secondary {
   background: white;
   border: 1px solid #dbe3d6;

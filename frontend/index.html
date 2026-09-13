@@ -21,6 +21,7 @@
       </div>
       <p class="nav-label">WORKSPACE</p>
       <nav>
+        <a class="nav-item" href="/agent-lab">◌ <span>Agent Lab</span></a>
         <a class="nav-item" href="/connectors/baidu-netdisk">☁ <span>百度网盘连接</span></a>
         <a class="nav-item" href="/research">⑂ <span>多专项编排</span></a>
         <button
@@ -164,7 +165,20 @@
               <div class="run-actions">
                 <select id="run-select" aria-label="选择运行记录"></select
                 ><button id="cancel" class="secondary">取消运行</button
+                ><button id="restore" class="secondary" hidden>从检查点恢复 ↺</button
+                ><button id="replan" class="secondary" hidden>创建重规划方案 ↝</button
                 ><button id="rerun" class="secondary">重新运行 ↻</button>
+              </div>
+            </div>
+            <div id="replan-control" class="replan-control" hidden>
+              <div>
+                <strong>受限 Replan</strong>
+                <p id="replan-summary"></p>
+              </div>
+              <div class="run-actions">
+                <button id="replan-try" class="secondary" hidden>预检 Try</button>
+                <button id="replan-confirm" class="secondary" hidden>确认并恢复 Confirm</button>
+                <button id="replan-cancel" class="secondary" hidden>取消方案 Cancel</button>
               </div>
             </div>
             <div class="tabs" role="tablist">

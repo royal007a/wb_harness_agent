@@ -16,6 +16,8 @@ const state = {
   tab: "overview",
   events: [],
   cursor: 0,
+  restoreStatus: null,
+  replans: [],
   generation: 0,
   resultKey: null,
   busy: false,
@@ -191,12 +193,16 @@ async function chooseTask(id, runId = null) {
 async function refreshRun(generation = state.generation) {
   if (!state.run) return;
   const runId = state.run.id;
-  const [run, eventData] = await Promise.all([
+  const [run, eventData, restoreStatus, replans] = await Promise.all([
     api("/api/v1/runs/" + runId),
     api(`/api/v1/runs/${runId}/events?after=${state.cursor}`),
+    api(`/api/local/runs/${runId}/restore`),
+    api(`/api/v1/runs/${runId}/replans`),
   ]);
   if (generation !== state.generation || runId !== state.run?.id) return;
   state.run = run;
+  state.restoreStatus = restoreStatus;
+  state.replans = replans.items;
   const known = new Set(state.events.map((e) => e.event_id));
   state.events.push(...eventData.items.filter((e) => !known.has(e.event_id)));
   state.cursor = eventData.next_cursor;
@@ -204,6 +210,14 @@ async function refreshRun(generation = state.generation) {
   $("#run-meta").textContent =
     `${run.id} · ${labels[run.status]} · ${stamp(run.created_at)}`;
   $("#cancel").disabled = !live(run);
+  $("#restore").hidden = !restoreStatus.eligible;
+  $("#restore").disabled = !restoreStatus.eligible;
+  const activeReplan = state.replans.find((r) =>
+    ["proposed", "trying", "awaiting_confirmation"].includes(r.status),
+  );
+  const replanSupported = restoreStatus.eligible && run.exit_reason === "ARTIFACT_PUBLICATION_FAILED";
+  $("#replan").hidden = !replanSupported || Boolean(activeReplan);
+  renderReplanControl(activeReplan);
   $("#run-select").selectedOptions[0].textContent =
     `第 ${run.attempt_number} 次 · ${labels[run.status]}`;
   $("#event-count").textContent = state.events.length;
@@ -255,6 +269,26 @@ async function refreshRun(generation = state.generation) {
       `<div class="error-box">${esc(labels[run.status])} · ${esc(run.exit_reason || "UNKNOWN")}<p>该次运行没有发布成功产物。可检查事件，或创建一次新的运行。</p></div>`;
   }
   state.resultKey = key;
+}
+function renderReplanControl(replan) {
+  const panel = $("#replan-control");
+  if (!replan) {
+    panel.hidden = true;
+    return;
+  }
+  panel.hidden = false;
+  const text = replan.status === "proposed"
+    ? "核心缺口：原 Run 未生成受控产物。唯一候选会验证 Checkpoint 后发布既有产物；Try 仅做无副作用校验。"
+    : replan.status === "awaiting_confirmation"
+      ? "Try 已通过。Confirm 才会创建新的受绑定恢复 Run；Cancel 不改变原 Run。"
+      : "正在校验固定候选计划。";
+  $("#replan-summary").textContent = text;
+  $("#replan-try").hidden = replan.status !== "proposed";
+  $("#replan-confirm").hidden = replan.status !== "awaiting_confirmation";
+  $("#replan-cancel").hidden = !["proposed", "trying", "awaiting_confirmation"].includes(replan.status);
+  $("#replan-try").disabled = replan.status !== "proposed";
+  $("#replan-confirm").disabled = replan.status !== "awaiting_confirmation";
+  $("#replan-cancel").disabled = !["proposed", "trying", "awaiting_confirmation"].includes(replan.status);
 }
 async function refresh() {
   if (state.busy) return;
@@ -371,6 +405,67 @@ $("#rerun").addEventListener(
     } finally {
       $("#rerun").disabled = false;
     }
+  }),
+);
+$("#restore").addEventListener(
+  "click",
+  guard(async () => {
+    if (!state.task || !state.run || !state.restoreStatus?.eligible) return;
+    $("#restore").disabled = true;
+    try {
+      const restored = await post(`/api/local/runs/${state.run.id}:restore`, {});
+      await chooseTask(state.task.id, restored.run_id);
+      await refresh();
+      notice("已创建受绑定的恢复 Run；原 Run 保持不变。");
+    } finally {
+      $("#restore").disabled = false;
+    }
+  }),
+);
+$("#replan").addEventListener(
+  "click",
+  guard(async () => {
+    if (!state.run) return;
+    $("#replan").disabled = true;
+    try {
+      await post(`/api/v1/runs/${state.run.id}/replans`, {});
+      await refreshRun();
+      notice("已创建固定候选计划；请先执行 Try。");
+    } finally {
+      $("#replan").disabled = false;
+    }
+  }),
+);
+$("#replan-try").addEventListener(
+  "click",
+  guard(async () => {
+    const replan = state.replans.find((r) => ["proposed", "trying"].includes(r.status));
+    if (!replan) return;
+    await post(`/api/v1/replans/${replan.replan_id}:try`, {});
+    await refreshRun();
+    notice("Try 已通过；请 Confirm 或 Cancel。");
+  }),
+);
+$("#replan-confirm").addEventListener(
+  "click",
+  guard(async () => {
+    const replan = state.replans.find((r) => r.status === "awaiting_confirmation");
+    if (!replan || !state.task) return;
+    const confirmed = await post(`/api/v1/replans/${replan.replan_id}:confirm`, {});
+    if (confirmed.status !== "confirmed") throw new Error("确认绑定已失效；请重新创建方案。");
+    await chooseTask(state.task.id, confirmed.run_id);
+    await refresh();
+    notice("Confirm 已创建受绑定恢复 Run；原 Run 保持不变。");
+  }),
+);
+$("#replan-cancel").addEventListener(
+  "click",
+  guard(async () => {
+    const replan = state.replans.find((r) => ["proposed", "trying", "awaiting_confirmation"].includes(r.status));
+    if (!replan) return;
+    await post(`/api/v1/replans/${replan.replan_id}:cancel`, {});
+    await refreshRun();
+    notice("已取消本次 Replan；源 Run 和 Checkpoint 未改变。");
   }),
 );
 document.querySelectorAll("[data-tab]").forEach((b) =>

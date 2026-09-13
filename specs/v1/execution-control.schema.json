@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/execution-control.schema.json",
+  "title": "HarnessAgent Plan, Evidence, Gap, Checkpoint and Replan Contracts",
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "utc": {"type": "string", "format": "date-time"},
+    "reliability_state": {"enum": ["verified", "dirty", "invalid"]},
+    "plan_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "action_id", "depends_on", "hard_preconditions", "soft_preconditions", "success_criteria", "evidence_requirements", "risk", "idempotency"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^node_[A-Za-z0-9]+$"},
+        "action_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"},
+        "depends_on": {"type": "array", "items": {"type": "string", "pattern": "^node_[A-Za-z0-9]+$"}, "uniqueItems": true},
+        "hard_preconditions": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}, "uniqueItems": true},
+        "soft_preconditions": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}, "uniqueItems": true},
+        "success_criteria": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}, "minItems": 1, "uniqueItems": true},
+        "evidence_requirements": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}, "minItems": 1, "uniqueItems": true},
+        "risk": {"enum": ["read", "write", "external_side_effect"]},
+        "idempotency": {"enum": ["required", "supported", "none"]}
+      }
+    },
+    "plan_revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "id", "task_id", "revision", "based_on_plan_revision_id", "nodes", "plan_digest", "created_at"],
+      "properties": {
+        "contract_version": {"const": "plan-revision@1"},
+        "id": {"type": "string", "pattern": "^plan_[A-Za-z0-9]+$"},
+        "task_id": {"type": "string", "pattern": "^task_[A-Za-z0-9]+$"},
+        "revision": {"type": "integer", "minimum": 1},
+        "based_on_plan_revision_id": {"type": ["string", "null"], "pattern": "^plan_[A-Za-z0-9]+$"},
+        "nodes": {"type": "array", "items": {"$ref": "#/$defs/plan_node"}, "minItems": 1},
+        "plan_digest": {"$ref": "#/$defs/sha256"},
+        "created_at": {"$ref": "#/$defs/utc"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "id", "run_id", "kind", "ref_id", "content_sha256", "reliability", "validation_status", "data_class", "created_at"],
+      "properties": {
+        "contract_version": {"const": "evidence@1"},
+        "id": {"type": "string", "pattern": "^evi_[A-Za-z0-9]+$"},
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "kind": {"enum": ["resource", "artifact", "event", "tool_result"]},
+        "ref_id": {"type": "string", "minLength": 3},
+        "content_sha256": {"$ref": "#/$defs/sha256"},
+        "reliability": {"$ref": "#/$defs/reliability_state"},
+        "validation_status": {"enum": ["pending", "passed", "failed"]},
+        "data_class": {"enum": ["Public", "Internal", "Confidential", "Restricted"]},
+        "created_at": {"$ref": "#/$defs/utc"}
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "id", "run_id", "kind", "supporting_evidence_ids", "contradicting_evidence_ids", "reliability", "status", "created_at"],
+      "properties": {
+        "contract_version": {"const": "claim@1"},
+        "id": {"type": "string", "pattern": "^clm_[A-Za-z0-9]+$"},
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "kind": {"enum": ["fact", "inference", "hypothesis"]},
+        "supporting_evidence_ids": {"type": "array", "items": {"type": "string", "pattern": "^evi_[A-Za-z0-9]+$"}, "uniqueItems": true},
+        "contradicting_evidence_ids": {"type": "array", "items": {"type": "string", "pattern": "^evi_[A-Za-z0-9]+$"}, "uniqueItems": true},
+        "reliability": {"$ref": "#/$defs/reliability_state"},
+        "status": {"enum": ["candidate", "supported", "contradicted", "retracted"]},
+        "created_at": {"$ref": "#/$defs/utc"}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "fact"}}, "required": ["kind"]}, "then": {"properties": {"supporting_evidence_ids": {"minItems": 1}}}},
+        {"if": {"properties": {"status": {"const": "supported"}}, "required": ["status"]}, "then": {"properties": {"supporting_evidence_ids": {"minItems": 1}, "contradicting_evidence_ids": {"maxItems": 0}, "reliability": {"const": "verified"}}}},
+        {"if": {"properties": {"status": {"const": "contradicted"}}, "required": ["status"]}, "then": {"properties": {"contradicting_evidence_ids": {"minItems": 1}, "reliability": {"const": "invalid"}}}},
+        {"if": {"properties": {"status": {"const": "retracted"}}, "required": ["status"]}, "then": {"properties": {"reliability": {"const": "invalid"}}}}
+      ]
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "id", "run_id", "required_by", "type", "severity", "resolvable_action_ids", "status", "created_at"],
+      "properties": {
+        "contract_version": {"const": "gap@1"},
+        "id": {"type": "string", "pattern": "^gap_[A-Za-z0-9]+$"},
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "required_by": {"type": "string", "pattern": "^(node|clm)_[A-Za-z0-9]+$"},
+        "type": {"enum": ["slot", "resource", "evidence", "permission", "checkpoint"]},
+        "severity": {"enum": ["advisory", "core"]},
+        "resolvable_action_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"}, "uniqueItems": true},
+        "status": {"enum": ["open", "resolved", "waived"]},
+        "created_at": {"$ref": "#/$defs/utc"}
+      }
+    },
+    "checkpoint_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "checkpoint_id", "run_id", "reliability", "checkpoint_digest", "state_digest", "evidence_digest", "gap_digest", "adapter_digest", "resource_digest", "effective_permissions_digest", "remaining_limits_digest", "adapter_restore_supported", "restorable", "created_at"],
+      "properties": {
+        "contract_version": {"const": "checkpoint-projection@1"},
+        "checkpoint_id": {"type": "string", "pattern": "^ckpt_[A-Za-z0-9]+$"},
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "reliability": {"$ref": "#/$defs/reliability_state"},
+        "checkpoint_digest": {"$ref": "#/$defs/sha256"},
+        "state_digest": {"$ref": "#/$defs/sha256"},
+        "evidence_digest": {"$ref": "#/$defs/sha256"},
+        "gap_digest": {"$ref": "#/$defs/sha256"},
+        "adapter_digest": {"$ref": "#/$defs/sha256"},
+        "resource_digest": {"$ref": "#/$defs/sha256"},
+        "effective_permissions_digest": {"$ref": "#/$defs/sha256"},
+        "remaining_limits_digest": {"$ref": "#/$defs/sha256"},
+        "adapter_restore_supported": {"type": "boolean"},
+        "restorable": {"type": "boolean"},
+        "created_at": {"$ref": "#/$defs/utc"}
+      },
+      "allOf": [
+        {"if": {"properties": {"restorable": {"const": true}}, "required": ["restorable"]}, "then": {"properties": {"reliability": {"const": "verified"}, "adapter_restore_supported": {"const": true}}}},
+        {"if": {"properties": {"adapter_restore_supported": {"const": false}}, "required": ["adapter_restore_supported"]}, "then": {"properties": {"restorable": {"const": false}}}}
+      ]
+    },
+    "replan_attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "id", "origin_run_id", "origin_plan_revision_id", "failure_event_id", "root_cause_evidence_ids", "root_cause_confidence", "rollback_checkpoint_id", "replan_start_node_id", "invalidated_node_ids", "candidate_plan_revision_id", "candidate_plan_digest", "try_result_digest", "confirmation_binding_digest", "confirmed_run_id", "status", "created_at"],
+      "properties": {
+        "contract_version": {"const": "replan-attempt@1"},
+        "id": {"type": "string", "pattern": "^rpl_[A-Za-z0-9]+$"},
+        "origin_run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "origin_plan_revision_id": {"type": "string", "pattern": "^plan_[A-Za-z0-9]+$"},
+        "failure_event_id": {"type": "string", "pattern": "^evt_[A-Za-z0-9]+$"},
+        "root_cause_evidence_ids": {"type": "array", "items": {"type": "string", "pattern": "^evi_[A-Za-z0-9]+$"}, "minItems": 1, "uniqueItems": true},
+        "root_cause_confidence": {"enum": ["low", "medium", "high"]},
+        "rollback_checkpoint_id": {"type": "string", "pattern": "^ckpt_[A-Za-z0-9]+$"},
+        "replan_start_node_id": {"type": "string", "pattern": "^node_[A-Za-z0-9]+$"},
+        "invalidated_node_ids": {"type": "array", "items": {"type": "string", "pattern": "^node_[A-Za-z0-9]+$"}, "uniqueItems": true},
+        "candidate_plan_revision_id": {"type": "string", "pattern": "^plan_[A-Za-z0-9]+$"},
+        "candidate_plan_digest": {"$ref": "#/$defs/sha256"},
+        "try_result_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "confirmation_binding_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "confirmed_run_id": {"type": ["string", "null"], "pattern": "^run_[A-Za-z0-9]+$"},
+        "status": {"enum": ["proposed", "trying", "awaiting_confirmation", "confirmed", "rejected", "cancelled", "expired"]},
+        "created_at": {"$ref": "#/$defs/utc"}
+      },
+      "allOf": [
+        {"if": {"properties": {"status": {"const": "awaiting_confirmation"}}, "required": ["status"]}, "then": {"properties": {"try_result_digest": {"type": "string"}, "confirmation_binding_digest": {"type": "string"}}}},
+        {"if": {"properties": {"status": {"const": "confirmed"}}, "required": ["status"]}, "then": {"properties": {"try_result_digest": {"type": "string"}, "confirmation_binding_digest": {"type": "string"}, "confirmed_run_id": {"type": "string"}}}}
+      ]
+    },
+    "exit_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["success_criteria_met", "evidence_gate_passed", "retry_eligible", "replan_eligible", "core_gap_unresolvable", "candidate_actions", "registered_action_ids", "satisfied_preconditions", "effective_permissions", "remaining_budget"],
+      "properties": {
+        "success_criteria_met": {"type": "boolean"},
+        "evidence_gate_passed": {"type": "boolean"},
+        "retry_eligible": {"type": "boolean"},
+        "replan_eligible": {"type": "boolean"},
+        "core_gap_unresolvable": {"type": "boolean"},
+        "candidate_actions": {"type": "array", "items": {"$ref": "#/$defs/candidate_action"}},
+        "registered_action_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"}, "uniqueItems": true},
+        "satisfied_preconditions": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}, "uniqueItems": true},
+        "effective_permissions": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"}, "uniqueItems": true},
+        "remaining_budget": {"type": "integer", "minimum": 0}
+      }
+    },
+    "candidate_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "hard_preconditions", "required_permissions", "cost_units"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"},
+        "hard_preconditions": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}, "uniqueItems": true},
+        "required_permissions": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"}, "uniqueItems": true},
+        "cost_units": {"type": "integer", "minimum": 0}
+      }
+    },
+    "try_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoint_reliability", "adapter_capabilities", "candidate_plan_digest_present", "candidate_permissions", "origin_permissions", "candidate_budget", "remaining_budget", "compatibility_digest_matches"],
+      "properties": {
+        "checkpoint_reliability": {"$ref": "#/$defs/reliability_state"},
+        "adapter_capabilities": {
+          "type": "object", "additionalProperties": false,
+          "required": ["state.checkpoint", "state.restore", "control.cancel"],
+          "properties": {"state.checkpoint": {"type": "boolean"}, "state.restore": {"type": "boolean"}, "control.cancel": {"type": "boolean"}}
+        },
+        "candidate_plan_digest_present": {"type": "boolean"},
+        "candidate_permissions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "origin_permissions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "candidate_budget": {"type": "integer", "minimum": 0},
+        "remaining_budget": {"type": "integer", "minimum": 0},
+        "compatibility_digest_matches": {"type": "boolean"}
+      }
+    },
+    "reliability_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "reliability", "depends_on"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^(evi|clm|gap|ckpt|node)_[A-Za-z0-9]+$"},
+        "reliability": {"$ref": "#/$defs/reliability_state"},
+        "depends_on": {"type": "array", "items": {"type": "string", "pattern": "^(evi|clm|gap|ckpt|node)_[A-Za-z0-9]+$"}, "uniqueItems": true}
+      }
+    },
+    "evaluation_case": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["id", "kind", "input", "expected"], "properties": {"id": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"}, "kind": {"const": "exit"}, "input": {"$ref": "#/$defs/exit_snapshot"}, "expected": {"type": "object", "additionalProperties": false, "required": ["exit", "chosen_action_id"], "properties": {"exit": {"enum": ["continue", "finish", "clarify", "retry", "replan", "interrupt"]}, "chosen_action_id": {"type": ["string", "null"]}}}}},
+        {"type": "object", "additionalProperties": false, "required": ["id", "kind", "input", "expected"], "properties": {"id": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"}, "kind": {"const": "propagation"}, "input": {"type": "array", "items": {"$ref": "#/$defs/reliability_record"}, "minItems": 1}, "expected": {"type": "object", "additionalProperties": {"$ref": "#/$defs/reliability_state"}}}},
+        {"type": "object", "additionalProperties": false, "required": ["id", "kind", "input", "expected"], "properties": {"id": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"}, "kind": {"const": "try"}, "input": {"$ref": "#/$defs/try_context"}, "expected": {"type": "object", "additionalProperties": false, "required": ["passed", "failure_codes"], "properties": {"passed": {"type": "boolean"}, "failure_codes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}}}}},
+        {"type": "object", "additionalProperties": false, "required": ["id", "kind", "input", "expected"], "properties": {"id": {"type": "string", "pattern": "^[a-z][a-z0-9_]+$"}, "kind": {"const": "tcc"}, "input": {"type": "object", "additionalProperties": false, "required": ["status", "event"], "properties": {"status": {"enum": ["proposed", "trying", "awaiting_confirmation", "confirmed", "rejected", "cancelled", "expired"]}, "event": {"enum": ["try", "try_passed", "try_failed", "confirm", "reject", "cancel", "expire"]}}}, "expected": {"type": "object", "additionalProperties": false, "required": ["status"], "properties": {"status": {"enum": ["proposed", "trying", "awaiting_confirmation", "confirmed", "rejected", "cancelled", "expired"]}}}}}
+      ]
+    },
+    "evaluation_fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_version", "classification", "cases"],
+      "properties": {
+        "fixture_version": {"const": "execution-control-evaluation@1"},
+        "classification": {"const": "synthetic_deidentified"},
+        "cases": {"type": "array", "items": {"$ref": "#/$defs/evaluation_case"}, "minItems": 1}
+      }
+    }
+  }
+}

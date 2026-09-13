@@ -6,11 +6,13 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 
 import pytest
+import yaml
 from fastapi.testclient import TestClient
 
 from backend.analysis import Problem, analyze, digest, parse_csv
 from backend.app import create_app
-from backend.service import ROOT, local_task, validate
+import backend.service as service_module
+from backend.service import ROOT, checkpoint_document_digest, local_task, validate
 from backend.store import dumps
 
 
@@ -31,6 +33,82 @@ def submit(client, key='test-key', objective='分析数据'):
     response = client.post('/api/v1/tasks', json=body, headers={'Idempotency-Key': key})
     assert response.status_code == 202, response.text
     return response.json(), body
+
+
+def fail_after_checkpoint(client, app, monkeypatch):
+    """Create a terminal source Run with a persisted checkpoint but no artifacts."""
+    data, _ = submit(client, key='checkpoint-source')
+    source_id = data['initial_run']['id']
+    original_artifacts = service_module.artifacts
+
+    def injected_failure(*args, **kwargs):
+        raise Problem('INJECTED_POST_CHECKPOINT', '测试：在 Checkpoint 之后停止发布。')
+
+    monkeypatch.setattr(service_module, 'artifacts', injected_failure)
+    app.state.service.execute(source_id)
+    monkeypatch.setattr(service_module, 'artifacts', original_artifacts)
+    source = app.state.service.store.get('runs', source_id)
+    checkpoint = app.state.service.store.latest_checkpoint(source_id)
+    assert source['status'] == 'failed'
+    assert source['exit_reason'] == 'ARTIFACT_PUBLICATION_FAILED'
+    assert checkpoint is not None
+    assert app.state.service.store.artifact_list(source_id) == []
+    gaps = app.state.service.store.gaps_for_run(source_id)
+    assert len(gaps) == 1
+    assert gaps[0]['status'] == 'open'
+    assert gaps[0]['required_by'] == 'node_publish'
+    assert gaps[0]['resolvable_action_ids'] == ['artifact.publish']
+    return data, source, checkpoint
+
+
+def local_replan(client, source_id, key='replan-propose'):
+    response = client.post(f'/api/v1/runs/{source_id}/replans', json={}, headers={'Idempotency-Key': key})
+    assert response.status_code == 201, response.text
+    return response.json()
+
+
+def test_static_openapi_includes_the_runtime_replan_tcc_contract(app):
+    static = yaml.safe_load((ROOT / 'specs/v1/openapi.yaml').read_text())
+    static_paths = static['paths']
+    runtime_paths = app.openapi()['paths']
+    pairs = {
+        '/local/runs/{runId}/restore': '/api/local/runs/{run_id}/restore',
+        '/local/runs/{runId}:restore': '/api/local/runs/{run_id}:restore',
+        '/runs/{runId}/replans': '/api/v1/runs/{run_id}/replans',
+        '/replans/{replanId}': '/api/v1/replans/{replan_id}',
+        '/replans/{replanId}:try': '/api/v1/replans/{replan_id}:try',
+        '/replans/{replanId}:confirm': '/api/v1/replans/{replan_id}:confirm',
+        '/replans/{replanId}:cancel': '/api/v1/replans/{replan_id}:cancel',
+    }
+    for static_path, runtime_path in pairs.items():
+        assert static_path in static_paths and runtime_path in runtime_paths
+    runtime_schema = app.openapi()
+    assert runtime_schema['paths']['/api/v1/runs/{run_id}/replans']['get']['responses']['200']['content']['application/json']['schema'] == {
+        '$ref': '#/components/schemas/ReplanList'}
+    assert runtime_schema['paths']['/api/v1/replans/{replan_id}']['get']['responses']['200']['content']['application/json']['schema'] == {
+        '$ref': '#/components/schemas/ReplanDetail'}
+    assert runtime_schema['components']['schemas']['ReplanDetail']['required'] == ['attempt', 'candidate_plan', 'gaps']
+    assert runtime_schema['components']['schemas']['ReplanDetail']['properties']['gaps']['items'] == {
+        '$ref': '#/components/schemas/gap'}
+    for static_path in ('/runs/{runId}/replans', '/replans/{replanId}:try',
+                        '/replans/{replanId}:confirm', '/replans/{replanId}:cancel'):
+        operation = static_paths[static_path]['post']
+        assert any(p.get('$ref') == '#/components/parameters/IdempotencyKey'
+                   for p in operation['parameters'])
+        assert operation['requestBody']['content']['application/json']['schema']['$ref'] == '#/components/schemas/EmptyObject'
+    restore = static_paths['/local/runs/{runId}:restore']['post']
+    assert static_paths['/local/runs/{runId}:restore']['servers'] == [{'url': '/api'}]
+    assert any(p.get('$ref') == '#/components/parameters/IdempotencyKey' for p in restore['parameters'])
+    assert restore['requestBody']['content']['application/json']['schema']['$ref'].endswith('#/$defs/restore_request')
+
+
+def update_checkpoint(store, checkpoint, mutate):
+    changed = copy.deepcopy(checkpoint)
+    mutate(changed)
+    changed['sha256'] = checkpoint_document_digest(changed)
+    with store.transaction() as db:
+        db.execute('UPDATE checkpoints SET doc=? WHERE id=?', (dumps(changed), changed['id']))
+    return changed
 
 
 def test_complete_contracts_artifacts_and_cursor(client, app):
@@ -62,6 +140,337 @@ def test_complete_contracts_artifacts_and_cursor(client, app):
     assert client.post(f'/api/v1/runs/{run_id}:cancel').json()['status'] == 'succeeded'
     app.state.service.execute(run_id)
     assert len(app.state.service.store.events(run_id)) == len(events)
+
+
+def test_checkpoint_restore_creates_bound_new_run_and_keeps_source_terminal(client, app, monkeypatch):
+    data, source, checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    source_id = source['id']
+    status = client.get(f'/api/local/runs/{source_id}/restore').json()
+    assert status == {'eligible': True, 'checkpoint_id': checkpoint['id'], 'reason_code': None}
+
+    endpoint = f'/api/local/runs/{source_id}:restore'
+    headers = {'Idempotency-Key': 'restore-source'}
+    first = client.post(endpoint, json={}, headers=headers)
+    second = client.post(endpoint, json={}, headers=headers)
+    assert first.status_code == second.status_code == 202
+    assert first.json() == second.json()
+    equivalent = client.post(endpoint, json={}, headers={'Idempotency-Key': 'restore-source-different-key'})
+    assert equivalent.status_code == 202
+    assert equivalent.json() == first.json()
+    restored_id = first.json()['run_id']
+    restored = app.state.service.store.get('runs', restored_id)
+    assert restored['task_id'] == data['task']['id']
+    assert restored['based_on_run_id'] == source_id
+    assert restored['restored_from_checkpoint_id'] == checkpoint['id']
+    assert restored['effective_limits'] == checkpoint['remaining_limits']
+    assert restored['consumed_turns'] == 0
+    assert app.state.service.store.get('runs', source_id)['status'] == 'failed'
+
+    app.state.service.execute(restored_id)
+    restored = app.state.service.store.get('runs', restored_id)
+    assert restored['status'] == 'succeeded'
+    assert restored['consumed_turns'] == 2
+    events = app.state.service.store.events(restored_id)
+    assert [event['event_type'] for event in events[:3]] == ['run.queued', 'run.started', 'checkpoint.restored']
+    assert not any(event['data'].get('tool') == 'resource.inspect' for event in events)
+    manifest = next(a for a in app.state.service.store.artifact_list(restored_id) if a['name'] == 'analysis-manifest.json')
+    body = client.get(f'/api/v1/artifacts/{manifest["id"]}/content').json()
+    saved_state = json.loads(app.state.service.store.checkpoint_state(checkpoint['id']))
+    assert body['metrics'] == saved_state['metrics']
+    assert body['usage'] == {'model_calls': 0, 'cost_minor': 0}
+    assert app.state.service.store.gaps_for_run(source_id)[0]['status'] == 'resolved'
+    assert any(event['event_type'] == 'gap.resolved' for event in events)
+    assert client.get(f'/api/local/runs/{source_id}/restore').json()['eligible'] is True
+
+
+def test_deterministic_replan_runs_explicit_try_confirm_and_bound_recovery(client, app, monkeypatch):
+    data, source, checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    source_id = source['id']
+    before = len(app.state.service.store.listing('runs'))
+    proposed = local_replan(client, source_id)
+    assert proposed['status'] == 'proposed'
+    assert proposed['checkpoint_id'] == checkpoint['id']
+    assert len(app.state.service.store.listing('runs')) == before
+    assert local_replan(client, source_id, 'replan-propose-repeat') == proposed
+    detail = client.get('/api/v1/replans/' + proposed['replan_id'])
+    assert detail.status_code == 200
+    assert app.state.service.store.get('runs', source_id)['plan_revision_id'] == detail.json()['attempt']['origin_plan_revision_id']
+    assert detail.json()['gaps'][0]['status'] == 'open'
+    assert [node['action_id'] for node in detail.json()['candidate_plan']['nodes']] == [
+        'checkpoint.verify', 'artifact.publish', 'run.final_answer']
+    assert detail.json()['attempt']['root_cause_evidence_ids']
+
+    tried = client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={},
+                        headers={'Idempotency-Key': 'replan-try'})
+    assert tried.status_code == 200, tried.text
+    assert tried.json()['status'] == 'awaiting_confirmation'
+    assert tried.json()['try_result_digest'] and tried.json()['confirmation_binding_digest']
+    assert len(app.state.service.store.listing('runs')) == before
+
+    confirmed = client.post('/api/v1/replans/' + proposed['replan_id'] + ':confirm', json={},
+                            headers={'Idempotency-Key': 'replan-confirm'})
+    assert confirmed.status_code == 202, confirmed.text
+    restored_id = confirmed.json()['run_id']
+    assert confirmed.json()['status'] == 'confirmed'
+    repeat = client.post('/api/v1/replans/' + proposed['replan_id'] + ':confirm', json={},
+                         headers={'Idempotency-Key': 'replan-confirm-repeat'})
+    assert repeat.status_code == 202 and repeat.json() == confirmed.json()
+    restored = app.state.service.store.get('runs', restored_id)
+    assert restored['task_id'] == data['task']['id']
+    assert restored['based_on_run_id'] == source_id
+    assert restored['restored_from_checkpoint_id'] == checkpoint['id']
+    assert restored['plan_revision_id'] == proposed['candidate_plan_revision_id']
+    assert restored['replan_attempt_id'] == proposed['replan_id']
+    assert app.state.service.store.get('runs', source_id)['status'] == 'failed'
+
+    app.state.service.execute(restored_id)
+    restored = app.state.service.store.get('runs', restored_id)
+    assert restored['status'] == 'succeeded'
+    assert restored['consumed_turns'] == 2
+    kinds = [event['event_type'] for event in app.state.service.store.events(restored_id)]
+    assert kinds[:5] == ['run.queued', 'run.started', 'checkpoint.restored', 'checkpoint.verified',
+                         'plan.revision.activated']
+    assert 'resource.inspect' not in [event['data'].get('tool') for event in app.state.service.store.events(restored_id)]
+    assert 'gap.resolved' in kinds
+    assert client.get('/api/v1/replans/' + proposed['replan_id']).json()['gaps'][0]['status'] == 'resolved'
+    direct = client.post(f'/api/local/runs/{source_id}:restore', json={}, headers={'Idempotency-Key': 'direct-after-confirm'})
+    assert direct.status_code == 202 and direct.json()['run_id'] == restored_id
+    blocked = client.post(f'/api/v1/runs/{source_id}/replans', json={},
+                          headers={'Idempotency-Key': 'replan-after-materialized'})
+    assert blocked.status_code == 409 and blocked.json()['error']['code'] == 'REPLAN_ALREADY_MATERIALIZED'
+
+
+def test_deterministic_replan_cancel_is_side_effect_free_and_retryable(client, app, monkeypatch):
+    _data, source, _checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    before = len(app.state.service.store.listing('runs'))
+    proposed = local_replan(client, source['id'])
+    tried = client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={},
+                        headers={'Idempotency-Key': 'cancel-try'})
+    assert tried.json()['status'] == 'awaiting_confirmation'
+    cancelled = client.post('/api/v1/replans/' + proposed['replan_id'] + ':cancel', json={},
+                            headers={'Idempotency-Key': 'cancel'})
+    assert cancelled.status_code == 200 and cancelled.json()['status'] == 'cancelled'
+    assert len(app.state.service.store.listing('runs')) == before
+    assert app.state.service.store.gaps_for_run(source['id'])[0]['status'] == 'open'
+    assert client.post('/api/v1/replans/' + proposed['replan_id'] + ':confirm', json={},
+                       headers={'Idempotency-Key': 'cancelled-confirm'}).status_code == 409
+    fresh = local_replan(client, source['id'], 'propose-after-cancel')
+    assert fresh['replan_id'] != proposed['replan_id'] and fresh['status'] == 'proposed'
+
+
+def test_deterministic_replan_rejects_caller_input_and_keeps_try_cancel_side_effect_free(client, app, monkeypatch):
+    data, source, _checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    endpoint = f'/api/v1/runs/{source["id"]}/replans'
+    denied = client.post(endpoint, json={'plan': {'node': 'caller_controlled'}},
+                         headers={'Idempotency-Key': 'caller-plan'})
+    assert denied.status_code == 422
+    assert app.state.service.store.replan_attempts(source['id']) == []
+
+    proposed = local_replan(client, source['id'])
+    adapter = app.state.service.adapters['engine_mock_analytics']
+    calls = []
+    monkeypatch.setattr(adapter, 'restore_run', lambda *args: calls.append('restore'))
+    invalid_try = client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={'resource_id': 'res_override'},
+                              headers={'Idempotency-Key': 'caller-try'})
+    assert invalid_try.status_code == 422
+    tried = client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={},
+                        headers={'Idempotency-Key': 'empty-try'})
+    assert tried.json()['status'] == 'awaiting_confirmation'
+    invalid_cancel = client.post('/api/v1/replans/' + proposed['replan_id'] + ':cancel', json={'goal': 'override'},
+                                 headers={'Idempotency-Key': 'caller-cancel'})
+    assert invalid_cancel.status_code == 422
+    assert calls == []
+    detail = client.get('/api/v1/replans/' + proposed['replan_id']).json()
+    exposed = json.dumps(detail, ensure_ascii=False)
+    assert data['task']['objective'] not in exposed
+    assert 'name,value' not in exposed
+    cancelled = client.post('/api/v1/replans/' + proposed['replan_id'] + ':cancel', json={},
+                            headers={'Idempotency-Key': 'empty-cancel'})
+    assert cancelled.json()['status'] == 'cancelled'
+    assert calls == []
+
+
+def test_deterministic_replan_confirm_expires_on_post_try_binding_drift(client, app, monkeypatch):
+    _data, source, checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    proposed = local_replan(client, source['id'])
+    assert client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={},
+                       headers={'Idempotency-Key': 'drift-try'}).json()['status'] == 'awaiting_confirmation'
+    def mutate(doc):
+        doc['bindings']['resource_sha256'] = 'b' * 64
+        doc['compatibility_digest'] = digest(dumps(doc['bindings']).encode())
+    update_checkpoint(app.state.service.store, checkpoint, mutate)
+    before = len(app.state.service.store.listing('runs'))
+    stale = client.post('/api/v1/replans/' + proposed['replan_id'] + ':confirm', json={},
+                        headers={'Idempotency-Key': 'drift-confirm'})
+    assert stale.status_code == 409 and stale.json()['error']['code'] == 'REPLAN_CONFIRMATION_STALE'
+    assert len(app.state.service.store.listing('runs')) == before
+    assert client.get('/api/v1/replans/' + proposed['replan_id']).json()['attempt']['status'] == 'expired'
+    assert app.state.service.store.gaps_for_run(source['id'])[0]['status'] == 'open'
+
+
+def test_deterministic_replan_does_not_resolve_gap_when_recovery_artifact_publish_fails(client, app, monkeypatch):
+    _data, source, _checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    proposed = local_replan(client, source['id'])
+    assert client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={},
+                       headers={'Idempotency-Key': 'recovery-fail-try'}).json()['status'] == 'awaiting_confirmation'
+    confirmed = client.post('/api/v1/replans/' + proposed['replan_id'] + ':confirm', json={},
+                            headers={'Idempotency-Key': 'recovery-fail-confirm'})
+    original_artifacts = service_module.artifacts
+    monkeypatch.setattr(service_module, 'artifacts', lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError('publish fail')))
+    app.state.service.execute(confirmed.json()['run_id'])
+    monkeypatch.setattr(service_module, 'artifacts', original_artifacts)
+    restored = app.state.service.store.get('runs', confirmed.json()['run_id'])
+    assert restored['status'] == 'failed' and restored['exit_reason'] == 'ARTIFACT_PUBLICATION_FAILED'
+    assert app.state.service.store.gaps_for_run(source['id'])[0]['status'] == 'open'
+    assert not any(event['event_type'] == 'gap.resolved'
+                   for event in app.state.service.store.events(restored['id']))
+
+
+def test_deterministic_replan_confirm_cas_allows_one_run_under_concurrency(client, app, monkeypatch):
+    _data, source, checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    proposed = local_replan(client, source['id'])
+    assert client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={},
+                       headers={'Idempotency-Key': 'cas-try'}).json()['status'] == 'awaiting_confirmation'
+    service = app.state.service
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(
+            lambda number: service.confirm_replan(proposed['replan_id'], {}, 'cas-confirm-' + str(number)),
+            range(8),
+        ))
+    assert {result['status'] for result in results} == {'confirmed'}
+    assert len({result['run_id'] for result in results}) == 1
+    restored = next(run for run in service.store.listing('runs')
+                    if run.get('restored_from_checkpoint_id') == checkpoint['id'])
+    assert restored['id'] == results[0]['run_id']
+
+
+def test_deterministic_replan_try_survives_restart_before_confirm(tmp_path, monkeypatch):
+    target = tmp_path / 'replan-restart.db'
+    with TestClient(create_app(target, False), base_url='http://127.0.0.1') as client:
+        _data, source, _checkpoint = fail_after_checkpoint(client, client.app, monkeypatch)
+        proposed = local_replan(client, source['id'])
+        tried = client.post('/api/v1/replans/' + proposed['replan_id'] + ':try', json={},
+                            headers={'Idempotency-Key': 'restart-try'})
+        assert tried.json()['status'] == 'awaiting_confirmation'
+    with TestClient(create_app(target, False), base_url='http://127.0.0.1') as client:
+        detail = client.get('/api/v1/replans/' + proposed['replan_id']).json()
+        assert detail['attempt']['status'] == 'awaiting_confirmation'
+        confirmed = client.post('/api/v1/replans/' + proposed['replan_id'] + ':confirm', json={},
+                                headers={'Idempotency-Key': 'restart-confirm'})
+        assert confirmed.status_code == 202 and confirmed.json()['status'] == 'confirmed'
+        client.app.state.service.execute(confirmed.json()['run_id'])
+        assert client.get('/api/v1/runs/' + confirmed.json()['run_id']).json()['status'] == 'succeeded'
+
+
+@pytest.mark.parametrize('mutation,code', [
+    ('root_cause', 'REPLAN_ROOT_CAUSE_UNSUPPORTED'),
+    ('checkpoint', 'CHECKPOINT_INCOMPATIBLE'),
+])
+def test_deterministic_replan_rejects_unknown_cause_or_checkpoint_drift(client, app, monkeypatch, mutation, code):
+    _data, source, checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    store = app.state.service.store
+    if mutation == 'root_cause':
+        with store.transaction() as db:
+            changed = store.get('runs', source['id'])
+            changed['exit_reason'] = 'VALIDATION_FAILED'
+            db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(changed), changed['id']))
+    else:
+        def mutate(doc):
+            doc['bindings']['resource_sha256'] = 'b' * 64
+            doc['compatibility_digest'] = digest(dumps(doc['bindings']).encode())
+        update_checkpoint(store, checkpoint, mutate)
+    before = len(store.listing('runs'))
+    rejected = client.post(f'/api/v1/runs/{source["id"]}/replans', json={}, headers={'Idempotency-Key': mutation})
+    assert rejected.status_code == 409 and rejected.json()['error']['code'] == code
+    assert len(store.listing('runs')) == before
+
+
+@pytest.mark.parametrize('kind,expected', [
+    ('resource', 'CHECKPOINT_INCOMPATIBLE'),
+    ('task', 'CHECKPOINT_INCOMPATIBLE'),
+    ('permissions', 'CHECKPOINT_INCOMPATIBLE'),
+    ('adapter', 'CHECKPOINT_INCOMPATIBLE'),
+    ('budget', 'CHECKPOINT_INCOMPATIBLE'),
+    ('state', 'CHECKPOINT_STATE_INVALID'),
+    ('source_run', 'CHECKPOINT_INCOMPATIBLE'),
+    ('cancelled', 'CHECKPOINT_NOT_RESTORABLE'),
+])
+def test_checkpoint_restore_rejects_every_binding_without_creating_run(client, app, monkeypatch, kind, expected):
+    data, source, checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    store = app.state.service.store
+    source_id = source['id']
+    if kind == 'resource':
+        def mutate(doc):
+            doc['bindings']['resource_sha256'] = 'b' * 64
+            doc['compatibility_digest'] = digest(dumps(doc['bindings']).encode())
+        update_checkpoint(store, checkpoint, mutate)
+    elif kind == 'task':
+        with store.transaction() as db:
+            task = store.get('tasks', data['task']['id'])
+            task['objective'] = '数据库篡改后的不同目标'
+            db.execute('UPDATE tasks SET doc=? WHERE id=?', (dumps(task), task['id']))
+    elif kind == 'permissions':
+        with store.transaction() as db:
+            changed = store.get('runs', source_id)
+            changed['effective_permissions']['allowed_tools'] = ['resource.inspect']
+            db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(changed), source_id))
+    elif kind == 'adapter':
+        original = app.state.service.adapters['engine_mock_analytics'].describe
+        monkeypatch.setattr(app.state.service.adapters['engine_mock_analytics'], 'describe',
+                            lambda: {**original(), 'adapter_version': 'tampered'})
+    elif kind == 'budget':
+        def mutate(doc):
+            doc['remaining_limits']['max_turns'] = 4
+            doc['bindings']['remaining_limits_digest'] = digest(dumps(doc['remaining_limits']).encode())
+            doc['compatibility_digest'] = digest(dumps(doc['bindings']).encode())
+        update_checkpoint(store, checkpoint, mutate)
+    elif kind == 'state':
+        tampered_state = {'state_version': 'local_analytics_checkpoint@1', 'metrics': {'columns': []}}
+        changed = copy.deepcopy(checkpoint)
+        state_bytes = dumps(tampered_state).encode()
+        changed['state_sha256'] = digest(state_bytes)
+        changed['sha256'] = checkpoint_document_digest(changed)
+        with store.transaction() as db:
+            db.execute('UPDATE checkpoints SET doc=?,state=? WHERE id=?', (dumps(changed), state_bytes, checkpoint['id']))
+    elif kind == 'source_run':
+        update_checkpoint(store, checkpoint, lambda doc: doc.update(run_id='run_unrelated'))
+    else:
+        with store.transaction() as db:
+            changed = store.get('runs', source_id)
+            changed['status'], changed['exit_reason'] = 'cancelled', 'USER_CANCELLED'
+            db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(changed), source_id))
+
+    before = len(store.listing('runs'))
+    response = client.post(f'/api/local/runs/{source_id}:restore', json={}, headers={'Idempotency-Key': 'bad-' + kind})
+    assert response.status_code == 409
+    assert response.json()['error']['code'] == expected
+    assert len(store.listing('runs')) == before
+    status = client.get(f'/api/local/runs/{source_id}/restore').json()
+    assert status['eligible'] is False
+    assert status['reason_code'] == expected
+
+
+def test_checkpoint_restore_rejects_arguments_and_survives_restart(tmp_path, monkeypatch):
+    target = tmp_path / 'checkpoint-restart.db'
+    with TestClient(create_app(target), base_url='http://127.0.0.1') as client:
+        data, source, checkpoint = fail_after_checkpoint(client, client.app, monkeypatch)
+        rejected = client.post(f'/api/local/runs/{source["id"]}:restore', json={'plan': 'forbidden'},
+                               headers={'Idempotency-Key': 'restore-arguments'})
+        assert rejected.status_code == 422
+        # Simulate a process crash after the append-only checkpoint but before a terminal event.
+        with client.app.state.service.store.transaction() as db:
+            interrupted = client.app.state.service.store.get('runs', source['id'])
+            interrupted['status'], interrupted['exit_reason'] = 'running', None
+            db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(interrupted), interrupted['id']))
+    with TestClient(create_app(target), base_url='http://127.0.0.1') as client:
+        run = client.get('/api/v1/runs/' + source['id']).json()
+        assert run['status'] == 'failed' and run['exit_reason'] == 'SERVER_RESTARTED'
+        assert client.get(f'/api/local/runs/{source["id"]}/restore').json()['eligible'] is True
+        restored = client.post(f'/api/local/runs/{source["id"]}:restore', json={},
+                               headers={'Idempotency-Key': 'restore-after-restart'})
+        assert restored.status_code == 202
+        client.app.state.service.execute(restored.json()['run_id'])
+        assert client.get('/api/v1/runs/' + restored.json()['run_id']).json()['status'] == 'succeeded'
 
 
 def test_idempotency_rerun_and_conflict(client, app):

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/local-checkpoint-restore.schema.json",
+  "title": "Local fixed analytics checkpoint restore endpoint",
+  "$defs": {
+    "restore_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The source Run and its persisted checkpoint determine every recovery input; caller-supplied plans, resources, permissions and arguments are forbidden."
+    },
+    "restore_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id", "source_run_id", "checkpoint_id", "status"],
+      "properties": {
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "source_run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "checkpoint_id": {"type": "string", "pattern": "^ckpt_[A-Za-z0-9]+$"},
+        "status": {"enum": ["queued", "running", "succeeded", "failed", "cancelled", "expired"]}
+      }
+    },
+    "restore_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "checkpoint_id", "reason_code"],
+      "properties": {
+        "eligible": {"type": "boolean"},
+        "checkpoint_id": {"type": ["string", "null"], "pattern": "^ckpt_[A-Za-z0-9]+$"},
+        "reason_code": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

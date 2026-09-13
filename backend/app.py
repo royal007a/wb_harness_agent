@@ -8,11 +8,11 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from .analysis import MAX_BYTES, Problem
-from .service import BUNDLE, ROOT, Service, local_task
+from .service import BUNDLE, CONTROL, ROOT, Service, local_task
 from .store import Store, uid
 from .readiness import readiness
 
@@ -123,6 +123,78 @@ def create_app(db_path=None, run_worker=True):
     def resources():
         return {'items': app.state.service.store.listing('resources')}
 
+    @app.get('/api/local/agent-lab/runtime')
+    def agent_lab_runtime():
+        return app.state.service.agent_lab.runtime_status()
+
+    @app.get('/api/local/agent-lab/providers')
+    def agent_lab_providers():
+        return app.state.service.agent_lab.providers()
+
+    @app.post('/api/local/agent-lab/providers', status_code=201)
+    async def agent_lab_provider_create(request: Request):
+        return app.state.service.agent_lab.create_provider(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-lab/models')
+    def agent_lab_models():
+        return app.state.service.agent_lab.models()
+
+    @app.post('/api/local/agent-lab/models', status_code=201)
+    async def agent_lab_model_create(request: Request):
+        return app.state.service.agent_lab.create_model(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-lab/agents')
+    def agent_lab_agents():
+        return app.state.service.agent_lab.agents()
+
+    @app.post('/api/local/agent-lab/agents', status_code=201)
+    async def agent_lab_agent_create(request: Request):
+        return app.state.service.agent_lab.create_agent(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-lab/sessions')
+    def agent_lab_sessions():
+        return app.state.service.agent_lab.sessions()
+
+    @app.post('/api/local/agent-lab/sessions', status_code=201)
+    async def agent_lab_session_create(request: Request):
+        return app.state.service.agent_lab.create_session(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/agent-lab/sessions/{session_id}')
+    def agent_lab_session_detail(session_id: str):
+        return app.state.service.agent_lab.session_detail(session_id)
+
+    @app.post('/api/local/agent-lab/sessions/{session_id}/messages')
+    async def agent_lab_message_create(session_id: str, request: Request):
+        if 'text/event-stream' not in request.headers.get('accept', ''):
+            raise Problem('VALIDATION_ERROR', '消息接口要求 Accept: text/event-stream。', 406)
+        exchange = app.state.service.agent_lab.send_message(
+            session_id, await json_body(request), request.headers.get('idempotency-key')
+        )
+
+        async def stream():
+            try:
+                for chunk in app.state.service.agent_lab.stream_chunks(exchange):
+                    if await request.is_disconnected():
+                        return
+                    payload = {'type': 'delta', 'content': chunk, 'message_id': exchange['assistant_message_id'],
+                               'model_calls': 0, 'provider_calls': 0}
+                    yield 'data: ' + json.dumps(payload, ensure_ascii=False) + '\n\n'
+                    await asyncio.sleep(0.03)
+                if not await request.is_disconnected():
+                    payload = {'type': 'done', 'message_id': exchange['assistant_message_id'], 'finish_reason': 'stop',
+                               'model_calls': 0, 'provider_calls': 0}
+                    yield 'data: ' + json.dumps(payload, ensure_ascii=False) + '\n\n'
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                payload = {'type': 'error', 'error_code': 'LOCAL_DEMO_STREAM_FAILED',
+                           'model_calls': 0, 'provider_calls': 0}
+                yield 'data: ' + json.dumps(payload, ensure_ascii=False) + '\n\n'
+
+        return StreamingResponse(stream(), media_type='text/event-stream', headers={
+            'X-Accel-Buffering': 'no', 'Cache-Control': 'no-store', 'Connection': 'keep-alive',
+        })
+
     @app.get('/api/local/connectors/baidu-netdisk')
     def baidu_netdisk_status():
         return app.state.service.baidu_netdisk.status()
@@ -174,6 +246,10 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/research', include_in_schema=False)
     def research_page():
         return FileResponse(ROOT / 'frontend/research.html')
+
+    @app.get('/agent-lab', include_in_schema=False)
+    def agent_lab_page():
+        return FileResponse(ROOT / 'frontend/agent-lab.html')
 
     @app.get('/connectors/baidu-netdisk', include_in_schema=False)
     def baidu_netdisk_page():
@@ -233,9 +309,41 @@ def create_app(db_path=None, run_worker=True):
     def run(run_id: str):
         return app.state.service.store.get('runs', run_id)
 
+    @app.post('/api/v1/runs/{run_id}/replans', status_code=201)
+    async def replan_create(run_id: str, request: Request):
+        return app.state.service.propose_replan(run_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/v1/runs/{run_id}/replans')
+    def replan_list(run_id: str):
+        return app.state.service.replans(run_id)
+
+    @app.get('/api/v1/replans/{replan_id}')
+    def replan_detail(replan_id: str):
+        return app.state.service.replan(replan_id)
+
+    @app.post('/api/v1/replans/{replan_id}:try')
+    async def replan_try(replan_id: str, request: Request):
+        return app.state.service.try_replan(replan_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/v1/replans/{replan_id}:confirm', status_code=202)
+    async def replan_confirm(replan_id: str, request: Request):
+        return app.state.service.confirm_replan(replan_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/v1/replans/{replan_id}:cancel')
+    async def replan_cancel(replan_id: str, request: Request):
+        return app.state.service.cancel_replan(replan_id, await json_body(request), request.headers.get('idempotency-key'))
+
     @app.post('/api/v1/runs/{run_id}:cancel')
     def cancel(run_id: str):
         return app.state.service.cancel(run_id)
+
+    @app.post('/api/local/runs/{run_id}:restore', status_code=202)
+    async def restore(run_id: str, request: Request):
+        return app.state.service.restore(run_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/runs/{run_id}/restore')
+    def restore_status(run_id: str):
+        return app.state.service.restore_status(run_id)
 
     @app.get('/api/v1/runs/{run_id}/events')
     def events(run_id: str, after: int = 0):
@@ -305,8 +413,84 @@ def create_app(db_path=None, run_worker=True):
     ):
         generated['paths'][path][method]['responses'][status]['content'] = {
             'application/json': {'schema': {'$ref': '#/components/schemas/' + schema}}}
+    agent_lab_schema = json.loads((ROOT / 'specs/v1/local-agent-lab.schema.json').read_text())
+    agent_lab_definitions = json.loads(json.dumps(agent_lab_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(agent_lab_definitions)
+    generated['components']['schemas'].update({
+        'agent_lab_runtime': {
+            'type': 'object', 'additionalProperties': False,
+            'required': ['mode', 'model_calls', 'provider_calls', 'network_calls', 'tool_calls', 'tool_binding_count', 'note'],
+            'properties': {
+                'mode': {'const': 'local_deterministic_demo'}, 'model_calls': {'const': 0},
+                'provider_calls': {'const': 0}, 'network_calls': {'const': 0}, 'tool_calls': {'const': 0},
+                'tool_binding_count': {'const': 0}, 'note': {'type': 'string'},
+            },
+        },
+    })
+    for path, definition in (
+        ('/api/local/agent-lab/providers', 'provider_create_request'),
+        ('/api/local/agent-lab/models', 'model_create_request'),
+        ('/api/local/agent-lab/agents', 'agent_create_request'),
+        ('/api/local/agent-lab/sessions', 'session_create_request'),
+        ('/api/local/agent-lab/sessions/{session_id}/messages', 'send_message_request'),
+    ):
+        generated['paths'][path]['post']['requestBody'] = {
+            'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/' + definition}}}}
+        generated['paths'][path]['post'].setdefault('parameters', []).append({
+            'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+            'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+        })
+    generated['paths']['/api/local/agent-lab/sessions/{session_id}/messages']['post']['parameters'].append({
+        'in': 'header', 'name': 'Accept', 'required': True, 'schema': {'const': 'text/event-stream'},
+    })
+    generated['paths']['/api/local/agent-lab/sessions/{session_id}/messages']['post']['responses']['200']['content'] = {
+        'text/event-stream': {'schema': {'$ref': '#/components/schemas/stream_event'}}}
+    restore_schema = json.loads((ROOT / 'specs/v1/local-checkpoint-restore.schema.json').read_text())
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(restore_schema['$defs'])
+    generated['paths']['/api/local/runs/{run_id}:restore']['post']['requestBody'] = {
+        'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/restore_request'}}}}
+    generated['paths']['/api/local/runs/{run_id}:restore']['post']['responses']['202'] = {
+        'description': 'A new, bound recovery Run was queued.',
+        'content': {'application/json': {'schema': {'$ref': '#/components/schemas/restore_response'}}}}
+    generated['paths']['/api/local/runs/{run_id}/restore']['get']['responses']['200']['content'] = {
+        'application/json': {'schema': {'$ref': '#/components/schemas/restore_status'}}}
+    control_definitions = json.loads(json.dumps(CONTROL['$defs']).replace('#/$defs/', '#/components/schemas/'))
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(control_definitions)
+    replan_schema = json.loads((ROOT / 'specs/v1/local-replan.schema.json').read_text())
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(replan_schema['$defs'])
+    generated['components']['schemas'].update({
+        'ReplanList': {
+            'type': 'object', 'additionalProperties': False, 'required': ['items'],
+            'properties': {'items': {'type': 'array', 'items': {'$ref': '#/components/schemas/replan_created'}}},
+        },
+        'ReplanDetail': {
+            'type': 'object', 'additionalProperties': False, 'required': ['attempt', 'candidate_plan', 'gaps'],
+            'properties': {
+                'attempt': {'$ref': '#/components/schemas/replan_attempt'},
+                'candidate_plan': {'$ref': '#/components/schemas/plan_revision'},
+                'gaps': {'type': 'array', 'minItems': 1, 'items': {'$ref': '#/components/schemas/gap'}},
+            },
+        },
+    })
+    generated['paths']['/api/v1/runs/{run_id}/replans']['get']['responses']['200']['content'] = {
+        'application/json': {'schema': {'$ref': '#/components/schemas/ReplanList'}}}
+    generated['paths']['/api/v1/replans/{replan_id}']['get']['responses']['200']['content'] = {
+        'application/json': {'schema': {'$ref': '#/components/schemas/ReplanDetail'}}}
+    for path, method, status, schema in (
+        ('/api/v1/runs/{run_id}/replans', 'post', '201', 'replan_created'),
+        ('/api/v1/replans/{replan_id}:try', 'post', '200', 'replan_try_result'),
+        ('/api/v1/replans/{replan_id}:confirm', 'post', '202', 'replan_confirmed'),
+        ('/api/v1/replans/{replan_id}:cancel', 'post', '200', 'replan_cancelled'),
+    ):
+        generated['paths'][path][method]['requestBody'] = {
+            'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/empty_request'}}}}
+        generated['paths'][path][method]['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/' + schema}}}
     for path in ('/api/v1/tasks', '/api/local/tasks', '/api/v1/tasks/{task_id}/runs', '/api/local/research',
-                 '/api/local/connectors/baidu-netdisk/authorization', '/api/local/connectors/baidu-netdisk:disconnect'):
+                 '/api/local/runs/{run_id}:restore', '/api/local/connectors/baidu-netdisk/authorization',
+                 '/api/local/connectors/baidu-netdisk:disconnect', '/api/v1/runs/{run_id}/replans',
+                 '/api/v1/replans/{replan_id}:try', '/api/v1/replans/{replan_id}:confirm',
+                 '/api/v1/replans/{replan_id}:cancel'):
         generated['paths'][path]['post'].setdefault('parameters', []).append({
             'in': 'header', 'name': 'Idempotency-Key', 'required': True, 'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
     return app

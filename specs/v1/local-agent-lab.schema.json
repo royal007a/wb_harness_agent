@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/local-agent-lab.schema.json",
+  "title": "HarnessAgent Local Agent Lab Contract",
+  "description": "Local single-user configuration and deterministic chat-demo contracts. No credential or model invocation fields are permitted.",
+  "$defs": {
+    "provider_type": {
+      "type": "string",
+      "enum": ["openai_compatible", "anthropic", "ollama"]
+    },
+    "provider_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "type", "base_url", "enabled", "created_at", "updated_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^ppr_[a-f0-9]{32}$"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "type": {"$ref": "#/$defs/provider_type"},
+        "base_url": {"type": "string", "minLength": 8, "maxLength": 500},
+        "enabled": {"type": "boolean"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "provider_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "base_url"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "type": {"$ref": "#/$defs/provider_type"},
+        "base_url": {"type": "string", "minLength": 8, "maxLength": 500},
+        "enabled": {"type": "boolean"}
+      }
+    },
+    "model_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provider_profile_id", "display_name", "model_id", "context_window", "enabled", "created_at", "updated_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^mdl_[a-f0-9]{32}$"},
+        "provider_profile_id": {"type": "string", "pattern": "^ppr_[a-f0-9]{32}$"},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "model_id": {"type": "string", "minLength": 1, "maxLength": 180},
+        "context_window": {"type": "integer", "minimum": 256, "maximum": 2000000},
+        "enabled": {"type": "boolean"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "model_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_profile_id", "display_name", "model_id", "context_window"],
+      "properties": {
+        "provider_profile_id": {"type": "string", "pattern": "^ppr_[a-f0-9]{32}$"},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "model_id": {"type": "string", "minLength": 1, "maxLength": 180},
+        "context_window": {"type": "integer", "minimum": 256, "maximum": 2000000},
+        "enabled": {"type": "boolean"}
+      }
+    },
+    "agent_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "system_prompt", "model_profile_id", "temperature", "max_output_tokens", "max_context_turns", "enabled", "tool_binding_count", "created_at", "updated_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^agt_[a-f0-9]{32}$"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "description": {"type": "string", "maxLength": 500},
+        "system_prompt": {"type": "string", "minLength": 1, "maxLength": 12000},
+        "model_profile_id": {"type": "string", "pattern": "^mdl_[a-f0-9]{32}$"},
+        "temperature": {"type": "number", "minimum": 0, "maximum": 1},
+        "max_output_tokens": {"type": "integer", "minimum": 1, "maximum": 16384},
+        "max_context_turns": {"type": "integer", "minimum": 1, "maximum": 100},
+        "enabled": {"type": "boolean"},
+        "tool_binding_count": {"const": 0},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "agent_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "description", "system_prompt", "model_profile_id", "temperature", "max_output_tokens", "max_context_turns"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "description": {"type": "string", "maxLength": 500},
+        "system_prompt": {"type": "string", "minLength": 1, "maxLength": 12000},
+        "model_profile_id": {"type": "string", "pattern": "^mdl_[a-f0-9]{32}$"},
+        "temperature": {"type": "number", "minimum": 0, "maximum": 1},
+        "max_output_tokens": {"type": "integer", "minimum": 1, "maximum": 16384},
+        "max_context_turns": {"type": "integer", "minimum": 1, "maximum": 100},
+        "enabled": {"type": "boolean"}
+      }
+    },
+    "chat_session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "agent_profile_id", "title", "status", "created_at", "updated_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^chs_[a-f0-9]{32}$"},
+        "agent_profile_id": {"type": "string", "pattern": "^agt_[a-f0-9]{32}$"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 80},
+        "status": {"type": "string", "enum": ["active", "archived"]},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "session_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent_profile_id"],
+      "properties": {
+        "agent_profile_id": {"type": "string", "pattern": "^agt_[a-f0-9]{32}$"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 80}
+      }
+    },
+    "chat_message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "session_id", "sequence", "role", "content", "generation", "created_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^chm_[a-f0-9]{32}$"},
+        "session_id": {"type": "string", "pattern": "^chs_[a-f0-9]{32}$"},
+        "sequence": {"type": "integer", "minimum": 1},
+        "role": {"type": "string", "enum": ["user", "assistant"]},
+        "content": {"type": "string", "minLength": 1, "maxLength": 12000},
+        "generation": {"type": "string", "enum": ["user_input", "local_demo"]},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "send_message_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content"],
+      "properties": {
+        "content": {"type": "string", "minLength": 1, "maxLength": 12000}
+      }
+    },
+    "stream_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {"type": "string", "enum": ["delta", "done", "error"]},
+        "content": {"type": "string", "maxLength": 12000},
+        "message_id": {"type": "string", "pattern": "^chm_[a-f0-9]{32}$"},
+        "finish_reason": {"type": "string", "enum": ["stop", "cancelled", "error"]},
+        "model_calls": {"const": 0},
+        "provider_calls": {"const": 0},
+        "error_code": {"type": "string", "maxLength": 100}
+      }
+    }
+  }
+}

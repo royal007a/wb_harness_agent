@@ -93,6 +93,165 @@ paths:
           description: Cancellation requested.
         default:
           $ref: '#/components/responses/Error'
+  /local/runs/{runId}/restore:
+    servers:
+      - url: /api
+    get:
+      operationId: getLocalCheckpointRestoreEligibility
+      description: ADR-0018 only. Read-only eligibility for the fixed same-Task restore path.
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+      responses:
+        '200':
+          description: Current restore eligibility without a state change.
+          content:
+            application/json:
+              schema:
+                $ref: './local-checkpoint-restore.schema.json#/$defs/restore_status'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/runs/{runId}:restore:
+    servers:
+      - url: /api
+    post:
+      operationId: restoreLocalCheckpoint
+      description: ADR-0018 only. Body is empty; Task, resource, policy, limits and adapter come exclusively from the persisted checkpoint.
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './local-checkpoint-restore.schema.json#/$defs/restore_request'
+      responses:
+        '202':
+          description: One bound fixed recovery Run queued.
+          content:
+            application/json:
+              schema:
+                $ref: './local-checkpoint-restore.schema.json#/$defs/restore_response'
+        default:
+          $ref: '#/components/responses/Error'
+  /runs/{runId}/replans:
+    get:
+      operationId: listLocalReplans
+      description: ADR-0019 only. Lists control-plane summaries; it never creates a Run.
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+      responses:
+        '200':
+          description: ReplanAttempt summaries for one origin Run.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReplanList'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: proposeLocalDeterministicReplan
+      description: >-
+        ADR-0019 only. The body is empty. The controller, not the caller, derives the
+        only candidate Plan from an ARTIFACT_PUBLICATION_FAILED Event and a verified checkpoint.
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmptyObject'
+      responses:
+        '201':
+          description: Fixed candidate ReplanAttempt proposed; no recovery Run is created.
+          content:
+            application/json:
+              schema:
+                $ref: './local-replan.schema.json#/$defs/replan_created'
+        default:
+          $ref: '#/components/responses/Error'
+  /replans/{replanId}:
+    get:
+      operationId: getLocalReplan
+      parameters:
+        - $ref: '#/components/parameters/ReplanId'
+      responses:
+        '200':
+          description: Persisted Attempt and its immutable candidate PlanRevision.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReplanDetail'
+        default:
+          $ref: '#/components/responses/Error'
+  /replans/{replanId}:try:
+    post:
+      operationId: tryLocalDeterministicReplan
+      description: No adapter, tool, model, network, or Product Run side effect is allowed.
+      parameters:
+        - $ref: '#/components/parameters/ReplanId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmptyObject'
+      responses:
+        '200':
+          description: Compatibility checked; only awaiting_confirmation is confirmable.
+          content:
+            application/json:
+              schema:
+                $ref: './local-replan.schema.json#/$defs/replan_try_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /replans/{replanId}:confirm:
+    post:
+      operationId: confirmLocalDeterministicReplan
+      description: Compare-and-swap of Try-bound Plan, checkpoint, Task, resource, adapter, policy and remaining limits.
+      parameters:
+        - $ref: '#/components/parameters/ReplanId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmptyObject'
+      responses:
+        '202':
+          description: One new bound recovery Run queued.
+          content:
+            application/json:
+              schema:
+                $ref: './local-replan.schema.json#/$defs/replan_confirmed'
+        default:
+          $ref: '#/components/responses/Error'
+  /replans/{replanId}:cancel:
+    post:
+      operationId: cancelLocalDeterministicReplan
+      description: Cancels only an unconfirmed Attempt; source Run and checkpoint are unchanged.
+      parameters:
+        - $ref: '#/components/parameters/ReplanId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmptyObject'
+      responses:
+        '200':
+          description: Attempt cancelled without a recovery Run.
+          content:
+            application/json:
+              schema:
+                $ref: './local-replan.schema.json#/$defs/replan_cancelled'
+        default:
+          $ref: '#/components/responses/Error'
   /runs/{runId}/events:
     get:
       operationId: streamRunEvents
@@ -156,6 +315,129 @@ paths:
                 $ref: './core-contracts.schema.json#/$defs/approval'
         default:
           $ref: '#/components/responses/Error'
+  /local/agent-lab/providers:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentLabProviders
+      description: ADR-0021 local configuration only; no remote Provider call occurs.
+      responses:
+        '200': {description: Local Provider Profiles and zero-call runtime status.}
+    post:
+      operationId: createLocalAgentLabProvider
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './local-agent-lab.schema.json#/$defs/provider_create_request'}
+      responses:
+        '201':
+          description: Credential-free Provider Profile persisted; no health check is performed.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/provider_profile'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-lab/models:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentLabModels
+      responses: {'200': {description: Local Model Profiles.}}
+    post:
+      operationId: createLocalAgentLabModel
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './local-agent-lab.schema.json#/$defs/model_create_request'}
+      responses:
+        '201':
+          description: Model Profile persisted without querying a Provider.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/model_profile'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-lab/agents:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentLabAgents
+      responses: {'200': {description: Local Agent configuration templates.}}
+    post:
+      operationId: createLocalAgentLabAgent
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './local-agent-lab.schema.json#/$defs/agent_create_request'}
+      responses:
+        '201':
+          description: Agent Profile persisted with fixed zero tool bindings.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/agent_profile'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-lab/sessions:
+    servers: [{url: /api}]
+    get:
+      operationId: listLocalAgentLabSessions
+      responses: {'200': {description: Locally persisted chat sessions.}}
+    post:
+      operationId: createLocalAgentLabSession
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './local-agent-lab.schema.json#/$defs/session_create_request'}
+      responses:
+        '201':
+          description: Active local session created for an enabled local Agent Profile.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/chat_session'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-lab/sessions/{sessionId}:
+    servers: [{url: /api}]
+    get:
+      operationId: getLocalAgentLabSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: One local Session and its ordered pure-text messages.}
+        default: {$ref: '#/components/responses/Error'}
+  /local/agent-lab/sessions/{sessionId}/messages:
+    servers: [{url: /api}]
+    post:
+      operationId: streamLocalAgentLabMessage
+      description: >-
+        ADR-0021 only. Persists one user/local-demo exchange and returns POST SSE.
+        It never invokes a model, Provider, network endpoint or tool.
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: {type: string}
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: Accept
+          in: header
+          required: true
+          schema: {const: text/event-stream}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './local-agent-lab.schema.json#/$defs/send_message_request'}
+      responses:
+        '200':
+          description: Ordered delta events followed by done; model/provider calls remain zero.
+          content:
+            text/event-stream:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/stream_event'}
+        default: {$ref: '#/components/responses/Error'}
 components:
   parameters:
     IdempotencyKey:
@@ -164,7 +446,8 @@ components:
       required: true
       schema:
         type: string
-        minLength: 16
+        minLength: 1
+        maxLength: 128
     TaskId:
       name: taskId
       in: path
@@ -173,6 +456,12 @@ components:
         type: string
     RunId:
       name: runId
+      in: path
+      required: true
+      schema:
+        type: string
+    ReplanId:
+      name: replanId
       in: path
       required: true
       schema:
@@ -211,6 +500,33 @@ components:
           oneOf:
             - $ref: './core-contracts.schema.json#/$defs/run'
             - type: 'null'
+    EmptyObject:
+      type: object
+      additionalProperties: false
+      description: Caller-supplied Plan, goal, resource, permissions, limits, Prompt and code are forbidden.
+    ReplanList:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: './local-replan.schema.json#/$defs/replan_created'
+    ReplanDetail:
+      type: object
+      additionalProperties: false
+      required: [attempt, candidate_plan, gaps]
+      properties:
+        attempt:
+          $ref: './execution-control.schema.json#/$defs/replan_attempt'
+        candidate_plan:
+          $ref: './execution-control.schema.json#/$defs/plan_revision'
+        gaps:
+          type: array
+          minItems: 1
+          items:
+            $ref: './execution-control.schema.json#/$defs/gap'
     Error:
       type: object
       additionalProperties: false

@@ -5,4 +5,5 @@ cd "$(dirname "$0")/.."
 node --check frontend/app.js
 node --check frontend/research.js
 node --check frontend/baidu-netdisk.js
+node --check frontend/agent-lab.js
 git diff --check

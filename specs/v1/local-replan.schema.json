@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/local-replan.schema.json",
+  "title": "Local deterministic Plan/Replan TCC endpoints",
+  "$defs": {
+    "empty_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The controller derives the only allowed candidate Plan from a verified failed Run. Callers cannot submit actions, goals, resources, permissions, budgets, prompts, or code."
+    },
+    "replan_created": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replan_id", "origin_run_id", "checkpoint_id", "candidate_plan_revision_id", "candidate_plan_digest", "status"],
+      "properties": {
+        "replan_id": {"type": "string", "pattern": "^rpl_[A-Za-z0-9]+$"},
+        "origin_run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "checkpoint_id": {"type": "string", "pattern": "^ckpt_[A-Za-z0-9]+$"},
+        "candidate_plan_revision_id": {"type": "string", "pattern": "^plan_[A-Za-z0-9]+$"},
+        "candidate_plan_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "status": {"enum": ["proposed", "trying", "awaiting_confirmation", "confirmed", "rejected", "cancelled", "expired"]}
+      }
+    },
+    "replan_try_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replan_id", "status", "try_result_digest", "confirmation_binding_digest"],
+      "properties": {
+        "replan_id": {"type": "string", "pattern": "^rpl_[A-Za-z0-9]+$"},
+        "status": {"enum": ["awaiting_confirmation", "rejected", "cancelled", "expired"]},
+        "try_result_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "confirmation_binding_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "replan_confirmed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replan_id", "status", "run_id"],
+      "properties": {
+        "replan_id": {"type": "string", "pattern": "^rpl_[A-Za-z0-9]+$"},
+        "status": {"const": "confirmed"},
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"}
+      }
+    },
+    "replan_cancelled": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replan_id", "status"],
+      "properties": {
+        "replan_id": {"type": "string", "pattern": "^rpl_[A-Za-z0-9]+$"},
+        "status": {"const": "cancelled"}
+      }
+    }
+  }
+}

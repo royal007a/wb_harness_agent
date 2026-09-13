@@ -156,6 +156,9 @@
         "id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
         "task_id": {"type": "string", "pattern": "^task_[A-Za-z0-9]+$"},
         "based_on_run_id": {"type": ["string", "null"], "pattern": "^run_[A-Za-z0-9]+$"},
+        "restored_from_checkpoint_id": {"type": ["string", "null"], "pattern": "^ckpt_[A-Za-z0-9]+$"},
+        "plan_revision_id": {"type": ["string", "null"], "pattern": "^plan_[A-Za-z0-9]+$"},
+        "replan_attempt_id": {"type": ["string", "null"], "pattern": "^rpl_[A-Za-z0-9]+$"},
         "parent_run_id": {"type": ["string", "null"], "pattern": "^run_[A-Za-z0-9]+$"},
         "parent_step_id": {"type": ["string", "null"], "pattern": "^step_[A-Za-z0-9]+$"},
         "status": {"enum": ["queued", "running", "waiting_approval", "succeeded", "failed", "cancelled", "expired"]},
@@ -164,6 +167,7 @@
         "effective_permissions": {"$ref": "#/$defs/effective_permissions"},
         "effective_limits": {"$ref": "#/$defs/limits"},
         "attempt_number": {"type": "integer", "minimum": 1},
+        "consumed_turns": {"type": "integer", "minimum": 0, "default": 0},
         "latest_sequence": {"type": "integer", "minimum": 0, "default": 0},
         "exit_reason": {"type": ["string", "null"]},
         "created_at": {"type": "string", "format": "date-time"},
@@ -261,10 +265,25 @@
         "ended_at": {"type": ["string", "null"], "format": "date-time"}
       }
     },
+    "checkpoint_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "task_digest", "resource_id", "resource_sha256", "adapter_digest", "effective_permissions_digest", "source_effective_limits_digest", "remaining_limits_digest"],
+      "properties": {
+        "task_id": {"type": "string", "pattern": "^task_[A-Za-z0-9]+$"},
+        "task_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "resource_id": {"type": "string", "pattern": "^res_[A-Za-z0-9]+$"},
+        "resource_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "adapter_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "effective_permissions_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "source_effective_limits_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "remaining_limits_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
     "checkpoint": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "run_id", "event_sequence", "adapter_id", "adapter_version", "state_ref", "completed_step_ids", "remaining_limits", "compatibility_digest", "sha256", "created_at"],
+      "required": ["id", "run_id", "event_sequence", "adapter_id", "adapter_version", "state_ref", "state_sha256", "completed_step_ids", "remaining_limits", "bindings", "compatibility_digest", "sha256", "created_at"],
       "properties": {
         "id": {"type": "string", "pattern": "^ckpt_[A-Za-z0-9]+$"},
         "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
@@ -272,9 +291,11 @@
         "adapter_id": {"type": "string", "minLength": 1},
         "adapter_version": {"type": "string", "minLength": 1},
         "state_ref": {"type": "string", "minLength": 1},
+        "state_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "completed_step_ids": {"type": "array", "items": {"type": "string", "pattern": "^step_[A-Za-z0-9]+$"}, "uniqueItems": true},
         "pending_action": {"type": ["object", "null"]},
         "remaining_limits": {"$ref": "#/$defs/remaining_limits"},
+        "bindings": {"$ref": "#/$defs/checkpoint_bindings"},
         "compatibility_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "created_at": {"type": "string", "format": "date-time"}

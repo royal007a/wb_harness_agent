@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Harness / Local Agent Lab</title>
+    <link rel="stylesheet" href="/static/agent-lab.css" />
+    <script src="/static/agent-lab.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/"><span class="brand-icon">H</span> harness <small>LOCAL</small></a>
+      <div class="workspace"><span class="avatar">L</span><div>Local workspace<small>本地开发工作空间</small></div></div>
+      <p class="nav-label">WORKSPACE</p>
+      <nav>
+        <a class="nav-item active" href="/agent-lab" aria-current="page">◌ <span>Agent Lab</span></a>
+        <a class="nav-item" href="/">◫ <span>分析工作台</span></a>
+        <a class="nav-item" href="/research">⑂ <span>多专项编排</span></a>
+        <a class="nav-item" href="/connectors/baidu-netdisk">☁ <span>百度网盘连接</span></a>
+      </nav>
+      <div class="sidebar-bottom"><span class="online-dot"></span><span id="connection">正在连接控制面</span><small>v0.1 · 单用户本地预览</small></div>
+    </aside>
+    <main>
+      <header class="topbar"><div>Workspace <span>/</span> <strong>Local Agent Lab</strong></div><span class="local-badge">● LOCAL DEMO · NO MODEL CALLS</span></header>
+      <div id="notice" role="status" aria-live="polite" hidden></div>
+      <section class="page">
+        <div class="page-heading">
+          <div class="eyebrow">CONFIGURATION → SESSION → SSE</div>
+          <h1>把配置与对话链路放进同一个可见边界。</h1>
+          <p>本页仅验证无密配置、会话持久化与 POST SSE。不会调用模型、Provider、网络、工具或 Product Run。</p>
+        </div>
+        <div id="runtime" class="runtime" aria-live="polite"></div>
+        <div class="lab-grid">
+          <section class="panel config-panel">
+            <header><div><span class="eyebrow">01 / CONFIGURE</span><h2>Provider、Model 与 Agent</h2></div><span class="tag">本地演示</span></header>
+            <div class="config-scroll">
+              <form id="provider-form" class="form-card">
+                <h3>Provider Profile</h3><p>只保存无密连接描述；不会测试连接。</p>
+                <label>名称<input name="name" required maxlength="100" placeholder="例如：受控 OpenAI 兼容端点" /></label>
+                <label>类型<select name="type"><option value="openai_compatible">OpenAI compatible</option><option value="anthropic">Anthropic</option><option value="ollama">Ollama</option></select></label>
+                <label>Base URL<input name="base_url" type="url" required maxlength="500" value="https://example.invalid" /></label>
+                <button class="secondary" type="submit">保存 Provider</button>
+              </form>
+              <div id="provider-list" class="profile-list" aria-label="Provider Profiles"></div>
+              <form id="model-form" class="form-card">
+                <h3>Model Profile</h3><p>展示名与调用标识分开保存；尚不连接远端模型。</p>
+                <label>Provider<select id="model-provider" name="provider_profile_id" required></select></label>
+                <label>展示名<input name="display_name" required maxlength="100" placeholder="例如：分析模型" /></label>
+                <label>模型标识<input name="model_id" required maxlength="180" placeholder="例如：example-model-v1" /></label>
+                <label>上下文窗口<input name="context_window" type="number" min="256" max="2000000" required value="32768" /></label>
+                <button class="secondary" type="submit">保存 Model</button>
+              </form>
+              <div id="model-list" class="profile-list" aria-label="Model Profiles"></div>
+              <form id="agent-form" class="form-card">
+                <h3>Agent Profile</h3><p>身份、模型选择与受限参数；工具绑定固定为 0。</p>
+                <label>名称<input name="name" required maxlength="100" placeholder="例如：本地研究助手" /></label>
+                <label>说明<textarea name="description" maxlength="500" placeholder="该配置用于什么场景"></textarea></label>
+                <label>Model<select id="agent-model" name="model_profile_id" required></select></label>
+                <label>System Prompt<textarea name="system_prompt" required maxlength="12000">你是本地 Agent Lab 的演示配置。请清楚说明当前没有连接真实模型。</textarea></label>
+                <div class="split-fields"><label>Temperature<input name="temperature" type="number" min="0" max="1" step="0.1" required value="0.3" /></label><label>最大输出<input name="max_output_tokens" type="number" min="1" max="16384" required value="1024" /></label></div>
+                <label>最大上下文轮数<input name="max_context_turns" type="number" min="1" max="100" required value="8" /></label>
+                <button class="secondary" type="submit">保存 Agent</button>
+              </form>
+              <div id="agent-list" class="profile-list" aria-label="Agent Profiles"></div>
+            </div>
+          </section>
+          <section class="panel chat-panel">
+            <header><div><span class="eyebrow">02 / CONVERSE</span><h2>有状态流式聊天</h2></div><button id="new-session" class="secondary">新建会话</button></header>
+            <div class="chat-layout">
+              <aside class="session-rail"><label for="session-agent">使用 Agent</label><select id="session-agent" aria-label="用于新会话的 Agent"></select><div id="session-list" class="session-list" aria-label="会话列表"></div></aside>
+              <section class="conversation"><div id="chat-empty" class="empty"><span>◌</span><h3>从一个本地 Agent Profile 开始</h3><p>先创建 Provider、Model 和 Agent，再新建会话。历史将保存在本地 SQLite。</p></div><div id="messages" class="messages" hidden aria-live="polite"></div><form id="chat-form" class="composer" hidden><label class="sr-only" for="chat-input">消息内容</label><textarea id="chat-input" maxlength="12000" placeholder="输入一条消息，验证 POST SSE 流…" required></textarea><div><small>纯文本安全显示 · 不写入 Task/Run · 没有模型调用</small><span><button id="stop" class="secondary" type="button" hidden>停止</button><button id="send" class="primary" type="submit">发送 ↗</button></span></div></form></section>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
