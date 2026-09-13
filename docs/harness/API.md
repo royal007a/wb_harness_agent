@@ -28,6 +28,7 @@
 | Skills | P1 | `POST/GET /skills` | 版本化技能包与元数据 |
 | Tools | P0 | `POST/GET /tools` | 输入输出 Schema、风险等级 |
 | MCP Servers | P1 | `POST/GET /mcp-servers` | 连接配置的密钥引用 |
+| 外部连接器 | P1 | `GET/POST /local/connectors/{provider}` | 本地开发连接状态与显式 OAuth 授权 |
 | Resources | P0 | `POST/GET /resources` | 文件、数据源和上下文引用 |
 | Tasks | P0 | `POST/GET /tasks` | 提交、查询与列表 |
 | Runs | P0 | `POST/GET /tasks/{id}/runs` | 创建和查询执行尝试 |
@@ -159,6 +160,17 @@
 - `GET /runs/{id}/events`：使用 SSE 或游标读取该 Run 的事件。
 
 面向用户的 API 不提供 `resume`。批准后控制面校验 Checkpoint，并自动重新投递同一 Run；服务故障恢复属于内部协议。
+
+## 本地百度网盘 OAuth 连接器
+
+已实现的本地接口只用于 OAuth 连接准备，数据面仍关闭：
+
+- `GET /api/local/connectors/baidu-netdisk`：返回脱敏连接状态；不返回 App Secret 或 token。
+- `POST /api/local/connectors/baidu-netdisk/authorization`：空 JSON 对象与 `Idempotency-Key`；创建或重放同一短期授权 URL。
+- `GET /api/local/connectors/baidu-netdisk/callback`：百度顶级页面重定向的唯一跨站 GET 入口；state 单次、十分钟有效。该接口只返回静态成功/失败页面。
+- `POST /api/local/connectors/baidu-netdisk:disconnect`：空 JSON 对象与 `Idempotency-Key`；删除本机 Keychain token，不影响百度账户或网盘文件。删除动作本身天然幂等，故不把 Keychain 的外部副作用包进 SQLite 重放事务。
+
+固定端点、scope 和凭证说明见 [BAIDU_NETDISK_CONNECTOR.md](BAIDU_NETDISK_CONNECTOR.md)。未配置应用时返回 `CONNECTOR_NOT_CONFIGURED`；state 错配、重放/过期及令牌错误使用稳定 `AUTHORIZATION_STATE_*` / `OAUTH_*` 错误码。无公开分享链接下载 API。
 
 ## 事件包络
 

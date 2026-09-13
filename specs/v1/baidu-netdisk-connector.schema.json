@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/baidu-netdisk-connector.schema.json",
+  "title": "Baidu Netdisk OAuth Connector",
+  "$defs": {
+    "connection_status": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provider", "status", "client_id_configured", "redirect_uri", "credential_ref", "has_token", "data_access_enabled"],
+      "properties": {
+        "provider": {"const": "baidu_netdisk"},
+        "status": {"enum": ["not_configured", "ready", "authorizing", "connected", "error"]},
+        "client_id_configured": {"type": "boolean"},
+        "redirect_uri": {"type": ["string", "null"], "format": "uri"},
+        "credential_ref": {"type": "string", "pattern": "^keychain:[A-Za-z0-9._-]+/[A-Za-z0-9:._-]+$"},
+        "has_token": {"type": "boolean"},
+        "data_access_enabled": {"const": false}
+      }
+    },
+    "authorization_start": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provider", "authorization_url", "expires_at"],
+      "properties": {
+        "provider": {"const": "baidu_netdisk"},
+        "authorization_url": {"type": "string", "format": "uri"},
+        "expires_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

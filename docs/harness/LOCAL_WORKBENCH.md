@@ -56,6 +56,19 @@ plist 中路径为本机绝对路径，移动仓库需修改。当前注册属�
 
 服务固定绑定 127.0.0.1，拒绝外部 Host、跨 Origin 和跨站请求，配置 CSP 与 nosniff。该措施用于本地原型边界，不等于生产身份认证或多租户隔离。生产使用需要单独完成 L3 门禁。
 
+## 百度网盘 OAuth 连接
+
+入口：http://127.0.0.1:8765/connectors/baidu-netdisk。它只实现官方 OAuth 连接，不会下载分享链接或读取文件。配置和用户操作见 [百度网盘连接器](BAIDU_NETDISK_CONNECTOR.md)。
+
+前台运行时可设置公开 App Key：
+
+```sh
+export HARNESS_BAIDUPAN_CLIENT_ID='你的 App Key'
+sh harness/start.sh
+```
+
+launchd 环境需以 `EnvironmentVariables` 注入同一公开变量后重启服务；不要把 Client Secret、access token 或 refresh token 写进 plist。它们只能在本机 Keychain 服务 `HarnessAgent.BaiduNetdisk` 中存在。为避免 OAuth 授权 code 出现在标准访问日志，前台启动与 launchd 均使用 `--no-access-log`。
+
 ## 验证
 
 ```sh

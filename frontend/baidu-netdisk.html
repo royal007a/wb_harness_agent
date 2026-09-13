@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Harness / 百度网盘连接</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="/static/baidu-netdisk.css" />
+    <script src="/static/baidu-netdisk.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/"><span class="brand-icon">H</span> harness<span class="version">LOCAL</span></a>
+      <div class="workspace"><span class="avatar">L</span><div>Local workspace<small>本地开发工作空间</small></div><span>⌄</span></div>
+      <p class="nav-label">WORKSPACE</p>
+      <nav>
+        <a class="nav-item active" href="/connectors/baidu-netdisk">☁ <span>百度网盘连接</span></a>
+        <a class="nav-item" href="/research">⑂ <span>多专项编排</span></a>
+        <a class="nav-item" href="/">◫ <span>分析工作台</span></a>
+      </nav>
+      <div class="sidebar-bottom"><span class="online-dot"></span><span>本地 OAuth 边界</span><small>v0.1 · 单用户本地预览</small></div>
+    </aside>
+    <main>
+      <header class="topbar"><div>Workspace <span>/</span> <strong>百度网盘连接</strong></div><span class="local-badge">● LOCAL ENVIRONMENT</span></header>
+      <section class="page connector-page">
+        <div class="page-heading">
+          <div class="eyebrow">OFFICIAL OAUTH ONLY</div>
+          <h1>连接已授权的百度网盘。</h1>
+          <p>只走官方 OAuth。不会读取浏览器 Cookie、自动登录、处理验证码或抓取任意分享链接。</p>
+        </div>
+        <div id="notice" role="status" aria-live="polite" hidden></div>
+        <div class="connector-grid">
+          <section class="panel connector-status">
+            <div class="panel-title"><h2>连接状态</h2><span id="state-badge" class="status">检查中</span></div>
+            <dl id="connection-details" class="connection-details"></dl>
+            <div class="connector-actions">
+              <button id="start-authorization" class="primary" type="button" disabled>生成官方授权链接 <span>↗</span></button>
+              <button id="disconnect" class="secondary" type="button" hidden>断开本机授权</button>
+            </div>
+            <div id="authorization-link" class="authorization-link" hidden></div>
+          </section>
+          <section class="panel setup-guide">
+            <div class="panel-title"><h2>首次配置</h2><span class="subtle">KEYCHAIN · LOCAL ONLY</span></div>
+            <ol>
+              <li>在百度网盘开放平台创建应用，登记本机回调地址。</li>
+              <li>设置公开的 <code>HARNESS_BAIDUPAN_CLIENT_ID</code>。</li>
+              <li>在 macOS Keychain 的 <code>HarnessAgent.BaiduNetdisk</code> 服务下保存账户 <code>oauth-client-secret</code>。</li>
+              <li>点击左侧按钮，在百度页面自行登录并授权 <code>basic,netdisk</code>。</li>
+            </ol>
+            <p class="form-hint">Client Secret、access token 和 refresh token 不会进入 SQLite、日志、任务、产物或 Evidence。本版仅实现连接，不开放文件列举、下载或分享链接导入。</p>
+            <a class="text-button" href="https://yun.baidu.com/open/platform" target="_blank" rel="noopener">打开百度网盘开放平台 ↗</a>
+          </section>
+        </div>
+        <section class="panel security-note">
+          <h2>授权边界</h2>
+          <p>授权 state 单次使用、10 分钟过期；回调固定到 127.0.0.1。请不要在飞书、截图、配置文件或终端历史中粘贴 Secret 或 token。</p>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

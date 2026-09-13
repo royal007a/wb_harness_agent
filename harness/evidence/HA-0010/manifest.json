@@ -1,0 +1,50 @@
+{
+  "checked_at": "2026-09-13T04:25:09.576940+00:00",
+  "status": "passed",
+  "mode": "local_official_oauth_connector_base",
+  "tests": {
+    "tests": 98,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser_checks": 5,
+  "workbench_browser_checks": 12,
+  "health": {
+    "status": "ok",
+    "version": "0.1.0",
+    "mode": "local_single_user",
+    "model_calls_enabled": false
+  },
+  "connector_status": {
+    "provider": "baidu_netdisk",
+    "status": "not_configured",
+    "client_id_configured": false,
+    "redirect_uri": "http://127.0.0.1:8765/api/local/connectors/baidu-netdisk/callback",
+    "credential_ref": "keychain:HarnessAgent.BaiduNetdisk/oauth-token:default",
+    "has_token": false,
+    "data_access_enabled": false
+  },
+  "dependency_versions": {
+    "keyring": "25.7.0",
+    "httpx": "0.28.1"
+  },
+  "source_sha256": {
+    "backend/baidu_netdisk.py": "0a4b3257278e0bc2bb58aeb1ad9c6ffc9b888e5e64fa691dd182da9e30eea4cf",
+    "backend/app.py": "aa3567f355418e403a0b6796677d1a4849a94f5419c9fbbe3741f6eb156e6a7c",
+    "backend/store.py": "67cdb24d6247713e208460824ecea47dcf3de93cf4496ce5f1fbe2573fa88730",
+    "specs/v1/baidu-netdisk-connector.schema.json": "ed3ea4fe6a7050690d1c31a1d984cda546d5be7fc029b9265f228c81db9a8898",
+    "frontend/baidu-netdisk.js": "c81910bf8cd9fec7a41d0f6d52026c4d9ce62792405ffa1b5226520314cbec8f"
+  },
+  "evidence": [
+    "all-tests.xml",
+    "browser.json",
+    "workbench/browser.json",
+    "security-results.json"
+  ],
+  "limitations": [
+    "OAuth application and real user authorization are not configured",
+    "no directory, download, sharing-link, preview, or document-import data plane",
+    "no browser Cookie reuse, simulated login, captcha handling, or secret in evidence"
+  ]
+}

@@ -1,0 +1,18 @@
+.connector-page { max-width: 1180px; }
+.connector-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, .82fr); gap: 24px; }
+.connector-status, .setup-guide { min-height: 330px; }
+.connection-details { margin: 0; padding: 10px 23px; }
+.connection-details div { display: grid; grid-template-columns: 140px 1fr; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.connection-details dt { color: var(--muted); font-size: 12px; }
+.connection-details dd { margin: 0; color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; overflow-wrap: anywhere; }
+.connector-actions { display: flex; gap: 10px; padding: 20px 23px 10px; align-items: center; }
+.connector-actions .primary { width: auto; margin: 0; }
+.authorization-link { margin: 10px 23px 24px; padding: 14px; border: 1px solid #d5e0d0; background: #f5f9f2; border-radius: 7px; font-size: 12px; line-height: 1.7; }
+.authorization-link a { color: #286546; text-decoration: underline; font-weight: 600; overflow-wrap: anywhere; }
+.setup-guide ol { margin: 20px 23px; padding-left: 22px; color: #526158; line-height: 1.8; }
+.setup-guide .form-hint, .setup-guide .text-button { margin-left: 23px; margin-right: 23px; }
+.setup-guide .text-button { display: inline-block; margin-bottom: 24px; color: #285d40; text-decoration: underline; }
+.security-note { margin-top: 24px; padding: 20px 23px; }
+.security-note p { color: var(--muted); line-height: 1.75; margin: 10px 0 0; }
+#notice { margin: 0 0 18px; }
+@media (max-width: 760px) { .connector-grid { grid-template-columns: 1fr; } .connection-details div { grid-template-columns: 1fr; gap: 4px; } .connector-actions { align-items: stretch; flex-direction: column; } }

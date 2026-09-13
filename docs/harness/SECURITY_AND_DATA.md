@@ -29,6 +29,8 @@
 - 凭证不得进入 Prompt、事件正文、产物、Evidence 或错误堆栈。
 - 轮换、吊销、访问审计和泄漏处置必须可演练。
 
+本地百度网盘 OAuth 连接器把 Client Secret、access token 和 refresh token 存入 macOS Keychain；SQLite 仅保留 state 摘要、期限和无密结果码。OAuth 回调 code 不进入应用事件或 access log；服务固定绑定 127.0.0.1，且只接受固定官方 HTTPS OAuth 端点。该本地边界不等同生产密钥系统或多租户授权服务。
+
 ## Prompt 与上下文安全
 
 - 系统策略与外部内容使用结构化边界，不拼接为同等优先级文本。

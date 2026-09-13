@@ -43,7 +43,9 @@ class Service:
         self.thread = None
         self.adapters = {'engine_mock_analytics': LocalAnalyticsAdapter()}
         from .research import Research
+        from .baidu_netdisk import BaiduNetdiskConnector
         self.research = Research(self)
+        self.baidu_netdisk = BaiduNetdiskConnector(store)
 
     def resource(self, name, raw):
         if not isinstance(name, str) or not name.lower().endswith('.csv') or len(name) > 180 or '/' in name or '\\' in name:

@@ -1,0 +1,11 @@
+{
+  "browser": "151.0.7922.34",
+  "errors": [],
+  "checks": [
+    "unconfigured_status",
+    "authorization_disabled",
+    "oauth_boundary_copy",
+    "data_plane_disabled",
+    "mobile_layout"
+  ]
+}

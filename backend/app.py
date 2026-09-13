@@ -8,7 +8,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from .analysis import MAX_BYTES, Problem
@@ -55,7 +55,8 @@ def create_app(db_path=None, run_worker=True):
         origin = request.headers.get('origin')
         if origin and origin != 'http://' + host:
             return error('FORBIDDEN', '不允许跨站访问本地工作台。', 403, request_id)
-        if request.headers.get('sec-fetch-site') == 'cross-site':
+        oauth_callback = request.method == 'GET' and request.url.path == '/api/local/connectors/baidu-netdisk/callback'
+        if request.headers.get('sec-fetch-site') == 'cross-site' and not oauth_callback:
             return error('FORBIDDEN', '不允许跨站访问。', 403, request_id)
         try:
             response = await call_next(request)
@@ -122,6 +123,40 @@ def create_app(db_path=None, run_worker=True):
     def resources():
         return {'items': app.state.service.store.listing('resources')}
 
+    @app.get('/api/local/connectors/baidu-netdisk')
+    def baidu_netdisk_status():
+        return app.state.service.baidu_netdisk.status()
+
+    @app.post('/api/local/connectors/baidu-netdisk/authorization', status_code=201)
+    async def baidu_netdisk_authorization(request: Request):
+        body = await json_body(request)
+        if body:
+            raise Problem('VALIDATION_ERROR', '发起授权不接受请求字段。', 422)
+        with app.state.service.store.transaction() as db:
+            return app.state.service.baidu_netdisk.authorization(db, request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/connectors/baidu-netdisk/callback', include_in_schema=False)
+    def baidu_netdisk_callback(code: str | None = None, state: str | None = None, error: str | None = None):
+        result = app.state.service.baidu_netdisk.callback(code=code, state=state, error=error)
+        title = '授权已完成' if result['connected'] else '授权未完成'
+        return HTMLResponse('<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>' + title +
+                            '</title></head><body><h1>' + title + '</h1><p>' + result['message'] +
+                            '</p><p>你可以关闭本页并返回 HarnessAgent。</p></body></html>')
+
+    @app.post('/api/local/connectors/baidu-netdisk:disconnect')
+    async def baidu_netdisk_disconnect(request: Request):
+        body = await json_body(request)
+        if body:
+            raise Problem('VALIDATION_ERROR', '断开授权不接受请求字段。', 422)
+        key = request.headers.get('idempotency-key')
+        if not key or len(key) > 128:
+            raise Problem('VALIDATION_ERROR', '必须提供 1–128 字符的 Idempotency-Key。', 422)
+        # Deleting a token is naturally idempotent.  Do not mix the external
+        # Keychain side effect with a SQLite transaction merely to retain a
+        # replay record: a database commit failure must not make the outcome
+        # ambiguous after a successful credential deletion.
+        return app.state.service.baidu_netdisk.disconnect()
+
     @app.post('/api/local/research', status_code=202)
     async def research_create(request: Request):
         return app.state.service.research.create(await json_body(request), request.headers.get('idempotency-key'))
@@ -139,6 +174,10 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/research', include_in_schema=False)
     def research_page():
         return FileResponse(ROOT / 'frontend/research.html')
+
+    @app.get('/connectors/baidu-netdisk', include_in_schema=False)
+    def baidu_netdisk_page():
+        return FileResponse(ROOT / 'frontend/baidu-netdisk.html')
 
     @app.post('/api/v1/resources', status_code=201)
     async def upload(request: Request, name: str = 'data.csv'):
@@ -233,7 +272,21 @@ def create_app(db_path=None, run_worker=True):
             'type': 'object', 'additionalProperties': False, 'required': ['resource_id', 'objective'],
             'properties': {'resource_id': {'type': 'string'}, 'objective': {'type': 'string', 'minLength': 1, 'maxLength': 2000},
                            'timeout_seconds': {'type': 'integer', 'minimum': 1, 'maximum': 300}}}}}}
-    for path in ('/api/v1/tasks', '/api/local/tasks', '/api/v1/tasks/{task_id}/runs', '/api/local/research'):
+    connector_schema = json.loads((ROOT / 'specs/v1/baidu-netdisk-connector.schema.json').read_text())
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(connector_schema['$defs'])
+    generated['paths']['/api/local/connectors/baidu-netdisk/authorization']['post']['requestBody'] = {
+        'required': True, 'content': {'application/json': {'schema': {'type': 'object', 'additionalProperties': False}}}}
+    generated['paths']['/api/local/connectors/baidu-netdisk:disconnect']['post']['requestBody'] = {
+        'required': True, 'content': {'application/json': {'schema': {'type': 'object', 'additionalProperties': False}}}}
+    for path, method, status, schema in (
+        ('/api/local/connectors/baidu-netdisk', 'get', '200', 'connection_status'),
+        ('/api/local/connectors/baidu-netdisk/authorization', 'post', '201', 'authorization_start'),
+        ('/api/local/connectors/baidu-netdisk:disconnect', 'post', '200', 'connection_status'),
+    ):
+        generated['paths'][path][method]['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/' + schema}}}
+    for path in ('/api/v1/tasks', '/api/local/tasks', '/api/v1/tasks/{task_id}/runs', '/api/local/research',
+                 '/api/local/connectors/baidu-netdisk/authorization', '/api/local/connectors/baidu-netdisk:disconnect'):
         generated['paths'][path]['post'].setdefault('parameters', []).append({
             'in': 'header', 'name': 'Idempotency-Key', 'required': True, 'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
     return app

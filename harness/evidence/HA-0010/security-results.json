@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-09-13T04:25:09.576858+00:00",
+  "status": "passed",
+  "checks": [
+    "unconfigured_connector_cannot_generate_authorization_url",
+    "state_is_single_use_expiring_and_persisted_only_as_digest",
+    "callback_code_is_not_emitted_in_application_events_or_access_log",
+    "token_response_validation_refresh_disconnect_and_keychain_failure_injection",
+    "fixed_official_oauth_hosts_and_no_data_plane_endpoints",
+    "status_api_and_evidence_are_redacted"
+  ],
+  "live_oauth": "not_run: requires user-owned registered application and a non-sensitive test account",
+  "data_plane": "disabled"
+}

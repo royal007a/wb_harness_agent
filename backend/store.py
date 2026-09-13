@@ -1,5 +1,6 @@
 """Single-process SQLite transaction boundary; every state change owns its events."""
 import json
+import hmac
 import sqlite3
 import threading
 import uuid
@@ -37,6 +38,7 @@ class Store:
             CREATE TABLE IF NOT EXISTS events(run_id TEXT REFERENCES runs(id), sequence INTEGER, doc TEXT NOT NULL, PRIMARY KEY(run_id,sequence));
             CREATE TABLE IF NOT EXISTS artifacts(id TEXT PRIMARY KEY, run_id TEXT REFERENCES runs(id), doc TEXT NOT NULL, body BLOB NOT NULL);
             CREATE TABLE IF NOT EXISTS idempotency(scope TEXT, key TEXT, digest TEXT NOT NULL, response TEXT NOT NULL, PRIMARY KEY(scope,key));
+            CREATE TABLE IF NOT EXISTS oauth_attempts(id TEXT PRIMARY KEY, doc TEXT NOT NULL);
         ''')
 
     @contextmanager
@@ -90,6 +92,35 @@ class Store:
         self.get('resources', resource_id)
         with self.lock:
             return self.db.execute('SELECT raw FROM resources WHERE id=?', (resource_id,)).fetchone()[0]
+
+    def oauth_attempt(self, ident):
+        with self.lock:
+            row = self.db.execute('SELECT doc FROM oauth_attempts WHERE id=?', (ident,)).fetchone()
+        if not row:
+            raise Problem('AUTHORIZATION_STATE_INVALID', '授权状态无效。', 400)
+        return json.loads(row['doc'])
+
+    def oauth_attempt_by_state_digest(self, state_digest):
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM oauth_attempts').fetchall()
+        for row in rows:
+            attempt = json.loads(row['doc'])
+            if hmac.compare_digest(attempt.get('state_digest', ''), state_digest):
+                return attempt
+        raise Problem('AUTHORIZATION_STATE_INVALID', '授权状态无效。', 400)
+
+    def oauth_attempt_by_idempotency(self, idempotency_digest):
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM oauth_attempts').fetchall()
+        for row in rows:
+            attempt = json.loads(row['doc'])
+            if hmac.compare_digest(attempt.get('idempotency_digest', ''), idempotency_digest):
+                return attempt
+        return None
+
+    def put_oauth_attempt(self, db, attempt):
+        db.execute('INSERT INTO oauth_attempts VALUES(?,?) ON CONFLICT(id) DO UPDATE SET doc=excluded.doc',
+                   (attempt['id'], dumps(attempt)))
 
     def close(self):
         self.db.close()

@@ -4,4 +4,5 @@ cd "$(dirname "$0")/.."
 .venv/bin/python -m pytest -q
 node --check frontend/app.js
 node --check frontend/research.js
+node --check frontend/baidu-netdisk.js
 git diff --check
