@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-09-13T05:23:20.422364+00:00",
+  "status": "passed",
+  "operation": "official_oauth_refresh_only",
+  "result": {
+    "provider": "baidu_netdisk",
+    "refreshed": true,
+    "status": "connected",
+    "has_token": true,
+    "data_access_enabled": false
+  },
+  "file_api_calls": 0,
+  "token_material_emitted": false
+}

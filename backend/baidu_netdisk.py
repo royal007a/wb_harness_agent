@@ -173,9 +173,12 @@ class BaiduNetdiskConnector:
         if url != TOKEN_ENDPOINT:
             raise Problem('OAUTH_ENDPOINT_INVALID', 'OAuth 端点不在允许范围内。')
         try:
-            response = httpx.post(url, data=data, timeout=httpx.Timeout(10), follow_redirects=False)
-            response.raise_for_status()
-            return response.json()
+            # OAuth credentials must never follow an ambient HTTP(S)/SOCKS
+            # proxy.  The endpoint is fixed and HTTPS, so use a direct client.
+            with httpx.Client(timeout=httpx.Timeout(10), follow_redirects=False, trust_env=False) as client:
+                response = client.post(url, data=data)
+                response.raise_for_status()
+                return response.json()
         except (httpx.HTTPError, ValueError) as exc:
             raise Problem('OAUTH_TOKEN_EXCHANGE_FAILED', '令牌服务不可用或响应无效。', 502) from exc
 
@@ -218,10 +221,23 @@ class BaiduNetdiskConnector:
             raise Problem('CREDENTIAL_INVALID', '本机授权凭证已损坏。', 409) from exc
         if self.clock() + timedelta(seconds=60) < expires and isinstance(token.get('access_token'), str):
             return token['access_token']
-        refreshed = self._exchange({'grant_type': 'refresh_token', 'refresh_token': token.get('refresh_token'),
+        return self._refresh(token)['access_token']
+
+    def _refresh(self, token):
+        refresh_token = token.get('refresh_token')
+        if not isinstance(refresh_token, str) or not 1 <= len(refresh_token) <= 2048:
+            raise Problem('CREDENTIAL_INVALID', '本机授权凭证已损坏。', 409)
+        refreshed = self._exchange({'grant_type': 'refresh_token', 'refresh_token': refresh_token,
                                     'client_id': self.client_id(), 'client_secret': self._required_client_secret()})
         self._save_token(refreshed)
-        return refreshed['access_token']
+        return refreshed
+
+    def refresh_for_verification(self):
+        """Perform one user-approved OAuth refresh; deliberately return no token material."""
+        self._refresh(self._token())
+        state = self.status()
+        return {'provider': PROVIDER, 'refreshed': True, 'status': state['status'],
+                'has_token': state['has_token'], 'data_access_enabled': state['data_access_enabled']}
 
     def disconnect(self):
         self.secrets.delete(TOKEN_ACCOUNT)

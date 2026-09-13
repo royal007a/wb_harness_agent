@@ -1,6 +1,6 @@
 # 百度网盘 OAuth 连接器（本地）
 
-状态：HA-0010 本地连接底座已验收；真实 OAuth 连通等待用户创建官方应用并在本机自行授权。该连接器只使用百度官方 OAuth 授权码流程；不是百度网盘客户端替代品，也不下载任意公开分享链接。
+状态：HA-0010 本地连接底座及 HA-0011 真实 OAuth 连通已验收；数据面仍关闭。该连接器只使用百度官方 OAuth 授权码流程；不是百度网盘客户端替代品，也不下载任意公开分享链接。
 
 ## 能力与边界
 
@@ -44,10 +44,10 @@ sequenceDiagram
   H-->>U: 本地连接结果
 ```
 
-授权 state 10 分钟有效、单次使用；取消、过期、授权拒绝和 token 交换失败均写入无密的连接审计摘要。服务仅对官方固定 HTTPS host 发请求，10 秒超时，不自动重试令牌交换。
+授权 state 10 分钟有效、单次使用；取消、过期、授权拒绝和 token 交换失败均写入无密的连接审计摘要。服务仅对官方固定 HTTPS host 直连发请求：禁用环境 HTTP(S)/SOCKS 代理、不跟随重定向、10 秒超时，且不自动重试令牌交换。
 
 ## 验收与非目标
 
-测试已覆盖配置缺失、state 重放/过期/错配、用户拒绝授权、OAuth 错误、令牌结构错误、Keychain 写入失败、刷新、显式断开和所有输出的脱敏；详情见 `harness/evidence/HA-0010/manifest.json`。真实连通测试须使用独立测试账号和非敏感文件，并确认 Client ID、回调、scope 和应用状态；不得把真实 token 归档到测试报告。
+测试已覆盖配置缺失、state 重放/过期/错配、用户拒绝授权、OAuth 错误、令牌结构错误、Keychain 写入失败、刷新、显式断开、直连 transport 和所有输出的脱敏；详情见 `harness/evidence/HA-0010/manifest.json`。真实 OAuth 连通和一次无数据面 refresh 的脱敏证据见 `harness/evidence/HA-0011/manifest.json`；不得把真实 token 归档到测试报告。数据面仍须单独使用独立测试账号、非敏感文件、最小 scope 和删除/审计证据验收。
 
 官方材料：[OAuth 接入指南](https://openauth.baidu.com/doc/doc.html)、[百度网盘开放平台](https://yun.baidu.com/open/platform)，核验日期 2026-09-13。

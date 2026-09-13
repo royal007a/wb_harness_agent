@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "awaiting_baidu_netdisk_oauth_configuration",
+  "phase": "baidu_netdisk_oauth_verified",
   "implementation_started": true,
-  "active_task_id": "HA-0011",
-  "active_plan": "exec-plans/blocked/HA-0011-baidu-netdisk-live-oauth.md",
-  "last_checkpoint": "HA-0011 配置助手通过 107 项完整测试；本机连接器仍未配置，数据访问关闭",
-  "last_updated_at": "2026-09-13T05:04:18Z",
-  "next_action": "用户在本机运行配置助手，在百度页面自行授权；状态变为 ready 后再执行无密真实 OAuth 探针",
+  "active_task_id": null,
+  "active_plan": null,
+  "last_checkpoint": "HA-0011 已完成官方 OAuth 连通及一次无数据面 refresh；数据面仍关闭",
+  "last_updated_at": "2026-09-13T05:32:34Z",
+  "next_action": "如需分享链接下载，先设计独立的官方客户端交接边界；文件 API/内容解析仍需独立授权",
   "release": "0.1.0-local"
 }

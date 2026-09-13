@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-09-13T05:31:59.351133+00:00",
+  "task": "HA-0011",
+  "status": "passed",
+  "scope": "official OAuth authorization and one refresh verification only",
+  "data_plane_calls": 0,
+  "token_material_emitted": false,
+  "tests": {
+    "passed": 114,
+    "failures": 0,
+    "errors": 0
+  },
+  "artifacts": {
+    "configuration-helper-precheck.md": {
+      "sha256": "af38a2e40c7b7ab48d788c84c20961ab84b266cffcd50c6d1e3cb1a18e6c84bb"
+    },
+    "configuration-tests.xml": {
+      "sha256": "ef5bafb17ccb5d96d3c1b9a117020ff9fe72cbc5472850150d32037b6ae48259"
+    },
+    "live-refresh.json": {
+      "sha256": "44b5eb188970b86aef8744289267ed7435dbcae815f2b7818d2f846df17c1726"
+    },
+    "all-tests.xml": {
+      "sha256": "8dd921e0a13e07ee90d6900b885b1ae5b70dd218c180bb1555979c150bfb21af"
+    }
+  }
+}

@@ -137,7 +137,9 @@ def test_token_response_refresh_disconnect_and_redaction(client):
     record = json.loads(raw)
     record['expires_at'] = (datetime.now(timezone.utc) - timedelta(seconds=1)).isoformat()
     connector.secrets.set(TOKEN_ACCOUNT, dumps(record))
-    assert connector.access_token() == 'rotated-access-token'
+    refreshed = connector.refresh_for_verification()
+    assert refreshed == {'provider': 'baidu_netdisk', 'refreshed': True, 'status': 'connected',
+                         'has_token': True, 'data_access_enabled': False}
     assert calls[-1][1]['grant_type'] == 'refresh_token'
     assert 'initial-refresh-token' not in client.get('/api/local/connectors/baidu-netdisk').text
     disconnected = client.post('/api/local/connectors/baidu-netdisk:disconnect', json={},
@@ -188,3 +190,26 @@ def test_http_boundary_and_request_shape(client):
         '$ref': '#/components/schemas/connection_status'}
     assert spec['paths']['/api/local/connectors/baidu-netdisk/authorization']['post']['responses']['201']['content']['application/json']['schema'] == {
         '$ref': '#/components/schemas/authorization_start'}
+
+
+def test_oauth_transport_never_uses_environment_proxy(client, monkeypatch):
+    options = {}
+    class Response:
+        def raise_for_status(self):
+            return None
+        def json(self):
+            return {'access_token': 'access-token-for-tests', 'refresh_token': 'refresh-token-for-tests', 'expires_in': 3600}
+    class DirectClient:
+        def __init__(self, **kwargs):
+            options.update(kwargs)
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+        def post(self, url, data):
+            assert url == TOKEN_ENDPOINT and data == {'grant_type': 'refresh_token'}
+            return Response()
+    monkeypatch.setattr('backend.baidu_netdisk.httpx.Client', DirectClient)
+    connector = client.app.state.service.baidu_netdisk
+    connector._http_post(TOKEN_ENDPOINT, {'grant_type': 'refresh_token'})
+    assert options['trust_env'] is False and options['follow_redirects'] is False
