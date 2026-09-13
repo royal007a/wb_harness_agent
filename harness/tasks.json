@@ -1,6 +1,6 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-13T04:22:41Z",
+  "generated_at": "2026-09-13T05:04:18Z",
   "tasks": [
     {
       "id": "HA-0010",
@@ -29,15 +29,15 @@
       "title": "验证百度网盘真实 OAuth 连通",
       "status": "blocked",
       "risk": "high",
-      "scope": ["用户自有官方应用的 OAuth URL、回调、令牌交换与刷新核验", "使用独立测试账号记录无密连通证据"],
+      "scope": ["用户本机无回显 Keychain/launchd 配置助手", "用户自有官方应用的 OAuth URL、回调、令牌交换与刷新核验", "使用独立测试账号记录无密连通证据"],
       "non_goals": ["读取、下载或解析真实网盘文件", "分享链接抓取、Cookie 复用或验证码绕过", "在聊天或 Evidence 中存储凭证"],
       "acceptance": ["用户本人完成官方登录授权且状态变为 connected", "令牌刷新在无密证据下可验证", "官方应用当前 scope/回调兼容性已记录"],
       "depends_on": ["HA-0010"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0011-baidu-netdisk-live-oauth.md",
-      "blocked_reason": "需要用户在百度网盘开放平台创建/配置应用，并在本机 Keychain 设置 Client Secret；系统不应取得或请求聊天中的 Secret",
-      "recovery_condition": "用户完成官方应用和本机安全配置后，通知可开始浏览器中的本人授权",
-      "evidence": []
+      "blocked_reason": "本机配置助手已完成；仍需用户在百度开放平台创建/配置应用，并由本人在本机输入 Client Secret 和授权登录",
+      "recovery_condition": "用户在本机运行配置助手后，状态显示 ready，并通知可开始浏览器中的本人授权",
+      "evidence": ["harness/evidence/HA-0011/configuration-helper-precheck.md", "harness/evidence/HA-0011/configuration-tests.xml"]
     },
     {
       "id":"HA-0009", "title":"一小时多专项 Child Run 编排切片", "status":"completed", "risk":"high",

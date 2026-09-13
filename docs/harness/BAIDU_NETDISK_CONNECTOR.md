@@ -12,15 +12,18 @@
 
 1. 在[百度网盘开放平台](https://yun.baidu.com/open/platform)创建应用并开通网盘授权能力。
 2. 在应用后台登记回调地址：`http://127.0.0.1:8765/api/local/connectors/baidu-netdisk/callback`。地址必须与授权和换 token 时完全一致。
-3. 在本机启动服务的环境中设置公开配置，不要在群聊发送 Secret：
+3. 在本机交互式终端运行配置助手；它会无回显读取 Client Secret、要求显式确认，随后将 Secret 写入 Keychain、将公开 App Key 注入当前登录会话的 launchd 环境并重启本地服务：
 
 ```sh
-export HARNESS_BAIDUPAN_CLIENT_ID='你的 App Key'
+cd /Users/weberzhao/code/ai/harnessagent
+.venv/bin/python harness/configure_baidu_netdisk.py
 ```
 
-回调地址由连接器固定为上文的 `127.0.0.1` 地址，不能用环境变量覆盖；应用后台、授权请求和换 token 请求必须完全一致。
+回调地址由连接器固定为上文的 `127.0.0.1` 地址，不能用环境变量覆盖；应用后台、授权请求和换 token 请求必须完全一致。助手不会接受 Secret 命令行参数、环境变量或文件输入，也不打开百度页面。
 
-4. 通过 Keychain Access 为服务 `HarnessAgent.BaiduNetdisk` 创建账户 `oauth-client-secret` 的 Client Secret；真实授权后，服务会创建账户 `oauth-token:default`。不得把它们写进 `config.toml`、launchd plist、`.env`、源码或 Evidence。
+4. 打开本地连接页面，点击“生成官方授权链接”，在百度页面由本人登录并授权。真实授权后，服务会创建 Keychain 账户 `oauth-token:default`。不得把 Client Secret、token 写进 `config.toml`、launchd plist、`.env`、源码或 Evidence。
+
+公开 App Key 在当前 macOS 登录会话有效；重新登录后可能须重新运行助手。若 Keychain 已有 Client Secret，重新运行会安全更新该条目。
 
 ## 流程
 

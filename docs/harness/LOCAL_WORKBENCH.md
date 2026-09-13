@@ -60,14 +60,14 @@ plist 中路径为本机绝对路径，移动仓库需修改。当前注册属�
 
 入口：http://127.0.0.1:8765/connectors/baidu-netdisk。它只实现官方 OAuth 连接，不会下载分享链接或读取文件。配置和用户操作见 [百度网盘连接器](BAIDU_NETDISK_CONNECTOR.md)。
 
-前台运行时可设置公开 App Key：
+在本机图形登录会话的交互式终端运行以下助手。它无回显读取 Client Secret，显式确认后才写入 Keychain；公开 App Key 通过 launchctl 注入当前登录会话并重启本地服务：
 
 ```sh
-export HARNESS_BAIDUPAN_CLIENT_ID='你的 App Key'
-sh harness/start.sh
+cd /Users/weberzhao/code/ai/harnessagent
+.venv/bin/python harness/configure_baidu_netdisk.py
 ```
 
-launchd 环境需以 `EnvironmentVariables` 注入同一公开变量后重启服务；不要把 Client Secret、access token 或 refresh token 写进 plist。它们只能在本机 Keychain 服务 `HarnessAgent.BaiduNetdisk` 中存在。为避免 OAuth 授权 code 出现在标准访问日志，前台启动与 launchd 均使用 `--no-access-log`。
+不要把 Client Secret、access token 或 refresh token 写进 plist、环境变量、终端历史或群聊；它们只能在本机 Keychain 服务 `HarnessAgent.BaiduNetdisk` 中存在。App Key 只在当前登录会话保留，重新登录后按需重新运行助手。为避免 OAuth 授权 code 出现在标准访问日志，前台启动与 launchd 均使用 `--no-access-log`。
 
 ## 验证
 

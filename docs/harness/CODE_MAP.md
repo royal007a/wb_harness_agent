@@ -14,6 +14,7 @@
 - `backend/readiness.py`、`harness/probe.py`：只读就绪状态与显式探针命令；
 - `backend/research.py`：固定深度 Child Run 扇出、全树预算、并发、失败/取消/重跑/恢复；
 - `backend/baidu_netdisk.py`：固定官方 OAuth 端点、一次性 state、Keychain 令牌边界；不处理文件数据面或分享链接；
+- `harness/configure_baidu_netdisk.py`：用户本机 TTY 配置助手；无回显 Client Secret 只进 Keychain，公开 App Key 仅注入当前登录会话；
 - `adapters/research_demo.py`：自建 synthetic 资料与固定专项函数，非真实研报；
 - `adapters/claude_config.py`：实际 SDK AgentDefinition 离线配置验证，无 query/CLI 启动；
 - `frontend/research.*`：多专项演示页面；`tests/test_research.py` 和 `browser_research.py` 验证；

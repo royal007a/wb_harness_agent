@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0011",
   "active_plan": "exec-plans/blocked/HA-0011-baidu-netdisk-live-oauth.md",
-  "last_checkpoint": "HA-0010 completed locally: 98 tests, OAuth page 5 checks and workbench 12 checks passed; service reloaded with data access disabled",
-  "last_updated_at": "2026-09-13T04:22:41Z",
-  "next_action": "await user-owned official application registration, public App Key service configuration and local Keychain Client Secret before user-completed live OAuth probe",
+  "last_checkpoint": "HA-0011 配置助手通过 107 项完整测试；本机连接器仍未配置，数据访问关闭",
+  "last_updated_at": "2026-09-13T05:04:18Z",
+  "next_action": "用户在本机运行配置助手，在百度页面自行授权；状态变为 ready 后再执行无密真实 OAuth 探针",
   "release": "0.1.0-local"
 }
