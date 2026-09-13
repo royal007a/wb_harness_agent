@@ -64,6 +64,36 @@ const post = (url, body) =>
     },
     body: JSON.stringify(body),
   });
+function clearIntent() {
+  const target = $("#intent-result");
+  target.hidden = true;
+  target.textContent = "";
+  target.className = "intent-result";
+}
+function showIntent(result) {
+  const target = $("#intent-result");
+  const route = result.route ? "固定路由：Local Analytics；仍需你点击“创建并运行”。" : "";
+  const text =
+    result.decision === "ready"
+      ? `意图已就绪：${result.intent.label}。${route}`
+      : result.decision === "clarification_required"
+        ? result.clarification.question
+        : "未识别为本地 CSV 分析；当前不会创建任务或切换到其他能力。";
+  target.className = `intent-result ${result.decision}`;
+  target.textContent = text;
+  target.hidden = false;
+}
+async function checkIntent() {
+  const body = { objective: $("#objective").value };
+  if ($("#resource-select").value) body.resource_id = $("#resource-select").value;
+  const result = await api("/api/local/intents:interpret", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  showIntent(result);
+  return result;
+}
 function badge(status) {
   return `<span class="status ${esc(status)}">${esc(labels[status] || status)}</span>`;
 }
@@ -279,16 +309,21 @@ $("#sample").addEventListener(
     await upload(new File([await r.blob()], "sales.csv", { type: "text/csv" }));
   }),
 );
+$("#check-intent").addEventListener("click", guard(checkIntent));
+$("#objective").addEventListener("input", clearIntent);
+$("#resource-select").addEventListener("change", clearIntent);
 $("#create-form").addEventListener(
   "submit",
   guard(async (e) => {
     e.preventDefault();
-    const resource = $("#resource-select").value;
-    if (!resource) throw new Error("请先上传或选择一份 CSV。");
     $("#submit").disabled = true;
     try {
+      const intent = await checkIntent();
+      if (intent.decision !== "ready") {
+        throw new Error(intent.clarification?.question || "当前目标不支持本地 CSV 分析。");
+      }
       const result = await post("/api/local/tasks", {
-        resource_id: resource,
+        resource_id: $("#resource-select").value,
         objective: $("#objective").value.trim(),
       });
       await refresh();

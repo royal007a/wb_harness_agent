@@ -120,8 +120,12 @@
                 <span class="tag">就绪</span>
               </div>
               <p class="form-hint">
-                本版输出字段统计与完整率；目标作为任务记录保存。
+                提交前会用本地规则检查分析意图与 CSV 槽位；不调用模型。
               </p>
+              <div id="intent-result" class="intent-result" role="status" aria-live="polite" hidden></div>
+              <button id="check-intent" class="secondary intent-check" type="button">
+                预检分析意图
+              </button>
               <button id="submit" class="primary" type="submit">
                 创建并运行 <span>↗</span>
               </button>

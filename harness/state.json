@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "baidu_share_link_client_handoff_ready",
+  "phase": "intent_contract_routing_verified",
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0011 已完成官方 OAuth 连通及一次无数据面 refresh；HA-0012 已完成官方客户端分享链接交接 Skill 和 Claude 同步",
-  "last_updated_at": "2026-09-13T05:32:34Z",
-  "next_action": "等待用户在官方百度网盘客户端确认下载并提供明确本地文件路径；文件 API/内容解析仍需独立授权",
+  "last_checkpoint": "HA-0013 已完成无模型 Intent Contract、槽位澄清、规则路由/拒识、固定评测与工作台验证",
+  "last_updated_at": "2026-09-13T08:59:49Z",
+  "next_action": "等待用户决定是否为意图路由立项模型/向量评测；当前 rules@1 仅支持本地 CSV 分析",
   "release": "0.1.0-local"
 }

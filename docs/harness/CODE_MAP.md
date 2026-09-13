@@ -6,6 +6,7 @@
 
 - `backend/app.py`：HTTP 传输、同源边界、资源/任务/事件/产物接口；
 - `backend/service.py`：契约校验、权限、幂等、Run 状态、固定工具 Worker；
+- `backend/intent.py`：本地 `intent-contract@1` 的确定性 CSV 意图、槽位、拒识与固定路由；不创建 Task/Run、不调用模型；
 - `backend/store.py`：SQLite 事务、事件序列、对象读写；
 - `backend/analysis.py`：受界限约束的 CSV 统计、报告、SVG、manifest；不执行外部代码；
 - `adapters/contracts.py`、`local.py`：固定分析器生命周期与受校验事件/结果边界；
@@ -20,6 +21,7 @@
 - `frontend/research.*`：多专项演示页面；`tests/test_research.py` 和 `browser_research.py` 验证；
 - `frontend/baidu-netdisk.*`：本地 OAuth 状态与授权入口；`tests/test_baidu_netdisk.py` 验证；
 - `skills/csv-group-analysis/`：项目内 Skill 与确定性 CLI，无自动全局安装；
+- `fixtures/intent-evaluation-v1.json`、`harness/evaluate_intents.py`：版本化意图评测夹具与脱敏评分器；
 - `frontend/`：原生浏览器工作台与本地 API 说明；
 - `tests/`：后端契约/故障测试与真实浏览器验收；
 - `deploy/local.macos.plist`：本机 launchd 服务；

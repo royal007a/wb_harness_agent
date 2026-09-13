@@ -402,6 +402,30 @@ textarea {
   line-height: 1.6;
   margin: 0 0 15px;
 }
+.intent-result {
+  border: 1px solid #dbe3d6;
+  border-radius: 6px;
+  background: #f7faf5;
+  color: #536b54;
+  padding: 10px 11px;
+  margin: 0 0 9px;
+  font-size: 10px;
+  line-height: 1.55;
+}
+.intent-result.clarification_required {
+  background: #fff9eb;
+  border-color: #ead9ab;
+  color: #826730;
+}
+.intent-result.rejected {
+  background: #fff2f1;
+  border-color: #e8c5c1;
+  color: #9b5147;
+}
+.intent-check {
+  width: 100%;
+  margin: 0 0 9px;
+}
 .primary {
   display: flex;
   align-items: center;

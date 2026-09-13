@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/intent-contract.schema.json",
+  "title": "HarnessAgent Local Intent Contract",
+  "$defs": {
+    "intent_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "rule_ids"],
+      "properties": {
+        "id": {"const": "local_csv_analysis"},
+        "label": {"const": "本地 CSV 分析"},
+        "rule_ids": {"type": "array", "items": {"type": "string", "pattern": "^INTENT_[A-Z0-9_]+$"}, "minItems": 1, "uniqueItems": true}
+      }
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "required", "status", "value_ref"],
+      "properties": {
+        "name": {"enum": ["analysis_goal", "resource_id"]},
+        "kind": {"enum": ["text", "resource_ref"]},
+        "required": {"type": "boolean"},
+        "status": {"enum": ["satisfied", "missing"]},
+        "value_ref": {"type": ["string", "null"], "maxLength": 128}
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "status"],
+      "properties": {
+        "id": {"enum": ["registered_csv_resource", "local_execution_only"]},
+        "kind": {"enum": ["hard", "soft"]},
+        "status": {"enum": ["passed", "pending"]}
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "engine_id", "creation_mode"],
+      "properties": {
+        "id": {"const": "local_csv_analysis"},
+        "version": {"const": "rules@1"},
+        "engine_id": {"const": "engine_mock_analytics"},
+        "creation_mode": {"const": "explicit_user_submit"}
+      }
+    },
+    "clarification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "slot_names"],
+      "properties": {
+        "question": {"type": "string", "minLength": 1, "maxLength": 240},
+        "slot_names": {"type": "array", "items": {"enum": ["analysis_goal", "resource_id"]}, "minItems": 1, "uniqueItems": true}
+      }
+    },
+    "intent_interpret_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objective"],
+      "properties": {
+        "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "resource_id": {"type": "string", "pattern": "^res_[A-Za-z0-9]+$", "maxLength": 128}
+      }
+    },
+    "intent_interpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "decision", "intent", "objective_digest", "objective_length", "slots", "missing_slots", "hard_constraints", "route", "clarification", "confidence", "reason_codes", "model_calls"],
+      "properties": {
+        "contract_version": {"const": "intent-contract@1"},
+        "decision": {"enum": ["ready", "clarification_required", "rejected"]},
+        "intent": {"oneOf": [{"$ref": "#/$defs/intent_candidate"}, {"type": "null"}]},
+        "objective_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "objective_length": {"type": "integer", "minimum": 0, "maximum": 2000},
+        "slots": {"type": "array", "items": {"$ref": "#/$defs/slot"}, "minItems": 2, "maxItems": 2},
+        "missing_slots": {"type": "array", "items": {"enum": ["analysis_goal", "resource_id"]}, "uniqueItems": true},
+        "hard_constraints": {"type": "array", "items": {"$ref": "#/$defs/constraint"}, "minItems": 1},
+        "route": {"oneOf": [{"$ref": "#/$defs/route"}, {"type": "null"}]},
+        "clarification": {"oneOf": [{"$ref": "#/$defs/clarification"}, {"type": "null"}]},
+        "confidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["level", "basis"],
+          "properties": {"level": {"const": "deterministic"}, "basis": {"const": "rules@1"}}
+        },
+        "reason_codes": {"type": "array", "items": {"type": "string", "pattern": "^INTENT_[A-Z0-9_]+$"}, "minItems": 1, "uniqueItems": true},
+        "model_calls": {"const": 0}
+      }
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "evaluation_version": "intent-evaluation@1",
+  "case_count": 7,
+  "metrics": {
+    "decision_accuracy": 1.0,
+    "intent_accuracy": 1.0,
+    "missing_slots_exact_accuracy": 1.0,
+    "route_accuracy": 1.0,
+    "rejection_precision": 1.0,
+    "rejection_recall": 1.0
+  },
+  "failures": [],
+  "cases": [
+    {
+      "case_id": "ready_csv_quality",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true,
+        "reason_codes": [
+          "INTENT_LOCAL_CSV_RULE",
+          "INTENT_SLOT_RESOURCE_SATISFIED",
+          "INTENT_ROUTE_LOCAL_ANALYTICS"
+        ]
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "clarify_missing_resource",
+      "actual": {
+        "decision": "clarification_required",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [
+          "resource_id"
+        ],
+        "has_route": false,
+        "reason_codes": [
+          "INTENT_LOCAL_CSV_RULE",
+          "INTENT_SLOT_RESOURCE_MISSING"
+        ]
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "ready_short_goal_with_resource",
+      "actual": {
+        "decision": "ready",
+        "intent_id": "local_csv_analysis",
+        "missing_slots": [],
+        "has_route": true,
+        "reason_codes": [
+          "INTENT_LOCAL_CSV_RULE",
+          "INTENT_SLOT_RESOURCE_SATISFIED",
+          "INTENT_ROUTE_LOCAL_ANALYTICS"
+        ]
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_netdisk_download",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false,
+        "reason_codes": [
+          "INTENT_UNSUPPORTED"
+        ]
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_greeting",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false,
+        "reason_codes": [
+          "INTENT_UNSUPPORTED"
+        ]
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_empty_goal",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [
+          "analysis_goal"
+        ],
+        "has_route": false,
+        "reason_codes": [
+          "INTENT_EMPTY_OBJECTIVE"
+        ]
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    },
+    {
+      "case_id": "reject_report_without_data_context",
+      "actual": {
+        "decision": "rejected",
+        "intent_id": null,
+        "missing_slots": [],
+        "has_route": false,
+        "reason_codes": [
+          "INTENT_UNSUPPORTED"
+        ]
+      },
+      "matches": {
+        "decision": true,
+        "intent": true,
+        "missing_slots": true,
+        "route": true
+      }
+    }
+  ],
+  "fixture_sha256": "156f7d3b030a2e69b2af8699634973c12689c8f8a9c6a449ecbf23b37b51ca62"
+}

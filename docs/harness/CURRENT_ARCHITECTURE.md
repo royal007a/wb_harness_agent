@@ -2,7 +2,7 @@
 
 ## 结论
 
-当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、Claude SDK 离线配置契约探针，以及未配置应用的百度网盘 OAuth 连接器；尚无真实模型、原生 Claude 子 Agent 执行、网盘数据访问或长期记忆。
+当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器、无模型 Intent Contract 预检和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、Claude SDK 离线配置契约探针，以及已验证 OAuth 连通但数据面关闭的百度网盘连接器；尚无真实模型、原生 Claude 子 Agent 执行、网盘数据访问或长期记忆。
 
 ```mermaid
 flowchart LR
@@ -22,6 +22,8 @@ flowchart LR
 因此，本文只描述可验证的现状。目标能力见 [ARCHITECTURE.md](ARCHITECTURE.md)，不得把目标图当作已实现系统。
 
 本地研究演示由 `Service → Research → bounded executor pool → ResearchDemoExecutor` 执行，同一 SQLite 保存父子 Run/事件/产物。最多 9 个子任务、全局 3 个并发，原始输入在 Task 中固定，子执行器只接收各自资源，主任务汇总结构化引用。上下文分发隔离不是线程级安全沙箱。恢复和部分失败语义见 [MULTI_AGENT.md](MULTI_AGENT.md)。
+
+本地分析表单在创建 Task 前调用 `Service → IntentRouter`。该 Router 用 `rules@1` 只识别 CSV 分析，返回 `ready`、`clarification_required` 或 `rejected`；不持久化自然语言输入、没有模型调用，也不会自动创建 Task 或换引擎。规则与固定评测见 [INTENT_ROUTING.md](INTENT_ROUTING.md)。
 
 百度网盘连接器由 `Service → BaiduNetdiskConnector → openapi.baidu.com / macOS Keychain` 组成。SQLite 仅保存 state 摘要、期限和无密状态；Client Secret、access token 和 refresh token 留在 Keychain。当前仅 OAuth 连接，不启用目录、下载或分享链接。见 [BAIDU_NETDISK_CONNECTOR.md](BAIDU_NETDISK_CONNECTOR.md)。
 

@@ -7,6 +7,10 @@
 
 文档中必须使用全称或 ID 前缀，不得把两套状态词汇混用。
 
+## Intent Preflight（本地受限入口）
+
+`intent-contract@1` 是创建 Product Task 前的无状态预检结果，不是 Product Task、Run、事件或 Harness Work Item。它可以返回槽位、约束、固定路由建议、缺槽澄清或拒识，但不能创建 Task、执行 Run、改变权限或隐式选择其他引擎。用户显式提交后，控制面必须重新校验预检条件和完整 Task 契约。
+
 ## Product Task
 
 Task 是一次不可变的用户意图与执行约束包：

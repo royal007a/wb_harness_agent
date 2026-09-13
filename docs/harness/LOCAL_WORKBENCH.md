@@ -6,7 +6,7 @@
 
 打开 http://127.0.0.1:8765，点击“使用示例销售数据”，再“创建并运行”。页面提供任务筛选、Run 选择、取消、重新运行、事件、权限快照及三个产物下载。也可以上传 UTF-8/GB18030 CSV，最多 2 MiB、20,000 行、100 列。
 
-当前执行固定统计，不解析自然语言意图；计算行列数、缺失、不同值及数值列最小/最大/均值/合计，产出报告、完整率 SVG 和 analysis-manifest。目标原样作为 Task 意图保存。模型调用和费用均为零。Smolagents、Claude、Deep Agents、Pi、视觉和长期记忆是明确标记的后续能力。
+当前执行固定统计。提交前的本地 `intent-contract@1` 只用确定性规则识别 CSV 分析、校验目标与资源槽位，并在缺 CSV 时要求澄清；它不调用模型、不自动创建 Task、不自动选择其他引擎。准备就绪后仍由用户点击提交，目标原样作为 Task 意图保存。执行会计算行列数、缺失、不同值及数值列最小/最大/均值/合计，产出报告、完整率 SVG 和 analysis-manifest。模型调用和费用均为零。Smolagents、Claude、Deep Agents、Pi、视觉和长期记忆是明确标记的后续能力。
 
 HA-0007 增加 Adapter 生命周期、`GET /api/v1/readiness` 历史探针报告和引擎待接入状态。[VM/SDK 探针](ENGINE_PROBES.md)与[Skill CLI](SKILL_EXECUTION.md)可以单独运行；它们不自动启用产品模型执行，也不改变本页固定统计语义。
 
@@ -49,6 +49,8 @@ plist 中路径为本机绝对路径，移动仓库需修改。当前注册属�
 浏览器可读接口说明：http://127.0.0.1:8765/docs；机器描述：`/openapi.json`。
 
 `POST /api/v1/tasks` 验证既有 `specs/v1/core-contracts.schema.json`；`POST /api/local/tasks` 是本地表单的显式简化入口，接受 `resource_id`、`objective`、可选 `timeout_seconds`，由服务端构造完整契约。未知字段/引擎/模型/能力拒绝。
+
+`POST /api/local/intents:interpret` 是无状态预检入口，接受 `objective` 和可选 `resource_id`，返回版本化槽位、约束、固定路由、缺槽澄清或拒识；响应仅保留目标长度和摘要。它不创建 Task/Run。简化入口会在创建前重做相同预检，因此不支持目标无法绕过规则直接创建本地分析 Task。详见 [本地意图契约与规则路由](INTENT_ROUTING.md)。
 
 事件采用 `GET /api/v1/runs/{id}/events?after=<sequence>` JSON 游标，最多 500 条/页。列表当前不分页，仅适合本地小规模使用。`/api/v1/tasks/{id}` 返回 `{task,runs}`，列表返回 `{items:[{task,latest_run}]}`；这是当前本地合同，完整目标接口仍见 [API.md](API.md)。未实现 SSE、审批、可恢复模型 checkpoint 或多租户服务。
 

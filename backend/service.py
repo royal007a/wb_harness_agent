@@ -9,6 +9,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, artifacts, digest, parse_csv
+from .intent import IntentRouter
 from adapters.contracts import AdapterRequest, validate_event, validate_result
 from adapters.local import LocalAnalyticsAdapter
 from .store import dumps, now, uid
@@ -42,6 +43,7 @@ class Service:
         self.stopping = threading.Event()
         self.thread = None
         self.adapters = {'engine_mock_analytics': LocalAnalyticsAdapter()}
+        self.intent_router = IntentRouter()
         from .research import Research
         from .baidu_netdisk import BaiduNetdiskConnector
         self.research = Research(self)
@@ -57,6 +59,16 @@ class Service:
         with self.store.transaction() as db:
             db.execute('INSERT OR IGNORE INTO resources VALUES(?,?,?)', (ident, dumps(doc), raw))
         return self.store.get('resources', ident)
+
+    def interpret_intent(self, body):
+        """Resolve only a registered CSV reference; the router has no side effects."""
+        request = {name: body[name] for name in ('objective', 'resource_id') if name in body}
+        resource = None
+        if request.get('resource_id'):
+            resource = self.store.get('resources', request['resource_id'])
+            if not resource['name'].lower().endswith('.csv'):
+                raise Problem('INVALID_RESOURCE', '意图预检只接受已登记 CSV 资源。', 422)
+        return self.intent_router.interpret(request, resource)
 
     def idempotent(self, scope, key, body, action):
         if not key or len(key) > 128:

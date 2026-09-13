@@ -17,6 +17,9 @@ with sync_playwright() as p:
     page.get_by_role('button', name='使用示例销售数据').click()
     expect(page.locator('#upload-title')).to_have_text('sales.csv')
     page.locator('#objective').fill('销售数据质量与数值概况 · 本地验收')
+    page.get_by_role('button', name='预检分析意图').click()
+    expect(page.locator('#intent-result')).to_contain_text('意图已就绪')
+    page.screenshot(path=str(OUTPUT / 'intent-preflight.png'), full_page=True)
     page.get_by_role('button', name='创建并运行').click()
     expect(page.locator('#detail')).to_be_visible()
     expect(page.locator('.artifact-link')).to_have_count(3, timeout=15000)
@@ -47,7 +50,7 @@ with sync_playwright() as p:
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Mobile horizontal overflow'
     page.screenshot(path=str(OUTPUT / 'workbench-mobile.png'), full_page=True)
     assert not errors, errors
-    report = {'browser': browser.version, 'errors': errors, 'checks': ['sample_upload', 'create', 'artifacts', 'events', 'policy', 'download', 'rerun', 'resources', 'engines', 'model_route_blocked', 'reload', 'mobile_layout']}
+    report = {'browser': browser.version, 'errors': errors, 'checks': ['sample_upload', 'intent_preflight', 'create', 'artifacts', 'events', 'policy', 'download', 'rerun', 'resources', 'engines', 'model_route_blocked', 'reload', 'mobile_layout']}
     (OUTPUT / 'browser.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(report, ensure_ascii=False))
     browser.close()

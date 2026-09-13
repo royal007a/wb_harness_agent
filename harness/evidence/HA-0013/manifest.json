@@ -1,0 +1,36 @@
+{
+  "task": "HA-0013",
+  "checked_at": "2026-09-13T09:00:32.152099+00:00",
+  "status": "passed",
+  "scope": "deterministic local intent preflight only",
+  "model_calls": 0,
+  "persistent_preflight_input": false,
+  "test_summary": {
+    "tests": 130,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "evaluation_metrics": {
+    "decision_accuracy": 1.0,
+    "intent_accuracy": 1.0,
+    "missing_slots_exact_accuracy": 1.0,
+    "route_accuracy": 1.0,
+    "rejection_precision": 1.0,
+    "rejection_recall": 1.0
+  },
+  "artifacts": {
+    "all-tests.xml": {
+      "sha256": "ad827ca9511b8d644f83b103943df9ee3bf3596eeca64b8689d5305d72b7cac4"
+    },
+    "evaluation-results.json": {
+      "sha256": "23944389de4c52bc59d00d37c526c4f25b6945998df83393bd8b823ba5788e1b"
+    },
+    "browser.json": {
+      "sha256": "8a65ab3324696a49064f842b7246849c2d05b90ffd92163e755898182c87a456"
+    },
+    "intent-preflight.png": {
+      "sha256": "7aa8178318efc51c30537b21108293509f9d9ae223308c7d5ae7e4da8b5b3458"
+    }
+  }
+}

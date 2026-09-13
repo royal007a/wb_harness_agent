@@ -28,6 +28,11 @@
           <tbody>
             <tr>
               <td>POST</td>
+              <td>/api/local/intents:interpret</td>
+              <td>无状态本地意图预检：槽位、缺槽澄清、固定路由或拒识</td>
+            </tr>
+            <tr>
+              <td>POST</td>
               <td>/api/v1/resources?name=data.csv</td>
               <td>上传 CSV 原始字节，最多 2 MiB</td>
             </tr>
@@ -110,7 +115,7 @@ Idempotency-Key: a-unique-request-key
           prj_local / local_analytics@1 / engine_mock_analytics。
         </p>
         <p>
-          目标作为任务记录保存，当前执行固定数值统计；真实模型路由未启用。
+          先调用 `/api/local/intents:interpret` 可检查本地 CSV 分析意图；它不创建 Task，且只返回目标摘要。简化创建入口会重做该检查，缺槽或不支持目标不会创建任务。当前执行固定数值统计；真实模型路由未启用。
           GET /api/v1/readiness 返回 SDK/VM 历史探针和接入阻塞项，不触发模型或容器运行。
         </p>
       </article>

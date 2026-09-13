@@ -1,0 +1,40 @@
+{
+  "fixture_version": "intent-evaluation@1",
+  "cases": [
+    {
+      "id": "ready_csv_quality",
+      "request": {"objective": "检查 CSV 数据质量并汇总数值字段", "has_resource": true},
+      "expected": {"decision": "ready", "intent_id": "local_csv_analysis", "missing_slots": [], "has_route": true}
+    },
+    {
+      "id": "clarify_missing_resource",
+      "request": {"objective": "分析销售数据的缺失值", "has_resource": false},
+      "expected": {"decision": "clarification_required", "intent_id": "local_csv_analysis", "missing_slots": ["resource_id"], "has_route": false}
+    },
+    {
+      "id": "ready_short_goal_with_resource",
+      "request": {"objective": "分析一下", "has_resource": true},
+      "expected": {"decision": "ready", "intent_id": "local_csv_analysis", "missing_slots": [], "has_route": true}
+    },
+    {
+      "id": "reject_netdisk_download",
+      "request": {"objective": "帮我下载百度网盘里的课件", "has_resource": false},
+      "expected": {"decision": "rejected", "intent_id": null, "missing_slots": [], "has_route": false}
+    },
+    {
+      "id": "reject_greeting",
+      "request": {"objective": "你好", "has_resource": false},
+      "expected": {"decision": "rejected", "intent_id": null, "missing_slots": [], "has_route": false}
+    },
+    {
+      "id": "reject_empty_goal",
+      "request": {"objective": "   ", "has_resource": false},
+      "expected": {"decision": "rejected", "intent_id": null, "missing_slots": ["analysis_goal"], "has_route": false}
+    },
+    {
+      "id": "reject_report_without_data_context",
+      "request": {"objective": "生成报告", "has_resource": false},
+      "expected": {"decision": "rejected", "intent_id": null, "missing_slots": [], "has_route": false}
+    }
+  ]
+}

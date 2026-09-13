@@ -1,7 +1,28 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-13T05:32:34Z",
+  "generated_at": "2026-09-13T08:59:49Z",
   "tasks": [
+    {
+      "id": "HA-0013",
+      "title": "实现本地意图契约、槽位澄清与规则路由",
+      "status": "completed",
+      "risk": "medium",
+      "scope": ["Intent Contract 与槽位 Schema", "无模型缺槽澄清、规则路由与拒识", "固定评测集、工作台预检和回归 Evidence"],
+      "non_goals": ["真实模型、向量/RAG、长期记忆或动态 few-shot", "自动选引擎或隐式创建/执行 Task", "外部数据、网盘文件访问或模型调用"],
+      "acceptance": ["预检响应可通过 Schema，且不回显目标正文", "缺槽/拒识不会创建 Task，准备就绪仍需用户显式提交", "固定评测集与 L2 契约/安全/UI 验证通过"],
+      "depends_on": ["HA-0006"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0013-intent-contract-routing.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0013/manifest.json",
+        "harness/evidence/HA-0013/all-tests.xml",
+        "harness/evidence/HA-0013/evaluation-results.json",
+        "harness/evidence/HA-0013/browser.json",
+        "harness/evidence/HA-0013/acceptance.md"
+      ]
+    },
     {
       "id": "HA-0010",
       "title": "实现百度网盘官方 OAuth 连接底座",

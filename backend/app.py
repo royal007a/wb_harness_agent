@@ -191,11 +191,23 @@ def create_app(db_path=None, run_worker=True):
     def sample():
         return Response((ROOT / 'examples/sales.csv').read_bytes(), media_type='text/csv', headers={'Content-Disposition': 'attachment; filename="sales.csv"'})
 
+    @app.post('/api/local/intents:interpret')
+    async def interpret_intent(request: Request):
+        body = await json_body(request)
+        if set(body) - {'objective', 'resource_id'}:
+            raise Problem('VALIDATION_ERROR', '意图预检只接受 objective 和可选 resource_id。', 422)
+        return app.state.service.interpret_intent(body)
+
     @app.post('/api/local/tasks', status_code=202)
     async def quick_task(request: Request):
         body = await json_body(request)
         if set(body) - {'resource_id', 'objective', 'timeout_seconds'} or not isinstance(body.get('resource_id'), str):
             raise Problem('VALIDATION_ERROR', '请提供 resource_id 和 objective。', 422)
+        interpretation = app.state.service.interpret_intent(body)
+        if interpretation['decision'] == 'clarification_required':
+            raise Problem('INTENT_CLARIFICATION_REQUIRED', interpretation['clarification']['question'], 422)
+        if interpretation['decision'] != 'ready':
+            raise Problem('INTENT_REJECTED', '当前工作台只支持本地 CSV 分析，请调整目标后重试。', 422)
         return app.state.service.create_task(local_task(body['resource_id'], body.get('objective'), body.get('timeout_seconds', 60)), request.headers.get('idempotency-key'))
 
     @app.post('/api/v1/tasks', status_code=202)
@@ -272,6 +284,14 @@ def create_app(db_path=None, run_worker=True):
             'type': 'object', 'additionalProperties': False, 'required': ['resource_id', 'objective'],
             'properties': {'resource_id': {'type': 'string'}, 'objective': {'type': 'string', 'minLength': 1, 'maxLength': 2000},
                            'timeout_seconds': {'type': 'integer', 'minimum': 1, 'maximum': 300}}}}}}
+    intent_schema = json.loads((ROOT / 'specs/v1/intent-contract.schema.json').read_text())
+    intent_definitions = json.loads(json.dumps(intent_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(intent_definitions)
+    generated['paths']['/api/local/intents:interpret']['post']['requestBody'] = {
+        'required': True, 'content': {'application/json': {'schema': {
+            '$ref': '#/components/schemas/intent_interpret_request'}}}}
+    generated['paths']['/api/local/intents:interpret']['post']['responses']['200']['content'] = {
+        'application/json': {'schema': {'$ref': '#/components/schemas/intent_interpretation'}}}
     connector_schema = json.loads((ROOT / 'specs/v1/baidu-netdisk-connector.schema.json').read_text())
     generated.setdefault('components', {}).setdefault('schemas', {}).update(connector_schema['$defs'])
     generated['paths']['/api/local/connectors/baidu-netdisk/authorization']['post']['requestBody'] = {

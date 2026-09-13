@@ -151,6 +151,18 @@
 }
 ```
 
+## 本地意图预检（已实现的受限入口）
+
+`POST /api/local/intents:interpret` 不持久化请求，也不需要幂等键。它不创建 Task 或 Run，仅检查当前本地工作台是否能理解该输入：
+
+```json
+{"objective":"检查 CSV 数据质量","resource_id":"res_..."}
+```
+
+结果符合 `specs/v1/intent-contract.schema.json`。`ready` 仅建议固定 `engine_mock_analytics`，并要求 `explicit_user_submit`；`clarification_required` 返回缺少的 `resource_id` 和固定提问；`rejected` 不猜测或路由至其他能力。响应不回显 `objective` 原文，只返回摘要与长度，`model_calls` 恒为 0。
+
+`POST /api/local/tasks` 在创建前会重做该预检：缺槽返回 `INTENT_CLARIFICATION_REQUIRED`，不支持请求返回 `INTENT_REJECTED`。严格 `POST /api/v1/tasks` 保持显式 Task/引擎契约，不被该本地便利入口改写。
+
 ## Task 与 Run 动作
 
 - `GET /tasks/{id}`：返回不可变 Task 和独立的 `latest_run` 快照；列表接口可另行提供派生的 `latest_run_status`。
