@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/claude-research-admission.schema.json",
+  "title": "Native Claude Research L3 Admission Profile",
+  "description": "A versioned non-secret admission profile. It does not enable a runtime or resolve credentials.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "admission_enabled",
+    "model_calls",
+    "external_calls",
+    "provider",
+    "model",
+    "budget",
+    "sources",
+    "public_pdf",
+    "operators",
+    "blockers",
+    "admission_evidence"
+  ],
+  "properties": {
+    "schema_version": {"const": "claude-research-admission@1"},
+    "status": {"enum": ["not_admitted", "approved_for_l3_probe"]},
+    "admission_enabled": {"type": "boolean"},
+    "model_calls": {"type": "integer", "minimum": 0},
+    "external_calls": {"type": "integer", "minimum": 0},
+    "provider": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/provider"}]},
+    "model": {"type": ["string", "null"], "minLength": 1, "maxLength": 160},
+    "budget": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/budget"}]},
+    "sources": {"$ref": "#/$defs/sources"},
+    "public_pdf": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/public_pdf"}]},
+    "operators": {"$ref": "#/$defs/operators"},
+    "blockers": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 300}, "uniqueItems": true},
+    "admission_evidence": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/admission_evidence"}]}
+  },
+  "$defs": {
+    "credential_ref": {"type": "string", "pattern": "^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$"},
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "cli_path", "authentication_boundary"],
+      "properties": {
+        "kind": {"const": "claude_agent_sdk_cli"},
+        "cli_path": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "authentication_boundary": {"const": "managed_by_claude_cli_not_read_by_harness"}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "max_cost_minor", "max_turns", "timeout_seconds"],
+      "properties": {
+        "currency": {"const": "USD"},
+        "max_cost_minor": {"type": "integer", "minimum": 3, "maximum": 100000},
+        "max_turns": {"type": "integer", "minimum": 4, "maximum": 20},
+        "timeout_seconds": {"type": "integer", "minimum": 30, "maximum": 900}
+      }
+    },
+    "source_connector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["endpoint", "credential_ref"],
+      "properties": {
+        "endpoint": {"type": ["string", "null"], "format": "uri", "maxLength": 2048},
+        "credential_ref": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/credential_ref"}]}
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_domains", "search", "financial"],
+      "properties": {
+        "allowed_domains": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9.-]+$"}, "uniqueItems": true},
+        "search": {"$ref": "#/$defs/source_connector"},
+        "financial": {"$ref": "#/$defs/source_connector"}
+      }
+    },
+    "public_pdf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "sha256", "data_class"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[^/\\\\]{1,240}\\.pdf$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "data_class": {"const": "Public"}
+      }
+    },
+    "operators": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cancel_owner", "rollback_owner"],
+      "properties": {
+        "cancel_owner": {"type": ["string", "null"], "minLength": 1, "maxLength": 120},
+        "rollback_owner": {"type": ["string", "null"], "minLength": 1, "maxLength": 120}
+      }
+    },
+    "admission_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approval_record", "data_egress_review", "probe_runbook", "rollback_runbook"],
+      "properties": {
+        "approval_record": {"type": "string", "minLength": 1, "maxLength": 300},
+        "data_egress_review": {"type": "string", "minLength": 1, "maxLength": 300},
+        "probe_runbook": {"type": "string", "minLength": 1, "maxLength": 300},
+        "rollback_runbook": {"type": "string", "minLength": 1, "maxLength": 300}
+      }
+    }
+  }
+}

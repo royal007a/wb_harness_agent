@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "team_identity_admission_design_accepted",
+  "phase": "native_claude_research_l3_admission_binding",
   "implementation_started": true,
-  "active_task_id": null,
-  "active_plan": null,
-  "last_checkpoint": "HA-0042 已完成设计验收：负责人选择保持 metadata-only 控制面，不实施认证。ADR-0038 已冻结 actor_id 只为 protocol identity；OIDC、nginx principal 映射、账户/登录、Team 正文/附件/检索和 Agent delegation 均不实现。2026-09-22 本机与远端 Session runtime 复核仍报告 protocol identity/Runtime/telemetry 未连接、外部模型/工具调用均为 0。",
-  "last_updated_at": "2026-09-22T06:31:56Z",
-  "next_action": "继续已获授权且不依赖真实身份的独立 Work Item。只有负责人将来显式改选 OIDC + PKCE 或受控 nginx principal 映射，并提供非秘密信任边界/责任人时，才新建独立 Public identity probe；当前不得将 actor_id、Session 或 Snapshot 用作 HTTP 身份、消息系统、Provider Session 或真实 Agent Runtime。",
+  "active_task_id": "HA-0027",
+  "active_plan": "exec-plans/active/HA-0027-native-claude-research-runtime.md",
+  "last_checkpoint": "HA-0027 正在把 L3 准入收敛为默认拒绝的无密 `claude-research-admission@1`。该档案只有在 Provider/模型、USD 费用/turn/时间上限、精确域名/JSON connector endpoint、Keychain 引用、单一 Public PDF SHA-256 与取消/回滚责任全部完整且运行配置完全匹配时才可允许一次 Public Probe；当前仍不执行 CLI、Keychain 或网络。",
+  "last_updated_at": "2026-09-22T07:07:30Z",
+  "next_action": "完成 HA-0027 准入档案的 Schema、静态验证、运行时/资料源/PDF 绑定、定向和全量回归，并依双环境发布规范部署。发布后保持 waiting_approval，直到负责人以非秘密方式指定批准模型、预算、准确域名/connector endpoint、Keychain 引用名、Public PDF 与取消/回滚负责人；不得把 metadata-only Team actor_id 当作这些操作的身份授权。",
   "release": "0.1.0-local"
 }

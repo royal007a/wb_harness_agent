@@ -36,12 +36,11 @@ HA-0007 增加 Adapter 生命周期、`GET /api/v1/readiness` 历史探针报告
 
 ## Native Claude 投研准入（ADR-0024）
 
-这个端点没有 UI，先通过 `GET /api/local/research-native/runtime` 查看 blocker。只有部署者在受控终端完成 Claude 身份配置，并在不提交秘密的前提下配置模型、精确允许域名、搜索/财务资料 endpoint、费用上限与两项环境门禁后，才可用 `POST /api/local/research-native/documents?name=<public-report.pdf>` 登记 Public PDF，并向 `POST /api/local/research-native` 提交机器契约。默认端点拒绝，不会启动 CLI、访问 Keychain、联网上传资料或生成模拟报告。运行后通过 `/api/local/research-native/{runId}`、通用 Run Event/Artifact 接口审计原生 `Agent` 委派、Child 证据与 source ID；完整规则见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
+这个端点没有 UI，先通过 `GET /api/local/research-native/runtime` 查看 blocker 与无密 `claude-research-admission@1` 摘要。默认 profile 是 `not_admitted`，所以模型、CLI、Keychain 与资料 HTTP 均为 0 调用；环境变量误设也不会绕过它。只有部署者在受控终端完成 Claude CLI 身份配置，并让档案与环境逐项精确匹配 Provider/模型、USD 每 Run 费用/turn/超时、排序的允许域名、搜索/财务 JSON connector endpoint、仅 `keychain://harnessagent/<name>` 引用、单一 Public PDF SHA-256、取消/回滚负责人和审批记录后，才可用 `POST /api/local/research-native/documents?name=<public-report.pdf>` 登记该 PDF，并向 `POST /api/local/research-native` 提交机器契约。
 
-- 所有输入均为项目自建 synthetic 资料；模型、Provider、网络和外部工具调用恒为 0。
-- `missing_risk` 场景只表示风险资料缺失，父报告必须标为“未评估”，不能推断为无风险。
+- 默认端点拒绝，不会启动 CLI、访问 Keychain、联网上传资料或生成模拟报告；当前不应称为真实投研已跑通。
 - 请求要求 `Idempotency-Key`；可通过既有取消与重跑接口操作完整树。服务重启会终结正在运行的树并保留事件，不会复写已有证据。
-- 它不是 Claude Agent SDK SubAgent、真实财报 PDF/行情/新闻分析或投资建议。真实接入前仍须完成 TD-017/018/019/025/026 的准入。
+- 已批准的单公司 Probe 也只生成带来源证据的研究草稿；资料缺失必须标为“未评估”，不得输出投资建议。L3 仍须记录 SDK 真实并发、取消传输结果、费用、外发、引用审核与回滚演练；完整规则见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
 
 ## 外部 Skill 与 Memory Plane 本机接口
 

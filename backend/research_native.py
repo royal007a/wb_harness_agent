@@ -15,6 +15,10 @@ from adapters.claude_research import (
 )
 from .agent_runtime import KeyringCredentialResolver
 from .analysis import Problem, digest
+from .claude_research_admission import (
+    assert_public_pdf_binding,
+    assert_source_binding,
+)
 from .research import Research
 from .research_sources import ResearchSourceGateway, policy_from_env
 from .service import DENY, ROOT, TERMINAL, local_task, validate
@@ -40,16 +44,18 @@ class NativeResearch(Research):
         # Deliberately fail before any task row or model/HTTP activity if the
         # approval/configuration gates are incomplete.
         from adapters.claude_research import assert_ready
-        assert_ready(config)
+        admission = assert_ready(config)
         policy = policy_from_env()
         if not policy.enabled:
             raise Problem('EXTERNAL_DATA_RUNTIME_DISABLED', '外部资料工具未获启动许可。', 409)
+        assert_source_binding(admission, policy)
         resource = self.store.get('resources', body['report_resource_id'])
         raw = self.store.raw(resource['id'])
         if resource.get('data_class') != 'Public' or not resource.get('name', '').lower().endswith('.pdf') or not raw.startswith(b'%PDF-'):
             raise Problem('PDF_RESOURCE_INVALID', '原生投研只接受已登记、Public 的 PDF 财报资料。', 422)
         if digest(raw) != resource['sha256']:
             raise Problem('RESOURCE_INTEGRITY_ERROR', '财报 PDF 摘要不匹配。', 409)
+        assert_public_pdf_binding(admission, resource)
 
         def create(db):
             task = local_task(resource['id'], body['objective'], body['timeout_seconds'])
@@ -58,6 +64,7 @@ class NativeResearch(Research):
                 'context': {'resource_ids': [resource['id']], 'variables': {
                     'request': copy.deepcopy(body), 'runtime_configuration': runtime_status(),
                     'source_policy_digest': digest(dumps(asdict(policy)).encode()),
+                    'admission_digest': runtime_status()['admission']['admission_digest'],
                     'plugin_mode': 'local_first_party_plugin_only',
                 }},
                 'engine_policy': {'mode': 'explicit', 'engine_id': ENGINE,
@@ -235,9 +242,14 @@ class NativeResearch(Research):
             config = configuration_from_request(request)
             if runtime_status() != task['context']['variables']['runtime_configuration']:
                 raise Problem('RUNTIME_CONFIGURATION_DRIFT', '原生投研运行时配置发生变化。', 409)
+            from adapters.claude_research import assert_ready
+            admission = assert_ready(config)
             policy = policy_from_env()
             if digest(dumps(asdict(policy)).encode()) != task['context']['variables']['source_policy_digest']:
                 raise Problem('SOURCE_POLICY_DRIFT', '资料源配置在排队后发生变化。', 409)
+            if runtime_status()['admission']['admission_digest'] != task['context']['variables']['admission_digest']:
+                raise Problem('CLAUDE_RESEARCH_ADMISSION_DRIFT', '原生投研 L3 准入档案在排队后发生变化。', 409)
+            assert_source_binding(admission, policy)
             # Source credential references are intentionally resolved only
             # inside the source gateway at an actual HTTP boundary.  Creating
             # or queueing a Run therefore never reads the operating-system

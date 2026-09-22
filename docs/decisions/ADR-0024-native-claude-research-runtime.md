@@ -18,8 +18,10 @@ ADR-0023 只证明了三角色 Child Run、Skill 摘要、工具边界与父级�
 3. MCP 工具只有四类受控只读资料能力：财务 API、新闻搜索、网页抓取和已登记 PDF 文本提取。每个输入有 Schema、域名或资源绑定、超时、字节上限和 `source_evidence` 输出；工具输出只返回受限摘录和来源摘要，原始资料留在受控层。
 4. 外部模型或资料访问要求两个独立环境门禁：`HARNESS_CLAUDE_RESEARCH_RUNTIME=enabled` 与 `HARNESS_CLAUDE_RESEARCH_EXTERNAL_DATA=enabled`，并要求模型 ID、正向费用上限、允许域名、数据源端点/凭证引用（如适用）及用户资料分类评审。缺任一条件必须在调用 SDK 或 HTTP 前失败，绝不回退到模拟答案。
 5. Native query 事件要保留父 `Agent` tool-use 与 child `parent_tool_use_id` 关系、工具参数摘要、来源证据摘要、SDK 终态/用量与模型文本产物。父报告只能引用拥有来源证据的 Child 报告；资料缺失写为未评估，不产生交易、买卖、ST 或退市结论。
+6. `claude-research-admission@1` 是两项环境门禁之前的独立、版本化准入档案。它以 `not_admitted` 为默认状态，并必须把 Claude Agent SDK CLI provider/模型、USD 每 Run 费用硬上限、精确域名与两个 JSON source connector endpoint、仅 Keychain 引用、单一 Public PDF SHA-256、取消/回滚负责人以及审批/外发/Probe/回滚记录一起固定。即使环境变量被误设，档案未批准也必须阻止 SDK、CLI、Keychain 与 HTTP 启动。
 
 ## Consequences
 
 - 仓库获得真实 SDK/Skill/MCP 的可启动实现和默认关闭的可验证门禁，但没有 Provider、允许数据源、真实 PDF 和预算授权时不启动 CLI、不做网络请求，也不能声称“真实多 Agent 已验收”。
+- `approved_for_l3_probe` 只允许一次受限 Public 探针；它不是 HTTP 登录、Team identity、Agent delegation 授权或生产可用声明。取消/回滚负责人在当前 metadata-only 环境中仅是本机运维责任标签，不是认证 principal。
 - 实际连通后必须新增 Evidence：SDK/CLI/MCP 版本、三个 SubAgent 的真实并发/父子事件、工具取消、成本上限、资料外发与域名拦截、来源引用、PDF 解析失败和完整回滚演练。完成前 TD-017/018/019/025/026 保持开放。

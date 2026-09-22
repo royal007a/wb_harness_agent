@@ -20,7 +20,7 @@
     "runtime_configuration": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mode", "sdk_version", "mcp_version", "cli_path", "model", "runtime_enabled", "external_data_enabled", "plugin_sha256", "allowed_domains", "blockers"],
+      "required": ["mode", "sdk_version", "mcp_version", "cli_path", "model", "runtime_enabled", "external_data_enabled", "plugin_sha256", "allowed_domains", "admission", "blockers"],
       "properties": {
         "mode": {"const": "claude_native_research@1"},
         "sdk_version": {"const": "0.2.152"},
@@ -31,7 +31,23 @@
         "external_data_enabled": {"type": "boolean"},
         "plugin_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "allowed_domains": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9.-]+$"}, "uniqueItems": true},
+        "admission": {"$ref": "#/$defs/admission_runtime"},
         "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "admission_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "status", "admission_enabled", "model_calls", "external_calls", "blocker_count", "admission_digest", "error"],
+      "properties": {
+        "schema_version": {"const": "claude-research-admission@1"},
+        "status": {"enum": ["not_admitted", "approved_for_l3_probe", "invalid_not_admitted"]},
+        "admission_enabled": {"type": "boolean"},
+        "model_calls": {"type": "integer", "minimum": 0},
+        "external_calls": {"type": "integer", "minimum": 0},
+        "blocker_count": {"type": "integer", "minimum": 0},
+        "admission_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "error": {"type": ["string", "null"]}
       }
     },
     "source_evidence": {

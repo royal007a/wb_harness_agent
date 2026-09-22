@@ -30,3 +30,13 @@
 2. Adapter / plugin / source-tool 的离线构造与 failure-path 测试通过。
 3. Product Run 集成、事件/报告、取消/预算/域名测试通过。
 4. 仅在全部外部授权与配置就绪时执行真实 L3 probe；否则记录 blocker，不能关闭真实验收债务。
+
+## 2026-09-22 L3 准入绑定增量
+
+在真实运行前，先引入版本化、无密的 `claude-research-admission@1`，而不是把零散环境变量当作授权：
+
+1. profile 必须同时固定 Claude Agent SDK CLI Provider/精确 CLI path/模型，USD 每 Run `max_cost_minor`、`max_turns` 与超时；请求只能等于或严于已批准上限。
+2. profile 必须固定排序的精确域名及搜索、财务两个 HTTPS JSON connector endpoint；当前 connector 分别只接受 `{query,limit}` 与 `{stock_code,metric_group}`，不以任意 URL 或 AKShare 名称冒充已接入。
+3. profile 只能写 `keychain://harnessagent/<name>` 引用，禁止 token、Key、密码、Bearer 文本；实际解析仍只可发生在已经获准的 HTTP 边界。
+4. profile 必须固定一份 Public PDF 的文件名与 SHA-256，并绑定本机 cancel/rollback owner 以及审批、外发、Probe、回滚 Evidence 引用；这些 owner 是 metadata-only 运维责任标签，不是认证 principal。
+5. profile 不会单独开启任何环境门禁，默认 `not_admitted`；完成本增量与双环境健康检查后，HA-0027 仍回到 `waiting_approval`，不得执行 L3 或声明真实投研可用。

@@ -1,6 +1,6 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T06:31:56Z",
+  "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
       "id": "HA-0042",
@@ -458,31 +458,33 @@
     {
       "id": "HA-0027",
       "title": "实现原生 Claude 投研多 Agent 的受控运行时",
-      "status": "waiting_approval",
+      "status": "running",
       "risk": "high",
       "scope": [
         "Claude Agent SDK 原生 Agent/SubAgent、第一方插件 Skills、进程内 MCP 的受控适配",
         "行业搜索、网页抓取、财务数据和已登记 PDF 的只读来源工具与证据契约",
-        "父子 Run 事件、可审计报告、默认关闭门禁、配置/取消/预算/来源验证"
+        "父子 Run 事件、可审计报告、默认关闭门禁、配置/取消/预算/来源验证",
+        "版本化 `claude-research-admission@1`：Provider/模型、费用上限、精确域名与 JSON connector endpoint、仅 Keychain 引用、单一 Public PDF、取消/回滚责任的 fail-closed 绑定"
       ],
       "non_goals": [
         "使用聊天内秘密、自动发现凭证/模型/数据源或未批准的外部资料外发",
         "第三方 Skills、未隔离任意宿主工具、投资建议或把未跑通配置称为真实投研"
       ],
       "acceptance": [
-        "默认环境没有 SDK query、CLI、Keychain 或 HTTP 副作用，门禁可解释地拒绝",
+        "默认环境没有 SDK query、CLI、Keychain 或 HTTP 副作用，门禁可解释地拒绝；空、部分或秘密样式的准入档案同样 fail-closed",
         "固定版本 SDK 以原生 Agent/AgentDefinition/本地插件/MCP 构造三角色并保留父子事件关联",
         "来源工具、报告、故障/预算/取消与 Evidence 通过；真实 L3 仅在明确配置和授权后运行"
       ],
       "depends_on": ["HA-0026"],
       "owner": "mymaccodex",
       "plan": "exec-plans/active/HA-0027-native-claude-research-runtime.md",
-      "blocked_reason": "真实 L3 需批准的 Claude 模型身份/费用、资料外发范围、精确域名、搜索与财务资料 endpoint、必要的 Keychain 引用和 Public PDF；当前默认门禁正确阻止一切外部调用。",
-      "recovery_condition": "部署者在受控环境配置并批准全部门禁后，以单公司 Public PDF 执行原生 SDK/三 Child/MCP/取消/费用/引用 L3 探针，并将证据写入 HA-0027。",
+      "blocked_reason": null,
+      "recovery_condition": "先完成并部署无密 L3 准入档案的 Schema、静态验证、运行时绑定与默认关闭 Evidence；之后该 Work Item 回到 waiting_approval，等待负责人提供批准的 Claude 模型身份/费用、资料外发范围、精确域名、搜索与财务 JSON connector endpoint、必要的 Keychain 引用名称、单一 Public PDF 和取消/回滚责任人。",
       "evidence": [
         "harness/evidence/HA-0027/manifest.json",
         "harness/evidence/HA-0027/all-tests.xml",
         "harness/evidence/HA-0027/offline-sdk-probe.json",
+        "harness/evidence/HA-0027/l3-admission-gate.json",
         "harness/evidence/HA-0027/deployment.json",
         "harness/evidence/HA-0027/acceptance.md"
       ]

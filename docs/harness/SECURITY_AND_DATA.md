@@ -39,6 +39,8 @@ ADR-0023 Research Agent Simulation 只读取项目自建的 synthetic 资源。C
 
 ADR-0024 Native Claude Research 的默认门禁会在 `query()`、CLI、Keychain 和 HTTP 之前停止。允许启动时，模型 ID、费用上限、精确 HTTPS 域名、搜索/财务 endpoint、非秘密 Keychain 引用、Plugin SHA-256 和 Public PDF 资源摘要必须固定到 Task/Run；资料工具只返回有大小上限的 URI/摘要/时间/摘录，不能把原始网页、PDF、token 或任意宿主路径放入模型、Event、Artifact 或 Evidence。进程内 MCP 工具仍和工作台共进程，`dontAsk`、`allowed_tools`、Skill 过滤和网关校验不是 OS 隔离；TD-018 未关闭前不可加载第三方 Skill 或把此边界用于不可信资料。模型或 Child 没有来源 ID 时必须明确“未评估”，不能借缺失资料推出无 ST、无退市、无诉讼或任何投资结论。
 
+`claude-research-admission@1` 进一步把这些条件写成版本化、默认 `not_admitted` 的档案。它只接受 `keychain://harnessagent/<name>` 凭据引用，并拒绝 token/API key/Bearer 等秘密样式文本；准入档案本身不能启动模型、CLI、Keychain 或网络。只有已批准档案与运行环境、请求预算、资料源和 Public PDF 摘要逐项一致时，才可进入单一 Public L3 Probe。档案中的 cancel/rollback owner 在当前 metadata-only 边界只是本机运维责任标签，不能被解释为真实用户认证、Agent delegation 或自动恢复授权。
+
 ## Prompt 与上下文安全
 
 - 系统策略与外部内容使用结构化边界，不拼接为同等优先级文本。

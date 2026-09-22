@@ -278,9 +278,9 @@
 
 ## Native Claude Research（ADR-0024，默认关闭）
 
-- `GET /api/local/research-native/runtime`：只读返回 `claude-agent-sdk` / MCP 版本、插件摘要、模型/外部数据开关、允许域名及 blocker；不读取 Keychain、不启动 CLI、不发网络请求。
+- `GET /api/local/research-native/runtime`：只读返回 `claude-agent-sdk` / MCP 版本、插件摘要、模型/外部数据开关、允许域名、`claude-research-admission@1` 摘要及 blocker；不读取 Keychain、不启动 CLI、不发网络请求。档案不是认证系统，当前 `not_admitted` 会阻止环境变量误启用。
 - `POST /api/local/research-native/documents?name=<report.pdf>`：仅接收 `application/pdf`、最大 15 MiB 的 Public 本地资料。它不解析、上传或发送资料。
-- `POST /api/local/research-native`：须带 `Idempotency-Key`，请求遵循 [`claude-research-runtime.schema.json`](../../specs/v1/claude-research-runtime.schema.json) 的 `native_research_request`。只有运行/资料门禁、模型、费用、HTTPS 资料端点、精确域名白名单和已登记 Public PDF 都满足时才创建 Product Task/Run；否则无副作用拒绝。
+- `POST /api/local/research-native`：须带 `Idempotency-Key`，请求遵循 [`claude-research-runtime.schema.json`](../../specs/v1/claude-research-runtime.schema.json) 的 `native_research_request`。只有 `approved_for_l3_probe` 准入档案及其 Provider/模型/费用/域名/endpoint/Keychain 引用/Public PDF/运维责任与运行/资料门禁均精确匹配时才创建 Product Task/Run；否则无副作用拒绝。
 - `GET /api/local/research-native` 与 `GET /api/local/research-native/{run_id}`：返回父/子 Run、SDK 委派事件、Artifact 和来源 Evidence 摘要。
 
 运行时父 Agent 只有原生 `Agent`，并必须委派 `financial`、`industry`、`risk` 三个 SDK Child Agent；Child 只可使用其固定插件 Skill 和 `research_sources` MCP 的资料工具。报告的 `source_id` 必须存在于同一 Run 的证据清单；无来源资料只能写为“未评估”。模型、资料外发、真实并发、取消和成本尚需 L3 Probe Evidence，详见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。

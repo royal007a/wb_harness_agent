@@ -7,6 +7,7 @@ import pytest
 import yaml
 from fastapi.testclient import TestClient
 
+import backend.claude_research_admission as research_admission
 from adapters.claude_research import (
     NativeResearchConfig, build_options, create_source_server, normalize_sdk_message,
     options_snapshot, runtime_status, stream_native_research, _deny_unexpected_tool,
@@ -20,6 +21,7 @@ REQUEST = {
     'company': '测试公司', 'stock_code': 'SZ000001', 'objective': '生成带来源的研究草稿。',
     'report_resource_id': 'res_' + 'a' * 64, 'timeout_seconds': 60, 'max_cost_minor': 300,
 }
+PUBLIC_PDF = b'%PDF-1.4\nplaceholder'
 
 
 class Gateway:
@@ -36,7 +38,7 @@ class Gateway:
         return {'source_id': 'src_pdf', 'resource_id': resource_id}
 
 
-def enabled_env(monkeypatch):
+def enabled_env(monkeypatch, tmp_path=None):
     values = {
         'HARNESS_CLAUDE_RESEARCH_RUNTIME': 'enabled',
         'HARNESS_CLAUDE_RESEARCH_EXTERNAL_DATA': 'enabled',
@@ -47,6 +49,30 @@ def enabled_env(monkeypatch):
     }
     for name, value in values.items():
         monkeypatch.setenv(name, value)
+    admission = {
+        'schema_version': 'claude-research-admission@1', 'status': 'approved_for_l3_probe',
+        'admission_enabled': True, 'model_calls': 0, 'external_calls': 0,
+        'provider': {'kind': 'claude_agent_sdk_cli', 'cli_path': 'claude',
+                     'authentication_boundary': 'managed_by_claude_cli_not_read_by_harness'},
+        'model': 'claude-test-controlled',
+        'budget': {'currency': 'USD', 'max_cost_minor': 300, 'max_turns': 12, 'timeout_seconds': 60},
+        'sources': {
+            'allowed_domains': ['finance.example', 'search.example'],
+            'search': {'endpoint': 'https://search.example/v1/search', 'credential_ref': None},
+            'financial': {'endpoint': 'https://finance.example/v1/financials', 'credential_ref': None},
+        },
+        'public_pdf': {'name': 'report.pdf', 'sha256': __import__('hashlib').sha256(PUBLIC_PDF).hexdigest(), 'data_class': 'Public'},
+        'operators': {'cancel_owner': 'local_operator', 'rollback_owner': 'local_operator'},
+        'blockers': [],
+        'admission_evidence': {
+            'approval_record': 'test-approval', 'data_egress_review': 'test-egress-review',
+            'probe_runbook': 'test-probe-runbook', 'rollback_runbook': 'test-rollback-runbook',
+        },
+    }
+    if tmp_path is not None:
+        state = tmp_path / 'claude-research-admission.json'
+        state.write_text(json.dumps(admission))
+        monkeypatch.setattr(research_admission, 'ADMISSION_STATE', state)
     return values
 
 
@@ -80,6 +106,8 @@ def test_default_gate_is_truthful_and_native_request_has_no_product_side_effect(
     status = runtime_status({})
     assert not status['runtime_enabled'] and not status['external_data_enabled']
     assert {'runtime_gate_disabled', 'model_not_configured', 'search_source_not_configured'} <= set(status['blockers'])
+    assert status['admission']['status'] == 'not_admitted'
+    assert 'admission_not_approved' in status['blockers']
     with TestClient(create_app(tmp_path / 'native.db', False), base_url='http://127.0.0.1') as client:
         response = client.post('/api/local/research-native', json=REQUEST, headers={'Idempotency-Key': 'native-gate'})
         assert response.status_code == 409
@@ -101,6 +129,9 @@ def test_native_research_openapi_matches_the_static_contract(tmp_path):
     assert runtime['components']['schemas']['native_research_request']['required'] == [
         'company', 'stock_code', 'objective', 'report_resource_id', 'timeout_seconds', 'max_cost_minor'
     ]
+    runtime_schema = runtime['components']['schemas']['runtime_configuration']
+    assert 'admission' in runtime_schema['required']
+    assert runtime_schema['properties']['admission']['$ref'] == '#/components/schemas/admission_runtime'
     static = yaml.safe_load((Path(__file__).resolve().parents[1] / 'specs/v1/openapi.yaml').read_text())
     static_operation = static['paths']['/local/research-native']['post']
     assert static_operation['requestBody']['content']['application/json']['schema']['$ref'].endswith(
@@ -134,6 +165,8 @@ def test_source_gateway_denies_before_network_and_enforces_domains():
         policy_from_env({'HARNESS_CLAUDE_RESEARCH_EXTERNAL_DATA': 'enabled',
                          'HARNESS_CLAUDE_RESEARCH_ALLOWED_DOMAINS': 'search.example',
                          'HARNESS_CLAUDE_RESEARCH_SEARCH_ENDPOINT': 'https://other.example/search'})
+    with pytest.raises(Problem, match='keychain'):
+        policy_from_env({'HARNESS_CLAUDE_RESEARCH_SEARCH_CREDENTIAL_REF': 'raw-secret'})
 
 
 def test_source_gateway_bounded_http_evidence_without_real_network():
@@ -172,17 +205,17 @@ def test_source_credential_is_resolved_only_when_the_approved_http_tool_runs():
     resolver = Resolver()
     gateway = ResearchSourceGateway(
         SourcePolicy(True, ('search.example',), 'https://search.example/v1/search', 'https://search.example/v1/financials',
-                     search_credential_ref='research-search'),
+                     search_credential_ref='keychain://harnessagent/research-search'),
         credential_resolver=resolver,
         client_factory=lambda: httpx.AsyncClient(transport=httpx.MockTransport(handler)),
     )
     assert resolver.calls == []
     asyncio.run(gateway.search_news('行业', 1))
-    assert resolver.calls == ['research-search'] and seen == ['Bearer test-secret']
+    assert resolver.calls == ['keychain://harnessagent/research-search'] and seen == ['Bearer test-secret']
 
 
-def test_stream_invokes_injected_query_only_after_enabled_gate(monkeypatch):
-    enabled_env(monkeypatch)
+def test_stream_invokes_injected_query_only_after_enabled_gate(monkeypatch, tmp_path):
+    enabled_env(monkeypatch, tmp_path)
     from claude_agent_sdk import AssistantMessage, ResultMessage, TextBlock, ToolUseBlock
     calls = []
 
@@ -198,7 +231,7 @@ def test_stream_invokes_injected_query_only_after_enabled_gate(monkeypatch):
 
 
 def test_product_run_maps_native_child_events_and_never_fakes_source_coverage(tmp_path, monkeypatch):
-    enabled_env(monkeypatch)
+    enabled_env(monkeypatch, tmp_path)
 
     async def fake_native_stream(_prompt, _config, _gateway):
         for role in ('financial', 'industry', 'risk'):
@@ -214,7 +247,7 @@ def test_product_run_maps_native_child_events_and_never_fakes_source_coverage(tm
 
     monkeypatch.setattr('backend.research_native.stream_native_research', fake_native_stream)
     with TestClient(create_app(tmp_path / 'native-product.db', False), base_url='http://127.0.0.1') as client:
-        upload = client.post('/api/local/research-native/documents?name=report.pdf', content=b'%PDF-1.4\nplaceholder',
+        upload = client.post('/api/local/research-native/documents?name=report.pdf', content=PUBLIC_PDF,
                              headers={'content-type': 'application/pdf'})
         assert upload.status_code == 201, upload.text
         response = client.post('/api/local/research-native', headers={'Idempotency-Key': 'native-product'}, json={
@@ -238,9 +271,9 @@ def test_product_run_maps_native_child_events_and_never_fakes_source_coverage(tm
 
 
 def test_native_child_cancel_escalates_to_the_full_sdk_run_tree(tmp_path, monkeypatch):
-    enabled_env(monkeypatch)
+    enabled_env(monkeypatch, tmp_path)
     with TestClient(create_app(tmp_path / 'native-cancel.db', False), base_url='http://127.0.0.1') as client:
-        upload = client.post('/api/local/research-native/documents?name=report.pdf', content=b'%PDF-1.4\nplaceholder',
+        upload = client.post('/api/local/research-native/documents?name=report.pdf', content=PUBLIC_PDF,
                              headers={'content-type': 'application/pdf'})
         created = client.post('/api/local/research-native', headers={'Idempotency-Key': 'native-cancel'}, json={
             **REQUEST, 'report_resource_id': upload.json()['id'],

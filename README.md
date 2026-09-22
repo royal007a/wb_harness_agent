@@ -8,7 +8,7 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 
 投研多 Agent 模拟：**http://127.0.0.1:8765/research-agents**。为每家公司固定运行财务、行业、风险三个 Child Agent，冻结第一方 Skill 摘要与 `resource.inspect` 工具权限，记录 Action / Observation / Final 证据并汇总报告。它是零模型、零网络、零真实数据的契约模拟，不是 Claude SDK、实时资讯或投资建议；详见 [投研多 Agent 模拟运行时](docs/harness/RESEARCH_AGENT_RUNTIME.md)。
 
-原生 Claude 投研准入：`GET http://127.0.0.1:8765/api/local/research-native/runtime` 显示 Native SubAgent / Plugin Skill / MCP 资料运行时的配置门禁。`POST /api/local/research-native/documents` 可先登记 Public PDF，`POST /api/local/research-native` 只会在 Claude 模型、费用、允许域名、搜索/财务资料源和数据外发开关全部显式配置后创建真实 Run；默认在调用 CLI、Keychain 或网络前拒绝。详见 [Native Claude 投研运行时](docs/harness/CLAUDE_RESEARCH_RUNTIME.md)。
+原生 Claude 投研准入：`GET http://127.0.0.1:8765/api/local/research-native/runtime` 显示 Native SubAgent / Plugin Skill / MCP 资料运行时的配置门禁与无密 `claude-research-admission@1` 摘要。`POST /api/local/research-native/documents` 可先登记 Public PDF，`POST /api/local/research-native` 只会在准入档案和环境同时精确匹配 Claude CLI Provider/模型、费用/turn/时间上限、允许域名、搜索/财务资料源、仅 Keychain 引用、单一 Public PDF 与数据外发开关后创建真实 Run；默认在调用 CLI、Keychain 或网络前拒绝。详见 [Native Claude 投研运行时](docs/harness/CLAUDE_RESEARCH_RUNTIME.md)。
 
 本地 Agent Lab：**http://127.0.0.1:8765/agent-lab**。它验证无密 Provider/Model/Agent Profile、SQLite 会话与 POST SSE 前端链路；回复是明确标记的本地确定性演示，模型、Provider、网络和工具调用均为 0，不改变 Product Task/Run/Replan。
 

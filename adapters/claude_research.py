@@ -22,6 +22,11 @@ from typing import Any, Protocol
 from jsonschema import Draft202012Validator
 
 from backend.analysis import Problem
+from backend.claude_research_admission import (
+    assert_runtime_binding,
+    require_approved,
+    runtime_status as admission_runtime_status,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -104,6 +109,7 @@ def plugin_digest(root: Path = PLUGIN_ROOT) -> str:
 def runtime_status(env: dict[str, str] | None = None, *, cli_path: str | None = None) -> dict[str, Any]:
     """Read configuration only; never resolve credentials or make a request."""
     env = os.environ if env is None else env
+    admission = admission_runtime_status()
     configured_cli = cli_path or env.get('HARNESS_CLAUDE_RESEARCH_CLI') or 'claude'
     model = env.get('HARNESS_CLAUDE_RESEARCH_MODEL') or None
     domains = tuple(sorted({part.strip().lower() for part in env.get('HARNESS_CLAUDE_RESEARCH_ALLOWED_DOMAINS', '').split(',') if part.strip()}))
@@ -128,6 +134,29 @@ def runtime_status(env: dict[str, str] | None = None, *, cli_path: str | None = 
         blockers.append('search_source_not_configured')
     if not env.get('HARNESS_CLAUDE_RESEARCH_FINANCIAL_ENDPOINT'):
         blockers.append('financial_source_not_configured')
+    if not admission['admission_enabled']:
+        blockers.append('admission_not_approved')
+    else:
+        # This is a read-only preflight check.  Run-specific budget and PDF
+        # bindings are checked later, when the request and resource exist.
+        # Keeping this visible here avoids a misleading healthy-looking
+        # runtime page when profile and deployment were configured separately.
+        try:
+            profile = require_approved()
+        except Problem:
+            blockers.append('admission_not_approved')
+        else:
+            sources = profile['sources']
+            if (
+                profile['provider']['cli_path'] != configured_cli
+                or profile['model'] != model
+                or tuple(sources['allowed_domains']) != domains
+                or sources['search']['endpoint'] != (env.get('HARNESS_CLAUDE_RESEARCH_SEARCH_ENDPOINT') or None)
+                or sources['financial']['endpoint'] != (env.get('HARNESS_CLAUDE_RESEARCH_FINANCIAL_ENDPOINT') or None)
+                or sources['search']['credential_ref'] != (env.get('HARNESS_CLAUDE_RESEARCH_SEARCH_CREDENTIAL_REF') or None)
+                or sources['financial']['credential_ref'] != (env.get('HARNESS_CLAUDE_RESEARCH_FINANCIAL_CREDENTIAL_REF') or None)
+            ):
+                blockers.append('admission_configuration_mismatch')
     return {
         'mode': RUNTIME_MODE,
         'sdk_version': _version('claude-agent-sdk') or 'missing',
@@ -138,6 +167,7 @@ def runtime_status(env: dict[str, str] | None = None, *, cli_path: str | None = 
         'external_data_enabled': env.get('HARNESS_CLAUDE_RESEARCH_EXTERNAL_DATA') == 'enabled',
         'plugin_sha256': plugin_digest() if PLUGIN_ROOT.is_dir() else '0' * 64,
         'allowed_domains': list(domains),
+        'admission': admission,
         'blockers': blockers,
     }
 
@@ -162,7 +192,7 @@ def configuration_from_request(request: dict[str, Any], env: dict[str, str] | No
     )
 
 
-def assert_ready(config: NativeResearchConfig, env: dict[str, str] | None = None) -> None:
+def assert_ready(config: NativeResearchConfig, env: dict[str, str] | None = None) -> dict[str, Any]:
     status = runtime_status(env, cli_path=config.cli_path)
     if status['blockers']:
         raise Problem('CLAUDE_RESEARCH_RUNTIME_BLOCKED', '原生投研运行时未获启动条件：' + ', '.join(status['blockers']), 409)
@@ -170,6 +200,11 @@ def assert_ready(config: NativeResearchConfig, env: dict[str, str] | None = None
         raise Problem('CLAUDE_RESEARCH_RUNTIME_BLOCKED', '原生投研运行时配置不完整。', 409)
     if config.max_turns < 4 or config.max_cost_minor <= 0 or not 30 <= config.timeout_seconds <= 900:
         raise Problem('BUDGET_EXCEEDED', '原生投研 Run 的回合、费用或超时预算无效。', 422)
+    admission = require_approved()
+    assert_runtime_binding(admission, model=config.model, cli_path=config.cli_path,
+                           allowed_domains=config.allowed_domains, max_cost_minor=config.max_cost_minor,
+                           max_turns=config.max_turns, timeout_seconds=config.timeout_seconds)
+    return admission
 
 
 def _agent_definitions():

@@ -25,7 +25,7 @@ flowchart LR
 
 ADR-0023 的独立投研 Agent 模拟运行时由 `Service → ResearchAgents → ResearchToolRuntime` 执行。同样使用 Product Task/Run，但在每个 Child Run 固化 `research.financial|industry|risk@1`、第一方本地 Skill SHA-256、唯一的 `resource.inspect` 和二步上限；它记录 Action / Observation / Final 事件，并只汇总独立复算通过的 Child artifact。模型、Provider、网络和外部工具调用恒为零；不是 Claude SDK 或真实金融数据系统。详见 [Research Agent Runtime](RESEARCH_AGENT_RUNTIME.md)。
 
-ADR-0024 新增 `Service → NativeResearch → Claude Agent SDK` 的受控 Native 路径。它仅在两项环境门禁、固定模型/费用、资料端点和精确域名白名单均满足时，创建一个父 Run 和三行 Child Run，并把原生 `Agent` 委派的 tool-use ID 映射回 `financial`/`industry`/`risk` Child Run。`ResearchSourceGateway` 是资料控制点：搜索、抓取、金融 API 和 Public PDF 提取均有输入限制、域名/资源绑定、超时、字节上限和 `source_evidence` 摘要。当前未有批准配置，因此只可读取 runtime blocker；没有 SDK query、CLI、Keychain 或 HTTP 调用，不能写成真实投研已跑通。详见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
+ADR-0024 新增 `Service → NativeResearch → Claude Agent SDK` 的受控 Native 路径。它仅在 `claude-research-admission@1` 的 Provider/模型/费用/端点/Keychain 引用/Public PDF/运维责任档案与两项环境门禁、固定模型/费用、资料端点和精确域名白名单均匹配时，创建一个父 Run 和三行 Child Run，并把原生 `Agent` 委派的 tool-use ID 映射回 `financial`/`industry`/`risk` Child Run。`ResearchSourceGateway` 是资料控制点：搜索、抓取、金融 API 和 Public PDF 提取均有输入限制、域名/资源绑定、超时、字节上限和 `source_evidence` 摘要。当前档案是 `not_admitted`，因此只可读取 runtime blocker；没有 SDK query、CLI、Keychain 或 HTTP 调用，不能写成真实投研已跑通。详见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
 
 ADR-0025 新增 `FastAPI → ExternalSkillRuntime → SQLite package/execution audit → 一次性 Colima container` 本地执行边界。外部包只可由可信本机用户用 ZIP 上传，内容被固化并在执行前复核 SHA-256；固定 runner 只运行 `entry.py` 的 JSON transform，不继承宿主环境、网络、路径或凭证。默认环境拒绝执行且不读取包/启动 Docker；这条 local-admin audit 路径未与 Product Task/Run 或 Claude/MCP 集成。详见 [外部 Skill 隔离运行时](EXTERNAL_SKILL_RUNTIME.md)。
 

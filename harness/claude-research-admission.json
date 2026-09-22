@@ -1,0 +1,26 @@
+{
+  "schema_version": "claude-research-admission@1",
+  "status": "not_admitted",
+  "admission_enabled": false,
+  "model_calls": 0,
+  "external_calls": 0,
+  "provider": null,
+  "model": null,
+  "budget": null,
+  "sources": {
+    "allowed_domains": [],
+    "search": {"endpoint": null, "credential_ref": null},
+    "financial": {"endpoint": null, "credential_ref": null}
+  },
+  "public_pdf": null,
+  "operators": {"cancel_owner": null, "rollback_owner": null},
+  "blockers": [
+    "未记录 Claude Agent SDK CLI provider identity、精确 CLI path 与批准模型。",
+    "未记录 USD 每 Run 费用硬上限、max_turns 与超时。",
+    "未记录精确允许域名及符合当前 JSON source connector 契约的搜索/财务 HTTPS endpoint。",
+    "未记录搜索/财务资料源所需的 Keychain 引用名称；不得填入秘密值。",
+    "未登记单一 Public PDF 的文件名与 SHA-256。",
+    "未指定本机取消与回滚负责人，也没有数据外发、L3 Probe 与回滚 Evidence。"
+  ],
+  "admission_evidence": null
+}

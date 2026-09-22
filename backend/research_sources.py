@@ -22,6 +22,7 @@ import httpx
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem
+from .claude_research_admission import is_credential_ref
 from .store import now, uid
 
 
@@ -95,6 +96,9 @@ def policy_from_env(env: dict[str, str] | None = None) -> SourcePolicy:
             host = _hostname(endpoint)
             if host not in policy.allowed_domains:
                 raise Problem('SOURCE_POLICY_INVALID', '资料 endpoint 必须位于精确域名白名单内。', 422)
+    for credential_ref in (policy.search_credential_ref, policy.financial_credential_ref):
+        if credential_ref is not None and not is_credential_ref(credential_ref):
+            raise Problem('SOURCE_CREDENTIAL_REFERENCE_INVALID', '资料源凭证只能使用 keychain://harnessagent/<name> 引用。', 422)
     return policy
 
 

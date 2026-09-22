@@ -25,7 +25,7 @@
 | [ADR-0021](../decisions/ADR-0021-local-agent-lab-preparation.md) | Accepted（本地准备切片） | 无密 Profile、SQLite Session 与确定性 POST SSE；真实模型/Provider 仍未启用 |
 | [ADR-0022](../decisions/ADR-0022-local-provider-agent-chat-runtime.md) | Accepted（受控本地运行时） | Provider/Model/Agent/Session/Exchange 与默认关闭的协议 Adapter；工具和 Child Run 未接入 |
 | [ADR-0023](../decisions/ADR-0023-research-multi-agent-simulation.md) | Accepted（本地模拟切片） | 三角色 Child Agent、第一方 Skill 摘要、受控只读 Tool 和父级证据汇总；不是实际 Claude SDK 或金融数据系统 |
-| [ADR-0024](../decisions/ADR-0024-native-claude-research-runtime.md) | Proposed | 原生 Claude SubAgent、Plugin Skill、进程内 MCP 资料工具与父子事件映射；默认外部运行关闭，真实连通仍需 L3 Evidence |
+| [ADR-0024](../decisions/ADR-0024-native-claude-research-runtime.md) | Proposed | 原生 Claude SubAgent、Plugin Skill、进程内 MCP 资料工具与父子事件映射；`claude-research-admission@1` 绑定 CLI Provider/模型/费用、端点/域名、Keychain 引用、Public PDF 与取消/回滚责任；默认外部运行关闭，真实连通仍需 L3 Evidence |
 | [ADR-0025](../decisions/ADR-0025-external-skill-isolation.md) | Proposed（本地受限实现） | 不可信外部 Skill 固化为严格 ZIP，并仅在默认关闭的一次性禁网非 root Colima 容器运行 |
 | [ADR-0026](../decisions/ADR-0026-memory-plane-m1.md) | Proposed（本地受限实现） | 来源优先的 Memory Bank / Source Evidence / Fact M1，支持撤回删除与受限证据读回，不启用模型或向量 |
 | [ADR-0027](../decisions/ADR-0027-memory-context-m2a.md) | Proposed（本地受限实现） | M1 之上的显式 Fact Capsule、FTS5 关键词目录和按 ID 详情回读；不包含模型摘要或语义检索 |
