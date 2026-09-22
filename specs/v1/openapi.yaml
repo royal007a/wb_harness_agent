@@ -6,6 +6,606 @@ info:
 servers:
   - url: /api/v1
 paths:
+  /local/external-skills/runtime:
+    servers:
+      - url: /api
+    get:
+      operationId: getExternalSkillRuntime
+      description: Returns the default-closed external Skill gate and isolation profile without reading a package or starting Docker.
+      responses:
+        '200':
+          description: Runtime gate status.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/external-skills/packages:
+    servers:
+      - url: /api
+    get:
+      operationId: listExternalSkillPackages
+      responses:
+        '200':
+          description: Immutable registered package summaries and runtime status.
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: registerExternalSkillPackage
+      description: Registers an unexecuted local ZIP containing only manifest.json and entry.py.
+      parameters:
+        - name: source_label
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 160
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: Package registered with immutable content digest.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/external-skills/packages/{packageId}:execute:
+    servers:
+      - url: /api
+    post:
+      operationId: executeExternalSkillPackage
+      description: Runs a registered package only after the explicit runtime gate in a one-shot no-network container.
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './external-skill-runtime.schema.json#/$defs/execution_request'
+      responses:
+        '200':
+          description: Bounded JSON result and isolated-execution audit summary.
+          content:
+            application/json:
+              schema:
+                $ref: './external-skill-runtime.schema.json#/$defs/execution_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/runtime:
+    servers:
+      - url: /api
+    get:
+      operationId: getMemoryPlaneRuntime
+      description: Returns the local M1 Memory Plane capability boundary. It does not extract or write memory.
+      responses:
+        '200':
+          description: M1 runtime state.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks:
+    servers:
+      - url: /api
+    get:
+      operationId: listMemoryBanks
+      responses:
+        '200':
+          description: Local-admin memory banks and M1 status.
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createMemoryBank
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-plane.schema.json#/$defs/bank_create_request'
+      responses:
+        '201':
+          description: A bank with a fixed local ownership and policy boundary.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-plane.schema.json#/$defs/memory_bank'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}/retain:
+    servers:
+      - url: /api
+    post:
+      operationId: retainMemoryEvidence
+      description: Explicitly stores a bounded Source Evidence and its caller-supplied atomic Facts. It never performs model extraction.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-plane.schema.json#/$defs/retain_request'
+      responses:
+        '201':
+          description: Source/Facts retained or an existing source deduplicated.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}/entities:
+    servers:
+      - url: /api
+    post:
+      operationId: retainMemoryGraphEntity
+      description: Explicitly records an Entity backed by one active Fact in the same Bank. It performs no automatic extraction or name resolution.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-graph.schema.json#/$defs/entity_input'
+      responses:
+        '201':
+          description: Explicit entity and audit reference.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-graph.schema.json#/$defs/entity_create_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}/relations:
+    servers:
+      - url: /api
+    post:
+      operationId: retainMemoryGraphRelation
+      description: Explicitly records a directed same-Bank Relation supported by one active Fact. It performs no graph inference.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-graph.schema.json#/$defs/relation_input'
+      responses:
+        '201':
+          description: Explicit relation and audit reference.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-graph.schema.json#/$defs/relation_create_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}:recall:
+    servers:
+      - url: /api
+    post:
+      operationId: recallMemoryEvidence
+      description: Read-back only. Applies bank, status, retention and validity filters then deterministic keyword/temporal ranking.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-plane.schema.json#/$defs/recall_request'
+      responses:
+        '200':
+          description: Bounded Evidence Bundle without raw Source content.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-plane.schema.json#/$defs/evidence_bundle'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}:context:
+    servers:
+      - url: /api
+    post:
+      operationId: buildMemoryContextCapsule
+      description: Returns caller-provided transient recent turns plus a Fact-derived Capsule and a bounded detail catalog. It does not persist turns, read raw Source content, or call a model.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-context.schema.json#/$defs/context_request'
+      responses:
+        '200':
+          description: Bounded model-readable Fact Capsule with no raw Source content.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-context.schema.json#/$defs/context_capsule'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}:recall-details:
+    servers:
+      - url: /api
+    post:
+      operationId: recallMemoryDetails
+      description: Re-validates selected Fact IDs from a capsule catalog and returns their bounded explicit details and source references, never raw Source content.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-context.schema.json#/$defs/detail_recall_request'
+      responses:
+        '200':
+          description: Exact selected details after bank/status/time revalidation.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-context.schema.json#/$defs/detail_bundle'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}:graph-recall:
+    servers:
+      - url: /api
+    post:
+      operationId: recallMemoryGraphEvidence
+      description: Traverses at most two explicit, source-backed relations from a known Entity ID after Bank/status/time revalidation. It is not natural-language GraphQA.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-graph.schema.json#/$defs/graph_recall_request'
+      responses:
+        '200':
+          description: Bounded graph evidence paths without raw Source content.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-graph.schema.json#/$defs/graph_evidence_bundle'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}:resolve-entity:
+    servers:
+      - url: /api
+    post:
+      operationId: resolveMemoryGraphEntity
+      description: Exact casefold lookup of an active same-Bank canonical name or alias. It never resolves ambiguity automatically and does not perform natural-language Entity Resolution.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-entity-catalog.schema.json#/$defs/entity_resolve_request'
+      responses:
+        '200':
+          description: Exact Entity candidate(s), ambiguity status and explicit Graph handoff.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-entity-catalog.schema.json#/$defs/entity_resolution'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/banks/{bankId}:fact-lineage:
+    servers:
+      - url: /api
+    post:
+      operationId: recallMemoryFactLineage
+      description: Returns a bounded explicit supersede history for a known Fact ID. It does not perform natural-language conflict resolution.
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './memory-fact-lineage.schema.json#/$defs/request'
+      responses:
+        '200':
+          description: Current/historical Fact evidence without Source content.
+          content:
+            application/json:
+              schema:
+                $ref: './memory-fact-lineage.schema.json#/$defs/bundle'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/sources/{sourceId}:retract:
+    servers:
+      - url: /api
+    post:
+      operationId: retractMemorySource
+      parameters:
+        - name: sourceId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+      responses:
+        '200':
+          description: Source and active dependent Facts retracted.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/memory/sources/{sourceId}:
+    servers:
+      - url: /api
+    delete:
+      operationId: deleteMemorySource
+      parameters:
+        - name: sourceId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Deletes Source/Facts from the canonical local store and leaves a no-content tombstone/audit record.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/runtime:
+    servers:
+      - url: /api
+    get:
+      operationId: getLocalTeamCoordinationRuntime
+      description: Returns the local Team Task/Handoff/Gate boundary. It never starts an Agent, model or external tool.
+      responses:
+        '200':
+          description: Local deterministic coordination runtime status.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/runtime_status'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/tasks:
+    servers:
+      - url: /api
+    get:
+      operationId: listLocalTeamTasks
+      responses:
+        '200':
+          description: Team Task summaries and local coordination boundary.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/team_task_list'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createLocalTeamTask
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-coordination.schema.json#/$defs/team_task_create_request'
+      responses:
+        '201':
+          description: A Team Task with frozen requirements, scope, stop conditions and Gate.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/team_task'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/tasks/{taskId}:
+    servers:
+      - url: /api
+    get:
+      operationId: getLocalTeamTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: One Team Task with append-only Handoffs and Gate decisions.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/team_task_detail'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/tasks/{taskId}:claim:
+    servers:
+      - url: /api
+    post:
+      operationId: claimLocalTeamTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-coordination.schema.json#/$defs/claim_request'
+      responses:
+        '200':
+          description: Atomically claimed Team Task and execution lease.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/team_task'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/tasks/{taskId}/handoffs:
+    servers:
+      - url: /api
+    post:
+      operationId: appendLocalTeamTaskHandoff
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-coordination.schema.json#/$defs/handoff_create_request'
+      responses:
+        '201':
+          description: Append-only Handoff bound to the current Task requirements and Gate digests.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/handoff_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/tasks/{taskId}:submit:
+    servers:
+      - url: /api
+    post:
+      operationId: submitLocalTeamTaskForGate
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-coordination.schema.json#/$defs/submit_request'
+      responses:
+        '200':
+          description: Task submitted to review after Handoff and Child Task checks.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/team_task'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/tasks/{taskId}:close:
+    servers:
+      - url: /api
+    post:
+      operationId: closeLocalTeamTask
+      summary: Stop tracking a Team Task without accepting it as delivered
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-coordination.schema.json#/$defs/close_request'
+      responses:
+        '200':
+          description: Task is closed for tracking and does not represent a Gate pass.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/team_task'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/tasks/{taskId}/gate-decisions:
+    servers:
+      - url: /api
+    post:
+      operationId: decideLocalTeamTaskGate
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-coordination.schema.json#/$defs/gate_decision_request'
+      responses:
+        '201':
+          description: Append-only Gate decision and resulting Task state.
+          content:
+            application/json:
+              schema:
+                $ref: './team-coordination.schema.json#/$defs/gate_decision_result'
+        default:
+          $ref: '#/components/responses/Error'
   /tasks:
     post:
       operationId: createTask
@@ -567,6 +1167,100 @@ paths:
           content:
             text/event-stream:
               schema: {$ref: './agent-runtime.schema.json#/$defs/runtime_stream_event'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/research-agents:
+    servers: [{url: /api}]
+    get:
+      operationId: listResearchAgentSimulationRuns
+      responses:
+        '200': {description: Root runs for the zero-external research-agent simulation only.}
+        default: {$ref: '#/components/responses/Error'}
+    post:
+      operationId: createResearchAgentSimulationRun
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './research-agent-runtime.schema.json#/$defs/research_agent_request'}
+      responses:
+        '202':
+          description: A Task plus a parent Run whose Child Agents use only synthetic resources and resource.inspect.
+        default: {$ref: '#/components/responses/Error'}
+  /local/research-agents/{runId}:
+    servers: [{url: /api}]
+    get:
+      operationId: getResearchAgentSimulationRun
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Parent/Child Run tree with frozen Agent, Skill and Tool snapshots plus verified artifacts.}
+        default: {$ref: '#/components/responses/Error'}
+  /local/research-native/runtime:
+    servers: [{url: /api}]
+    get:
+      operationId: getNativeClaudeResearchRuntime
+      description: Read-only configuration blockers. Never resolves credentials, starts Claude Code, or makes a network request.
+      responses:
+        '200':
+          description: Native Claude SDK/Skill/MCP runtime status and blocker list.
+          content:
+            application/json:
+              schema: {$ref: './claude-research-runtime.schema.json#/$defs/runtime_configuration'}
+        default: {$ref: '#/components/responses/Error'}
+  /local/research-native/documents:
+    servers: [{url: /api}]
+    post:
+      operationId: registerNativeResearchPdf
+      description: Registers only a bounded Public PDF. This endpoint never extracts or sends the document.
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema: {type: string, minLength: 5, maxLength: 180}
+      requestBody:
+        required: true
+        content:
+          application/pdf:
+            schema: {type: string, format: binary}
+      responses:
+        '201': {description: Registered resource metadata.}
+        default: {$ref: '#/components/responses/Error'}
+  /local/research-native:
+    servers: [{url: /api}]
+    get:
+      operationId: listNativeClaudeResearchRuns
+      responses:
+        '200': {description: Root runs for the configuration-gated native Claude research runtime.}
+        default: {$ref: '#/components/responses/Error'}
+    post:
+      operationId: createNativeClaudeResearchRun
+      description: Creates no state unless model, external-data and source-policy gates are all satisfied.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './claude-research-runtime.schema.json#/$defs/native_research_request'}
+      responses:
+        '202': {description: A Product Task plus native parent/Child Run tree accepted.}
+        default: {$ref: '#/components/responses/Error'}
+  /local/research-native/{runId}:
+    servers: [{url: /api}]
+    get:
+      operationId: getNativeClaudeResearchRun
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Parent/Child Run tree, SDK delegation events, artifacts and source evidence.}
         default: {$ref: '#/components/responses/Error'}
 components:
   parameters:

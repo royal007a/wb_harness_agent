@@ -1,6 +1,6 @@
 # Skill、脚本和工具的执行边界
 
-状态：本地确定性样例与官方客户端交接 Skill 已实现；Claude SDK 接入仍为 P1 Proposed。
+状态：本地确定性样例、官方客户端交接 Skill，以及 ADR-0025 的**默认关闭外部 ZIP 隔离执行器**已实现；Claude SDK 接入仍为 P1 Proposed。
 
 ## 当前样例
 
@@ -45,6 +45,12 @@
 - 工具结果和脚本 stdout 都设预算；只返回摘要与受控引用，不能返回宿主任意路径。
 - SDK 会话压缩不改变原始数据、阶段产物、来源记录与平台任务状态。
 - 引用、指标、权限、取消、恢复、重复执行和成本通过同一组探针后才能开放路由。
+
+## 外部 Skill 的隔离执行（受限本地实现）
+
+不可信外部 Skill 不能以 Claude `allowed_tools`、MCP 过滤、文档说明或宿主线程池作为隔离边界。ADR-0025 仅允许 `manifest.json + entry.py` 的小型 ZIP，经内容 SHA-256 固定后交给一次性 Colima 容器；容器禁网、非 root、只读根和只读挂载，且不会继承宿主路径、环境变量或凭证。默认 `HARNESS_EXTERNAL_SKILLS` 未开启，执行会在读取包和启动 Docker 前拒绝。
+
+支持的唯一能力是无依赖的 `transform_json`。它不是 Skill 市场、自动发现、包管理器、模型工具或 Product Run 接口；使用、探针与完整非目标见 [外部 Skill 隔离运行时](EXTERNAL_SKILL_RUNTIME.md)。
 
 ## 官方核验与未验证内容
 

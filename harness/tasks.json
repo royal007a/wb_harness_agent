@@ -1,7 +1,359 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-13T15:12:00Z",
+  "generated_at": "2026-09-20T17:07:00Z",
   "tasks": [
+    {
+      "id": "HA-0037",
+      "title": "实现 Team Task Handoff 与 Gate 最小纵切",
+      "status": "in_progress",
+      "risk": "high",
+      "scope": [
+        "独立于 P0 Product Task/Run 的 Team Task、Lease、Handoff 和 Gate Decision 契约",
+        "requirements/scope/stop conditions/Gate 冻结、父子阻塞、状态三出口",
+        "本机和 118.196.123.132 双环境验证 Evidence"
+      ],
+      "non_goals": [
+        "真实 Agent Runtime、模型、Subagent、Inbox、Daemon、自动审批、身份认证或外部副作用",
+        "修改既有 CSV Product Task/Run 或将研发 Work Item 当成产品协作任务"
+      ],
+      "acceptance": [
+        "创建、原子认领、Handoff、提交与 Gate 三出口均经机器契约和幂等性保护",
+        "版本/角色/父子状态不满足时稳定拒绝，重启后审计状态仍可读取",
+        "全量测试、OpenAPI、双环境发布/健康/API/认证边界 Evidence 完整"
+      ],
+      "depends_on": ["HA-0036"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0037-team-task-handoff-gate.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
+    {"id":"HA-0036","title":"实现 Fact Lineage Evidence 纠正链","status":"completed","risk":"high","scope":["已知 Fact ID 的同 Bank supersede 历史链","current/history applicability、time/lifecycle/隔离反例","双环境发布 Evidence"],"non_goals":["自然语言冲突裁决、模型、语义/vector、Reflect 或自动记忆"],"acceptance":["返回可追溯有界历史而不把 superseded 当当前结论","time/lifecycle/隔离/无原文测试和部署通过"],"depends_on":["HA-0029","HA-0034"],"owner":"mymaccodex","plan":"exec-plans/completed/HA-0036-fact-lineage-evidence.md","blocked_reason":null,"recovery_condition":null,"evidence":["harness/evidence/HA-0036/manifest.json","harness/evidence/HA-0036/all-tests.xml","harness/evidence/HA-0036/deployment.json"]},
+    {
+      "id": "HA-0035",
+      "title": "实现 M2-B Semantic Retrieval Admission Gate",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "版本化 semantic retrieval admission Schema、默认 not_admitted 状态和本机校验器",
+        "Runtime Gate 一致性、伪 admitted 反例、零模型零外部调用",
+        "本机与 118.196.123.132 双环境默认关闭发布 Evidence"
+      ],
+      "non_goals": [
+        "embedding/vector、RRF/rerank、模型/网络/Provider、真实语料、自动语义召回或 Product Run",
+        "替代数据外发/隐私/成本/性能的真实审批或 L3 证据"
+      ],
+      "acceptance": [
+        "缺少完整 Evidence 时 Gate 必为 not_admitted/disabled/zero calls，Runtime 与状态一致",
+        "不完整或伪造的 admitted 输入被 Schema/校验器拒绝，且回归通过",
+        "本机和远端默认关闭部署、备份、健康、Runtime/认证验证完成"
+      ],
+      "depends_on": ["HA-0031", "HA-0034"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0035-semantic-retrieval-admission-gate.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0035/manifest.json",
+        "harness/evidence/HA-0035/all-tests.xml",
+        "harness/evidence/HA-0035/admission-state.json",
+        "harness/evidence/HA-0035/context-evaluation-results.json",
+        "harness/evidence/HA-0035/graph-evaluation-results.json",
+        "harness/evidence/HA-0035/entity-catalog-evaluation-results.json",
+        "harness/evidence/HA-0035/temporal-evaluation-results.json",
+        "harness/evidence/HA-0035/deployment.json",
+        "harness/evidence/HA-0035/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0034",
+      "title": "统一 Memory M1/M2 发生时间读取安全",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "M1 Recall、M2-A Context/Detail 与 M3-A 一致的 Source/Fact occurred_at 与 validity 过滤",
+        "future Source/Fact、索引、lifecycle、隔离与重启反例、合成评测",
+        "本机与 118.196.123.132 双环境发布 Evidence"
+      ],
+      "non_goals": [
+        "embedding/semantic/vector、RRF/rerank、自动摘要、模型、外部资料、GraphQA 或 Product Run",
+        "改变 M3-A Relation 或 M3-B exact Entity Catalog 的匹配语义"
+      ],
+      "acceptance": [
+        "同一 Bank/as_of 下 M1 Recall、M2 Context/Detail 都不返回 future Source/Fact 或原始 Source 正文",
+        "时间、lifecycle、隔离、重启与评测反例通过",
+        "本机和远端备份/发布/健康/API/认证验证完成，外部能力仍关闭"
+      ],
+      "depends_on": ["HA-0031", "HA-0032", "HA-0033"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0034-memory-temporal-read-safety.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0034/manifest.json",
+        "harness/evidence/HA-0034/all-tests.xml",
+        "harness/evidence/HA-0034/context-evaluation-results.json",
+        "harness/evidence/HA-0034/graph-evaluation-results.json",
+        "harness/evidence/HA-0034/entity-catalog-evaluation-results.json",
+        "harness/evidence/HA-0034/temporal-evaluation-results.json",
+        "harness/evidence/HA-0034/deployment.json",
+        "harness/evidence/HA-0034/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0033",
+      "title": "实现 Memory Entity Catalog M3-B 精确名称目录",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "同 Bank canonical name/alias casefold 精确 Entity catalog 与显式 graph handoff",
+        "Fact/Source/Entity/时间/lifecycle 再验证、歧义保留和安全拒绝",
+        "合成评测和本机/118.196.123.132 双环境 Evidence"
+      ],
+      "non_goals": [
+        "模糊/语义/vector 匹配、自动实体消歧/合并、自然语言 GraphQA、模型或外部资料",
+        "Product Task/Run、Adapter、多租户身份或自动摄取"
+      ],
+      "acceptance": [
+        "仅返回 active 同 Bank、有效、可追溯实体；not_found/ambiguous 不猜测且无原始 Source/跨 Bank 泄漏",
+        "别名/类型、时间、supersede/retract/delete、重启/未知/敏感输入和评测反例通过",
+        "本机与远端发布、备份、健康、API/认证边界验证完成；所有外部能力仍关闭"
+      ],
+      "depends_on": ["HA-0032"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0033-memory-entity-catalog-m3b.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0033/manifest.json",
+        "harness/evidence/HA-0033/all-tests.xml",
+        "harness/evidence/HA-0033/context-evaluation-results.json",
+        "harness/evidence/HA-0033/graph-evaluation-results.json",
+        "harness/evidence/HA-0033/entity-catalog-evaluation-results.json",
+        "harness/evidence/HA-0033/deployment.json",
+        "harness/evidence/HA-0033/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0032",
+      "title": "实现显式 Memory Graph M3-A 图与时间召回",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "由同 Bank Source/Fact 支撑的显式 Entity / Relation 及其有界有效期",
+        "SQLite 两跳关系遍历、逐边 Fact/Source 证据与撤回/删除级联",
+        "合成多跳/时间/隔离/删除评测以及本机与 118.196.123.132 双环境发布 Evidence"
+      ],
+      "non_goals": [
+        "自动/模型实体抽取或消歧、自然语言 GraphQA、embedding/vector、RRF/rerank、Reflect 或外部图服务",
+        "飞书/文件/PDF/网盘/互联网自动摄取、Product Task/Run 集成或多租户身份"
+      ],
+      "acceptance": [
+        "Node/Edge 仅可引用 active 同 Bank Fact/Source；Graph Bundle 无原文、跨 Bank/无效/删除数据零泄漏",
+        "两跳、时间、新旧关系、retract/delete/supersede、环路、幂等、重启与诚实 empty 反例的合成评测通过",
+        "本机和远端经备份、健康、认证边界和新端点验证；模型和外部能力仍关闭"
+      ],
+      "depends_on": ["HA-0029", "HA-0031"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0032-explicit-memory-graph-m3a.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0032/manifest.json",
+        "harness/evidence/HA-0032/all-tests.xml",
+        "harness/evidence/HA-0032/context-evaluation-results.json",
+        "harness/evidence/HA-0032/graph-evaluation-results.json",
+        "harness/evidence/HA-0032/deployment.json",
+        "harness/evidence/HA-0032/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0031",
+      "title": "实现 Memory Context M2-A 结构化摘要与详情召回",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "显式 Fact Capsule、SQLite FTS5 索引与目录到详情的二阶段 Recall",
+        "近期 turns 的临时上下文、不保存原始 Source 正文与生命周期/隔离传播",
+        "合成评测、本机与 118.196.123.132 双环境部署 Evidence"
+      ],
+      "non_goals": [
+        "自动摄取聊天/文件/外部资料或向模型发送记忆",
+        "向量/语义/图检索、RRF/rerank、Reflect、身份多租户或 Product Run 集成"
+      ],
+      "acceptance": [
+        "Capsule/Detail 可追溯且不泄露跨 Bank、无效或原始 Source 正文；近期 turns 不落盘",
+        "索引重建、supersede/retract/delete/过期、敏感输入和合成评测通过",
+        "本机与远端部署均经备份、健康、认证边界和新增端点验证，外部门禁仍关闭"
+      ],
+      "depends_on": ["HA-0029", "HA-0030"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0031-memory-context-m2a.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0031/manifest.json",
+        "harness/evidence/HA-0031/evaluation-results.json",
+        "harness/evidence/HA-0031/deployment.json",
+        "harness/evidence/HA-0031/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0030",
+      "title": "同步部署 HA-0028 / HA-0029 到本机与公网",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "将双环境部署硬规则写入项目地图与运维规范",
+        "本机 launchd 与 118.196.123.132 systemd/nginx 部署 HA-0028/0029",
+        "远端备份、无密同步、重启与健康/代理/默认门禁 Evidence"
+      ],
+      "non_goals": [
+        "启用外部 Skill、模型、外部资料、Claude L3 或 memory 自动抽取",
+        "迁移本机 SQLite/Keychain/测试数据、修改远端 Basic Auth 或记录凭证"
+      ],
+      "acceptance": [
+        "AGENTS 和 Operations 都固定双环境/例外/无密发布约束",
+        "本机与远端 runtime 端点可用，认证代理仍拒绝未认证访问，外部 Skill gate 仍关闭",
+        "备份、同步、systemd/nginx、版本和健康结果已写入无密 Evidence"
+      ],
+      "depends_on": ["HA-0028", "HA-0029"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0030-dual-environment-deployment.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0030/manifest.json",
+        "harness/evidence/HA-0030/deployment.json",
+        "harness/evidence/HA-0030/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0029",
+      "title": "实现长期记忆 / 知识库 M1",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "Memory Bank、Source Evidence、Fact、audit、保留期、去重、纠错/撤回/删除",
+        "单 bank keyword/temporal read-back Evidence Bundle 与跨 bank 隔离",
+        "严格契约、API、安全/重启测试与 Evidence"
+      ],
+      "non_goals": [
+        "自动保存聊天、模型抽取、Observation/Opinion/Mental Model、Reflect、向量、图、RRF/rerank 或 DeepAgents",
+        "把单用户本机 bank ID 当作生产身份/租户隔离或把 local audit 当作 Product Event"
+      ],
+      "acceptance": [
+        "每条可召回 Fact 有有效 Source、分类、时间和状态；敏感/越权/重复输入得到稳定处理",
+        "supersede/retract/delete 后证据正确演化，删除清除可控正文并留无正文审计/tombstone",
+        "Evidence Bundle 不含原始 Source 正文且只宣称 keyword/temporal read-back；L2 回归、重启、安全与 Evidence 完整"
+      ],
+      "depends_on": ["HA-0028"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0029-memory-plane-m1.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0029/manifest.json",
+        "harness/evidence/HA-0029/all-tests.xml",
+        "harness/evidence/HA-0029/acceptance.md",
+        "harness/evidence/HA-0029/deployment.json"
+      ]
+    },
+    {
+      "id": "HA-0028",
+      "title": "实现可隔离外部 Skill 执行切片",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "外部 Skill ZIP 的不可变 manifest、摘要登记和审计契约",
+        "默认关闭的外部 Skill 执行 API 与一次性 Colima 容器隔离 profile",
+        "禁网、非 root、只读挂载、资源限制、清理、漂移/异常/输出边界与 L3 探针"
+      ],
+      "non_goals": [
+        "URL/Git/pip/npm/二进制/动态依赖或任意宿主路径安装",
+        "网络、凭证、模型、MCP、Claude SDK 或 Product Task/Run 的直接授权",
+        "将本地单用户容器验证描述为多租户生产隔离"
+      ],
+      "acceptance": [
+        "默认门禁在 Docker/包读取前稳定拒绝；登记包不会执行其代码",
+        "登记后内容摘要不可变且执行前复核；代码仅在固定禁网非 root 一次性容器中执行并被清理",
+        "L2 契约/安全/故障与可用 Colima 的 L3 隔离探针通过，证据完整"
+      ],
+      "depends_on": ["HA-0026"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0028-external-skill-isolation.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0028/manifest.json",
+        "harness/evidence/HA-0028/all-tests.xml",
+        "harness/evidence/HA-0028/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0027",
+      "title": "实现原生 Claude 投研多 Agent 的受控运行时",
+      "status": "waiting_approval",
+      "risk": "high",
+      "scope": [
+        "Claude Agent SDK 原生 Agent/SubAgent、第一方插件 Skills、进程内 MCP 的受控适配",
+        "行业搜索、网页抓取、财务数据和已登记 PDF 的只读来源工具与证据契约",
+        "父子 Run 事件、可审计报告、默认关闭门禁、配置/取消/预算/来源验证"
+      ],
+      "non_goals": [
+        "使用聊天内秘密、自动发现凭证/模型/数据源或未批准的外部资料外发",
+        "第三方 Skills、未隔离任意宿主工具、投资建议或把未跑通配置称为真实投研"
+      ],
+      "acceptance": [
+        "默认环境没有 SDK query、CLI、Keychain 或 HTTP 副作用，门禁可解释地拒绝",
+        "固定版本 SDK 以原生 Agent/AgentDefinition/本地插件/MCP 构造三角色并保留父子事件关联",
+        "来源工具、报告、故障/预算/取消与 Evidence 通过；真实 L3 仅在明确配置和授权后运行"
+      ],
+      "depends_on": ["HA-0026"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0027-native-claude-research-runtime.md",
+      "blocked_reason": "真实 L3 需批准的 Claude 模型身份/费用、资料外发范围、精确域名、搜索与财务资料 endpoint、必要的 Keychain 引用和 Public PDF；当前默认门禁正确阻止一切外部调用。",
+      "recovery_condition": "部署者在受控环境配置并批准全部门禁后，以单公司 Public PDF 执行原生 SDK/三 Child/MCP/取消/费用/引用 L3 探针，并将证据写入 HA-0027。",
+      "evidence": [
+        "harness/evidence/HA-0027/manifest.json",
+        "harness/evidence/HA-0027/all-tests.xml",
+        "harness/evidence/HA-0027/offline-sdk-probe.json",
+        "harness/evidence/HA-0027/deployment.json",
+        "harness/evidence/HA-0027/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0026",
+      "title": "实现投研多 Agent 契约与模拟垂直切片",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "主控与财务、行业、风险 Child Agent 的不可变契约和第一方 Skill 摘要",
+        "受控 resource.inspect Tool Runtime、两步模拟循环、有界并发与父级证据报告",
+        "API/UI、取消/重跑/失败、全量和浏览器 Evidence"
+      ],
+      "non_goals": [
+        "Claude Agent SDK 实际 SubAgent、模型或 Provider 调用",
+        "WebSearch/WebFetch、真实财报 PDF、行情或风险数据、第三方 Skill",
+        "投资建议、真实研报或解除现有外部调用门禁"
+      ],
+      "acceptance": [
+        "Task/Run 固化每个角色的 Agent/Skill/Tool/预算快照；漂移、越权和未验证子结果被拒绝",
+        "三个专项可在全局上限 3 内并发，父报告只汇总摘要一致的 Child 证据，缺失风险明确未评估",
+        "默认模型/Provider/网络/外部工具调用为零；契约、故障、取消、重跑、浏览器和 Evidence 通过"
+      ],
+      "depends_on": ["HA-0025"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0026-research-multi-agent-simulation.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0026/manifest.json",
+        "harness/evidence/HA-0026/all-tests.xml",
+        "harness/evidence/HA-0026/browser.json",
+        "harness/evidence/HA-0026/acceptance.md"
+      ]
+    },
     {
       "id": "HA-0025",
       "title": "实现本地 Provider、Agent 与流式聊天运行时",

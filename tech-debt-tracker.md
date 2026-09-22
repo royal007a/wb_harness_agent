@@ -25,8 +25,8 @@
 | TD-014 | 两个依赖弃用警告 | 当前测试通过，升级时需处理 / P2 | 下一次依赖升级 | mymaccodex；Starlette 测试客户端兼容验证 |
 | TD-015 | VM 探针不是生产沙箱；Docker daemon 故障时清理需人工核对，尚无崩溃回收器 | 残留容器/磁盘资源风险 / P0 | 产品真实路由开放前 | mymaccodex；创建超时、daemon 断联、worker 崩溃清理故障注入 |
 | TD-016 | 真实模型、Token/费用与 SDK 网络取消未验证 | 不能开放 CodeAct / P0 | HA-0008 | mymaccodex；获准连接与真实测试证据 |
-| TD-017 | Claude 仅完成 0.2.152 类型配置验证，无真实 SubAgent 调用、工具边界和父子事件映射证据 | 不得开放原生 Claude 路由 / P0 | 批准模型连接后 | mymaccodex；真实端到端、取消、预算和追踪探针 |
-| TD-018 | 演示编排为可信固定函数线程池，不是 OS 隔离；无法强杀任意阻塞第三方代码 | 不得直接装入外部 Skill/任意工具 / P0 | 替换 research_demo 执行器前 | mymaccodex；隔离进程/VM、强制终止和清理故障测试 |
+| TD-017 | HA-0027 已开始实现 `0.2.152` 原生 SubAgent/Skill/MCP 受控适配，但仍无真实 SDK Query、工具取消和父子事件连通证据 | 不得开放原生 Claude 路由 / P0 | 批准模型连接后 | mymaccodex；真实端到端、取消、预算和追踪探针 |
+| TD-018 | 研究演示编排仍为可信固定函数线程池，不是 OS 隔离；ADR-0025 只解决受限外部 JSON Skill，不能隔离其任意 Child/工具 | 不得把 research_demo 或 Native Claude 进程内工具当作隔离执行 / P0 | 让任意 Child/第三方工具进入真实 Run 前 | mymaccodex；隔离进程/VM、强制终止和清理故障测试 |
 | TD-019 | 研究输入为 synthetic 夹具，coverage 仅衡量任务完成度，不代表风险资料完备 | 不得用于实际投资判断 / P0 | 真实金融场景接入前 | mymaccodex；授权数据源、时效/引用/指标回算与未知风险评测 |
 | TD-020 | 百度网盘数据面文件 API、权限范围和数据保留尚未按用户应用版本实测；官方客户端分享链接交接不构成数据面验收 | 不得开放列目录、脚本/API 下载或分享链接导入 / P0 | OAuth 应用连通后 | mymaccodex；官方版本、最小 scope、真实测试账号和删除/审计证据 |
 | TD-021 | 意图识别仅有 `rules@1` 确定性本地预检；HA-0014 已完成合成评测、候选 Schema、阈值和影子门禁，但仍无真实候选基线、隐私审查或线上漂移监控 | 不得将模型置信度、语义检索或自动跨引擎路由开放给用户 / P1 | 准备接入轻量/深度模型或向量检索前 | mymaccodex；版本化语料、拒识阈值、真实候选离线基线、隐私审查、影子回放与回滚演练 |
@@ -34,6 +34,9 @@
 | TD-023 | 图中的 TAO / Action State / Observation State 尚未作为通用运行时状态机落地；当前只有固定本地节点、只追加 Event 和离线 reducer | 不得将固定本地流水线称为动态 Agent Loop / P1 | 申请接入首个真实 Agent 或动态 Action 选择前 | mymaccodex；批准目标引擎、持久 Action/Observation 合同、L3 副作用/取消/恢复故障注入和回滚演练 |
 | TD-024 | ADR-0021 Agent Lab 只验证无密配置、SQLite Session 与本地确定性 SSE；没有 Provider Adapter、凭证治理、真实流取消、热上下文缓存、模型输出治理或生产数据留存策略 | 不得把 Agent Lab 称为真实对话、Provider 集成或 Agent Loop / P1 | 申请任何真实模型/Provider 路由前 | mymaccodex；独立 ADR、端点/SDK 探针、Keychain/Vault 引用、数据分类、预算/取消/恢复和 L3 故障演练 |
 | TD-025 | ADR-0022 已具备受控 OpenAI-compatible SSE Adapter 与独立 Runtime，但默认没有已批准的真实 Provider、远程身份系统、数据外发评审、Provider 健康请求、成本计量或端到端取消探针 | 远程部署只能用于受认证的无模型配置/会话验证；不得以此开放真实对话 / P1 | 任何 `HARNESS_AGENT_RUNTIME=enabled` 或真实用户数据输入前 | mymaccodex；Provider/模型授权、Keychain/Vault 运行探针、L3 网络/取消/预算/保留/身份审查和回滚演练 |
+| TD-026 | ADR-0024 已实现默认关闭的 Native Claude SubAgent / Plugin Skill / MCP 来源代码与 Product Run 证据链，但尚无真实模型、WebSearch/WebFetch、财务 API 或 PDF 的 L3 执行证据 | 不得把模拟/门禁测试报告作为真实研报、投资建议或 Claude 多 Agent 验证 / P1 | 任何将 `engine_claude_research_native` 标记 available 或输入真实资料前 | mymaccodex；SDK 端到端探针、隔离执行、授权数据源、时效/引用/安全评测、L3 取消与成本证据 |
+| TD-027 | ADR-0025 外部 Skill 只支持本地 ZIP、stdlib JSON transform 与单用户 Colima；无签名/许可证/SBOM、身份、Product Run 关联、网络/依赖审批或生产运行器 | 不得把它描述为通用 Skill 市场、第三方认证或多租户生产执行器 / P1 | 申请接入第三方 Skill、网络/依赖或真实 Run 前 | mymaccodex；供应链审计、身份/Task-Run 绑定、审批/预算、L3 逃逸与故障注入证据 |
+| TD-028 | ADR-0026/0027/0028/0029/0030 已实现单用户显式 Source/Fact、FTS5 Fact Capsule / detail、as-of 时间过滤、至多两跳 relation path 与 canonical/alias exact Entity Catalog；ADR-0031 仅提供 semantic/vector/RRF 的未准入 Gate。仍无身份/租户、自动摄取/抽取/消歧、语义/图索引或图排序、RRF/rerank、权威源冲突裁决、真实会话集成或 Reflect | 不得把 Gate 或 M3-B 写成完整 Hindsight、RAG、动态知识图谱、自然语言 GraphQA、模型上下文管理或可替代业务事实源 / P2 | 任何模型自动记忆、外部资料/Adapter 或多用户知识库接入前 | mymaccodex；M2-B/M4 实现、数据处理评估、权限/删除 L3、版本化真实基线和性能/成本测量 |
 
 ## 维护规则
 

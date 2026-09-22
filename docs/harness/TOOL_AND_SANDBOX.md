@@ -62,6 +62,12 @@ P0 只提供三个 Platform Tool：
 
 Child Run 默认获得独立沙箱。若复用父 Run 沙箱，必须显式声明共享状态、锁、数据范围和清理所有权；P0 禁止复用。
 
+## 外部 Skill 隔离执行（ADR-0025）
+
+外部 Skill 包与模型生成代码同样不可信。当前本地 `external-skill-stdlib-v1` 是一个更窄的、一次性 `manifest.json + entry.py` JSON transform 运行器：固定 image digest、`/skill` 与 `/inputs` 只读挂载、禁网、非 root、只读根、capability drop、无 Docker socket/宿主环境/凭证、资源限制和强制清理。它默认关闭，不能经宿主 Bash、SDK allowlist、MCP 或线程池绕过。
+
+执行记录是独立 local-admin audit，不是 Product Task/Run Event；任何将其接入真实 Task、第三方资料、网络、依赖或副作用工具的提案必须先扩展 Tool Descriptor、审批绑定与 ADR。细节见 [外部 Skill 隔离运行时](EXTERNAL_SKILL_RUNTIME.md)。
+
 ## 安全判断
 
 - 本地 AST 限制器是降低误操作的机制，不是强隔离边界。

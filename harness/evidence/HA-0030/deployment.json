@@ -1,0 +1,73 @@
+{
+  "task_id": "HA-0030",
+  "recorded_at": "2026-09-19T08:05:00Z",
+  "release": "0.1.0-local",
+  "deployment_rule": "local health check first; then public systemd/nginx mirror; no credentials or local data copied",
+  "local": {
+    "service": "launchd gui/501/local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "external_skill_runtime": {
+      "route": "/api/local/external-skills/runtime",
+      "runtime_enabled": false,
+      "network": "denied",
+      "credentials": "not_injected",
+      "blockers": ["external_skill_runtime_disabled"]
+    },
+    "memory_plane": {
+      "route": "/api/local/memory/runtime",
+      "status": "available_local_admin",
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false,
+      "product_task_run_integration": false
+    }
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "systemd harnessagent bound to 127.0.0.1:8765; nginx /harness/ proxy",
+    "database_backup": {
+      "kind": "SQLite online backup before service stop",
+      "path": "/var/lib/harnessagent/backups/pre-ha0030-20260919T0930.db",
+      "bytes": 229376
+    },
+    "application_sync": "staged copy; excluded local SQLite, Keychain, virtualenv, test data and Evidence",
+    "service_active": true,
+    "nginx_configuration_test": "passed (existing duplicate-MIME warning only)",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "external_skill_runtime": {
+      "runtime_enabled": false,
+      "network": "denied",
+      "credentials": "not_injected",
+      "blockers": ["external_skill_runtime_disabled", "external_skill_image_missing"]
+    },
+    "memory_plane": {
+      "status": "available_local_admin",
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false,
+      "product_task_run_integration": false
+    },
+    "public_proxy": {
+      "url": "https://118.196.123.132/harness/",
+      "unauthenticated_status": 401,
+      "meaning": "the existing HTTP Basic authentication boundary remains enforced; no Basic credential was read or recorded for this deployment"
+    }
+  },
+  "synchronized_file_sha256": {
+    "backend/app.py": "bc9847ed5d4b06ef7d03b74eecc124ab3abe652576ea6e096b72076e2bf51286",
+    "backend/external_skills.py": "d5b60cca3b62756e08fd60b7f1c82ac11d14e9aa02b1de98587261b0bc93ae8d",
+    "backend/external_skill_sandbox.py": "cccc8a028410e4c92c7ac14bddcd3919d1f5694e984e87c879c47f47ac2ef281",
+    "backend/memory.py": "d060ea83569e50b5f9bcbeca97528b6cfcff5900b756e6e7d58fcce19007bcdb",
+    "specs/v1/external-skill-runtime.schema.json": "6c0b128e822fea107c27204db1966436447125d5bec50e05929a4a1fa418b896",
+    "specs/v1/memory-plane.schema.json": "6b305e82503231fc26913f21102b900b3dc2ba441ea53a9260444ce4dbd595e6"
+  },
+  "not_evidence": [
+    "No external Skill package was registered or executed on either persistent database.",
+    "No model/provider, Claude native SubAgent, WebSearch, WebFetch, financial data, memory auto-extraction or external data was enabled.",
+    "The remote external Skill image is intentionally absent while its runtime gate is disabled.",
+    "The unauthenticated 401 confirms the proxy boundary only; it is not a test of an authenticated user session."
+  ]
+}

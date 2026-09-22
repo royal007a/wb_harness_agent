@@ -1,2 +1,7 @@
 # Optional offline configuration-contract probe; does not enable model calls.
 claude-agent-sdk==0.2.152
+# The SDK accepts >=1.23,<3.  Keep that supported range because deployment
+# repositories may lag the development host; the running version is exposed
+# by the read-only runtime endpoint.  Installing this optional pair still
+# leaves all model and external-data gates disabled.
+mcp>=1.23,<3

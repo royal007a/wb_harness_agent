@@ -51,13 +51,15 @@ flowchart LR
 
 Skill、脚本和受控工具分层见 [Skill 执行边界](SKILL_EXECUTION.md)。已有项目内离线脚本样例，但不代表 Claude SDK 已接入；固定流程的强制门禁仍由平台代码负责。
 
-本地多专项 Child Run 编排与真实 SDK 离线配置探针见 [MULTI_AGENT.md](MULTI_AGENT.md)。固定函数演示可用，原生 Claude Agent Tool 调度仍未启用。
+本地多专项 Child Run 编排与真实 SDK 离线配置探针见 [MULTI_AGENT.md](MULTI_AGENT.md)。ADR-0023 还提供了独立的 Agent / Skill / Tool **模拟**垂直切片，见 [RESEARCH_AGENT_RUNTIME.md](RESEARCH_AGENT_RUNTIME.md)：它固定三角色、第一方 Skill 摘要和只读工具，模型与网络调用仍为零。ADR-0024 已把原生 `Agent`、三份仓库内 Plugin Skill、进程内 MCP 工具、SDK 消息映射与 Product Run 代码接入，但在模型、资料源/外发、预算、隔离和 L3 连通验证获批前，原生 Claude Agent Tool 调度仍处于默认阻断状态；详见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
 
 官方 SDK 提供交互会话、自定义工具/Hook 和进程内 MCP 工具；官方 Skills 是包含说明、脚本和资源的版本化能力，并依赖代码执行环境。Adapter 必须固定 SDK/CLI/Skill 版本，Skill 变更视为供应链变更。来源：[Python SDK](https://github.com/anthropics/claude-agent-sdk-python)、[Agent Skills](https://platform.claude.com/docs/en/build-with-claude/skills-guide)。
 
 ### Deep Agents
 
 官方仓库把它定位为基于 LangGraph 的 opinionated harness，包含子 Agent、可插拔文件系统、上下文/记忆、HITL、Skills 与 MCP。其安全说明明确要求在工具/沙箱层实施边界，不能依赖模型自律。因此只把这些能力映射到平台契约，不复用其权限判断作为最终授权。来源：[Deep Agents 官方仓库](https://github.com/langchain-ai/deepagents)。
+
+ADR-0026 已先实现框架无关的本机 Memory Plane M1：显式 Source/Fact、bank 隔离、撤回/删除与受限 evidence read-back。它不依赖或宣称接入 Deep Agents；任何 DeepAgents memory/filesystem 映射仍需把其私有状态转换为本项目的 Source/Fact/权限/删除契约。
 
 ### Pi
 

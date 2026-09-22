@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "provider_agent_chat_runtime_deployed",
+  "phase": "fact_lineage_evidence_completed",
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0025 已验收并部署：ADR-0022 的独立 Provider/Model/Agent/Session/Exchange Runtime 在本机与受认证远程镜像通过验证。默认模型运行时关闭，模型/Provider/网络/工具调用均为 0；Product Task/Run 未变。",
-  "last_updated_at": "2026-09-13T15:50:00Z",
-  "next_action": "若要启用真实 Provider，先完成 TD-025 的独立授权：Provider/模型/数据范围/Keychain 或 Vault 引用、成本与超时、取消、身份与 L3 网络/数据外发验证；不得仅靠 HARNESS_AGENT_RUNTIME 开关开放。",
+  "last_checkpoint": "HA-0036 已完成：已知 Fact ID 可读取有界 supersede 历史并区分 current_applicable/historical；230 项 opt-in 回归及本机/公网发布通过。",
+  "last_updated_at": "2026-09-20T18:18:00Z",
+  "next_action": "等待 M2-B semantic retrieval 的语料与数据/模型审批；Gate 在此之前必须保持关闭。",
   "release": "0.1.0-local"
 }

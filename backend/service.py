@@ -72,13 +72,23 @@ class Service:
         self.adapters = {'engine_mock_analytics': LocalAnalyticsAdapter()}
         self.intent_router = IntentRouter()
         from .research import Research
+        from .research_agents import ResearchAgents
+        from .research_native import NativeResearch
         from .baidu_netdisk import BaiduNetdiskConnector
         from .agent_lab import LocalAgentLab
         from .agent_runtime import AgentRuntime
+        from .external_skills import ExternalSkillRuntime
+        from .memory import MemoryPlane
+        from .team_coordination import TeamCoordination
         self.research = Research(self)
+        self.research_agents = ResearchAgents(self)
+        self.research_native = NativeResearch(self)
         self.baidu_netdisk = BaiduNetdiskConnector(store)
         self.agent_lab = LocalAgentLab(store)
         self.agent_runtime = AgentRuntime(store)
+        self.external_skills = ExternalSkillRuntime(store)
+        self.memory = MemoryPlane(store)
+        self.team = TeamCoordination(store)
 
     def resource(self, name, raw):
         if not isinstance(name, str) or not name.lower().endswith('.csv') or len(name) > 180 or '/' in name or '\\' in name:
@@ -87,6 +97,18 @@ class Service:
         ident = 'res_' + digest(raw)
         doc = {'id': ident, 'name': name, 'sha256': digest(raw), 'size_bytes': len(raw),
                'data_class': 'Internal', 'row_count': len(rows), 'columns': headers, 'encoding': encoding, 'created_at': now()}
+        with self.store.transaction() as db:
+            db.execute('INSERT OR IGNORE INTO resources VALUES(?,?,?)', (ident, dumps(doc), raw))
+        return self.store.get('resources', ident)
+
+    def research_pdf_resource(self, name, raw):
+        """Register a bounded, Public PDF only for the gated native research path."""
+        if (not isinstance(name, str) or not name.lower().endswith('.pdf') or len(name) > 180
+                or '/' in name or '\\' in name or not raw.startswith(b'%PDF-') or not 1 <= len(raw) <= 15 * 1024 * 1024):
+            raise Problem('INVALID_RESOURCE', '请提供不超过 15 MiB 的有效 PDF 文件名和内容。', 422)
+        ident = 'res_' + digest(raw)
+        doc = {'id': ident, 'name': name, 'sha256': digest(raw), 'size_bytes': len(raw),
+               'data_class': 'Public', 'row_count': 0, 'columns': [], 'encoding': 'binary/pdf', 'created_at': now()}
         with self.store.transaction() as db:
             db.execute('INSERT OR IGNORE INTO resources VALUES(?,?,?)', (ident, dumps(doc), raw))
         return self.store.get('resources', ident)
@@ -153,6 +175,10 @@ class Service:
                 plan_revision_id=None, replan_attempt_id=None):
         if task['engine_policy']['engine_id'] == 'engine_local_research_demo':
             return self.research.new_run(db, task, based_on)
+        if task['engine_policy']['engine_id'] == 'engine_research_multi_agent_simulation':
+            return self.research_agents.new_run(db, task, based_on)
+        if task['engine_policy']['engine_id'] == 'engine_claude_research_native':
+            return self.research_native.new_run(db, task, based_on)
         active = [r for r in self.store.listing('runs') if r['status'] not in TERMINAL]
         if len(active) >= 32:
             raise Problem('RATE_LIMITED', '本地待执行队列已满（32）。', 429)
@@ -201,8 +227,13 @@ class Service:
         return self.idempotent('rerun:' + task_id, key, body, lambda db: self.new_run(db, task, based))
 
     def cancel(self, run_id):
-        if self.store.get('runs', run_id)['selected_engine'] == 'engine_local_research_demo':
+        engine = self.store.get('runs', run_id)['selected_engine']
+        if engine == 'engine_local_research_demo':
             return self.research.cancel(run_id)
+        if engine == 'engine_research_multi_agent_simulation':
+            return self.research_agents.cancel(run_id)
+        if engine == 'engine_claude_research_native':
+            return self.research_native.cancel(run_id)
         with self.store.transaction() as db:
             run = self.store.get('runs', run_id)
             if run['status'] not in TERMINAL:
@@ -688,8 +719,13 @@ class Service:
         return {'eligible': True, 'checkpoint_id': checkpoint['id'], 'reason_code': None}
 
     def execute(self, run_id):
-        if self.store.get('runs', run_id)['selected_engine'] == 'engine_local_research_demo':
+        engine = self.store.get('runs', run_id)['selected_engine']
+        if engine == 'engine_local_research_demo':
             return self.research.execute(run_id)
+        if engine == 'engine_research_multi_agent_simulation':
+            return self.research_agents.execute(run_id)
+        if engine == 'engine_claude_research_native':
+            return self.research_native.execute(run_id)
         adapter = None
         try:
             with self.store.transaction() as db:
@@ -837,6 +873,8 @@ class Service:
 
     def recover(self):
         self.research.recover()
+        self.research_agents.recover()
+        self.research_native.recover()
         with self.store.transaction() as db:
             for run in self.store.listing('runs'):
                 if run['status'] == 'running':

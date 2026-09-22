@@ -31,6 +31,8 @@
 | 外部连接器 | P1 | `GET/POST /local/connectors/{provider}` | 本地开发连接状态与显式 OAuth 授权 |
 | Local Agent Lab | ADR-0021 本地准备 | `GET/POST /local/agent-lab/*` | 无密配置、Session 与确定性 POST SSE；不调用模型/Provider |
 | Local Agent Runtime | ADR-0022 受控聊天运行时 | `GET/POST /local/agent-runtime/*` | 独立 Provider/Model/Agent/Session/Exchange、上下文窗口与 POST SSE；默认外部模型调用关闭 |
+| Research Agent Simulation | ADR-0023 本地模拟切片 | `GET/POST /local/research-agents` | 三角色 Child Agent、Skill/Tool 快照与父级证据汇总；模型和网络调用为零 |
+| Native Claude Research | ADR-0024 Proposed 受控准入 | `GET/POST /local/research-native*` | 原生 SubAgent、第一方插件 Skills、进程内 MCP 资料工具；默认所有外部调用关闭 |
 | Resources | P0 | `POST/GET /resources` | 文件、数据源和上下文引用 |
 | Tasks | P0 | `POST/GET /tasks` | 提交、查询与列表 |
 | Runs | P0 | `POST/GET /tasks/{id}/runs` | 创建和查询执行尝试 |
@@ -186,6 +188,60 @@
 - `POST /sessions/{id}/messages`：要求 `Accept: text/event-stream` 和 `Idempotency-Key`，输出 `delta`、`done` 或 `error`。默认产生 `MODEL_RUNTIME_DISABLED`，并且不会写 assistant 演示文本。
 
 请求/响应以 [`agent-runtime.schema.json`](../../specs/v1/agent-runtime.schema.json) 为准。Provider Adapter 仅翻译协议；外部请求还要求环境开关、可用引用与 Keychain 解析，详见 [Agent Runtime](AGENT_RUNTIME.md)。该路径不读写 Product Task/Run/Plan/Evidence/Checkpoint。
+
+## External Skill Runtime（ADR-0025，默认关闭）
+
+- `GET /api/local/external-skills/runtime`：返回 `external-skill-runtime@1` 状态、固定隔离 profile、镜像是否就绪和 blocker；不会读包或创建容器。
+- `GET /api/local/external-skills/packages`：列出已登记的不可变 package 摘要及运行时状态。
+- `POST /api/local/external-skills/packages?source_label=<label>`：要求 `application/zip` 与 `Idempotency-Key`，只登记严格 `manifest.json + entry.py` 包；登记不执行代码。
+- `POST /api/local/external-skills/packages/{package_id}:execute`：要求 `Idempotency-Key`，输入为 `{"input": {...}}`。仅当 `HARNESS_EXTERNAL_SKILLS=enabled` 时，才会复核 package SHA-256 并在一次性禁网非 root 容器执行。
+
+请求与结果以 [`external-skill-runtime.schema.json`](../../specs/v1/external-skill-runtime.schema.json) 为准。该 local-admin 切片没有 URL/Git/包管理器/网络/凭证/模型/MCP/Task/Run 权限；它的审计记录不作为 Product Event。详见 [外部 Skill 隔离运行时](EXTERNAL_SKILL_RUNTIME.md)。
+
+## Memory Plane M1 + Context M2-A + Graph M3-A + Entity Catalog M3-B（ADR-0026/0027/0028/0029，本机受限实现）
+
+- `GET /api/local/memory/runtime`：返回 `memory-plane-m3b@1` 的能力边界；显示可重建的 SQLite FTS5 关键词投影、显式 SQLite relation store、exact Entity Catalog 和 M2-B semantic retrieval Admission Gate。当前 Gate 固定 `not_admitted`，`runtime_enabled=false`、模型/外部调用均为 0；模型抽取、Reflect、vector、自动 Entity Resolution、自然语言 GraphQA、Product Task/Run 集成均为关闭或未实现。
+- `GET/POST /api/local/memory/banks`：创建并列出固定 `ws_local` / `local_admin` 的 Bank；写入需 `Idempotency-Key`，不接受调用方指定 workspace/owner。
+- `GET /api/local/memory/banks/{bank_id}`：返回不含 Source 正文的 Bank 元数据与 source/fact 计数。
+- `POST /api/local/memory/banks/{bank_id}/retain`：写入显式 Source Evidence 与调用方已抽取的原子 Facts；需要 `Idempotency-Key`。无模型抽取，Restricted/凭证样式内容、Public Bank 的 Internal Source 与跨 Bank supersede 均拒绝。
+- `POST /api/local/memory/banks/{bank_id}/entities`：以一个 active、同 Bank Fact 显式登记 Entity，返回 `entity_id`；不按名称查找、合并或自动抽取。
+- `POST /api/local/memory/banks/{bank_id}/relations`：以一个 active、同 Bank Fact 显式登记有向 Relation；两端 Entity 必须属于同 Bank 且仍有效。
+- `POST /api/local/memory/banks/{bank_id}:recall`：无副作用的 keyword/temporal read-back，返回不带 Source 正文的 `evidence-bundle@1`。`as_of` 同时过滤 Source `occurred_at`、Fact `occurred_at` 和 Fact 有效期；没有可见 evidence 只表示该时点无可读证据。
+- `POST /api/local/memory/banks/{bank_id}:context`：接收调用方暂时提供的最近至多 8 轮与查询，返回 `memory-context-capsule@1`。最近轮不入库；摘要由受限 Fact 派生、目录只给可选择的 evidence ID，既不读原始 Source 正文也不调用模型；它与 Recall 使用同一 `as_of` 可见性过滤。
+- `POST /api/local/memory/banks/{bank_id}:recall-details`：最多按 8 个目录 evidence ID 再次验证 Bank、Source/Fact 状态、发生时间和有效期，再返回有界显式 Fact detail 与 Source 引用；无效、未来或跨 Bank ID 只返回不可用，不泄露正文。
+- `POST /api/local/memory/banks/{bank_id}:graph-recall`：接收已知 `start_entity_id`，在 active、同 Bank、有效的 Entity/Relation 上最多走两跳，返回每条 edge 的 Fact/Source 引用。它不接受自然语言、不做自动实体消歧，empty 仅表示当前可访问证据中无路径。
+- `POST /api/local/memory/banks/{bank_id}:resolve-entity`：接收完整 canonical name 或已登记 alias，可选 `entity_type` / `as_of`；只以 casefold 精确相等返回 active、同 Bank、有效且 Fact/Source 可追溯的 `resolved` / `ambiguous` / `not_found` 候选。多候选绝不自动选择；调用方必须将候选 `entity_id` 显式交给 `:graph-recall`。结果不含原始 Source 正文。
+- `POST /api/local/memory/banks/{bank_id}:fact-lineage`：接收已知 `fact_id`，最多回溯 8 层同 Bank supersede 历史。active 节点才标为 `current_applicable`，superseded 节点仅为 `historical`；Source/Fact 必须在 `as_of` 可见且 Source active。它不按自然语言寻找冲突、不自动裁决，也不返回 Source 正文。
+- `POST /api/local/memory/sources/{source_id}:retract`：空 JSON + `Idempotency-Key`；将 Source 与依赖 active Facts 标记 retracted。`DELETE /api/local/memory/sources/{source_id}`：`Idempotency-Key`；删除可控正文/Fact 并留无正文 tombstone/audit。
+
+请求与响应以 [`memory-plane.schema.json`](../../specs/v1/memory-plane.schema.json)、[`memory-context.schema.json`](../../specs/v1/memory-context.schema.json)、[`memory-graph.schema.json`](../../specs/v1/memory-graph.schema.json) 与 [`memory-entity-catalog.schema.json`](../../specs/v1/memory-entity-catalog.schema.json) 为准。它不替代权威事实源，也不是完整 RAG/Memory 系统；限制和生命周期见 [Memory Plane M1](MEMORY_PLANE_M1.md)、[Memory Context M2-A](MEMORY_CONTEXT_M2A.md)、[Memory Graph M3-A](MEMORY_GRAPH_M3A.md) 与 [Memory Entity Catalog M3-B](MEMORY_ENTITY_CATALOG_M3B.md)。
+
+## Team Coordination（ADR-0033，本机受限控制面）
+
+- `GET /api/local/team/runtime`：返回本地 Team control-plane 状态；固定为未连接 Agent Runtime、模型/外部工具调用为零。
+- `GET /api/local/team/tasks`、`POST /api/local/team/tasks`、`GET /api/local/team/tasks/{task_id}`：读取或创建带冻结 requirements、scope、停止条件与 Gate 的协作 Task。
+- `POST /api/local/team/tasks/{task_id}:claim`：在 SQLite 事务中原子写入有期限的执行 lease。
+- `POST /api/local/team/tasks/{task_id}/handoffs`：只有有效负责人可追加与 requirements/Gate digest、task version 绑定的 Handoff。
+- `POST /api/local/team/tasks/{task_id}:submit`：必须已有 Handoff 且没有开放 Child，才转为 `in_review`。
+- `POST /api/local/team/tasks/{task_id}/gate-decisions`：只有预设 reviewer 可记录 `pass` / `reject` / `needs_human`；只有 pass 进入 `done`。
+- `POST /api/local/team/tasks/{task_id}:close`：保存关闭人和原因，进入 `closed`；它不代表 Gate 通过。
+
+所有写请求需要 `Idempotency-Key`，并以 `expected_task_version` 防止旧读取覆盖当前状态。请求、响应与错误约束以 [`team-coordination.schema.json`](../../specs/v1/team-coordination.schema.json) 为准；产品语义和非目标见 [Team Coordination](TEAM_COORDINATION.md)。它不是 Workspace/Channel/Thread 服务、消息 Inbox、真实 Agent/Daemon/Computer 或身份认证 API。
+
+## Research Agent Simulation（ADR-0023）
+
+`POST /api/local/research-agents` 创建一个 Product Task 与父 Run；每个公司固定扇出财务、行业、风险三个 Child Run。请求必须带 `Idempotency-Key`，机器输入合同见 [`research-agent-runtime.schema.json`](../../specs/v1/research-agent-runtime.schema.json)。`GET /api/local/research-agents` 列出根 Run，`GET /api/local/research-agents/{run_id}` 返回冻结的 Agent / Skill / Tool 快照和可下载证据。
+
+它是确定性的 Action → Observation → Final 模拟：每个 Child 仅用 `resource.inspect` 读取已分配 synthetic 资源，并且所有模型、Provider、网络和外部工具调用恒为零。完整边界和失败策略见 [Research Agent Runtime](RESEARCH_AGENT_RUNTIME.md)。
+
+## Native Claude Research（ADR-0024，默认关闭）
+
+- `GET /api/local/research-native/runtime`：只读返回 `claude-agent-sdk` / MCP 版本、插件摘要、模型/外部数据开关、允许域名及 blocker；不读取 Keychain、不启动 CLI、不发网络请求。
+- `POST /api/local/research-native/documents?name=<report.pdf>`：仅接收 `application/pdf`、最大 15 MiB 的 Public 本地资料。它不解析、上传或发送资料。
+- `POST /api/local/research-native`：须带 `Idempotency-Key`，请求遵循 [`claude-research-runtime.schema.json`](../../specs/v1/claude-research-runtime.schema.json) 的 `native_research_request`。只有运行/资料门禁、模型、费用、HTTPS 资料端点、精确域名白名单和已登记 Public PDF 都满足时才创建 Product Task/Run；否则无副作用拒绝。
+- `GET /api/local/research-native` 与 `GET /api/local/research-native/{run_id}`：返回父/子 Run、SDK 委派事件、Artifact 和来源 Evidence 摘要。
+
+运行时父 Agent 只有原生 `Agent`，并必须委派 `financial`、`industry`、`risk` 三个 SDK Child Agent；Child 只可使用其固定插件 Skill 和 `research_sources` MCP 的资料工具。报告的 `source_id` 必须存在于同一 Run 的证据清单；无来源资料只能写为“未评估”。模型、资料外发、真实并发、取消和成本尚需 L3 Probe Evidence，详见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
 
 ## Task 与 Run 动作
 

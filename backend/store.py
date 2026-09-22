@@ -56,6 +56,22 @@ class Store:
             CREATE TABLE IF NOT EXISTS runtime_chat_sessions(id TEXT PRIMARY KEY, agent_profile_id TEXT NOT NULL REFERENCES runtime_agent_profiles(id), doc TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS runtime_chat_messages(id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES runtime_chat_sessions(id), sequence INTEGER NOT NULL, doc TEXT NOT NULL, UNIQUE(session_id, sequence));
             CREATE TABLE IF NOT EXISTS runtime_chat_exchanges(id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES runtime_chat_sessions(id), idempotency_key TEXT NOT NULL, request_digest TEXT NOT NULL, doc TEXT NOT NULL, UNIQUE(session_id, idempotency_key));
+            CREATE TABLE IF NOT EXISTS external_skill_packages(id TEXT PRIMARY KEY, content_sha256 TEXT NOT NULL UNIQUE, doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS external_skill_executions(id TEXT PRIMARY KEY, package_id TEXT NOT NULL REFERENCES external_skill_packages(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS memory_banks(id TEXT PRIMARY KEY, doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS memory_sources(id TEXT PRIMARY KEY, bank_id TEXT NOT NULL REFERENCES memory_banks(id), content_sha256 TEXT NOT NULL, doc TEXT NOT NULL, UNIQUE(bank_id, content_sha256));
+            CREATE TABLE IF NOT EXISTS memory_facts(id TEXT PRIMARY KEY, bank_id TEXT NOT NULL REFERENCES memory_banks(id), source_id TEXT NOT NULL REFERENCES memory_sources(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS memory_entities(id TEXT PRIMARY KEY, bank_id TEXT NOT NULL REFERENCES memory_banks(id), canonical_key TEXT NOT NULL, doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS memory_entities_bank_key ON memory_entities(bank_id, canonical_key);
+            CREATE TABLE IF NOT EXISTS memory_relations(id TEXT PRIMARY KEY, bank_id TEXT NOT NULL REFERENCES memory_banks(id), subject_entity_id TEXT NOT NULL, object_entity_id TEXT NOT NULL, doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS memory_relations_bank_subject ON memory_relations(bank_id, subject_entity_id);
+            CREATE INDEX IF NOT EXISTS memory_relations_bank_object ON memory_relations(bank_id, object_entity_id);
+            CREATE TABLE IF NOT EXISTS memory_audit(id TEXT PRIMARY KEY, bank_id TEXT NOT NULL REFERENCES memory_banks(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS memory_tombstones(id TEXT PRIMARY KEY, bank_id TEXT NOT NULL REFERENCES memory_banks(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS team_tasks(id TEXT PRIMARY KEY, parent_task_id TEXT REFERENCES team_tasks(id), doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS team_tasks_parent ON team_tasks(parent_task_id);
+            CREATE TABLE IF NOT EXISTS team_task_handoffs(id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES team_tasks(id), sequence INTEGER NOT NULL, doc TEXT NOT NULL, UNIQUE(task_id, sequence));
+            CREATE TABLE IF NOT EXISTS team_task_gate_decisions(id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES team_tasks(id), doc TEXT NOT NULL);
         ''')
 
     @contextmanager
@@ -145,6 +161,67 @@ class Store:
         self.runtime_get('runtime_chat_sessions', session_id)
         with self.lock:
             rows = self.db.execute('SELECT doc FROM runtime_chat_exchanges WHERE session_id=? ORDER BY rowid', (session_id,)).fetchall()
+        return [json.loads(row['doc']) for row in rows]
+
+    def external_skill_package(self, ident):
+        with self.lock:
+            row = self.db.execute('SELECT doc FROM external_skill_packages WHERE id=?', (ident,)).fetchone()
+        if not row:
+            raise Problem('EXTERNAL_SKILL_PACKAGE_NOT_FOUND', '外部 Skill 包不存在。', 404)
+        return json.loads(row['doc'])
+
+    def external_skill_packages(self):
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM external_skill_packages ORDER BY rowid DESC').fetchall()
+        return [json.loads(row['doc']) for row in rows]
+
+    def external_skill_execution(self, ident):
+        with self.lock:
+            row = self.db.execute('SELECT doc FROM external_skill_executions WHERE id=?', (ident,)).fetchone()
+        if not row:
+            raise Problem('EXTERNAL_SKILL_EXECUTION_NOT_FOUND', '外部 Skill 执行记录不存在。', 404)
+        return json.loads(row['doc'])
+
+    def memory_bank(self, ident):
+        with self.lock:
+            row = self.db.execute('SELECT doc FROM memory_banks WHERE id=?', (ident,)).fetchone()
+        if not row:
+            raise Problem('MEMORY_BANK_NOT_FOUND', 'Memory Bank 不存在。', 404)
+        return json.loads(row['doc'])
+
+    def memory_banks(self):
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM memory_banks ORDER BY rowid DESC').fetchall()
+        return [json.loads(row['doc']) for row in rows]
+
+    def team_task(self, ident):
+        with self.lock:
+            row = self.db.execute('SELECT doc FROM team_tasks WHERE id=?', (ident,)).fetchone()
+        if not row:
+            raise Problem('TEAM_TASK_NOT_FOUND', 'Team Task 不存在。', 404)
+        return json.loads(row['doc'])
+
+    def team_tasks(self, parent_task_id=None):
+        with self.lock:
+            if parent_task_id is None:
+                rows = self.db.execute('SELECT doc FROM team_tasks ORDER BY rowid DESC').fetchall()
+            else:
+                rows = self.db.execute('SELECT doc FROM team_tasks WHERE parent_task_id=? ORDER BY rowid',
+                                       (parent_task_id,)).fetchall()
+        return [json.loads(row['doc']) for row in rows]
+
+    def team_handoffs(self, task_id):
+        self.team_task(task_id)
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM team_task_handoffs WHERE task_id=? ORDER BY sequence',
+                                   (task_id,)).fetchall()
+        return [json.loads(row['doc']) for row in rows]
+
+    def team_gate_decisions(self, task_id):
+        self.team_task(task_id)
+        with self.lock:
+            rows = self.db.execute('SELECT doc FROM team_task_gate_decisions WHERE task_id=? ORDER BY rowid',
+                                   (task_id,)).fetchall()
         return [json.loads(row['doc']) for row in rows]
 
     def event(self, db, run, kind, data=None, step_id=None):

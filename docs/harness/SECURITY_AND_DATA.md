@@ -35,6 +35,10 @@ ADR-0021 Local Agent Lab 不保存 API Key、Token、Cookie、`credential_ref` �
 
 ADR-0022 Agent Runtime 只接受格式化的 `keychain://harnessagent/<name>` **引用**，不接受秘密值。SQLite、SSE、浏览器、错误信息和 Evidence 都不能包含 Keychain 内容；只有显式启用的传输边界才会解析引用。默认模型运行时关闭，Provider readiness 不进行网络请求。若部署到远程主机，必须在反向代理或应用层增加身份认证、TLS、最小访问范围及备份/保留策略后才允许输入非演示内容；本机单用户边界不能自动外推为公网授权。
 
+ADR-0023 Research Agent Simulation 只读取项目自建的 synthetic 资源。Child Run 只获已分配资源的 `resource.inspect`，并核验 Skill 文件 SHA-256、资源摘要和 64 KiB 工具结果限制；它不加载第三方 Skill、脚本、MCP、Provider 或网络。报告中“未评估”只表示证据缺口，不是风险结论；真实金融资料、PDF、网页和模型输出进入前必须完成 TD-017/018/019/025/026 的独立准入。
+
+ADR-0024 Native Claude Research 的默认门禁会在 `query()`、CLI、Keychain 和 HTTP 之前停止。允许启动时，模型 ID、费用上限、精确 HTTPS 域名、搜索/财务 endpoint、非秘密 Keychain 引用、Plugin SHA-256 和 Public PDF 资源摘要必须固定到 Task/Run；资料工具只返回有大小上限的 URI/摘要/时间/摘录，不能把原始网页、PDF、token 或任意宿主路径放入模型、Event、Artifact 或 Evidence。进程内 MCP 工具仍和工作台共进程，`dontAsk`、`allowed_tools`、Skill 过滤和网关校验不是 OS 隔离；TD-018 未关闭前不可加载第三方 Skill 或把此边界用于不可信资料。模型或 Child 没有来源 ID 时必须明确“未评估”，不能借缺失资料推出无 ST、无退市、无诉讼或任何投资结论。
+
 ## Prompt 与上下文安全
 
 - 系统策略与外部内容使用结构化边界，不拼接为同等优先级文本。
@@ -58,6 +62,16 @@ ADR-0022 Agent Runtime 只接受格式化的 `keychain://harnessagent/<name>` **
 - 沙箱设置 CPU、内存、磁盘、时间、网络和进程限制。
 - 模型生成代码只能进入一次性远程沙箱或经等价隔离验证的环境；本地解释器和 AST 过滤不构成安全边界。
 - P0 沙箱默认禁网，输入只读、输出单独可写，不注入长期凭证，结束后必须销毁。
+- ADR-0025 的外部 Skill ZIP 在登记时做严格文件名、大小、链接、UTF-8 manifest 和凭证样式检查；仅保存内容摘要和受控副本。执行前重算摘要，且在默认关闭门禁后才允许创建一次性禁网容器。Skill 不获得宿主路径、环境变量、Docker socket、网络、秘密、依赖安装或 shell。
+- 外部 Skill 的独立本机 audit 仅保存版本/内容/输入输出摘要、profile/image 摘要、时长和清理状态；不保存第三方 stdout/stderr/堆栈，更不能伪装成有 Product `task_id`/`run_id` 的 Event。若接入 Product 运行，必须先使审计记录满足该关联不变量。
+- ADR-0026 Memory Plane M1 只允许显式 Source Evidence + 原子 Fact 写入，拒绝凭证样式内容、Restricted 数据及 Public Bank 的 Internal Source。Memory 的来源正文不进入 Product Event、SSE 或 Evidence；Recall 仅返回 Fact 和 Source ID/ref/SHA-256，绝不返回原始正文。撤回/删除分别失效或物理移除可控正文/Fact，审计/tombstone 也不得保存正文。
+- ADR-0027 M2-A 的 `recent_turns` 仅由调用方单次传入/返回，绝不进入 Memory 表、audit、Event、SSE 或 Evidence。Fact `detail` 必须是有界派生内容，若复制完整 Source 正文即拒绝；`:recall-details` 重新核验 Bank、来源状态和有效时间，且无效或跨 Bank ID 不返回正文。SQLite FTS5 仅是 canonical Fact 的可删除/重建投影，不能成为新的权威源或模型数据外发授权。
+- ADR-0028 M3-A 的 Entity/Relation 只能由可信调用方以同 Bank 的 active support Fact 显式登记；服务不自动从 Source、聊天、文件或模型输出提取名称。图查询只接受 ID、至多两跳，并对 Node、Edge、support Fact、Source 状态和有效期逐层过滤；无路径不得宣称没有业务影响。Source retract/supersede 使依赖对象失效，delete 物理清理唯一支撑的 Entity/Relation 及关联边；Graph Bundle 只含 Fact statement 和 Source ID/ref/SHA-256，绝不含 Source 正文、模型输出、自动消歧结果或跨 Bank 名称。
+- ADR-0029 M3-B 的 Entity Catalog 仅查同 Bank、active、Fact/Source/时间仍有效的已有 Entity，且只接受 casefold 精确 canonical name/alias。它不从模糊命中、别名相似度、模型或跨来源合并推断实体；多候选必须返回 `ambiguous`，调用方显式选取 ID。候选只给 support Fact statement 与 Source ID/ref/SHA-256，绝不返回 Source 正文；未命中、跨 Bank、失效、撤回或删除对象都只表现为空 `not_found`，不得泄露名称或存在性。
+- ADR-0030 统一 M1/M2 Source-backed Fact 的历史可见性：读路径必须同时验证 Source 已发生、Fact 已发生、Fact validity window、active status、Bank 与来源保留期。未来记录被过滤只能表示“截至该时点不可读”，不得解释为事实不存在；FTS5 只是候选投影，绝不能绕过该规范过滤或导出原始 Source。
+- ADR-0031 将 M2-B semantic/vector 设为版本化 fail-closed Gate：未记录语料 manifest、数据外发审查、删除/重建、离线相关性与延迟/成本基线时，状态只能是 `not_admitted`，没有 Provider、模型、网络、embedding 索引或记忆外发路径。即使将来状态被审查为 admitted，实际运行时仍需独立实现、最小化 Evidence、权限/预算和真实 L3 验证。
+- ADR-0032 Fact Lineage 只由调用方提供已知 Fact ID，按同 Bank、Source active、Fact time/validity 再验证后有界回溯 supersede 历史。它把 superseded 节点显式标为历史，不能成为当前结论；retracted/deleted/跨 Bank/未来节点不返回，且不输出 Source 正文。
+- ADR-0033 Team Coordination 拒绝凭证样式 collaboration metadata；Team Task、Handoff、Gate/closure 只保存受限目标、要求、范围、摘要、产物引用、SHA-256、审计理由和版本，不保存模型推理、Source 正文或工具输出。此本机 local-admin 切片尚无真实身份认证，`actor_id`/`reviewer_id` 只能作为协议字段，不得外推为用户或 Agent 授权；`scope` 也只是工作交接，不是工具允许列表。
 
 ## 高风险边界
 

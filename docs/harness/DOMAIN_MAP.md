@@ -20,7 +20,7 @@
 | 14 | MCP 连接 | P1 | `/mcp-servers` | mcp | MCP Client | MCP 设置 | 协议、权限 |
 | 15 | 资源 | P0 | `/resources` | resources | Resource Adapter | 资源管理 | CSV、只读挂载；扫描件为 P0.1 |
 | 16 | 产物 | P0 | `/artifacts` | artifacts | Artifact Mapper | 产物预览 | 完整性、权限 |
-| 17 | 知识 | P2 | `/knowledge` | knowledge | Index Adapter | 知识空间 | 检索、删除 |
+| 17 | 知识 | P2（M1 local） | `/knowledge`；本机 `/api/local/memory` | knowledge / memory | Index Adapter（尚未接入） | 知识空间（尚未有页面） | Bank 隔离、来源追溯、撤回/删除；语义/图检索待后续 |
 | 18 | 批准 | P1 | `/approvals` | approvals | 无 | 待审批 | 绑定、过期 |
 | 19 | 策略与权限 | P0 | `/policies` | policy | Policy Engine | 后续 | 默认拒绝、沙箱限制 |
 | 20 | 预算与配额 | P0-min | `/budgets` | budgets | Usage Mapper | 后续 | 原子扣减 |

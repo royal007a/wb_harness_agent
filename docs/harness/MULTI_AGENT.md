@@ -68,3 +68,7 @@ Task/Run 机器格式复用 core-contracts；新本地请求格式见 research-r
 运行入口 `/research`；回滚只回退代码并重启 launchd，数据库结构未变，不在线覆盖数据。HA-0009 部署前备份位于 `.local/backups/pre-ha0009-20260912.db`，保留原有分析数据和新演示任务。旧任务继续可访问；CSV 页面仅展示分析任务，研究页面展示研究根 Run。
 
 浏览器验收会创建明确标为演示的任务。执行器为短小有界固定函数；未来若接入不响应取消的第三方代码，线程无法强杀，必须先改为隔离执行边界，不得直接将其替换成任意工具。
+
+## 后续独立模拟切片
+
+ADR-0023 没有改写本文的历史固定函数演示，而是另行实现 `/research-agents` 的三角色 Agent / Skill / Tool 合同模拟。它补充 Action / Observation / Final 事件和 Skill 摘要审计，但依旧不是 Claude SDK、真实模型或金融数据系统；详见 [Research Agent Runtime](RESEARCH_AGENT_RUNTIME.md)。

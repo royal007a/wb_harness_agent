@@ -1,0 +1,27 @@
+{
+  "task_id": "HA-0030",
+  "recorded_at": "2026-09-19T08:05:00Z",
+  "scope": "Codify dual-environment deployment and synchronize HA-0028 external Skill isolation plus HA-0029 Memory Plane M1 to local and remote runtimes.",
+  "commands": [
+    "local: curl /api/v1/health, /api/local/external-skills/runtime and /api/local/memory/runtime",
+    "remote: SQLite online backup, staged rsync, Python compile, systemctl restart, nginx -t, loopback runtime checks, unauthenticated public-proxy check",
+    "sh harness/verify.sh",
+    "SHA-256 equality comparison for the changed runtime and schema files"
+  ],
+  "results": {
+    "default_verification": {"passed": 191, "failed": 0, "skipped": 12},
+    "local_health": "ok",
+    "remote_health": "ok",
+    "remote_proxy_unauthenticated_status": 401,
+    "external_skill_runtime_enabled": false,
+    "memory_plane_mode": "memory-plane-m1@1"
+  },
+  "artifacts": [
+    "harness/evidence/HA-0030/deployment.json",
+    "harness/evidence/HA-0030/acceptance.md"
+  ],
+  "not_evidence": [
+    "No secrets, local database, Keychain entry, user data or remote HTTP Basic password is in this Evidence.",
+    "No external capability was enabled just to perform deployment verification."
+  ]
+}

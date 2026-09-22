@@ -7,6 +7,8 @@
 - `backend/app.py`：HTTP 传输、同源边界、资源/任务/事件/产物接口；
 - `backend/service.py`：契约校验、权限、幂等、Run 状态、固定工具 Worker；
 - `backend/intent.py`：本地 `intent-contract@1` 的确定性 CSV 意图、槽位、拒识与固定路由；不创建 Task/Run、不调用模型；
+- `backend/memory.py`：本机 Source/Fact 生命周期、可重建 SQLite FTS5 投影、Fact Capsule 与按 ID 详情回读；不自动摄取聊天、调用模型或返回原始 Source；
+- `backend/team_coordination.py`：独立本机 Team Task、lease、append-only Handoff、Gate/closure 状态机；不启动 Agent、模型、工具或消息投递；
 - `backend/store.py`：SQLite 事务、事件序列、对象读写；
 - `backend/analysis.py`：受界限约束的 CSV 统计、报告、SVG、manifest；不执行外部代码；
 - `adapters/contracts.py`、`local.py`：固定分析器生命周期与受校验事件/结果边界；
@@ -24,6 +26,12 @@
 - `frontend/agent-lab.*`：配置与 POST SSE 聊天演示；`tests/test_agent_lab.py` 和 `tests/browser_agent_lab.py` 验证；
 - `skills/csv-group-analysis/`：项目内 Skill 与确定性 CLI，无自动全局安装；
 - `fixtures/intent-evaluation-v1.json`、`harness/evaluate_intents.py`：版本化意图评测夹具与脱敏评分器；
+- `specs/v1/memory-context.schema.json`、`harness/memory_context_evaluation.py`：M2-A Capsule/Detail 机器契约与合成去标识评测；
+- `specs/v1/memory-graph.schema.json`、`harness/memory_graph_evaluation.py`、`tests/test_memory_graph.py`：M3-A 显式 Entity/Relation、两跳 Graph Evidence 与生命周期合成评测；
+- `specs/v1/memory-entity-catalog.schema.json`、`harness/memory_entity_catalog_evaluation.py`、`tests/test_memory_entity_catalog.py`：M3-B 同 Bank exact canonical/alias Entity Catalog、歧义保留、生命周期与隔离合成评测；
+- `docs/decisions/ADR-0030-memory-temporal-read-safety.md`、`harness/memory_temporal_read_evaluation.py`、`tests/test_memory_temporal_read_safety.py`：M1 Recall 与 M2-A Context/Detail 共享的 Source/Fact `as_of` 发生时间安全过滤；
+- `specs/v1/memory-semantic-admission.schema.json`、`harness/semantic-retrieval-admission.json`、`harness/verify_semantic_retrieval_admission.py`、`tests/test_semantic_retrieval_admission.py`：M2-B semantic/vector/RRF 的默认关闭 Admission Gate；
+- `specs/v1/team-coordination.schema.json`、`docs/harness/TEAM_COORDINATION.md`、`tests/test_team_coordination.py`：ADR-0033 的 Team Task/Handoff/Gate/closure 契约、状态与重启反例；
 - `frontend/`：原生浏览器工作台与本地 API 说明；
 - `tests/`：后端契约/故障测试与真实浏览器验收；
 - `deploy/local.macos.plist`：本机 launchd 服务；

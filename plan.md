@@ -1,6 +1,6 @@
 # HarnessAgent 长期记忆规划
 
-> 状态：Proposed
+> 状态：Proposed（ADR-0026 已实现本机受限 M1；ADR-0027 M2-A 已实现 Fact Capsule / FTS5 / detail 纵切；ADR-0028 已实现显式 M3-A 两跳关系纵切；ADR-0029 M3-B 已实现 exact Entity Catalog 并通过双环境验收；完整 M2-B、M4–M5 仍未开始）
 >
 > 目标阶段：P2
 >
@@ -215,8 +215,8 @@ Reflect 默认关闭。只有明确需要历史综合判断、策略允许且延
 
 ### M0：来源核验与决策
 
-- [ ] 核验 Hindsight 的官方论文、仓库、版本、许可证、部署方式和数据边界；
-- [ ] 区分论文结论、第三方解读与项目内假设；
+- [x] 核验 Hindsight 的官方论文、仓库、许可证、部署方式和数据边界；阅读记录见 `docs/research/HINDSIGHT_MEMORY_CONTEXT_READING.md`；
+- [x] 区分论文/官方资料的结论、第三方解读与项目内假设；ADR-0027 只借鉴结构，不复述 benchmark 为项目事实；
 - [ ] 用 ADR 决定自建契约、采用现有产品或仅借鉴设计；
 - [ ] 确认 Memory Plane 与 Context Manager、Deep Agents 动态知识场景的边界；
 - [ ] 建立匿名化业务评测集、威胁模型和数据处理评估。
@@ -225,17 +225,22 @@ Reflect 默认关闭。只有明确需要历史综合判断、策略允许且延
 
 ### M1：最小可信写入
 
-- [ ] 定义 Memory Bank、Source Evidence、Fact 和审计事件 Schema；
-- [ ] 实现异步 Retain、脱敏、来源绑定、去重、纠错与删除传播；
-- [ ] 先不生成 Observation、Opinion 或 Mental Model；
-- [ ] 验证跨 bank 隔离、幂等写入、回滚和索引重建。
+- [x] 定义 Memory Bank、Source Evidence、Fact 和独立 local audit Schema；
+- [~] 实现确定性显式 Retain、敏感拒绝、来源绑定、去重、纠错、撤回与删除传播；异步模型抽取/脱敏管线仍未实现；
+- [x] 先不生成 Observation、Opinion 或 Mental Model；
+- [~] 验证跨 bank 隔离、幂等写入与 SQLite 原子回滚；M2-A 已有可重建的 FTS5 关键词投影，但尚无语义/图索引。
+
+当前本机实现见 [Memory Plane M1](docs/harness/MEMORY_PLANE_M1.md)、[Memory Context M2-A](docs/harness/MEMORY_CONTEXT_M2A.md)、[Memory Graph M3-A](docs/harness/MEMORY_GRAPH_M3A.md) 与 [Memory Entity Catalog M3-B](docs/harness/MEMORY_ENTITY_CATALOG_M3B.md)。它只接受调用方显式提交的受限来源和 Fact；M2-A 以 transient recent turns、Fact-derived Capsule、FTS5 关键词目录和按 ID detail 形成受限双阶段回读。M3-A 只接受由 Fact 支撑、同 Bank 的显式 Entity/Relation 和至多两跳关系路径；M3-B 只做 canonical/alias exact match 并保留歧义。它不自动写入对话，也不等同完整 M2 语义/融合检索、自动 M3 Entity Resolution/图排序或 M4 Reflect。
 
 退出条件：任何 Fact 都可追溯、可撤回、可删除，跨 bank 泄漏为零。
 
 ### M2：双路 Recall
 
-- [ ] 建立关键词与语义索引；
-- [ ] 定义 Evidence Bundle、权限过滤、状态过滤和 Token 预算；
+已完成 M2-A：本机 SQLite FTS5 关键词投影、Fact-derived 结构化 Capsule、调用方暂时保留的最近 K 轮，以及目录到 ID 详情的二阶段回读；ADR-0030 已使 M1 Recall 与 M2-A Context/Detail 对 Source/Fact `occurred_at` 与 Fact validity window 使用一致的 `as_of` 过滤。它不含 embedding 或语义通道。
+
+- [~] 建立关键词与语义索引；M2-A 仅完成可重建关键词投影，语义索引仍待授权与基线；
+- [x] ADR-0031 固化 semantic/vector/RRF 的 machine Admission Gate；当前因缺少版本化语料、数据外发、删除/重建、离线评测和成本基线而保持 `not_admitted`；
+- [~] 定义 Evidence Bundle、权限过滤、状态过滤和 Token 预算；M2-A 完成受限 Capsule/Detail Bundle 与过滤，未接入 Product Run token/latency budget；
 - [ ] 增加 RRF、rerank、缓存与超时降级；
 - [ ] 与普通 RAG 做相同任务和成本基线对比。
 
@@ -243,8 +248,9 @@ Reflect 默认关闭。只有明确需要历史综合判断、策略允许且延
 
 ### M3：实体、关系与时间
 
-- [ ] 定义 Entity、Relation、有效期和 supersede/retract 语义；
-- [ ] 增加实体解析、图检索、时间检索和多跳证据链；
+- [x] M3-A 定义显式 Entity、Relation、有效期和 supersede/retract 语义；提供同 Bank、最多两跳的 SQLite Evidence Path，不包含自动实体解析；
+- [x] M3-B 增加 canonical/alias casefold 精确 Entity Catalog、类型筛选和歧义保留，作为显式 ID 到 M3-A 的只读交接；自然语言实体解析、图排序和自动冲突处理仍未实现；
+- [ ] ADR-0032 以已知 Fact ID 暴露有界 supersede lineage，区分历史证据与当前适用性；不做自动冲突裁决或自然语言查询；
 - [ ] 建立新旧偏好、历史决策变化和依赖关系故障夹具；
 - [ ] 验证索引最终一致性、冲突处理和删除级联。
 

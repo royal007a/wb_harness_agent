@@ -6,9 +6,17 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 
 多专项编排演示：**http://127.0.0.1:8765/research**。最多三家模拟公司 × 三个专项，展示有界并发、父子 Run、失败汇总、取消和整树重跑。此功能运行固定函数与 synthetic 资料，不是实际 Claude 多 Agent 或真实研报。
 
+投研多 Agent 模拟：**http://127.0.0.1:8765/research-agents**。为每家公司固定运行财务、行业、风险三个 Child Agent，冻结第一方 Skill 摘要与 `resource.inspect` 工具权限，记录 Action / Observation / Final 证据并汇总报告。它是零模型、零网络、零真实数据的契约模拟，不是 Claude SDK、实时资讯或投资建议；详见 [投研多 Agent 模拟运行时](docs/harness/RESEARCH_AGENT_RUNTIME.md)。
+
+原生 Claude 投研准入：`GET http://127.0.0.1:8765/api/local/research-native/runtime` 显示 Native SubAgent / Plugin Skill / MCP 资料运行时的配置门禁。`POST /api/local/research-native/documents` 可先登记 Public PDF，`POST /api/local/research-native` 只会在 Claude 模型、费用、允许域名、搜索/财务资料源和数据外发开关全部显式配置后创建真实 Run；默认在调用 CLI、Keychain 或网络前拒绝。详见 [Native Claude 投研运行时](docs/harness/CLAUDE_RESEARCH_RUNTIME.md)。
+
 本地 Agent Lab：**http://127.0.0.1:8765/agent-lab**。它验证无密 Provider/Model/Agent Profile、SQLite 会话与 POST SSE 前端链路；回复是明确标记的本地确定性演示，模型、Provider、网络和工具调用均为 0，不改变 Product Task/Run/Replan。
 
 本地 Agent Runtime：**http://127.0.0.1:8765/agent-runtime**。它是独立的 Provider → Model → Agent → Session/Exchange 系统，带受控的 OpenAI-compatible SSE Adapter、上下文窗口、失败状态与 POST SSE。默认禁用外部模型调用；没有激活门禁时会返回可审计错误，绝不伪造模型回复。详见 [Agent Runtime](docs/harness/AGENT_RUNTIME.md)。
+
+外部 Skill 隔离运行时：`GET http://127.0.0.1:8765/api/local/external-skills/runtime` 显示严格 ZIP Skill 的隔离 profile 与门禁。包仅可登记为 `manifest.json + entry.py`，执行时使用一次性禁网非 root Colima 容器；默认 `HARNESS_EXTERNAL_SKILLS` 未启用，执行在读取包/启动 Docker 前拒绝。它不是 Claude/MCP/模型工具或通用插件市场，详见 [外部 Skill 隔离运行时](docs/harness/EXTERNAL_SKILL_RUNTIME.md)。
+
+Memory Plane M1 + M2-A + M3-A + M3-B：`GET http://127.0.0.1:8765/api/local/memory/runtime` 显示本机来源优先记忆边界。M1 支持 Bank、显式 Source/Fact Retain、supersede/retract/delete 与无原始正文的 keyword/temporal Evidence Bundle；所有 Source-backed Fact 读路径都会以 `as_of` 同时过滤 Source/Facts 的发生时间与 Fact 有效期。M2-A 增加本地 FTS5 Fact Capsule、临时最近轮和目录到详情的二阶段回读；M3-A 只允许以 active Fact 支撑的显式 Entity/Relation 进行至多两跳的时间 Evidence Path；M3-B 以 canonical name/alias 的 casefold 精确匹配，返回 resolved/ambiguous/not_found 候选并要求调用方显式交接 `entity_id`。M2-B 的 semantic/vector/RRF 另有版本化 Admission Gate，当前固定 `not_admitted`、runtime disabled、模型/外部调用均为 0。它不自动保存聊天、不调用模型，也没有语义向量、自动实体消歧、自然语言 GraphQA、Reflect 或 Product Task/Run 集成。详见 [Memory Entity Catalog M3-B](docs/harness/MEMORY_ENTITY_CATALOG_M3B.md)。
 
 ```sh
 sh harness/init.sh
@@ -22,6 +30,12 @@ sh harness/start.sh
 ## 文档入口
 
 - [Skill/CLI 执行样例与边界](docs/harness/SKILL_EXECUTION.md)
+- [外部 Skill 隔离运行时](docs/harness/EXTERNAL_SKILL_RUNTIME.md)
+- [Memory Plane M1](docs/harness/MEMORY_PLANE_M1.md)
+- [Memory Context M2-A](docs/harness/MEMORY_CONTEXT_M2A.md)
+- [Memory Graph M3-A](docs/harness/MEMORY_GRAPH_M3A.md)
+- [Memory Entity Catalog M3-B](docs/harness/MEMORY_ENTITY_CATALOG_M3B.md)
+- [Hindsight / Context 阅读总结](docs/research/HINDSIGHT_MEMORY_CONTEXT_READING.md)
 - [引擎与 VM 探针使用](docs/harness/ENGINE_PROBES.md)
 - [多专项编排架构与 API](docs/harness/MULTI_AGENT.md)
 - [百度网盘 OAuth 连接器](docs/harness/BAIDU_NETDISK_CONNECTOR.md)

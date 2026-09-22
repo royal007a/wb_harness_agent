@@ -26,6 +26,25 @@ HA-0007 增加 Adapter 生命周期、`GET /api/v1/readiness` 历史探针报告
 
 要允许一次真实 Provider 请求，进程必须显式以 `HARNESS_AGENT_RUNTIME=enabled` 启动，并且 Provider 是已实现协议、Profile 均启用、存在格式正确的 `keychain://harnessagent/<name>` 引用且 Keychain 在请求时可解析。该开关不是本地产品功能开关，也不构成数据外发授权；在实际启用前应另行完成数据范围、成本、超时、取消、健康与 L3 安全验证。现有部署不设置该条件。
 
+## 投研多 Agent 模拟（ADR-0023）
+
+入口为 http://127.0.0.1:8765/research-agents。它与 `/research` 的固定函数演示并存，但为每家公司固定创建财务、行业、风险三个 Child Run，并把第一方 Skill 文件摘要、唯一工具 `resource.inspect` 和二步预算冻结到运行树。每个 Child 记录 `agent.turn.started → skill.loaded → resource.inspect → agent.observation.received → agent.finalized`，父 Run 只聚合重新按资源摘要校验的 Child artifact。
+
+## Native Claude 投研准入（ADR-0024）
+
+这个端点没有 UI，先通过 `GET /api/local/research-native/runtime` 查看 blocker。只有部署者在受控终端完成 Claude 身份配置，并在不提交秘密的前提下配置模型、精确允许域名、搜索/财务资料 endpoint、费用上限与两项环境门禁后，才可用 `POST /api/local/research-native/documents?name=<public-report.pdf>` 登记 Public PDF，并向 `POST /api/local/research-native` 提交机器契约。默认端点拒绝，不会启动 CLI、访问 Keychain、联网上传资料或生成模拟报告。运行后通过 `/api/local/research-native/{runId}`、通用 Run Event/Artifact 接口审计原生 `Agent` 委派、Child 证据与 source ID；完整规则见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
+
+- 所有输入均为项目自建 synthetic 资料；模型、Provider、网络和外部工具调用恒为 0。
+- `missing_risk` 场景只表示风险资料缺失，父报告必须标为“未评估”，不能推断为无风险。
+- 请求要求 `Idempotency-Key`；可通过既有取消与重跑接口操作完整树。服务重启会终结正在运行的树并保留事件，不会复写已有证据。
+- 它不是 Claude Agent SDK SubAgent、真实财报 PDF/行情/新闻分析或投资建议。真实接入前仍须完成 TD-017/018/019/025/026 的准入。
+
+## 外部 Skill 与 Memory Plane 本机接口
+
+ADR-0025 提供 `/api/local/external-skills/*`：严格 ZIP 外部 Skill 的登记与默认关闭执行门禁。只有显式设置 `HARNESS_EXTERNAL_SKILLS=enabled` 才会在一次性禁网、非 root Colima 容器执行受限 JSON transform；它不接入模型、MCP 或 Product Run。
+
+ADR-0026 / ADR-0027 / ADR-0028 / ADR-0029 提供 `/api/local/memory/*`：来源优先的 Memory Plane M1、受限 M2-A Context、M3-A Graph 与 M3-B exact Entity Catalog。可信本机管理员可以创建 Bank，显式 Retain Source + Fact，或通过 supersede/retract/delete 修正生命周期；M1 Recall 只返回 keyword/temporal Evidence Bundle。M2-A 在同一 Canonical Fact 上建立可重建的 SQLite FTS5 **关键词**候选目录，返回有界、由 Fact 派生的 Capsule 目录，并仅可按同 Bank 的 Fact ID 读取 compact detail；M3-A 只允许调用方以 active Fact 显式登记 Entity/Relation，并从已知 entity ID 至多读取两跳有来源的路径；M3-B 可用 canonical name/alias 的 casefold exact match 找到可用 Entity 候选，但多候选必须由调用方选择 ID。recent turns 从不持久化，所有路径都不返回原始 Source 正文。它不自动保存聊天、调用模型或提供 embedding、语义向量、自动实体消歧、自然语言 GraphQA、RRF/reranker/Reflect，且本机 Bank 并非多租户身份隔离。具体 API、保留与非目标分别见 [EXTERNAL_SKILL_RUNTIME.md](EXTERNAL_SKILL_RUNTIME.md)、[MEMORY_PLANE_M1.md](MEMORY_PLANE_M1.md)、[MEMORY_CONTEXT_M2A.md](MEMORY_CONTEXT_M2A.md)、[MEMORY_GRAPH_M3A.md](MEMORY_GRAPH_M3A.md) 与 [MEMORY_ENTITY_CATALOG_M3B.md](MEMORY_ENTITY_CATALOG_M3B.md)。
+
 ## 启动和停止
 
 ```sh
@@ -95,6 +114,7 @@ sh harness/verify.sh
 .venv/bin/python -m playwright install chromium
 .venv/bin/python tests/browser_smoke.py
 .venv/bin/python tests/browser_agent_lab.py
+.venv/bin/python tests/browser_research_agents.py
 ```
 
 浏览器验收会在运行的本地服务中创建一条明确标记的示例任务，并保存桌面与移动截图。后端测试使用临时数据库，不修改本地演示数据。
