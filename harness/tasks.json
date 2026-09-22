@@ -1,11 +1,11 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T04:55:00Z",
+  "generated_at": "2026-09-22T05:15:13Z",
   "tasks": [
     {
       "id": "HA-0041",
       "title": "实现 Team Session Continuity Handoff 与有界当前工作摘要",
-      "status": "running",
+      "status": "completed",
       "risk": "high",
       "scope": [
         "Workspace/Channel 授权后的 Team Session、手工 Session Handoff 与一次性继承关系",
@@ -23,10 +23,18 @@
       ],
       "depends_on": ["HA-0037", "HA-0039", "HA-0040", "HA-0038"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0041-team-session-continuity-handoff.md",
+      "plan": "exec-plans/completed/HA-0041-team-session-continuity-handoff.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": []
+      "evidence": [
+        "harness/evidence/HA-0041/manifest.json",
+        "harness/evidence/HA-0041/all-tests.xml",
+        "harness/evidence/HA-0041/team-session-continuity-evaluation.json",
+        "harness/evidence/HA-0041/local-health.json",
+        "harness/evidence/HA-0041/local-session-runtime.json",
+        "harness/evidence/HA-0041/deployment.json",
+        "harness/evidence/HA-0041/acceptance.md"
+      ]
     },
     {
       "id": "HA-0038",

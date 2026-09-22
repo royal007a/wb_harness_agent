@@ -1,0 +1,45 @@
+{
+  "work_item": "HA-0041",
+  "generated_at": "2026-09-22T05:15:13Z",
+  "status": "released",
+  "scope": "Local protocol Team Session lifecycle, metadata-only Continuity Snapshot and one-time same-scope Session Handoff",
+  "inputs": {
+    "implementation_commit": "94cffb9815fe184ec6282b078882ae5b7b69caa1",
+    "team_session_continuity_sha256": "810e86f1ab107a10778962474327b656331b93ff2d759bf40c8bc524dc008c9b",
+    "store_sha256": "da1db8f8c380bb5ab70a8c7cd4c9d981be6e10336fb5c97f6b01045964e1e942",
+    "schema_sha256": "103599c3af9fa72a5b7ce5195319155f2139320f3407d570523735a7e4337411",
+    "openapi_sha256": "e8515c40459cf5c7587b1a480d18c6111d2a968ef1341c232a2b2fc300a95711",
+    "evaluation_sha256": "eb5544edc4f061e8a3d4bd355fa2548c3f8531cefc2d79fab53830320de07e0c"
+  },
+  "checks": [
+    {"name": "targeted_team_session_attention_coordination_foundation", "command": "PYTHONPATH=. .venv/bin/pytest -q tests/test_team_session_continuity.py tests/test_team_attention.py tests/test_team_coordination.py tests/test_team_foundation.py", "result": "20 passed"},
+    {"name": "workbench_and_session_regression", "command": "PYTHONPATH=. .venv/bin/pytest -q tests/test_workbench.py tests/test_team_session_continuity.py", "result": "60 passed"},
+    {"name": "full_regression", "command": "PYTHONPATH=. .venv/bin/pytest -q --junitxml=harness/evidence/HA-0041/all-tests.xml", "result": "244 passed, 12 skipped, 0 failed"},
+    {"name": "harness_verification", "command": "sh harness/verify.sh", "result": "passed; Team Session synthetic evaluation passed"},
+    {"name": "remote_stage_preflight", "command": "remote py_compile, targeted pytest, Team Session synthetic evaluation, pip check", "result": "20 passed; evaluation passed; pip check passed"}
+  ],
+  "boundaries": {
+    "protocol_identity_authentication": "not_connected",
+    "agent_runtime": "not_connected",
+    "runtime_telemetry": "not_connected",
+    "external_model_calls": 0,
+    "external_tool_calls": 0,
+    "automatic_rotation": false,
+    "message_history": false,
+    "not_evidence": [
+      "HTTP login, token or OIDC validation; real user or Agent identity",
+      "message/Prompt/attachment history, compaction, Provider or Runtime Session resume",
+      "Daemon/Computer binding, automatic dispatch or rotation, model, Provider, MCP, tool, network or real research execution"
+    ]
+  },
+  "artifacts": [
+    "harness/evidence/HA-0041/all-tests.xml",
+    "harness/evidence/HA-0041/team-session-continuity-evaluation.json",
+    "harness/evidence/HA-0041/local-health.json",
+    "harness/evidence/HA-0041/local-session-runtime.json",
+    "harness/evidence/HA-0041/deployment.json",
+    "harness/evidence/HA-0041/acceptance.md"
+  ],
+  "deployment": "local and 118.196.123.132 runtime checks passed; actual remote HARNESS_DB was resolved from current systemd PID and online-backed-up before promotion; see deployment.json",
+  "secrets": "none recorded"
+}

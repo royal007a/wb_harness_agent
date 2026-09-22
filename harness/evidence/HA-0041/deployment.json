@@ -1,0 +1,45 @@
+{
+  "work_item": "HA-0041",
+  "released_at": "2026-09-22T05:15:13Z",
+  "release_commit": "94cffb9815fe184ec6282b078882ae5b7b69caa1",
+  "local": {
+    "service": "launchd local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "checks": [
+      "launchd service restarted",
+      "health returned status=ok",
+      "Team Session runtime returned local_team_session_continuity@1, disconnected Runtime/telemetry and external model/tool calls=0",
+      "generated OpenAPI exposed four checked Team Session paths"
+    ]
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "harnessagent.service behind nginx",
+    "public_url": "https://118.196.123.132/harness/",
+    "staging": "/opt/harnessagent-staging/ha0041-94cffb9815fe184ec6282b078882ae5b7b69caa1",
+    "checks": [
+      "stage py_compile, targeted 20-test regression, Team Session synthetic evaluation and pip check passed",
+      "before promotion, actual HARNESS_DB was resolved from the current systemd process under an approved data root; an online SQLite backup passed integrity_check",
+      "nginx -t succeeded and harnessagent was active after restart",
+      "loopback health returned status=ok",
+      "Team Session runtime reported disconnected Runtime/telemetry, no automatic rotation or message history, and external model/tool calls=0",
+      "loopback OpenAPI exposed four checked Team Session paths",
+      "unauthenticated public /harness/ returned 401 over the existing self-signed TLS configuration"
+    ],
+    "database_backup": {
+      "status": "verified before promotion",
+      "method": "Python standard-library SQLite online backup after resolving the current systemd HARNESS_DB",
+      "integrity": "PRAGMA integrity_check=ok",
+      "path": "not recorded"
+    },
+    "warnings": [
+      "nginx -t retained an existing duplicate MIME type text/html warning while returning syntax success"
+    ]
+  },
+  "integrity": {
+    "backend/team_session_continuity.py": "810e86f1ab107a10778962474327b656331b93ff2d759bf40c8bc524dc008c9b",
+    "remote_team_session_continuity_sha256": "810e86f1ab107a10778962474327b656331b93ff2d759bf40c8bc524dc008c9b",
+    "remote_hash_matches_local": true
+  },
+  "secrets": "none recorded"
+}

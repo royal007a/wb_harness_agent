@@ -1,6 +1,6 @@
 # HA-0041：实现 Team Session Continuity Handoff 与有界当前工作摘要
 
-状态：running
+状态：completed（2026-09-22 双环境发布）
 
 风险：high（协作状态、引用范围与会话边界；不连接真实 Runtime 或身份）
 
@@ -28,3 +28,10 @@
 - Session/Handoff/Snapshot 有机器契约，读写均通过 Workspace/Channel/membership/clearance 和 identity 所有权；
 - 历史 Handoff 不能跨 identity/channel/重复消费；Snapshot 没有正文或自由文本，创建 successor 时刷新当前状态；
 - 定向/全量回归、合成评测、OpenAPI、本机与远端备份/health/认证边界及无密 Evidence 完整；外部能力保持关闭。
+
+## 完成记录
+
+- `94cffb9` 固化机器契约、SQLite Session/Handoff、受限 API、动态 OpenAPI、定向回归和合成评测。
+- 定向 Session/Attention/Task/Foundation 回归 20 passed；`tests/test_workbench.py` + Session 回归 60 passed；全量回归 244 passed、12 skipped、0 failed；`sh harness/verify.sh` 与 Session 合成评测通过。
+- 本机 launchd 先完成 health、Session runtime（模型/工具均为 0）和 OpenAPI 校验；远端在独立 staging 通过编译、20 项定向回归、合成评测和 `pip check`，再由当前 systemd PID 解析实际 `HARNESS_DB`、完成在线 SQLite backup + `integrity_check` 后 promotion。
+- 远端重启后 loopback health/runtime/OpenAPI、nginx 语法、服务 active 和未认证公网 401 均通过；详细无密 Evidence 见 [`harness/evidence/HA-0041/`](../../harness/evidence/HA-0041/)。

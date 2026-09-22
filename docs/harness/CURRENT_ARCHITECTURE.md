@@ -39,7 +39,7 @@ ADR-0035 新增 `FastAPI → TeamFoundation → SQLite workspace / agent identit
 
 ADR-0036 已将 `FastAPI → TeamAttention → SQLite conversation cursor / attention item / read cursor / work mark / attention lease` 加到 ADR-0035 之后。它只接收不含正文的手工 protocol `source_ref`，按 Channel membership 管理注意力和过期稿阻断；不接入消息传输、自动唤醒、Agent Runtime、模型、工具或真实身份认证。详见 [Team Attention](TEAM_ATTENTION.md)。
 
-ADR-0037 正在以 `FastAPI → TeamSessionContinuity → SQLite team session / session handoff` 在上述状态之上生成有界当前工作摘要；它只引用 Task/Attention/Thread 状态，不复制消息或模型上下文，不连接 Provider/Runtime Session、telemetry、自动换代、Daemon/Computer 或真实身份认证。详见 [Team Session Continuity](TEAM_SESSION_CONTINUITY.md)。
+ADR-0037 已以 `FastAPI → TeamSessionContinuity → SQLite team session / session handoff` 在上述状态之上生成有界当前工作摘要；它只引用 Task/Attention/Thread 状态，不复制消息或模型上下文，不连接 Provider/Runtime Session、telemetry、自动换代、Daemon/Computer 或真实身份认证。详见 [Team Session Continuity](TEAM_SESSION_CONTINUITY.md)。
 
 本地分析表单在创建 Task 前调用 `Service → IntentRouter`。该 Router 用 `rules@1` 只识别 CSV 分析，返回 `ready`、`clarification_required` 或 `rejected`；不持久化自然语言输入、没有模型调用，也不会自动创建 Task 或换引擎。规则与固定评测见 [INTENT_ROUTING.md](INTENT_ROUTING.md)。
 

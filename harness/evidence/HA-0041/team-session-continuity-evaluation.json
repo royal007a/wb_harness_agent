@@ -1,0 +1,19 @@
+{
+  "evaluation_version": "team-session-continuity-evaluation@1",
+  "scope": "synthetic Team Session continuity, bounded metadata-only snapshot and one-time same-scope Handoff",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "bounded_metadata_only_snapshot": 1.0,
+    "one_active_session_per_identity_channel": 1.0,
+    "handoff_does_not_mutate_source_task_state": 1.0,
+    "successor_refreshes_current_snapshot": 1.0,
+    "handoff_is_one_time_and_owner_bound": 1.0,
+    "external_execution_calls": 1.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not store message content, authenticate a caller, resume a Provider/Runtime session, or dispatch an Agent.",
+    "The evaluation uses only synthetic metadata in a temporary SQLite database."
+  ]
+}
