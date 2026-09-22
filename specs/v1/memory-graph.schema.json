@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/memory-graph.schema.json",
+  "title": "Memory Graph M3-A contract",
+  "type": "object",
+  "$defs": {
+    "entity_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_name", "entity_type", "aliases", "support_fact_id"],
+      "properties": {
+        "canonical_name": {"type": "string", "minLength": 1, "maxLength": 180},
+        "entity_type": {"enum": ["person", "organization", "system", "project", "product", "document", "other"]},
+        "aliases": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 180}},
+        "support_fact_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "valid_from": {"type": ["string", "null"], "format": "date-time"},
+        "valid_to": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "bank_id", "canonical_name", "entity_type", "aliases", "support_fact_id", "valid_from", "valid_to", "status", "recorded_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "canonical_name": {"type": "string", "maxLength": 180},
+        "entity_type": {"enum": ["person", "organization", "system", "project", "product", "document", "other"]},
+        "aliases": {"type": "array", "maxItems": 16, "items": {"type": "string", "maxLength": 180}},
+        "support_fact_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "valid_from": {"type": ["string", "null"], "format": "date-time"},
+        "valid_to": {"type": ["string", "null"], "format": "date-time"},
+        "status": {"const": "active"},
+        "recorded_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "entity_create_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity", "deduplicated", "audit_id"],
+      "properties": {
+        "entity": {"$ref": "#/$defs/entity"},
+        "deduplicated": {"type": "boolean"},
+        "audit_id": {"type": ["string", "null"], "pattern": "^memaudit_[a-f0-9]{32}$"}
+      }
+    },
+    "relation_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject_entity_id", "predicate", "object_entity_id", "support_fact_id", "confidence", "occurred_at"],
+      "properties": {
+        "subject_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "predicate": {"enum": ["responsible_for", "depends_on", "affects", "uses", "owned_by", "related_to"]},
+        "object_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "support_fact_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "valid_from": {"type": ["string", "null"], "format": "date-time"},
+        "valid_to": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "bank_id", "subject_entity_id", "predicate", "object_entity_id", "support_fact_id", "confidence", "occurred_at", "valid_from", "valid_to", "status", "recorded_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^memrel_[a-f0-9]{32}$"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "subject_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "predicate": {"enum": ["responsible_for", "depends_on", "affects", "uses", "owned_by", "related_to"]},
+        "object_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "support_fact_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "valid_from": {"type": ["string", "null"], "format": "date-time"},
+        "valid_to": {"type": ["string", "null"], "format": "date-time"},
+        "status": {"const": "active"},
+        "recorded_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "relation_create_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relation", "deduplicated", "audit_id"],
+      "properties": {
+        "relation": {"$ref": "#/$defs/relation"},
+        "deduplicated": {"type": "boolean"},
+        "audit_id": {"type": ["string", "null"], "pattern": "^memaudit_[a-f0-9]{32}$"}
+      }
+    },
+    "graph_recall_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_entity_id"],
+      "properties": {
+        "start_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "max_hops": {"type": "integer", "minimum": 1, "maximum": 2, "default": 1},
+        "limit": {"type": "integer", "minimum": 1, "maximum": 20, "default": 10},
+        "as_of": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "graph_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity_id", "canonical_name", "entity_type", "support_fact_id"],
+      "properties": {
+        "entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "canonical_name": {"type": "string", "maxLength": 180},
+        "entity_type": {"enum": ["person", "organization", "system", "project", "product", "document", "other"]},
+        "support_fact_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"}
+      }
+    },
+    "graph_edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relation_id", "subject_entity_id", "predicate", "object_entity_id", "direction", "support_evidence"],
+      "properties": {
+        "relation_id": {"type": "string", "pattern": "^memrel_[a-f0-9]{32}$"},
+        "subject_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "predicate": {"enum": ["responsible_for", "depends_on", "affects", "uses", "owned_by", "related_to"]},
+        "object_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "direction": {"enum": ["outgoing", "incoming"]},
+        "support_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["evidence_id", "statement", "source_id", "source_ref", "content_sha256", "occurred_at"],
+          "properties": {
+            "evidence_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+            "statement": {"type": "string", "maxLength": 1000},
+            "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+            "source_ref": {"type": "string", "maxLength": 200},
+            "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "occurred_at": {"type": "string", "format": "date-time"}
+          }
+        }
+      }
+    },
+    "graph_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hop_count", "nodes", "edges"],
+      "properties": {
+        "hop_count": {"type": "integer", "minimum": 1, "maximum": 2},
+        "nodes": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"$ref": "#/$defs/graph_node"}},
+        "edges": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"$ref": "#/$defs/graph_edge"}}
+      }
+    },
+    "graph_evidence_bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "bank_id", "start_entity_id", "as_of", "memory_status", "channels", "paths", "safety"],
+      "properties": {
+        "schema_version": {"const": "graph-evidence-bundle@1"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "start_entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "as_of": {"type": "string", "format": "date-time"},
+        "memory_status": {"enum": ["available", "empty"]},
+        "channels": {"type": "array", "items": {"enum": ["graph", "temporal"]}},
+        "paths": {"type": "array", "maxItems": 20, "items": {"$ref": "#/$defs/graph_path"}},
+        "safety": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["raw_source_content_included", "model_calls", "automatic_entity_resolution"],
+          "properties": {
+            "raw_source_content_included": {"const": false},
+            "model_calls": {"const": 0},
+            "automatic_entity_resolution": {"const": false}
+          }
+        }
+      }
+    }
+  }
+}

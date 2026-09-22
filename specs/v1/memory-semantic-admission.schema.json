@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/memory-semantic-admission.schema.json",
+  "title": "Memory semantic retrieval admission gate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "enabled", "model_calls", "external_calls", "blockers"],
+  "properties": {
+    "schema_version": {"const": "memory-semantic-admission@1"},
+    "status": {"enum": ["not_admitted", "admitted"]},
+    "enabled": {"type": "boolean"},
+    "model_calls": {"type": "integer", "minimum": 0},
+    "external_calls": {"type": "integer", "minimum": 0},
+    "blockers": {"type": "array", "items": {"type": "string", "minLength": 1}, "maxItems": 16},
+    "admission_evidence": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["corpus_manifest", "data_egress_review", "deletion_rebuild_test", "offline_evaluation", "latency_cost_baseline"],
+      "properties": {
+        "corpus_manifest": {"type": "string", "minLength": 1, "maxLength": 240},
+        "data_egress_review": {"type": "string", "minLength": 1, "maxLength": 240},
+        "deletion_rebuild_test": {"type": "string", "minLength": 1, "maxLength": 240},
+        "offline_evaluation": {"type": "string", "minLength": 1, "maxLength": 240},
+        "latency_cost_baseline": {"type": "string", "minLength": 1, "maxLength": 240}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "not_admitted"}}},
+      "then": {
+        "properties": {
+          "enabled": {"const": false},
+          "model_calls": {"const": 0},
+          "external_calls": {"const": 0},
+          "admission_evidence": {"const": null}
+        },
+        "required": ["admission_evidence"]
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "admitted"}}},
+      "then": {
+        "properties": {
+          "enabled": {"const": true},
+          "admission_evidence": {"type": "object"}
+        },
+        "required": ["admission_evidence"]
+      }
+    }
+  ]
+}

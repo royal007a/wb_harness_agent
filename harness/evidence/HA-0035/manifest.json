@@ -1,0 +1,47 @@
+{
+  "work_item": "HA-0035",
+  "title": "M2-B semantic retrieval admission gate",
+  "status": "completed",
+  "completed_at": "2026-09-20T18:05:21Z",
+  "contract": {
+    "schema": "specs/v1/memory-semantic-admission.schema.json",
+    "state": "harness/semantic-retrieval-admission.json",
+    "status": "not_admitted",
+    "admission_enabled": false,
+    "runtime_enabled": false,
+    "model_calls": 0,
+    "external_calls": 0,
+    "required_before_admission": [
+      "versioned de-identified corpus manifest",
+      "data egress review",
+      "deletion/rebuild drill",
+      "offline relevance evaluation",
+      "latency/cost baseline"
+    ]
+  },
+  "source_sha256": {
+    "backend/memory.py": "b6ea87e8f40d79c9ec1968a59e8865f4ab4036d64f1618c714d921ddb823bd83",
+    "specs/v1/memory-semantic-admission.schema.json": "306f134316bf810b4ecbefd1dd3527b81eb63a75770074e5a1b688c0c98d4372",
+    "harness/semantic-retrieval-admission.json": "873941e71ca2c2a239a3af378ed18034a4d7837b8198b9ab7f35e4fe878814d2",
+    "harness/verify_semantic_retrieval_admission.py": "bc57d50dd362b0943c43880ce6c7fb45a0d39deee63d9f7ad3246081959b69eb",
+    "tests/test_semantic_retrieval_admission.py": "0d29a0cbd68880ef76b13be328ccee19e6b8d86c74e3c7c29dd9abe5925ef445",
+    "docs/decisions/ADR-0031-semantic-retrieval-admission-gate.md": "b11ca2f10c414429521d0a80d2c617a1beca79964a39763f090ace944ac99771"
+  },
+  "verification": {
+    "test_report": "all-tests.xml",
+    "opt_in_regression": "229 passed, 0 failed; one upstream TestClient deprecation warning",
+    "gate_snapshot": "admission-state.json",
+    "continued_memory_evaluations": [
+      "context-evaluation-results.json",
+      "graph-evaluation-results.json",
+      "entity-catalog-evaluation-results.json",
+      "temporal-evaluation-results.json"
+    ],
+    "format_check": "git diff --check passed"
+  },
+  "limitations": [
+    "The Gate does not download/run an embedding model, create a vector index, call a Provider, perform semantic retrieval, RRF/rerank, caching, GraphQA or Reflect.",
+    "It does not replace data egress approval, corpus validation, deletion evidence, relevance evaluation, performance/cost measurement or real L3 validation.",
+    "No chat/PDF/web/file automatic ingestion or Product Task/Run integration is enabled."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "task_id": "HA-0032",
+  "recorded_at": "2026-09-20T17:03:47Z",
+  "release": "0.1.0-local",
+  "deployment_rule": "local health and M3-A OpenAPI verification first; then remote systemd/nginx mirror; no credential or local data copy",
+  "local": {
+    "service": "launchd gui/501/local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "pre_restart_sqlite_backup": ".local/backups/pre-ha0032-final-20260920T170215Z.db",
+    "backup_bytes": 1536000,
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m3a@1",
+      "graph_recall": {"engine": "sqlite-explicit-relation-store@1", "max_hops": 2, "automatic_entity_resolution": false},
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false
+    },
+    "openapi_graph_paths": 3
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "systemd harnessagent bound to 127.0.0.1:8765; nginx /harness/ proxy",
+    "database_backup": {
+      "kind": "SQLite online backup before service stop",
+      "path": "/var/lib/harnessagent/backups/pre-ha0032-20260920T170325Z.db",
+      "bytes": 319488
+    },
+    "source_sync": "staged application copy excluded local SQLite, Keychain, tests and Evidence; final promotion repeated target-side exclusions for .venv, .local and harness/evidence before --delete",
+    "transient_preflight_condition": "SSH banner/authentication handshakes intermittently timed out before any remote stop or copy. Existing public proxy remained reachable with unauthenticated 401; later SSH preflight succeeded and deployment proceeded.",
+    "virtualenv_preserved": true,
+    "pip_check": "No broken requirements found.",
+    "service_active": true,
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m3a@1",
+      "graph_recall": {"engine": "sqlite-explicit-relation-store@1", "max_hops": 2, "automatic_entity_resolution": false},
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false
+    },
+    "openapi_graph_paths": 3,
+    "graph_route_probe": {"status": 404, "error": "MEMORY_BANK_NOT_FOUND", "meaning": "a syntactically valid unknown Bank hit the new route without a persistent test write"},
+    "nginx_configuration_test": "passed (pre-existing duplicate-MIME warning only)",
+    "public_proxy": {
+      "url": "https://118.196.123.132/harness/",
+      "unauthenticated_status": 401,
+      "meaning": "the existing HTTP Basic authentication boundary remains enforced; no Basic credential was read or recorded"
+    }
+  },
+  "synchronized_file_sha256": {
+    "backend/app.py": "0bb24c107bf27d1b4302912f5aa549abb471d26639c84d47c493e3e6f76e9651",
+    "backend/memory.py": "0bc23903d93e2a7dc330eda48af4e310b4b875a2d1f16368fdcdd9e665b001e3",
+    "backend/store.py": "c44f0e2cc454be107edee990592924eeaea5feb761fc56749b4ae2a6aa52148b",
+    "specs/v1/memory-graph.schema.json": "852741597b890fc90adac573b246268d32e4de0a57b74df11c0817b7a2cb43d6",
+    "specs/v1/openapi.yaml": "1fbc986f37f4990bfae59cb05c1995f60bf2efe0a180e0320365dfb5b4539752",
+    "harness/memory_graph_evaluation.py": "7ddff0f96f81fe974da3895d7e000049044abada3bf49aa3ff3d9eddf62e6d22"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "work_item": "HA-0033",
+  "title": "Memory Entity Catalog M3-B exact name/alias directory",
+  "status": "completed",
+  "completed_at": "2026-09-20T17:31:09Z",
+  "contract": {
+    "schema": "specs/v1/memory-entity-catalog.schema.json",
+    "api": "POST /api/local/memory/banks/{bank_id}:resolve-entity",
+    "result_statuses": ["resolved", "ambiguous", "not_found"],
+    "match_mode": "exact_canonical_or_alias_casefold",
+    "automatic_entity_resolution": false,
+    "model_calls": 0,
+    "external_calls": 0
+  },
+  "source_sha256": {
+    "backend/memory.py": "81e0c1bba2c1755558abc93626a55472396d464aa0ffdfdea1a2778b6d0f5f35",
+    "backend/app.py": "9de52b21c130e72a869177316e6470a7dda64ba2628ed460993ba9456b572826",
+    "specs/v1/memory-entity-catalog.schema.json": "3a86483680749b27d3060c423ec415e63b2d0f4162137a6618716f63a4ccf24f",
+    "specs/v1/openapi.yaml": "4feb846ef4ed8b478c17f02c1273c9c3430e5ba368e8c81a1057ba5c47ba1427",
+    "harness/memory_entity_catalog_evaluation.py": "2aecc1872b026a2e0f9d275432eae0bb04e5194f15d764794ebf862bbdadf7b4",
+    "tests/test_memory_entity_catalog.py": "789f2c07001c6431107857c6a665597c5f1ffcbe53a9fa12b122882aa199b607"
+  },
+  "verification": {
+    "test_report": "all-tests.xml",
+    "opt_in_regression": "220 passed, 0 failed; one upstream TestClient deprecation warning",
+    "schemas_checked": [
+      "memory-plane.schema.json",
+      "memory-context.schema.json",
+      "memory-graph.schema.json",
+      "memory-entity-catalog.schema.json"
+    ],
+    "evaluations": [
+      "context-evaluation-results.json",
+      "graph-evaluation-results.json",
+      "entity-catalog-evaluation-results.json"
+    ],
+    "format_check": "git diff --check passed"
+  },
+  "limitations": [
+    "No semantic/vector/fuzzy matching, automatic Entity Resolution/merge, GraphQA, ranking or Reflect is implemented.",
+    "No chat/PDF/web/file automatic ingestion, model call, external source or Product Task/Run integration is enabled.",
+    "The synthetic evaluation does not prove business-entity coverage, production latency, quality of real data or a complete Hindsight system."
+  ]
+}

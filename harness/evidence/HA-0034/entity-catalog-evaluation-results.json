@@ -1,0 +1,20 @@
+{
+  "evaluation_version": "memory-entity-catalog-m3b-synthetic@1",
+  "scope": "synthetic exact canonical/alias catalog, ambiguity, temporal/lifecycle and Bank isolation",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "canonical_exact_resolution": 1.0,
+    "alias_exact_resolution": 1.0,
+    "ambiguity_preserved": 1.0,
+    "type_filter_resolution": 1.0,
+    "cross_bank_leakage": 0.0,
+    "lifecycle_temporal_filter": 1.0,
+    "raw_source_export": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This is not semantic/vector matching, automatic Entity Resolution, entity merging, GraphQA, ranking, Reflect or final-answer quality.",
+    "The evaluation uses only synthetic source/fact/entity content in a temporary SQLite database."
+  ]
+}

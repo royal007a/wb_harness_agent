@@ -1,0 +1,18 @@
+{
+  "evaluation_version": "memory-temporal-read-safety-synthetic@1",
+  "scope": "synthetic as-of Source/Fact visibility across M1 Recall and M2-A Context/Detail",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "m1_future_source_hidden": 1.0,
+    "m2_context_future_source_hidden": 1.0,
+    "m2_detail_future_source_hidden": 1.0,
+    "source_visible_at_as_of": 1.0,
+    "raw_source_export": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This is not semantic/vector retrieval, RRF/rerank, automatic summary, Entity Resolution, GraphQA, Reflect or final-answer quality.",
+    "The evaluation uses only synthetic source/fact content in a temporary SQLite database."
+  ]
+}

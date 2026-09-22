@@ -1,0 +1,50 @@
+{
+  "work_item": "HA-0035",
+  "deployment_order": ["local", "public"],
+  "local": {
+    "topology": "launchd → 127.0.0.1:8765",
+    "online_backup": {
+      "path": ".local/backups/pre-ha0035-20260920T180433Z.db",
+      "bytes": 1536000,
+      "method": "sqlite3 online backup"
+    },
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "semantic_retrieval": {
+      "status": "not_admitted",
+      "admission_enabled": false,
+      "runtime_enabled": false,
+      "model_calls": 0,
+      "external_calls": 0,
+      "blocker_count": 3
+    }
+  },
+  "public": {
+    "topology": "systemd harnessagent → 127.0.0.1:8765 → nginx /harness/ HTTPS Basic Auth",
+    "staging": "/tmp/harnessagent-ha0035-stage",
+    "staging_preflight": "Python compile, semantic admission verifier and five Memory Schema validations passed",
+    "online_backup": {
+      "path": "/var/lib/harnessagent/backups/pre-ha0035-20260920T180519Z.db",
+      "bytes": 348160,
+      "method": "Python sqlite3 Connection.backup because remote sqlite3 CLI is absent"
+    },
+    "promotion_guard": "rsync --delete explicitly excluded .venv/, .local/ and harness/evidence/ on live target",
+    "service": "active",
+    "pip_check": "No broken requirements found.",
+    "nginx": "syntax test passed; pre-existing duplicate MIME type warning only",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "semantic_retrieval": {
+      "status": "not_admitted",
+      "admission_enabled": false,
+      "runtime_enabled": false,
+      "model_calls": 0,
+      "external_calls": 0,
+      "blocker_count": 3
+    },
+    "unauthenticated_public_status": 401,
+    "source_hash_match": true
+  },
+  "notes": [
+    "No provider endpoint, embedding artifact, corpus, credential, external request or vector index was created or copied during this release.",
+    "No password, token, Basic Auth credential, Keychain value or local SQLite content appears in this evidence."
+  ]
+}

@@ -1,0 +1,1 @@
+{"local_backup":".local/backups/pre-ha0036-20260920T181724Z.db","public_backup":"/var/lib/harnessagent/backups/pre-ha0036-20260920T181750Z.db","public_service":"active","public_unauthenticated_status":401,"promotion_guard":"live rsync excluded .venv/.local/harness/evidence"}

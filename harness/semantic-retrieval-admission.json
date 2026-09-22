@@ -1,0 +1,13 @@
+{
+  "schema_version": "memory-semantic-admission@1",
+  "status": "not_admitted",
+  "enabled": false,
+  "model_calls": 0,
+  "external_calls": 0,
+  "blockers": [
+    "No approved embedding model/provider, local model artifact or remote egress boundary is recorded.",
+    "No versioned de-identified corpus manifest and data classification review is recorded.",
+    "No deletion/rebuild drill, offline relevance baseline or latency/cost baseline is recorded."
+  ],
+  "admission_evidence": null
+}

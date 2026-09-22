@@ -1,0 +1,69 @@
+{
+  "task_id": "HA-0031",
+  "recorded_at": "2026-09-20T16:25:58Z",
+  "release": "0.1.0-local",
+  "deployment_rule": "local health and M2-A route verification first; then remote systemd/nginx mirror; no credential or local data copy",
+  "local": {
+    "service": "launchd gui/501/local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "pre_restart_sqlite_backup": ".local/backups/pre-ha0031-20260920T162047Z.db",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m2a@1",
+      "fts5_ready": true,
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false
+    },
+    "new_route_probes": {
+      "context": {"status": 404, "error": "MEMORY_BANK_NOT_FOUND"},
+      "recall_details": {"status": 404, "error": "MEMORY_BANK_NOT_FOUND"},
+      "meaning": "the new routes were loaded; a syntactically valid unknown Bank caused no persistent test write"
+    }
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "systemd harnessagent bound to 127.0.0.1:8765; nginx /harness/ proxy",
+    "database_backup": {
+      "kind": "SQLite online backup before service stop",
+      "path": "/var/lib/harnessagent/backups/pre-ha0031-20260920T162324Z.db",
+      "bytes": 294912
+    },
+    "source_sync": "staged application copy excluded local SQLite, Keychain, test data and Evidence; source syntax was checked on target Python before restart",
+    "recovery_incident": {
+      "impact": "an initial promotion used rsync --delete without live-target exclusions and removed the remote virtual environment; the application service was briefly inactive",
+      "data_impact": "none known; the online SQLite backup had completed and no local data or credentials were copied",
+      "recovery": "recreated /opt/harnessagent/.venv from pinned requirements.txt, compiled M2-A files, restarted systemd, then repeated runtime, route and proxy checks",
+      "prevention": "AGENTS.md and OPERATIONS.md now require live-target exclusions for .venv and service-owned data during promotion"
+    },
+    "service_active": true,
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m2a@1",
+      "fts5_ready": true,
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false
+    },
+    "new_route_probes": {
+      "context": {"status": 404, "error": "MEMORY_BANK_NOT_FOUND"},
+      "recall_details": {"status": 404, "error": "MEMORY_BANK_NOT_FOUND"}
+    },
+    "nginx_configuration_test": "passed (pre-existing duplicate-MIME warning only)",
+    "public_proxy": {
+      "url": "https://118.196.123.132/harness/",
+      "unauthenticated_status": 401,
+      "meaning": "the existing HTTP Basic authentication boundary remains enforced; no Basic credential was read or recorded"
+    }
+  },
+  "synchronized_file_sha256": {
+    "backend/app.py": "d1ffe19dce9731fbcf0fda0c42a08929a2ef319eeff1ab5e3cd5c02337bbb2e0",
+    "backend/memory.py": "28ce900f9dc68d2c8c868fade237e1a3093ed0fb40e5c22d023bb5d9b63c54d9",
+    "specs/v1/memory-plane.schema.json": "4501154218272e02d7f48f244427bd640efc862c796cd257e859edd38f62e188",
+    "specs/v1/memory-context.schema.json": "2fe9299696ffd04fe0afab8d7f6751dae4d8dffdd7ee39adf4419774e6228f99",
+    "specs/v1/openapi.yaml": "7dba91c8ed1250010db3b3158188800857aed2b11060bb40961bc982364fef18",
+    "harness/memory_context_evaluation.py": "e8f862ebed968ce303433261f8bf9a8f8fa54f5e01810f95e02bb70f6fa1316f"
+  }
+}

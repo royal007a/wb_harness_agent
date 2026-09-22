@@ -1,0 +1,60 @@
+{
+  "work_item": "HA-0034",
+  "deployment_order": ["local", "public"],
+  "local": {
+    "topology": "launchd → 127.0.0.1:8765",
+    "online_backup": {
+      "path": ".local/backups/pre-ha0034-20260920T175017Z.db",
+      "bytes": 1536000,
+      "method": "sqlite3 online backup"
+    },
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m3b@1",
+      "as_of_visibility": {
+        "source_occurred_at": true,
+        "fact_occurred_at": true,
+        "fact_validity_window": true
+      },
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false,
+      "product_task_run_integration": false
+    }
+  },
+  "public": {
+    "topology": "systemd harnessagent → 127.0.0.1:8765 → nginx /harness/ HTTPS Basic Auth",
+    "staging": "/tmp/harnessagent-ha0034-stage",
+    "staging_preflight": "Python compile and four Memory Schema validations passed",
+    "online_backup": {
+      "path": "/var/lib/harnessagent/backups/pre-ha0034-20260920T175103Z.db",
+      "bytes": 348160,
+      "method": "Python sqlite3 Connection.backup because remote sqlite3 CLI is absent"
+    },
+    "promotion_guard": "rsync --delete explicitly excluded .venv/, .local/ and harness/evidence/ on live target",
+    "service": "active",
+    "pip_check": "No broken requirements found.",
+    "nginx": "syntax test passed; pre-existing duplicate MIME type warning only",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m3b@1",
+      "as_of_visibility": {
+        "source_occurred_at": true,
+        "fact_occurred_at": true,
+        "fact_validity_window": true
+      },
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false,
+      "product_task_run_integration": false
+    },
+    "unauthenticated_public_status": 401,
+    "source_hash_match": true
+  },
+  "notes": [
+    "Each service restart emitted transient loopback connection-refused output before its health loop succeeded; this is startup observation, not a lasting outage.",
+    "No password, token, Basic Auth credential, Keychain value or local SQLite content appears in this evidence."
+  ]
+}

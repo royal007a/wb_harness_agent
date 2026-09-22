@@ -1,0 +1,29 @@
+{
+  "task_id": "HA-0029",
+  "deployed_at": "2026-09-19T09:20:00Z",
+  "local": {
+    "service": "launchd gui/501/local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "external_skill_runtime": {
+      "route": "/api/local/external-skills/runtime",
+      "runtime_enabled": false,
+      "network": "denied",
+      "credentials": "not_injected",
+      "blockers": ["external_skill_runtime_disabled"]
+    },
+    "memory_plane": {
+      "route": "/api/local/memory/runtime",
+      "status": "available_local_admin",
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false,
+      "product_task_run_integration": false
+    }
+  },
+  "not_evidence": [
+    "No external Skill package was registered or executed in the persistent local workbench database during deployment verification.",
+    "No model, provider, network data source, actual Claude SubAgent, memory auto-extraction or external data was enabled."
+  ]
+}

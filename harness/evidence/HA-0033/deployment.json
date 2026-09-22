@@ -1,0 +1,62 @@
+{
+  "work_item": "HA-0033",
+  "deployment_order": ["local", "public"],
+  "local": {
+    "topology": "launchd → 127.0.0.1:8765",
+    "online_backup": {
+      "path": ".local/backups/pre-ha0033-20260920T172807Z.db",
+      "bytes": 1536000,
+      "method": "sqlite3 online backup"
+    },
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m3b@1",
+      "entity_catalog": "exact_canonical_or_alias_casefold",
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false,
+      "product_task_run_integration": false
+    },
+    "api": {
+      "openapi_entity_resolution_schema": "#/components/schemas/entity_resolution",
+      "unknown_bank_probe_status": 404,
+      "unknown_bank_probe_error": "MEMORY_BANK_NOT_FOUND"
+    }
+  },
+  "public": {
+    "topology": "systemd harnessagent → 127.0.0.1:8765 → nginx /harness/ HTTPS Basic Auth",
+    "staging": "/tmp/harnessagent-ha0033-stage",
+    "staging_preflight": "Python compile and four Memory Schema validations passed",
+    "online_backup": {
+      "path": "/var/lib/harnessagent/backups/pre-ha0033-20260920T173106Z.db",
+      "bytes": 348160,
+      "method": "Python sqlite3 Connection.backup because remote sqlite3 CLI is absent"
+    },
+    "promotion_guard": "rsync --delete explicitly excluded .venv/, .local/ and harness/evidence/ on live target",
+    "service": "active",
+    "pip_check": "No broken requirements found.",
+    "nginx": "syntax test passed; pre-existing duplicate MIME type warning only",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "memory_runtime": {
+      "mode": "memory-plane-m3b@1",
+      "entity_catalog": "exact_canonical_or_alias_casefold",
+      "model_extraction": false,
+      "reflect": false,
+      "vector_index": false,
+      "graph_index": false,
+      "product_task_run_integration": false
+    },
+    "api": {
+      "openapi_entity_resolution_schema": "#/components/schemas/entity_resolution",
+      "unknown_bank_probe_status": 404,
+      "unknown_bank_probe_error": "MEMORY_BANK_NOT_FOUND",
+      "unauthenticated_public_status": 401
+    },
+    "source_hash_match": true
+  },
+  "notes": [
+    "The first remote backup attempt exited before service stop because the host has no sqlite3 CLI. The verified online backup used the service venv's standard sqlite3 API before any stop/promotion.",
+    "No password, token, Basic Auth credential, Keychain value or local SQLite content appears in this evidence."
+  ]
+}

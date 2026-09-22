@@ -1,0 +1,43 @@
+{
+  "work_item": "HA-0034",
+  "title": "Memory M1/M2 as-of temporal read safety",
+  "status": "completed",
+  "completed_at": "2026-09-20T17:51:05Z",
+  "contract": {
+    "decision": "docs/decisions/ADR-0030-memory-temporal-read-safety.md",
+    "affected_paths": [
+      "POST /api/local/memory/banks/{bank_id}:recall",
+      "POST /api/local/memory/banks/{bank_id}:context",
+      "POST /api/local/memory/banks/{bank_id}:recall-details"
+    ],
+    "as_of_visibility": {
+      "source_occurred_at": true,
+      "fact_occurred_at": true,
+      "fact_validity_window": true
+    },
+    "model_calls": 0,
+    "external_calls": 0
+  },
+  "source_sha256": {
+    "backend/memory.py": "7d82ba4b33d9eabb93186a5ce8f5f89cdc2935952d0ab5214bb03812023b327b",
+    "tests/test_memory_temporal_read_safety.py": "9bce6b60f4396e143a5ce1926ddb2370856376d56ec3d0ed0fc95fa2f32b6cdb",
+    "harness/memory_temporal_read_evaluation.py": "a49a3e1689e4dcfedc1434e5af5da38772436983cc6302ff6b4639d55947ed3e",
+    "docs/decisions/ADR-0030-memory-temporal-read-safety.md": "3b7ea36aaf1a2775b0642267dde7d623f5c11e438647ef53b3eab3429bb7d315"
+  },
+  "verification": {
+    "test_report": "all-tests.xml",
+    "opt_in_regression": "223 passed, 0 failed; one upstream TestClient deprecation warning",
+    "temporal_evaluation": "temporal-evaluation-results.json",
+    "continued_memory_evaluations": [
+      "context-evaluation-results.json",
+      "graph-evaluation-results.json",
+      "entity-catalog-evaluation-results.json"
+    ],
+    "format_check": "git diff --check passed"
+  },
+  "limitations": [
+    "This only hardens deterministic as-of visibility; it does not add semantic/vector retrieval, RRF/rerank, caching, automatic summaries, Entity Resolution, GraphQA or Reflect.",
+    "No chat/PDF/web/file automatic ingestion, model call, external source or Product Task/Run integration is enabled.",
+    "Synthetic tests do not prove real-business recall coverage, semantic quality, performance, cost or a complete Hindsight system."
+  ]
+}

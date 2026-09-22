@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/memory-context.schema.json",
+  "title": "Memory Context M2-A contract",
+  "type": "object",
+  "$defs": {
+    "recent_turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "content"],
+      "properties": {
+        "role": {"enum": ["user", "assistant"]},
+        "content": {"type": "string", "minLength": 1, "maxLength": 2000}
+      }
+    },
+    "context_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["query"],
+      "properties": {
+        "query": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "recent_turns": {"type": "array", "maxItems": 8, "items": {"$ref": "#/$defs/recent_turn"}},
+        "summary_limit": {"type": "integer", "minimum": 1, "maximum": 12, "default": 6},
+        "catalog_limit": {"type": "integer", "minimum": 1, "maximum": 20, "default": 10},
+        "as_of": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "summary_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "kind", "statement", "occurred_at", "source_id"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "kind": {"enum": ["objective", "entity", "fact", "constraint", "preference", "decision", "state"]},
+        "statement": {"type": "string", "maxLength": 1000},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"}
+      }
+    },
+    "summary_section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "items"],
+      "properties": {
+        "kind": {"enum": ["objective", "entity", "fact", "constraint", "preference", "decision", "state"]},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/summary_item"}}
+      }
+    },
+    "catalog_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "kind", "statement_preview", "occurred_at", "source_id", "detail_available"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "kind": {"enum": ["objective", "entity", "fact", "constraint", "preference", "decision", "state"]},
+        "statement_preview": {"type": "string", "maxLength": 240},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+        "detail_available": {"type": "boolean"}
+      }
+    },
+    "context_capsule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "bank_id", "query", "as_of", "context_status", "recent_turns", "summary", "detail_catalog", "next_action", "safety"],
+      "properties": {
+        "schema_version": {"const": "memory-context-capsule@1"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "query": {"type": "string"},
+        "as_of": {"type": "string", "format": "date-time"},
+        "context_status": {"enum": ["available", "empty"]},
+        "recent_turns": {"type": "array", "maxItems": 8, "items": {"$ref": "#/$defs/recent_turn"}},
+        "summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["format", "is_model_generated", "sections"],
+          "properties": {
+            "format": {"const": "fact-derived-summary@1"},
+            "is_model_generated": {"const": false},
+            "sections": {"type": "array", "items": {"$ref": "#/$defs/summary_section"}}
+          }
+        },
+        "detail_catalog": {"type": "array", "maxItems": 20, "items": {"$ref": "#/$defs/catalog_item"}},
+        "next_action": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operation", "eligible_evidence_ids", "max_items"],
+          "properties": {
+            "operation": {"const": "memory.recall_details@1"},
+            "eligible_evidence_ids": {"type": "array", "maxItems": 20, "items": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"}},
+            "max_items": {"const": 8}
+          }
+        },
+        "safety": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["recent_turns_persisted", "raw_source_content_included", "model_calls"],
+          "properties": {
+            "recent_turns_persisted": {"const": false},
+            "raw_source_content_included": {"const": false},
+            "model_calls": {"const": 0}
+          }
+        }
+      }
+    },
+    "detail_recall_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_ids"],
+      "properties": {
+        "evidence_ids": {"type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"}},
+        "as_of": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "detail_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "kind", "statement", "detail", "occurred_at", "source_evidence"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "kind": {"enum": ["objective", "entity", "fact", "constraint", "preference", "decision", "state"]},
+        "statement": {"type": "string", "maxLength": 1000},
+        "detail": {"type": "string", "maxLength": 6000},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "source_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_id", "source_ref", "content_sha256", "occurred_at"],
+          "properties": {
+            "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+            "source_ref": {"type": "string"},
+            "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "occurred_at": {"type": "string", "format": "date-time"}
+          }
+        }
+      }
+    },
+    "detail_bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "bank_id", "as_of", "memory_status", "details", "unavailable_evidence_ids", "safety"],
+      "properties": {
+        "schema_version": {"const": "memory-detail-bundle@1"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "as_of": {"type": "string", "format": "date-time"},
+        "memory_status": {"enum": ["available", "partial", "empty"]},
+        "details": {"type": "array", "maxItems": 8, "items": {"$ref": "#/$defs/detail_item"}},
+        "unavailable_evidence_ids": {"type": "array", "maxItems": 8, "items": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"}},
+        "safety": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["raw_source_content_included", "model_calls"],
+          "properties": {
+            "raw_source_content_included": {"const": false},
+            "model_calls": {"const": 0}
+          }
+        }
+      }
+    }
+  }
+}

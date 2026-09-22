@@ -1,0 +1,1 @@
+{"work_item":"HA-0036","status":"completed","contract":"memory-fact-lineage.schema.json","verification":{"junit":"all-tests.xml","result":"230 opt-in passed, 0 failed; one upstream warning"},"limitations":["No natural-language conflict lookup or resolution","No model, vector, external call, Reflect or Source content export"]}

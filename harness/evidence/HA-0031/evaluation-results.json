@@ -1,0 +1,20 @@
+{
+  "evaluation_version": "memory-context-m2a-synthetic@1",
+  "scope": "synthetic deterministic Fact Capsule, FTS5 catalog, exact detail and lifecycle safety",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "critical_fact_recall_at_12": 1.0,
+    "summary_fidelity": 1.0,
+    "detail_exactness": 1.0,
+    "supersede_safety": 1.0,
+    "cross_bank_leakage": 0.0,
+    "recent_turn_persistence": 0.0,
+    "raw_source_export": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This is not semantic/vector retrieval, RRF/rerank, model-summary, final-answer quality, or production data evaluation.",
+    "The evaluation uses only synthetic source/fact content in a temporary SQLite database."
+  ]
+}

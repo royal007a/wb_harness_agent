@@ -1,0 +1,39 @@
+{
+  "task_id": "HA-0031",
+  "recorded_at": "2026-09-20T16:25:58Z",
+  "scope": "Memory Context M2-A: deterministic Fact Capsule, SQLite FTS5 keyword catalog and same-Bank detail-by-ID recall.",
+  "verification": [
+    {
+      "command": "HARNESS_DOCKER_TESTS=1 .venv/bin/python -m pytest -q --junitxml=harness/evidence/HA-0031/all-tests.xml",
+      "result": "passed",
+      "tests": 209,
+      "failures": 0,
+      "warnings": ["one upstream Starlette BlockingPortal deprecation warning"],
+      "artifact": "all-tests.xml"
+    },
+    {
+      "command": ".venv/bin/python harness/memory_context_evaluation.py --output harness/evidence/HA-0031/evaluation-results.json",
+      "result": "passed",
+      "artifact": "evaluation-results.json"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "synthetic_evaluation": {
+    "critical_fact_recall_at_12": 1.0,
+    "summary_fidelity": 1.0,
+    "detail_exactness": 1.0,
+    "supersede_safety": 1.0,
+    "cross_bank_leakage": 0.0,
+    "recent_turn_persistence": 0.0,
+    "raw_source_export": 0.0
+  },
+  "deployment": "local launchd first, then existing remote systemd/nginx mirror; details in deployment.json",
+  "not_evidence": [
+    "This is not semantic/vector retrieval, graph retrieval, RRF/reranking, model summary, Reflect, final-answer quality or production-data evaluation.",
+    "No product Agent Runtime model/provider, WebSearch, WebFetch, financial data, automatic chat ingestion or external Skill execution was enabled.",
+    "The unauthenticated public 401 check proves only that the existing HTTP Basic proxy boundary remains active."
+  ]
+}

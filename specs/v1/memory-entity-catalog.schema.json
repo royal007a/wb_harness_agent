@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/memory-entity-catalog.schema.json",
+  "title": "Memory Entity Catalog M3-B contract",
+  "type": "object",
+  "$defs": {
+    "entity_resolve_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 180},
+        "entity_type": {"type": ["string", "null"], "enum": ["person", "organization", "system", "project", "product", "document", "other", null]},
+        "as_of": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "entity_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity_id", "canonical_name", "entity_type", "matched_name", "support_evidence"],
+      "properties": {
+        "entity_id": {"type": "string", "pattern": "^mement_[a-f0-9]{32}$"},
+        "canonical_name": {"type": "string", "maxLength": 180},
+        "entity_type": {"enum": ["person", "organization", "system", "project", "product", "document", "other"]},
+        "matched_name": {"type": "string", "maxLength": 180},
+        "support_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["evidence_id", "statement", "source_id", "source_ref", "content_sha256", "occurred_at"],
+          "properties": {
+            "evidence_id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+            "statement": {"type": "string", "maxLength": 1000},
+            "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+            "source_ref": {"type": "string", "maxLength": 200},
+            "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "occurred_at": {"type": "string", "format": "date-time"}
+          }
+        }
+      }
+    },
+    "entity_resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "bank_id", "name", "as_of", "status", "candidates", "next_action", "safety"],
+      "properties": {
+        "schema_version": {"const": "entity-resolution@1"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "name": {"type": "string", "maxLength": 180},
+        "as_of": {"type": "string", "format": "date-time"},
+        "status": {"enum": ["resolved", "ambiguous", "not_found"]},
+        "candidates": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/entity_candidate"}},
+        "next_action": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operation", "requires_explicit_entity_id"],
+          "properties": {
+            "operation": {"const": "memory.graph_recall@1"},
+            "requires_explicit_entity_id": {"const": true}
+          }
+        },
+        "safety": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["match_mode", "automatic_entity_resolution", "raw_source_content_included", "model_calls"],
+          "properties": {
+            "match_mode": {"const": "exact_canonical_or_alias_casefold"},
+            "automatic_entity_resolution": {"const": false},
+            "raw_source_content_included": {"const": false},
+            "model_calls": {"const": 0}
+          }
+        }
+      }
+    }
+  }
+}
