@@ -1,0 +1,41 @@
+{
+  "work_item": "HA-0038",
+  "generated_at": "2026-09-22T04:51:24Z",
+  "status": "released",
+  "scope": "Metadata-only Team Attention Inbox, read cursor, work mark, single identity lease and Thread freshness for Team Task writes",
+  "inputs": {
+    "implementation_commit": "824b093b95fdd91653f843291939b7a708002539",
+    "team_attention_sha256": "40a81be9ea7b5f92723c3d11cf051c684d56e9082c69d352d9ac58251b85b03a",
+    "team_coordination_sha256": "b2ba8c48d114e6493ac80a0f86bde18aa66666becb876120c884912096a1aa82",
+    "schema_sha256": "49ffc5e424f172a4f29b7d60d19c696a23b693afc90bd7dcb159e06674ded113"
+  },
+  "checks": [
+    {"name": "targeted_attention_team_regression", "command": "PYTHONPATH=. .venv/bin/python -m pytest -q tests/test_team_attention.py tests/test_team_coordination.py tests/test_team_foundation.py", "result": "16 passed"},
+    {"name": "full_regression", "command": "PYTHONPATH=. .venv/bin/python -m pytest -q --junitxml=harness/evidence/HA-0038/all-tests.xml", "result": "240 passed, 12 skipped, 0 failed"},
+    {"name": "harness_verification", "command": "sh harness/verify.sh", "result": "passed; Team Attention synthetic evaluation passed"},
+    {"name": "remote_stage_preflight", "command": "remote py_compile, targeted pytest, Team Attention evaluation and pip check", "result": "16 passed; evaluation passed; pip check passed"}
+  ],
+  "boundaries": {
+    "protocol_identity_authentication": "not_connected",
+    "agent_runtime": "not_connected",
+    "external_model_calls": 0,
+    "external_tool_calls": 0,
+    "message_delivery": "manual_protocol_ingest_only",
+    "automatic_dispatch": false,
+    "not_evidence": [
+      "HTTP login, token or OIDC validation",
+      "message/Thread/DM body storage, attachment URLs, notification, WebSocket or automatic dispatch",
+      "real Agent runtime, daemon, computer, session migration, model, provider, MCP, tool, network or real research"
+    ]
+  },
+  "artifacts": [
+    "harness/evidence/HA-0038/all-tests.xml",
+    "harness/evidence/HA-0038/team-attention-evaluation.json",
+    "harness/evidence/HA-0038/local-health.json",
+    "harness/evidence/HA-0038/local-attention-runtime.json",
+    "harness/evidence/HA-0038/deployment.json",
+    "harness/evidence/HA-0038/acceptance.md"
+  ],
+  "deployment": "local launchd and remote systemd/nginx health, runtime, OpenAPI and public authentication boundary passed; see deployment.json",
+  "secrets": "none recorded"
+}

@@ -1,6 +1,6 @@
 # HA-0038：实现 Team Attention Inbox、work mark、执行租约与 freshness
 
-状态：running
+状态：completed
 
 风险：high（协作状态、数据隔离和过期结论阻断；不连接真实身份或执行）
 
@@ -23,9 +23,9 @@
 - Agent Runtime、Provider、模型、MCP、工具、网络、Keychain、Computer、Session 或真实工作目录；
 - 以 Inbox 状态替代 Team Task Handoff/Gate，或把 protocol `actor_id` 写成生产身份授权。
 
-## 完成条件
+## 验收与发布记录（2026-09-22）
 
-- attention、read cursor、work mark、lease 和 freshness 由机器契约验证，所有读取/写入均受 Workspace/Channel/clearance 限制；
-- 同一 Agent 不会获得两个 active attention lease，lease 到期不会清除 open work mark；新 sequence 会阻断 completion/Handoff/submit/Gate；
-- 没有正文/附件/Prompt/凭证、模型、工具、网络或自动 dispatch；
-- 定向/全量回归、OpenAPI、本机和远端备份/健康/认证边界及无密 Evidence 完整。
+- 所有 Attention/read cursor/work mark/lease/freshness 路径均受 Workspace/Channel/membership/clearance 约束；schema、静态/运行时 OpenAPI 与重启持久化均有测试。
+- 单 identity lease、到期 work mark 保留，以及新 sequence 对 completion/Handoff/submit/Gate 的阻断均有正反例；完整回归为 240 passed、12 skipped、0 failed，合成评测通过。
+- 本机 launchd 和远端 systemd/nginx 已发布并验证 health、runtime、OpenAPI、实际数据库的 promotion 前 online backup、nginx、服务 active 与公网未认证 401。完整无密 Evidence 见 `harness/evidence/HA-0038/`。
+- 远端未安装 `sqlite3` CLI；该首次备份命令在 promotion 前失败且没有改动运行系统，随后使用 Python 标准库 SQLite online-backup 加完整性检查完成同一要求。此项过程修正已写入 Evidence。

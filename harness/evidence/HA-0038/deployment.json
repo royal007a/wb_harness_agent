@@ -1,0 +1,50 @@
+{
+  "work_item": "HA-0038",
+  "released_at": "2026-09-22T04:51:24Z",
+  "release_commit": "824b093b95fdd91653f843291939b7a708002539",
+  "local": {
+    "service": "launchd local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "checks": [
+      "launchd service restarted",
+      "health returned status=ok",
+      "Team Attention runtime reported manual_protocol_ingest_only, agent_runtime=not_connected and external model/tool calls=0",
+      "generated OpenAPI exposed four checked Attention paths"
+    ]
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "harnessagent.service behind nginx",
+    "public_url": "https://118.196.123.132/harness/",
+    "staging": "/opt/harnessagent-staging/ha0038-824b093",
+    "checks": [
+      "stage py_compile, targeted 16-test regression, Team Attention synthetic evaluation and pip check passed",
+      "before promotion, actual HARNESS_DB was resolved from the current systemd process under an approved data root; an online SQLite backup passed integrity_check",
+      "nginx -t succeeded and harnessagent was active after restart",
+      "loopback health returned status=ok",
+      "Team Attention runtime reported manual_protocol_ingest_only, agent_runtime=not_connected and external model/tool calls=0",
+      "loopback OpenAPI exposed four checked Attention paths",
+      "unauthenticated public /harness/ returned 401 over the existing self-signed TLS configuration"
+    ],
+    "database_backup": {
+      "status": "verified before promotion",
+      "method": "Python standard-library SQLite online backup after sqlite3 CLI was found unavailable",
+      "integrity": "PRAGMA integrity_check=ok",
+      "path": "not recorded"
+    },
+    "warnings": [
+      "nginx -t retained an existing duplicate MIME type text/html warning while returning syntax success"
+    ]
+  },
+  "integrity": {
+    "backend/team_attention.py": "40a81be9ea7b5f92723c3d11cf051c684d56e9082c69d352d9ac58251b85b03a",
+    "backend/team_coordination.py": "b2ba8c48d114e6493ac80a0f86bde18aa66666becb876120c884912096a1aa82",
+    "backend/store.py": "e8e4d9ec12e34728661fef8acfd1164194e4d563fd3e19a806f1be260a2f9201",
+    "specs/v1/team-attention.schema.json": "49ffc5e424f172a4f29b7d60d19c696a23b693afc90bd7dcb159e06674ded113",
+    "specs/v1/team-coordination.schema.json": "2d1066db88cbac351dea659f4b63e02a1030f33a0e1bf094276d4fd6af38257e",
+    "specs/v1/openapi.yaml": "99eeaa7a5dedfada0f4178b367a310a36053aaacc36404dafad77d25697fd29b",
+    "requirements.txt": "1b6b7fa3e6eba168e874daa32ef74dbc7c8c5dcfd07447c76da80558ace6bcb9",
+    "remote_hashes_match_local": true
+  },
+  "secrets": "none recorded"
+}

@@ -1,0 +1,10 @@
+{
+  "mode": "local_team_attention@1",
+  "protocol_identity_authentication": "not_connected",
+  "agent_runtime": "not_connected",
+  "external_model_calls": 0,
+  "external_tool_calls": 0,
+  "message_delivery": "manual_protocol_ingest_only",
+  "automatic_dispatch": false,
+  "note": "Only authorized metadata is stored; no message body, attachment, model, tool or automatic dispatch is enabled."
+}

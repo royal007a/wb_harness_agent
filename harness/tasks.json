@@ -1,11 +1,11 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T04:35:00Z",
+  "generated_at": "2026-09-22T04:51:24Z",
   "tasks": [
     {
       "id": "HA-0038",
       "title": "实现 Team Attention Inbox、work mark、执行租约与 freshness",
-      "status": "running",
+      "status": "completed",
       "risk": "high",
       "scope": [
         "Workspace/Channel 授权后的手工 protocol attention ingress、Inbox、read cursor、work mark 与单身份 attention lease",
@@ -23,10 +23,16 @@
       ],
       "depends_on": ["HA-0037", "HA-0039", "HA-0040"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0038-team-attention-inbox-freshness.md",
+      "plan": "exec-plans/completed/HA-0038-team-attention-inbox-freshness.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": []
+      "evidence": [
+        "harness/evidence/HA-0038/manifest.json",
+        "harness/evidence/HA-0038/all-tests.xml",
+        "harness/evidence/HA-0038/team-attention-evaluation.json",
+        "harness/evidence/HA-0038/deployment.json",
+        "harness/evidence/HA-0038/acceptance.md"
+      ]
     },
     {
       "id": "HA-0040",

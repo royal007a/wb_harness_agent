@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "team_attention_inbox_freshness_in_progress",
+  "phase": "team_attention_inbox_freshness_released",
   "implementation_started": true,
-  "active_task_id": "HA-0038",
-  "active_plan": "exec-plans/active/HA-0038-team-attention-inbox-freshness.md",
-  "last_checkpoint": "HA-0038 已完成本机实现和验证：metadata-only attention ingress、Inbox、read cursor、work mark、单 identity attention lease 与 Task Handoff/submit/Gate freshness 均由机器契约和合成反例覆盖；240 项回归、12 skipped、0 failed。等待双环境发布与无密 Evidence。",
-  "last_updated_at": "2026-09-22T05:20:00Z",
-  "next_action": "固定 HA-0038 源码版本后，先重启/验证本机 launchd，再对 118.196.123.132 做 staging 预检、从实际 HARNESS_DB 创建可恢复备份、promotion、health/runtime/OpenAPI 与未认证边界检查；全程不启用消息传输、Agent/Provider/工具或真实认证。",
+  "active_task_id": null,
+  "active_plan": null,
+  "last_checkpoint": "HA-0038 已完成双环境发布：metadata-only attention ingress、Inbox、read cursor、work mark、单 identity attention lease 与 Task Handoff/submit/Gate freshness 均由机器契约和合成反例覆盖；240 项回归、12 skipped、0 failed；本机和远端 health/runtime/OpenAPI 通过，公网未认证入口为 401。",
+  "last_updated_at": "2026-09-22T04:51:24Z",
+  "next_action": "在不启动模型、工具、消息传输、自动 dispatch 或真实认证的前提下，先确认下一个受控协作切片；候选是 durable Session Handoff / 当前工作摘要，或等待真实 Provider、数据源和身份授权后再推进 HA-0027。",
   "release": "0.1.0-local"
 }

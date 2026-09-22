@@ -1,0 +1,19 @@
+{
+  "evaluation_version": "team-attention-freshness-synthetic@1",
+  "scope": "synthetic metadata-only Team Attention Inbox, work mark, single identity lease and Task freshness boundary",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "metadata_only_priority_and_order": 1.0,
+    "single_identity_attention_lease": 1.0,
+    "stale_completion_blocked": 1.0,
+    "work_mark_clears_only_after_fresh_completion": 1.0,
+    "task_handoff_freshness_enforced": 1.0,
+    "external_execution_calls": 1.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not deliver a message, authenticate a caller, dispatch an Agent, invoke a model, tool or provider.",
+    "The evaluation uses only synthetic metadata in a temporary SQLite database."
+  ]
+}
