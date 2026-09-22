@@ -51,7 +51,8 @@ todo / in_progress / in_review --close(reason)--> closed
 
 ## 后续顺序
 
-1. Inbox / attention / work mark：先做权限过滤、执行租约、同 Thread 消息合并和人类纠正优先；不可用“每条消息都唤醒 Agent”替代。
-2. freshness：把 read sequence 与发送/提交的版本检查放在同一事务，过期草稿须补读再决定。
-3. Agent/Computer/Session：只有 Runtime、身份、工具政策和证据链经过独立 L3 审查后，才将 Handoff/Gate 接到真实执行。
-4. 子 Agent：默认只读、父权限收窄、预算/取消/结果引用；不能把本地 Task 对象误称为已经并发运行的 Subagent。
+1. [Recovery Loop Guard](RECOVERY_LOOP_GUARD.md)：失败恢复必须先是候选、再重验绑定，并仍经 Handoff + Gate 交付；不让“重试成功”绕过验收。
+2. Inbox / attention / work mark：按用户决定暂缓；实施时先做权限过滤、执行租约、同 Thread 消息合并和人类纠正优先，不可用“每条消息都唤醒 Agent”替代。
+3. freshness：把 read sequence 与发送/提交的版本检查放在同一事务，过期草稿须补读再决定。
+4. Agent/Computer/Session：只有 Runtime、身份、工具政策和证据链经过独立 L3 审查后，才将 Handoff/Gate 接到真实执行。
+5. 子 Agent：默认只读、父权限收窄、预算/取消/结果引用；不能把本地 Task 对象误称为已经并发运行的 Subagent。

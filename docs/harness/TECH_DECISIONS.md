@@ -35,6 +35,7 @@
 | [ADR-0031](../decisions/ADR-0031-semantic-retrieval-admission-gate.md) | Proposed（本地受限实现） | M2-B semantic/vector/RRF 的版本化 fail-closed Admission Gate；当前不含 Provider、模型、网络或索引 |
 | [ADR-0032](../decisions/ADR-0032-fact-lineage-evidence.md) | Proposed（本地受限实现） | 以明确 Fact ID 返回有界 supersede 历史，解释新旧结论变化并严格区分当前适用性 |
 | [ADR-0033](../decisions/ADR-0033-team-task-handoff-gate.md) | Proposed（本地受限实现） | 独立 Team Task 的 lease、Handoff、父子阻塞、Gate 三出口与 closure；不连接真实 Agent 或身份系统 |
+| [ADR-0034](../decisions/ADR-0034-recovery-loop-guard.md) | Proposed（本地受限实现） | Team Task 的 Error Contract、四位置恢复记录、Try/Confirm/Cancel、硬熔断/软 Reminder 与 Handoff/Gate 回接；零自动执行 |
 
 ## 待决策
 

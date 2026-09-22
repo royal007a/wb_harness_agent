@@ -9,6 +9,7 @@
 - `backend/intent.py`：本地 `intent-contract@1` 的确定性 CSV 意图、槽位、拒识与固定路由；不创建 Task/Run、不调用模型；
 - `backend/memory.py`：本机 Source/Fact 生命周期、可重建 SQLite FTS5 投影、Fact Capsule 与按 ID 详情回读；不自动摄取聊天、调用模型或返回原始 Source；
 - `backend/team_coordination.py`：独立本机 Team Task、lease、append-only Handoff、Gate/closure 状态机；不启动 Agent、模型、工具或消息投递；
+- `backend/recovery_loop_guard.py`：ADR-0034 的 Error Contract、四位置恢复记录、Try/Confirm/Cancel、硬熔断/软 Reminder 与 Handoff/Gate 回接；不执行模型、工具、restore 或自动审批；
 - `backend/store.py`：SQLite 事务、事件序列、对象读写；
 - `backend/analysis.py`：受界限约束的 CSV 统计、报告、SVG、manifest；不执行外部代码；
 - `adapters/contracts.py`、`local.py`：固定分析器生命周期与受校验事件/结果边界；
@@ -32,6 +33,7 @@
 - `docs/decisions/ADR-0030-memory-temporal-read-safety.md`、`harness/memory_temporal_read_evaluation.py`、`tests/test_memory_temporal_read_safety.py`：M1 Recall 与 M2-A Context/Detail 共享的 Source/Fact `as_of` 发生时间安全过滤；
 - `specs/v1/memory-semantic-admission.schema.json`、`harness/semantic-retrieval-admission.json`、`harness/verify_semantic_retrieval_admission.py`、`tests/test_semantic_retrieval_admission.py`：M2-B semantic/vector/RRF 的默认关闭 Admission Gate；
 - `specs/v1/team-coordination.schema.json`、`docs/harness/TEAM_COORDINATION.md`、`tests/test_team_coordination.py`：ADR-0033 的 Team Task/Handoff/Gate/closure 契约、状态与重启反例；
+- `specs/v1/recovery-loop-guard.schema.json`、`docs/harness/RECOVERY_LOOP_GUARD.md`、`tests/test_recovery_loop_guard.py`：ADR-0034 的恢复错误目录、候选确认、防循环、审计与 Team Gate 回接；
 - `frontend/`：原生浏览器工作台与本地 API 说明；
 - `tests/`：后端契约/故障测试与真实浏览器验收；
 - `deploy/local.macos.plist`：本机 launchd 服务；

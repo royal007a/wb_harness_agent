@@ -82,8 +82,8 @@
 ## 对 HarnessAgent 的实施顺序
 
 1. **HA-0037 - Team Task Handoff / Gate 最小纵切**：独立于既有 Product Task/Run 的本地协作对象；包含原子 claim、要求冻结、范围/停止条件、追加 Handoff、提交、Gate 三出口和父项阻塞规则。
-2. **HA-0038 - Inbox / work mark / execution lease / freshness**：按 Workspace/Channel/Thread 作用域、权限和注意力策略管理可领取项；发送与新鲜度检查采用 compare-and-swap。
-3. **HA-0039 - Recovery / Reminder 证据内核**：结构化错误、规则恢复建议、重复失败/无进展信号、硬预算与转人工；不自动执行未经授权的补救动作。
+2. **HA-0038 - Inbox / work mark / execution lease / freshness**：按用户决定暂缓；它仍要求 Workspace/Channel/Thread 的身份与权限语义先冻结。
+3. **HA-0039 - Recovery / Reminder 证据内核**：正在实现结构化错误、规则候选恢复、重复失败/无进展信号、硬预算与转人工；不自动执行未经授权的补救动作，且必须接回 Handoff + Gate。
 4. **HA-0040 - Computer / Session handoff / Agent revision**：在明确身份、权限、Daemon 和迁移数据范围后实施；不把本机凭据或工作目录迁移伪装成 Server 状态。
 
 这些阶段不会改变当前 P0 CSV 分析契约，也不会启用外部模型、外部资料、真实多 Agent 或自动语义检索。

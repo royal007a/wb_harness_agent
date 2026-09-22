@@ -248,6 +248,46 @@ def create_app(db_path=None, run_worker=True):
     async def team_task_gate_decision(task_id: str, request: Request):
         return app.state.service.team.gate_decision(task_id, await json_body(request), request.headers.get('idempotency-key'))
 
+    @app.get('/api/local/recovery/runtime')
+    def recovery_runtime():
+        return app.state.service.recovery.runtime_status()
+
+    @app.get('/api/local/recovery/cases')
+    def recovery_cases():
+        return app.state.service.recovery.cases()
+
+    @app.post('/api/local/recovery/cases', status_code=201)
+    async def recovery_case_create(request: Request):
+        return app.state.service.recovery.create_case(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/recovery/cases/{case_id}')
+    def recovery_case_detail(case_id: str):
+        return app.state.service.recovery.detail(case_id)
+
+    @app.post('/api/local/recovery/cases/{case_id}/observations', status_code=201)
+    async def recovery_observation_create(case_id: str, request: Request):
+        return app.state.service.recovery.observe(case_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/recovery/cases/{case_id}:try')
+    async def recovery_try(case_id: str, request: Request):
+        return app.state.service.recovery.try_recovery(case_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/recovery/cases/{case_id}:confirm')
+    async def recovery_confirm(case_id: str, request: Request):
+        return app.state.service.recovery.confirm(case_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/recovery/cases/{case_id}:cancel')
+    async def recovery_cancel(case_id: str, request: Request):
+        return app.state.service.recovery.cancel(case_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/recovery/cases/{case_id}:link-handoff')
+    async def recovery_link_handoff(case_id: str, request: Request):
+        return app.state.service.recovery.link_handoff(case_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/recovery/cases/{case_id}:complete')
+    async def recovery_complete(case_id: str, request: Request):
+        return app.state.service.recovery.complete(case_id, await json_body(request), request.headers.get('idempotency-key'))
+
     @app.get('/api/local/agent-lab/runtime')
     def agent_lab_runtime():
         return app.state.service.agent_lab.runtime_status()
@@ -765,6 +805,38 @@ def create_app(db_path=None, run_worker=True):
         'application/json': {'schema': {'$ref': '#/components/schemas/team_task_list'}}}
     generated['paths']['/api/local/team/tasks/{task_id}']['get']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/team_task_detail'}}}
+    recovery_schema = json.loads((ROOT / 'specs/v1/recovery-loop-guard.schema.json').read_text())
+    recovery_definitions = json.loads(json.dumps(recovery_schema['$defs']).replace('#/$defs/', '#/components/schemas/ha0039_'))
+    recovery_definitions = {'ha0039_' + name: value for name, value in recovery_definitions.items()}
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(recovery_definitions)
+    recovery_post_contracts = (
+        ('/api/local/recovery/cases', 'recovery_case_create_request', '201', 'recovery_case'),
+        ('/api/local/recovery/cases/{case_id}/observations', 'observation_create_request', '201', None),
+        ('/api/local/recovery/cases/{case_id}:try', 'recovery_try_request', '200', None),
+        ('/api/local/recovery/cases/{case_id}:confirm', 'recovery_confirm_request', '200', None),
+        ('/api/local/recovery/cases/{case_id}:cancel', 'recovery_cancel_request', '200', None),
+        ('/api/local/recovery/cases/{case_id}:link-handoff', 'link_handoff_request', '200', None),
+        ('/api/local/recovery/cases/{case_id}:complete', 'complete_request', '200', None),
+    )
+    for recovery_path, request_definition, status, response_definition in recovery_post_contracts:
+        operation = generated['paths'][recovery_path]['post']
+        operation['requestBody'] = {
+            'required': True,
+            'content': {'application/json': {'schema': {'$ref': '#/components/schemas/ha0039_' + request_definition}}},
+        }
+        if response_definition:
+            operation['responses'][status]['content'] = {
+                'application/json': {'schema': {'$ref': '#/components/schemas/ha0039_' + response_definition}}}
+        operation.setdefault('parameters', []).append({
+            'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+            'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+        })
+    generated['paths']['/api/local/recovery/runtime']['get']['responses']['200']['content'] = {
+        'application/json': {'schema': {'$ref': '#/components/schemas/ha0039_recovery_runtime_status'}}}
+    generated['paths']['/api/local/recovery/cases']['get']['responses']['200']['content'] = {
+        'application/json': {'schema': {'$ref': '#/components/schemas/ha0039_recovery_case_list'}}}
+    generated['paths']['/api/local/recovery/cases/{case_id}']['get']['responses']['200']['content'] = {
+        'application/json': {'schema': {'$ref': '#/components/schemas/ha0039_recovery_case_detail'}}}
     definitions = json.loads(json.dumps(BUNDLE['$defs']).replace('#/$defs/', '#/components/schemas/'))
     generated.setdefault('components', {}).setdefault('schemas', {}).update(definitions)
     generated['paths']['/api/v1/tasks']['post']['requestBody'] = {

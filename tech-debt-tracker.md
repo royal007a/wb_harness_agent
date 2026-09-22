@@ -38,6 +38,7 @@
 | TD-027 | ADR-0025 外部 Skill 只支持本地 ZIP、stdlib JSON transform 与单用户 Colima；无签名/许可证/SBOM、身份、Product Run 关联、网络/依赖审批或生产运行器 | 不得把它描述为通用 Skill 市场、第三方认证或多租户生产执行器 / P1 | 申请接入第三方 Skill、网络/依赖或真实 Run 前 | mymaccodex；供应链审计、身份/Task-Run 绑定、审批/预算、L3 逃逸与故障注入证据 |
 | TD-028 | ADR-0026/0027/0028/0029/0030 已实现单用户显式 Source/Fact、FTS5 Fact Capsule / detail、as-of 时间过滤、至多两跳 relation path 与 canonical/alias exact Entity Catalog；ADR-0031 仅提供 semantic/vector/RRF 的未准入 Gate。仍无身份/租户、自动摄取/抽取/消歧、语义/图索引或图排序、RRF/rerank、权威源冲突裁决、真实会话集成或 Reflect | 不得把 Gate 或 M3-B 写成完整 Hindsight、RAG、动态知识图谱、自然语言 GraphQA、模型上下文管理或可替代业务事实源 / P2 | 任何模型自动记忆、外部资料/Adapter 或多用户知识库接入前 | mymaccodex；M2-B/M4 实现、数据处理评估、权限/删除 L3、版本化真实基线和性能/成本测量 |
 | TD-029 | ADR-0033 只实现本机 Team Task/Handoff/Gate/closure；没有 Workspace/Channel/Thread、身份、Inbox、freshness、Agent Runtime、Daemon、Computer 或真实工具策略绑定 | 不得把 `actor_id`/`reviewer_id` 当成真实授权，或把本地 Task 记录表述为 Agent Team 已运行 / P1 | 任何外部用户、自动委派、跨设备或真实 Agent/工具接入前 | mymaccodex；身份/隔离 ADR、Inbox/freshness 契约、执行租约、工具策略与 L3 故障/权限验证 |
+| TD-030 | ADR-0034 只记录本地 Recovery Case/候选/Reminder/Cancel audit；没有真实 Checkpoint restore、外部操作幂等性/对账、工具取消、身份授权或动态权限预算 | 不得把 `confirmed`/`resolved` 表述为真实恢复已执行，或把固定无工具快照当作未来真实授权 / P1 | 接入任何工具、模型、外部副作用、真实 Checkpoint 或自动恢复前 | mymaccodex；操作级幂等/状态对账、身份与策略、真实取消/restore/L3 故障注入及人工 Gate 演练 |
 
 ## 维护规则
 

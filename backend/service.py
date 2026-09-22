@@ -80,6 +80,7 @@ class Service:
         from .external_skills import ExternalSkillRuntime
         from .memory import MemoryPlane
         from .team_coordination import TeamCoordination
+        from .recovery_loop_guard import RecoveryLoopGuard
         self.research = Research(self)
         self.research_agents = ResearchAgents(self)
         self.research_native = NativeResearch(self)
@@ -89,6 +90,7 @@ class Service:
         self.external_skills = ExternalSkillRuntime(store)
         self.memory = MemoryPlane(store)
         self.team = TeamCoordination(store)
+        self.recovery = RecoveryLoopGuard(store, self.team)
 
     def resource(self, name, raw):
         if not isinstance(name, str) or not name.lower().endswith('.csv') or len(name) > 180 or '/' in name or '\\' in name:

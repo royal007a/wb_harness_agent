@@ -228,6 +228,18 @@
 
 所有写请求需要 `Idempotency-Key`，并以 `expected_task_version` 防止旧读取覆盖当前状态。请求、响应与错误约束以 [`team-coordination.schema.json`](../../specs/v1/team-coordination.schema.json) 为准；产品语义和非目标见 [Team Coordination](TEAM_COORDINATION.md)。它不是 Workspace/Channel/Thread 服务、消息 Inbox、真实 Agent/Daemon/Computer 或身份认证 API。
 
+## Recovery Loop Guard（ADR-0034，本机受限控制面）
+
+- `GET /api/local/recovery/runtime`：返回固定零执行边界；不会启动模型、工具、Checkpoint restore 或自动审批。
+- `GET/POST /api/local/recovery/cases`：读取或创建绑定一个已 claim Team Task 的失败 Case。创建同时记录 Error Contract、失败点、根因**假设**、回滚 Checkpoint 和 Replan 起点，并冻结 Task/requirements/Gate/scope/输入/无工具权限摘要。
+- `POST /api/local/recovery/cases/{case_id}/observations`：追加 failure 或 `verified_progress` Evidence；在连续失败时只写 Reminder，在 turn/时间/候选/重复 operation 或取消边界上硬停止。
+- `POST /api/local/recovery/cases/{case_id}:try`：只生成 `proposed` 候选，不执行恢复。
+- `POST /api/local/recovery/cases/{case_id}:confirm`：重新核对 Task、Checkpoint、固定权限、预算和输入摘要；成功后仍只进入 `confirmed_pending_handoff`。
+- `POST /api/local/recovery/cases/{case_id}:cancel`：只追加 cancel audit 并终止候选；不作自动补偿。
+- `POST /api/local/recovery/cases/{case_id}:link-handoff` 和 `:complete`：必须绑定同一 Team Task 的 Handoff，再由正常 Gate `pass` 结束 Case；重试/Confirm 成功绝不自动表示交付。
+
+所有写请求需要 `Idempotency-Key` 和 `expected_case_version`。请求与响应以 [`recovery-loop-guard.schema.json`](../../specs/v1/recovery-loop-guard.schema.json) 为准，完整边界见 [Recovery Loop Guard](RECOVERY_LOOP_GUARD.md)。它不是开放式 Agent Replan、真实工具取消/恢复、身份授权或外部副作用控制 API。
+
 ## Research Agent Simulation（ADR-0023）
 
 `POST /api/local/research-agents` 创建一个 Product Task 与父 Run；每个公司固定扇出财务、行业、风险三个 Child Run。请求必须带 `Idempotency-Key`，机器输入合同见 [`research-agent-runtime.schema.json`](../../specs/v1/research-agent-runtime.schema.json)。`GET /api/local/research-agents` 列出根 Run，`GET /api/local/research-agents/{run_id}` 返回冻结的 Agent / Skill / Tool 快照和可下载证据。

@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/recovery-loop-guard.schema.json",
+  "title": "Local evidence-driven recovery and loop guard contract",
+  "type": "object",
+  "$defs": {
+    "actor_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{1,127}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_reference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "ref", "sha256"],
+      "properties": {
+        "kind": {"enum": ["event", "checkpoint", "log", "test_result", "artifact", "other"]},
+        "ref": {"type": "string", "minLength": 1, "maxLength": 512},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "error_code": {
+      "enum": ["EXECUTION_TIMEOUT", "EXTERNAL_DEPENDENCY_TRANSIENT", "REPEATED_OPERATION_FAILURE", "CHECKPOINT_UNAVAILABLE", "PERMISSION_DENIED", "BUDGET_EXCEEDED", "CANCELLED", "NO_VERIFIABLE_PROGRESS"]
+    },
+    "error_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "error_code", "retryable", "recommended_next_action", "required_evidence"],
+      "properties": {
+        "schema_version": {"const": "error-contract@1"},
+        "error_code": {"$ref": "#/$defs/error_code"},
+        "retryable": {"type": "boolean"},
+        "recommended_next_action": {"enum": ["retry_after_confirm", "rollback_and_replan", "collect_checkpoint_evidence", "transfer_to_human", "cancel_and_audit"]},
+        "required_evidence": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"enum": ["failure_event", "operation_log", "checkpoint", "task_contract", "input_digest", "budget_snapshot"]}}
+      }
+    },
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_turns", "max_elapsed_seconds", "max_recovery_attempts", "max_repeated_operation_failures"],
+      "properties": {
+        "max_turns": {"type": "integer", "minimum": 1, "maximum": 20},
+        "max_elapsed_seconds": {"type": "integer", "minimum": 30, "maximum": 1800},
+        "max_recovery_attempts": {"type": "integer", "minimum": 1, "maximum": 3},
+        "max_repeated_operation_failures": {"type": "integer", "minimum": 1, "maximum": 5}
+      }
+    },
+    "failure_point": {
+      "type": "object", "additionalProperties": false,
+      "required": ["operation_ref", "error_code", "observed_at", "evidence"],
+      "properties": {
+        "operation_ref": {"type": "string", "minLength": 1, "maxLength": 160},
+        "error_code": {"$ref": "#/$defs/error_code"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "evidence": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/evidence_reference"}}
+      }
+    },
+    "root_cause_hypothesis": {
+      "type": "object", "additionalProperties": false,
+      "required": ["category", "hypothesis", "confidence", "evidence"],
+      "properties": {
+        "category": {"enum": ["input_assumption", "execution_path", "external_dependency", "tool_contract", "policy_or_budget", "unknown"]},
+        "hypothesis": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "confidence": {"enum": ["low", "medium"]},
+        "evidence": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/evidence_reference"}}
+      }
+    },
+    "rollback_checkpoint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["availability", "checkpoint_ref", "checkpoint_sha256", "evidence"],
+      "properties": {
+        "availability": {"enum": ["verified", "unavailable"]},
+        "checkpoint_ref": {"type": ["string", "null"], "minLength": 1, "maxLength": 512},
+        "checkpoint_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "evidence": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/evidence_reference"}}
+      }
+    },
+    "replan_start": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision_ref", "rationale", "requires_fresh_input"],
+      "properties": {
+        "decision_ref": {"type": "string", "minLength": 1, "maxLength": 160},
+        "rationale": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "requires_fresh_input": {"type": "boolean"}
+      }
+    },
+    "permission_snapshot": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profile", "allow_tools", "deny_capabilities"],
+      "properties": {
+        "profile": {"const": "recovery_no_tool_execution@1"},
+        "allow_tools": {"const": []},
+        "deny_capabilities": {"const": ["network", "package_install", "external_write", "host_path", "secret"]}
+      }
+    },
+    "task_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["team_task_id", "task_version", "requirements_digest", "gate_digest", "scope_digest", "input_digest", "permission_digest"],
+      "properties": {
+        "team_task_id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
+        "task_version": {"type": "integer", "minimum": 1},
+        "requirements_digest": {"$ref": "#/$defs/sha256"},
+        "gate_digest": {"$ref": "#/$defs/sha256"},
+        "scope_digest": {"$ref": "#/$defs/sha256"},
+        "input_digest": {"$ref": "#/$defs/sha256"},
+        "permission_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "hard_stop": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tripped", "reason", "tripped_at"],
+      "properties": {
+        "tripped": {"type": "boolean"},
+        "reason": {"type": ["string", "null"], "enum": [null, "turn_limit", "elapsed_time_limit", "recovery_attempt_limit", "repeated_operation_limit", "cancelled"]},
+        "tripped_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "recovery_case_create_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["team_task_id", "actor_id", "input_digest", "limits", "failure_point", "root_cause_hypothesis", "rollback_checkpoint", "replan_start"],
+      "properties": {
+        "team_task_id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "input_digest": {"$ref": "#/$defs/sha256"},
+        "limits": {"$ref": "#/$defs/limits"},
+        "failure_point": {"$ref": "#/$defs/failure_point"},
+        "root_cause_hypothesis": {"$ref": "#/$defs/root_cause_hypothesis"},
+        "rollback_checkpoint": {"$ref": "#/$defs/rollback_checkpoint"},
+        "replan_start": {"$ref": "#/$defs/replan_start"}
+      }
+    },
+    "recovery_case": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "id", "team_task_id", "owner_id", "binding", "permission_snapshot", "limits", "deadline_at", "error_contract", "failure_point", "root_cause_hypothesis", "rollback_checkpoint", "replan_start", "status", "case_version", "turn_count", "recovery_attempt_count", "consecutive_failure_count", "hard_stop", "latest_attempt_id", "linked_handoff_id", "linked_gate_decision_id", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "recovery-case@1"},
+        "id": {"type": "string", "pattern": "^recovery_[a-f0-9]{32}$"},
+        "team_task_id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
+        "owner_id": {"$ref": "#/$defs/actor_id"},
+        "binding": {"$ref": "#/$defs/task_binding"},
+        "permission_snapshot": {"$ref": "#/$defs/permission_snapshot"},
+        "limits": {"$ref": "#/$defs/limits"},
+        "deadline_at": {"type": "string", "format": "date-time"},
+        "error_contract": {"$ref": "#/$defs/error_contract"},
+        "failure_point": {"$ref": "#/$defs/failure_point"},
+        "root_cause_hypothesis": {"$ref": "#/$defs/root_cause_hypothesis"},
+        "rollback_checkpoint": {"$ref": "#/$defs/rollback_checkpoint"},
+        "replan_start": {"$ref": "#/$defs/replan_start"},
+        "status": {"enum": ["open", "needs_human", "confirmed_pending_handoff", "recovery_reported", "resolved", "cancelled"]},
+        "case_version": {"type": "integer", "minimum": 1},
+        "turn_count": {"type": "integer", "minimum": 0},
+        "recovery_attempt_count": {"type": "integer", "minimum": 0},
+        "consecutive_failure_count": {"type": "integer", "minimum": 0},
+        "hard_stop": {"$ref": "#/$defs/hard_stop"},
+        "latest_attempt_id": {"type": ["string", "null"], "pattern": "^recoveryattempt_[a-f0-9]{32}$"},
+        "linked_handoff_id": {"type": ["string", "null"], "pattern": "^handoff_[a-f0-9]{32}$"},
+        "linked_gate_decision_id": {"type": ["string", "null"], "pattern": "^gate_[a-f0-9]{32}$"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "observation_create_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "expected_case_version", "kind", "turn", "operation_ref", "signature_sha256", "evidence"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "expected_case_version": {"type": "integer", "minimum": 1},
+        "kind": {"enum": ["failure", "verified_progress"]},
+        "turn": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "operation_ref": {"type": "string", "minLength": 1, "maxLength": 160},
+        "signature_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/evidence_reference"}}
+      }
+    },
+    "recovery_observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "id", "case_id", "actor_id", "kind", "turn", "operation_ref", "signature_sha256", "evidence", "created_at"],
+      "properties": {
+        "schema_version": {"const": "recovery-observation@1"},
+        "id": {"type": "string", "pattern": "^recoveryobs_[a-f0-9]{32}$"},
+        "case_id": {"type": "string", "pattern": "^recovery_[a-f0-9]{32}$"},
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "kind": {"enum": ["failure", "verified_progress"]},
+        "turn": {"type": "integer", "minimum": 1},
+        "operation_ref": {"type": "string", "minLength": 1, "maxLength": 160},
+        "signature_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/evidence_reference"}},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "reminder": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "id", "case_id", "reason", "recommended_next_action", "created_at"],
+      "properties": {
+        "schema_version": {"const": "recovery-reminder@1"},
+        "id": {"type": "string", "pattern": "^recoveryreminder_[a-f0-9]{32}$"},
+        "case_id": {"type": "string", "pattern": "^recovery_[a-f0-9]{32}$"},
+        "reason": {"enum": ["consecutive_failures", "no_verifiable_progress"]},
+        "recommended_next_action": {"enum": ["change_strategy_or_transfer_to_human"]},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "recovery_strategy": {"enum": ["retry_idempotent_step", "rollback_to_verified_checkpoint", "clarify_and_stop"]},
+    "recovery_try_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "expected_case_version", "strategy"],
+      "properties": {"actor_id": {"$ref": "#/$defs/actor_id"}, "expected_case_version": {"type": "integer", "minimum": 1}, "strategy": {"$ref": "#/$defs/recovery_strategy"}}
+    },
+    "recovery_attempt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "id", "case_id", "owner_id", "case_version", "strategy", "status", "validation", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "recovery-attempt@1"}, "id": {"type": "string", "pattern": "^recoveryattempt_[a-f0-9]{32}$"},
+        "case_id": {"type": "string", "pattern": "^recovery_[a-f0-9]{32}$"}, "owner_id": {"$ref": "#/$defs/actor_id"},
+        "case_version": {"type": "integer", "minimum": 1}, "strategy": {"$ref": "#/$defs/recovery_strategy"},
+        "status": {"enum": ["proposed", "confirmed", "cancelled", "rejected"]},
+        "validation": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"type": "string", "minLength": 1, "maxLength": 300}},
+        "created_at": {"type": "string", "format": "date-time"}, "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "recovery_confirm_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "expected_case_version", "input_digest"],
+      "properties": {"actor_id": {"$ref": "#/$defs/actor_id"}, "expected_case_version": {"type": "integer", "minimum": 1}, "input_digest": {"$ref": "#/$defs/sha256"}}
+    },
+    "recovery_cancel_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "expected_case_version", "reason"],
+      "properties": {"actor_id": {"$ref": "#/$defs/actor_id"}, "expected_case_version": {"type": "integer", "minimum": 1}, "reason": {"type": "string", "minLength": 1, "maxLength": 1000}}
+    },
+    "recovery_cancel_audit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "id", "case_id", "attempt_id", "actor_id", "reason", "created_at"],
+      "properties": {
+        "schema_version": {"const": "recovery-cancel-audit@1"}, "id": {"type": "string", "pattern": "^recoverycancel_[a-f0-9]{32}$"},
+        "case_id": {"type": "string", "pattern": "^recovery_[a-f0-9]{32}$"}, "attempt_id": {"type": "string", "pattern": "^recoveryattempt_[a-f0-9]{32}$"},
+        "actor_id": {"$ref": "#/$defs/actor_id"}, "reason": {"type": "string", "minLength": 1, "maxLength": 1000}, "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "link_handoff_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "expected_case_version", "handoff_id"],
+      "properties": {"actor_id": {"$ref": "#/$defs/actor_id"}, "expected_case_version": {"type": "integer", "minimum": 1}, "handoff_id": {"type": "string", "pattern": "^handoff_[a-f0-9]{32}$"}}
+    },
+    "complete_request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor_id", "expected_case_version", "gate_decision_id"],
+      "properties": {"actor_id": {"$ref": "#/$defs/actor_id"}, "expected_case_version": {"type": "integer", "minimum": 1}, "gate_decision_id": {"type": "string", "pattern": "^gate_[a-f0-9]{32}$"}}
+    },
+    "recovery_case_detail": {
+      "type": "object", "additionalProperties": false,
+      "required": ["case", "attempts", "observations", "reminders", "cancel_audits", "runtime"],
+      "properties": {
+        "case": {"$ref": "#/$defs/recovery_case"}, "attempts": {"type": "array", "items": {"$ref": "#/$defs/recovery_attempt"}},
+        "observations": {"type": "array", "items": {"$ref": "#/$defs/recovery_observation"}}, "reminders": {"type": "array", "items": {"$ref": "#/$defs/reminder"}},
+        "cancel_audits": {"type": "array", "items": {"$ref": "#/$defs/recovery_cancel_audit"}}, "runtime": {"$ref": "#/$defs/recovery_runtime_status"}
+      }
+    },
+    "recovery_case_list": {"type": "object", "additionalProperties": false, "required": ["items", "runtime"], "properties": {"items": {"type": "array", "items": {"$ref": "#/$defs/recovery_case"}}, "runtime": {"$ref": "#/$defs/recovery_runtime_status"}}},
+    "recovery_runtime_status": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "agent_runtime", "external_model_calls", "external_tool_calls", "automatic_recovery_execution", "note"],
+      "properties": {"mode": {"const": "recovery_loop_guard@1"}, "agent_runtime": {"const": "not_connected"}, "external_model_calls": {"const": 0}, "external_tool_calls": {"const": 0}, "automatic_recovery_execution": {"const": false}, "note": {"type": "string", "minLength": 1}}
+    }
+  }
+}

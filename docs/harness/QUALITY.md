@@ -52,6 +52,7 @@
 - ADR-0031 Semantic Retrieval Admission Gate 必须覆盖：not-admitted 必为 disabled/模型和外部调用零、无完整语料/外发/删除/离线评测/成本 Evidence 的 admitted 状态被拒绝、Runtime Gate 与版本化状态一致、重启仍 fail closed。它不构成 embedding、vector、RRF/rerank、语义命中、数据外发审查、删除演练、性能成本或真实 L3 通过。
 - ADR-0032 Fact Lineage 必须覆盖：已知 ID 的 active→superseded 有界链、当前/历史 applicability、Source/Fact `as_of`、跨 Bank、删除/撤回、深度/环路、重启与零正文。它不构成自动冲突裁决、自然语言查询、模型判断或 Reflect 通过。
 - ADR-0033 Team Coordination 必须覆盖：未知字段/凭证样式内容拒绝、幂等创建、原子 claim 与 lease 过期释放、requirements/Gate/task version 绑定、Handoff 只追加、父项的开放/closed Child 行为、Gate 三出口与 reviewer 拒绝、重启持久化、OpenAPI 一致性及零模型/零外部工具状态。它不构成真实身份认证、Agent Runtime、Subagent 并行、消息调度、自动审批或权限执行通过。
+- ADR-0034 Recovery Loop Guard 必须覆盖：服务端 Error Contract 目录、失败点/根因假设/回滚 Checkpoint/Replan 起点分离、Task/输入/权限快照/Checkpoint/预算 Confirm 绑定、Try/Cancel 零执行、连续失败 Reminder、turn/时间/候选/重复 operation/取消硬停止、同一 Task Handoff + Gate pass 才能 resolved、幂等/版本/重启与 OpenAPI 一致性。它不构成真实恢复、工具取消、动态授权、通用 Agent Loop 或自动 Gate 通过。
 
 ## 完成定义 DoD
 

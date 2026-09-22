@@ -1,7 +1,33 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T01:35:00Z",
+  "generated_at": "2026-09-22T02:10:00Z",
   "tasks": [
+    {
+      "id": "HA-0039",
+      "title": "实现 Recovery Loop Guard 与 Team Gate 回接",
+      "status": "running",
+      "risk": "high",
+      "scope": [
+        "独立 Recovery Case、Error Contract、失败点/根因假设/Checkpoint/Replan 起点与固定无工具权限快照",
+        "Try/Confirm/Cancel、turn/时间/候选/重复 operation/取消硬停止与连续失败软 Reminder",
+        "恢复结果只能经 HA-0037 Handoff 与 Gate pass 进入 resolved，并完成双环境 Evidence"
+      ],
+      "non_goals": [
+        "真实 Agent Loop、模型、工具、Checkpoint restore、外部补偿、动态权限批准或通用 Product Replan",
+        "修改现有 CSV Product Task/Run 或将 actor_id 误表述为真实身份授权"
+      ],
+      "acceptance": [
+        "错误目录和四位置有机器契约，Try/Confirm/Cancel 及绑定漂移稳定可审计",
+        "Reminder/硬停止不扩大权限或自动执行，且没有 Handoff + Gate pass 不能 resolved",
+        "定向/全量回归、OpenAPI、本机和远端发布健康验证以及无密 Evidence 完整"
+      ],
+      "depends_on": ["HA-0037"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0039-recovery-loop-guard.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
     {
       "id": "HA-0037",
       "title": "实现 Team Task Handoff 与 Gate 最小纵切",

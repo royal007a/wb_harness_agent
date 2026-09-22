@@ -606,6 +606,212 @@ paths:
                 $ref: './team-coordination.schema.json#/$defs/gate_decision_result'
         default:
           $ref: '#/components/responses/Error'
+  /local/recovery/runtime:
+    servers:
+      - url: /api
+    get:
+      operationId: getRecoveryLoopGuardRuntime
+      description: Returns the local recovery decision boundary. It never executes a recovery, model or tool.
+      responses:
+        '200':
+          description: Fixed-zero recovery-loop-guard runtime status.
+          content:
+            application/json:
+              schema:
+                $ref: './recovery-loop-guard.schema.json#/$defs/recovery_runtime_status'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases:
+    servers:
+      - url: /api
+    get:
+      operationId: listRecoveryCases
+      responses:
+        '200':
+          description: Recovery cases and the fixed-zero runtime boundary.
+          content:
+            application/json:
+              schema:
+                $ref: './recovery-loop-guard.schema.json#/$defs/recovery_case_list'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createRecoveryCase
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recovery-loop-guard.schema.json#/$defs/recovery_case_create_request'
+      responses:
+        '201':
+          description: An auditable failure record with four explicitly separate positions.
+          content:
+            application/json:
+              schema:
+                $ref: './recovery-loop-guard.schema.json#/$defs/recovery_case'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases/{caseId}:
+    servers:
+      - url: /api
+    get:
+      operationId: getRecoveryCase
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recovery case, candidates, observations, reminders and cancellation audit.
+          content:
+            application/json:
+              schema:
+                $ref: './recovery-loop-guard.schema.json#/$defs/recovery_case_detail'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases/{caseId}/observations:
+    servers:
+      - url: /api
+    post:
+      operationId: appendRecoveryObservation
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recovery-loop-guard.schema.json#/$defs/observation_create_request'
+      responses:
+        '201':
+          description: Append a bounded failure/progress observation; it may emit a reminder or hard stop, never a tool invocation.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases/{caseId}:try:
+    servers:
+      - url: /api
+    post:
+      operationId: tryRecoveryCandidate
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recovery-loop-guard.schema.json#/$defs/recovery_try_request'
+      responses:
+        '200':
+          description: Writes a candidate route only; no recovery action is executed.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases/{caseId}:confirm:
+    servers:
+      - url: /api
+    post:
+      operationId: confirmRecoveryCandidate
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recovery-loop-guard.schema.json#/$defs/recovery_confirm_request'
+      responses:
+        '200':
+          description: Rechecks Task, checkpoint, no-tool permission snapshot, budget and input digest. It still executes nothing.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases/{caseId}:cancel:
+    servers:
+      - url: /api
+    post:
+      operationId: cancelRecoveryCandidate
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recovery-loop-guard.schema.json#/$defs/recovery_cancel_request'
+      responses:
+        '200':
+          description: Writes cancellation audit and never attempts compensation or external execution.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases/{caseId}:link-handoff:
+    servers:
+      - url: /api
+    post:
+      operationId: linkRecoveryHandoff
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recovery-loop-guard.schema.json#/$defs/link_handoff_request'
+      responses:
+        '200':
+          description: Binds a Confirmed recovery to an append-only Team Handoff; it does not accept delivery.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/recovery/cases/{caseId}:complete:
+    servers:
+      - url: /api
+    post:
+      operationId: completeRecoveryAfterGate
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recovery-loop-guard.schema.json#/$defs/complete_request'
+      responses:
+        '200':
+          description: Resolves only after the same Team Task has an append-only Handoff and Gate pass.
+        default:
+          $ref: '#/components/responses/Error'
   /tasks:
     post:
       operationId: createTask

@@ -1,0 +1,19 @@
+{
+  "evaluation_version": "recovery-loop-guard-synthetic@1",
+  "scope": "synthetic local Team Task recovery decisions; no model, tool, checkpoint restore or external side effect",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "server_derived_error_contract": 1.0,
+    "four_positions_distinct": 1.0,
+    "try_confirm_zero_execution": 1.0,
+    "reminder_then_hard_stop": 1.0,
+    "handoff_gate_required_for_resolution": 1.0,
+    "automatic_permission_expansion": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not execute a real recovery, model, tool, checkpoint restore, cancellation or external side effect.",
+    "The evaluation uses only synthetic Team Task and Evidence metadata in a temporary SQLite database."
+  ]
+}

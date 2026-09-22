@@ -72,6 +72,12 @@ class Store:
             CREATE INDEX IF NOT EXISTS team_tasks_parent ON team_tasks(parent_task_id);
             CREATE TABLE IF NOT EXISTS team_task_handoffs(id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES team_tasks(id), sequence INTEGER NOT NULL, doc TEXT NOT NULL, UNIQUE(task_id, sequence));
             CREATE TABLE IF NOT EXISTS team_task_gate_decisions(id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES team_tasks(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS recovery_cases(id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES team_tasks(id), doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS recovery_cases_task ON recovery_cases(task_id);
+            CREATE TABLE IF NOT EXISTS recovery_attempts(id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES recovery_cases(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS recovery_observations(id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES recovery_cases(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS recovery_reminders(id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES recovery_cases(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS recovery_cancel_audits(id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES recovery_cases(id), doc TEXT NOT NULL);
         ''')
 
     @contextmanager

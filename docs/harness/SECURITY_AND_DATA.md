@@ -72,6 +72,7 @@ ADR-0024 Native Claude Research 的默认门禁会在 `query()`、CLI、Keychain
 - ADR-0031 将 M2-B semantic/vector 设为版本化 fail-closed Gate：未记录语料 manifest、数据外发审查、删除/重建、离线相关性与延迟/成本基线时，状态只能是 `not_admitted`，没有 Provider、模型、网络、embedding 索引或记忆外发路径。即使将来状态被审查为 admitted，实际运行时仍需独立实现、最小化 Evidence、权限/预算和真实 L3 验证。
 - ADR-0032 Fact Lineage 只由调用方提供已知 Fact ID，按同 Bank、Source active、Fact time/validity 再验证后有界回溯 supersede 历史。它把 superseded 节点显式标为历史，不能成为当前结论；retracted/deleted/跨 Bank/未来节点不返回，且不输出 Source 正文。
 - ADR-0033 Team Coordination 拒绝凭证样式 collaboration metadata；Team Task、Handoff、Gate/closure 只保存受限目标、要求、范围、摘要、产物引用、SHA-256、审计理由和版本，不保存模型推理、Source 正文或工具输出。此本机 local-admin 切片尚无真实身份认证，`actor_id`/`reviewer_id` 只能作为协议字段，不得外推为用户或 Agent 授权；`scope` 也只是工作交接，不是工具允许列表。
+- ADR-0034 Recovery Loop Guard 同样拒绝凭证样式输入；只保存稳定错误码、外部引用/SHA-256、根因**假设**、受限 Checkpoint 引用、输入/Task 摘要、候选/Reminder/Cancel 审计，不保存工具参数、模型推理、原始日志或外部 stdout/stderr。它的固定 `recovery_no_tool_execution@1` 快照只说明本切片没有工具能力，不构成未来真实工具的授权；任何真实 restore/取消/外部补偿须由身份、权限和副作用审计层另行批准。
 
 ## 高风险边界
 

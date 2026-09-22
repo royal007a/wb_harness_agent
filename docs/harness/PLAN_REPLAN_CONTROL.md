@@ -107,6 +107,8 @@ ADR-0020 为 ADR-0019 的唯一白名单失败增加实际 Gap State：`ARTIFACT
 
 ADR-0019 已实现本地受限 API：`POST/GET /api/v1/runs/{run_id}/replans`、`GET /api/v1/replans/{id}`、`POST /api/v1/replans/{id}:try`、`POST /api/v1/replans/{id}:confirm`、`POST /api/v1/replans/{id}:cancel`。每个写入操作都需幂等键；Confirm 使用比较并交换保护摘要绑定。它们只接受空对象，且只有白名单故障会产生唯一候选；不能外推为目标 API 的通用 Plan 编辑能力。
 
+ADR-0034 的 [Recovery Loop Guard](RECOVERY_LOOP_GUARD.md) 复用了“四个位置 + Try/Confirm/Cancel”的控制原则，但它是独立的 Team Task 旁路：不创建 Product Run/PlanRevision、不执行 restore，并额外要求 Handoff + Gate pass 才能 resolved。两者不得互相表述为通用动态 Replan。
+
 ## 当前离线验证
 
 [`backend/execution_control.py`](../../backend/execution_control.py) 是纯函数 reducer；不读取数据库、不调用模型或工具、不创建 Run。[`fixtures/execution-control-evaluation-v1.json`](../../fixtures/execution-control-evaluation-v1.json) 含合成去标识的固定情形，覆盖六出口、可信状态传播、当前本地适配器的 restore 拒绝、权限/预算扩大拒绝、兼容恢复与 TCC 转移。运行：

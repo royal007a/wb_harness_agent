@@ -1,0 +1,12 @@
+{
+  "evaluation_version": "recovery-loop-guard-synthetic@1",
+  "scope": "synthetic local Team Task recovery decisions; no model, tool, checkpoint restore or external side effect",
+  "scenarios": [
+    "error_contract_is_server_derived",
+    "four_failure_positions_remain_distinct",
+    "try_confirm_are_zero_execution",
+    "repeated_operation_reminder_then_hard_stop",
+    "handoff_and_gate_pass_required_for_resolution"
+  ],
+  "pass_threshold": 1.0
+}
