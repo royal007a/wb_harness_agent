@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/team-session-continuity.schema.json",
+  "title": "Local Team Session Continuity and bounded handoff contract",
+  "type": "object",
+  "$defs": {
+    "agent_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{1,127}$"},
+    "workspace_id": {"type": "string", "pattern": "^ws_[A-Za-z0-9_-]{3,80}$"},
+    "channel_id": {"type": "string", "pattern": "^ch_[A-Za-z0-9_-]{3,80}$"},
+    "thread_id": {"type": ["string", "null"], "maxLength": 128},
+    "session_id": {"type": "string", "pattern": "^teamsession_[a-f0-9]{32}$"},
+    "handoff_id": {"type": "string", "pattern": "^sessionhandoff_[a-f0-9]{32}$"},
+    "task_id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
+    "attention_item_id": {"type": "string", "pattern": "^attention_[a-f0-9]{32}$"},
+    "session_status": {"enum": ["active", "retired"]},
+    "handoff_reason": {"enum": ["manual_handoff", "local_maintenance", "session_reset"]},
+    "task_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "task_version", "status", "thread_id"],
+      "properties": {
+        "task_id": {"$ref": "#/$defs/task_id"},
+        "task_version": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["todo", "in_progress", "in_review", "done", "closed"]},
+        "thread_id": {"$ref": "#/$defs/thread_id"}
+      }
+    },
+    "attention_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item_id", "thread_id", "sequence", "status", "version", "work_mark_status"],
+      "properties": {
+        "item_id": {"$ref": "#/$defs/attention_item_id"},
+        "thread_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "sequence": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["pending", "in_progress", "completed", "cancelled"]},
+        "version": {"type": "integer", "minimum": 1},
+        "work_mark_status": {"enum": ["open", "in_progress", "cleared"]}
+      }
+    },
+    "thread_freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["thread_id", "latest_sequence", "read_sequence"],
+      "properties": {
+        "thread_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "latest_sequence": {"type": "integer", "minimum": 0},
+        "read_sequence": {"type": "integer", "minimum": 0}
+      }
+    },
+    "omitted_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owned_tasks", "pending_reviews", "available_tasks", "attention_items", "thread_freshness"],
+      "properties": {
+        "owned_tasks": {"type": "integer", "minimum": 0},
+        "pending_reviews": {"type": "integer", "minimum": 0},
+        "available_tasks": {"type": "integer", "minimum": 0},
+        "attention_items": {"type": "integer", "minimum": 0},
+        "thread_freshness": {"type": "integer", "minimum": 0}
+      }
+    },
+    "continuity_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "workspace_id", "channel_id", "agent_id", "current_task", "owned_tasks", "pending_reviews", "available_tasks", "attention_items", "thread_freshness", "omitted_counts", "generated_at"],
+      "properties": {
+        "schema_version": {"const": "session-continuity-snapshot@1"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "current_task": {"oneOf": [{"$ref": "#/$defs/task_reference"}, {"type": "null"}]},
+        "owned_tasks": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/task_reference"}},
+        "pending_reviews": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/task_reference"}},
+        "available_tasks": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/task_reference"}},
+        "attention_items": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/attention_reference"}},
+        "thread_freshness": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/thread_freshness"}},
+        "omitted_counts": {"$ref": "#/$defs/omitted_counts"},
+        "generated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "team_session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "workspace_id", "channel_id", "agent_id", "status", "version", "inherited_handoff_id", "created_at", "updated_at", "retired_at"],
+      "properties": {
+        "schema_version": {"const": "team-session@1"},
+        "id": {"$ref": "#/$defs/session_id"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "status": {"$ref": "#/$defs/session_status"},
+        "version": {"type": "integer", "minimum": 1},
+        "inherited_handoff_id": {"oneOf": [{"$ref": "#/$defs/handoff_id"}, {"type": "null"}]},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"},
+        "retired_at": {"oneOf": [{"type": "string", "format": "date-time"}, {"type": "null"}]}
+      }
+    },
+    "session_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "session_id", "workspace_id", "channel_id", "agent_id", "reason", "snapshot", "consumed_by_session_id", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "team-session-handoff@1"},
+        "id": {"$ref": "#/$defs/handoff_id"},
+        "session_id": {"$ref": "#/$defs/session_id"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "reason": {"$ref": "#/$defs/handoff_reason"},
+        "snapshot": {"$ref": "#/$defs/continuity_snapshot"},
+        "consumed_by_session_id": {"oneOf": [{"$ref": "#/$defs/session_id"}, {"type": "null"}]},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "session_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "workspace_id", "channel_id"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "inherited_handoff_id": {"oneOf": [{"$ref": "#/$defs/handoff_id"}, {"type": "null"}]}
+      }
+    },
+    "session_handoff_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "expected_session_version", "reason"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "expected_session_version": {"type": "integer", "minimum": 1},
+        "reason": {"$ref": "#/$defs/handoff_reason"}
+      }
+    },
+    "session_create_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session", "continuity", "inherited_handoff"],
+      "properties": {
+        "session": {"$ref": "#/$defs/team_session"},
+        "continuity": {"$ref": "#/$defs/continuity_snapshot"},
+        "inherited_handoff": {"oneOf": [{"$ref": "#/$defs/session_handoff"}, {"type": "null"}]}
+      }
+    },
+    "session_detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session", "continuity", "inherited_handoff", "runtime"],
+      "properties": {
+        "session": {"$ref": "#/$defs/team_session"},
+        "continuity": {"$ref": "#/$defs/continuity_snapshot"},
+        "inherited_handoff": {"oneOf": [{"$ref": "#/$defs/session_handoff"}, {"type": "null"}]},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "session_handoff_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session", "handoff", "continuity"],
+      "properties": {
+        "session": {"$ref": "#/$defs/team_session"},
+        "handoff": {"$ref": "#/$defs/session_handoff"},
+        "continuity": {"$ref": "#/$defs/continuity_snapshot"}
+      }
+    },
+    "session_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/team_session"}},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "runtime_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "protocol_identity_authentication", "agent_runtime", "runtime_telemetry", "external_model_calls", "external_tool_calls", "automatic_rotation", "message_history", "note"],
+      "properties": {
+        "mode": {"const": "local_team_session_continuity@1"},
+        "protocol_identity_authentication": {"const": "not_connected"},
+        "agent_runtime": {"const": "not_connected"},
+        "runtime_telemetry": {"const": "not_connected"},
+        "external_model_calls": {"const": 0},
+        "external_tool_calls": {"const": 0},
+        "automatic_rotation": {"const": false},
+        "message_history": {"const": false},
+        "note": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

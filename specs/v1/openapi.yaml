@@ -602,6 +602,117 @@ paths:
                 $ref: './team-attention.schema.json#/$defs/read_cursor_result'
         default:
           $ref: '#/components/responses/Error'
+  /local/team/sessions/runtime:
+    servers:
+      - url: /api
+    get:
+      operationId: getTeamSessionContinuityRuntime
+      description: Returns the metadata-only Team Session continuity boundary; no Agent Runtime, telemetry, model, tool, message history or automatic rotation is connected.
+      responses:
+        '200':
+          description: Fixed-zero Team Session continuity runtime status.
+          content:
+            application/json:
+              schema:
+                $ref: './team-session-continuity.schema.json#/$defs/runtime_status'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/sessions:
+    servers:
+      - url: /api
+    get:
+      operationId: listTeamSessions
+      parameters:
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-session-continuity.schema.json#/$defs/agent_id'
+        - name: channel_id
+          in: query
+          required: false
+          schema:
+            $ref: './team-session-continuity.schema.json#/$defs/channel_id'
+      responses:
+        '200':
+          description: Sessions owned by the current protocol identity in authorized Channels.
+          content:
+            application/json:
+              schema:
+                $ref: './team-session-continuity.schema.json#/$defs/session_list'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createTeamSession
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-session-continuity.schema.json#/$defs/session_create_request'
+      responses:
+        '201':
+          description: A new active Team Session with a server-generated current continuity snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: './team-session-continuity.schema.json#/$defs/session_create_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/sessions/{sessionId}:
+    servers:
+      - url: /api
+    get:
+      operationId: getTeamSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            $ref: './team-session-continuity.schema.json#/$defs/session_id'
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-session-continuity.schema.json#/$defs/agent_id'
+      responses:
+        '200':
+          description: One owned Session, freshly generated continuity snapshot and optional inherited handoff.
+          content:
+            application/json:
+              schema:
+                $ref: './team-session-continuity.schema.json#/$defs/session_detail'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/sessions/{sessionId}:handoff:
+    servers:
+      - url: /api
+    post:
+      operationId: handoffTeamSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            $ref: './team-session-continuity.schema.json#/$defs/session_id'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-session-continuity.schema.json#/$defs/session_handoff_create_request'
+      responses:
+        '201':
+          description: Server-generated bounded snapshot and retired predecessor Session. It does not change Task, Gate, Attention or Run state.
+          content:
+            application/json:
+              schema:
+                $ref: './team-session-continuity.schema.json#/$defs/session_handoff_result'
+        default:
+          $ref: '#/components/responses/Error'
   /local/team/workspaces:
     servers:
       - url: /api

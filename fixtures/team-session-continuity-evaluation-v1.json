@@ -1,0 +1,12 @@
+{
+  "evaluation_version": "team-session-continuity-evaluation@1",
+  "scope": "synthetic Team Session continuity, bounded metadata-only snapshot and one-time same-scope Handoff",
+  "pass_threshold": 1.0,
+  "prohibited_capabilities": [
+    "message_body_or_prompt_storage",
+    "provider_or_runtime_session_resume",
+    "automatic_rotation_or_dispatch",
+    "model_or_external_tool_execution",
+    "task_or_attention_mutation_by_session_handoff"
+  ]
+}

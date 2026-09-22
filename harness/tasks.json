@@ -1,7 +1,33 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T04:51:24Z",
+  "generated_at": "2026-09-22T04:55:00Z",
   "tasks": [
+    {
+      "id": "HA-0041",
+      "title": "实现 Team Session Continuity Handoff 与有界当前工作摘要",
+      "status": "running",
+      "risk": "high",
+      "scope": [
+        "Workspace/Channel 授权后的 Team Session、手工 Session Handoff 与一次性继承关系",
+        "由 Team Task/Gate/Attention/read cursor 生成的无正文、版本化 Continuity Snapshot",
+        "零 Runtime telemetry/自动 rotation/模型/工具的合成评测，以及本机和 118.196.123.132 双环境 Evidence"
+      ],
+      "non_goals": [
+        "消息、Prompt、模型上下文、附件、自动压缩/重放或完整历史检索；Provider/Runtime Session resume、Daemon、Computer、工作目录或凭据迁移",
+        "自动 dispatch、真实认证、模型、Provider、MCP、工具、网络、真实投研或绕过 Team Task/Attention freshness"
+      ],
+      "acceptance": [
+        "Session/Handoff/Snapshot 有机器契约；所有路径检查 Workspace/Channel/membership/clearance/owner，Snapshot 仅含受限状态引用",
+        "每 identity/Channel 单 active Session，Handoff CAS/一次性继承/重新 snapshot 均稳定；Task/Attention 状态不被 Session 操作修改或绕过",
+        "定向/全量回归、OpenAPI、本机与远端备份/健康/认证边界及无密 Evidence 完整，外部能力保持关闭"
+      ],
+      "depends_on": ["HA-0037", "HA-0039", "HA-0040", "HA-0038"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0041-team-session-continuity-handoff.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
     {
       "id": "HA-0038",
       "title": "实现 Team Attention Inbox、work mark、执行租约与 freshness",

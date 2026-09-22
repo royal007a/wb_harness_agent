@@ -90,6 +90,10 @@ class Store:
             CREATE TABLE IF NOT EXISTS team_attention_read_cursors(channel_id TEXT NOT NULL REFERENCES team_channels(id), thread_id TEXT NOT NULL, agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL, PRIMARY KEY(channel_id, thread_id, agent_id));
             CREATE TABLE IF NOT EXISTS team_attention_work_marks(item_id TEXT NOT NULL REFERENCES team_attention_items(id), agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL, PRIMARY KEY(item_id, agent_id));
             CREATE TABLE IF NOT EXISTS team_attention_leases(id TEXT PRIMARY KEY, item_id TEXT NOT NULL UNIQUE REFERENCES team_attention_items(id), agent_id TEXT NOT NULL UNIQUE REFERENCES team_agent_identities(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS team_sessions(id TEXT PRIMARY KEY, channel_id TEXT NOT NULL REFERENCES team_channels(id), agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS team_sessions_agent_channel ON team_sessions(agent_id, channel_id);
+            CREATE TABLE IF NOT EXISTS team_session_handoffs(id TEXT PRIMARY KEY, session_id TEXT NOT NULL UNIQUE REFERENCES team_sessions(id), channel_id TEXT NOT NULL REFERENCES team_channels(id), agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), consumed_by_session_id TEXT NULL REFERENCES team_sessions(id), doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS team_session_handoffs_scope ON team_session_handoffs(agent_id, channel_id);
         ''')
 
     @contextmanager

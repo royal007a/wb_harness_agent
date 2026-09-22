@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "team_attention_inbox_freshness_released",
+  "phase": "team_session_continuity_handoff_in_progress",
   "implementation_started": true,
-  "active_task_id": null,
-  "active_plan": null,
+  "active_task_id": "HA-0041",
+  "active_plan": "exec-plans/active/HA-0041-team-session-continuity-handoff.md",
   "last_checkpoint": "HA-0038 已完成双环境发布：metadata-only attention ingress、Inbox、read cursor、work mark、单 identity attention lease 与 Task Handoff/submit/Gate freshness 均由机器契约和合成反例覆盖；240 项回归、12 skipped、0 failed；本机和远端 health/runtime/OpenAPI 通过，公网未认证入口为 401。",
-  "last_updated_at": "2026-09-22T04:51:24Z",
-  "next_action": "在不启动模型、工具、消息传输、自动 dispatch 或真实认证的前提下，先确认下一个受控协作切片；候选是 durable Session Handoff / 当前工作摘要，或等待真实 Provider、数据源和身份授权后再推进 HA-0027。",
+  "last_updated_at": "2026-09-22T04:55:00Z",
+  "next_action": "HA-0041 正在先冻结 Team Session、手工 Handoff 和由已有 Team Task/Attention 状态生成的无正文 Continuity Snapshot；不连接 Provider/Runtime Session、消息正文、自动 rotation、Daemon/Computer、模型、工具或真实认证。",
   "release": "0.1.0-local"
 }

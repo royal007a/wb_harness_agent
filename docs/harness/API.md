@@ -33,6 +33,7 @@
 | Local Agent Runtime | ADR-0022 受控聊天运行时 | `GET/POST /local/agent-runtime/*` | 独立 Provider/Model/Agent/Session/Exchange、上下文窗口与 POST SSE；默认外部模型调用关闭 |
 | Research Agent Simulation | ADR-0023 本地模拟切片 | `GET/POST /local/research-agents` | 三角色 Child Agent、Skill/Tool 快照与父级证据汇总；模型和网络调用为零 |
 | Native Claude Research | ADR-0024 Proposed 受控准入 | `GET/POST /local/research-native*` | 原生 SubAgent、第一方插件 Skills、进程内 MCP 资料工具；默认所有外部调用关闭 |
+| Team Session Continuity | ADR-0037 Proposed 受限控制面 | `GET/POST /local/team/sessions*` | Team Session、手工 Handoff 与无正文当前工作摘要；不连接模型/Runtime Session |
 | Resources | P0 | `POST/GET /resources` | 文件、数据源和上下文引用 |
 | Tasks | P0 | `POST/GET /tasks` | 提交、查询与列表 |
 | Runs | P0 | `POST/GET /tasks/{id}/runs` | 创建和查询执行尝试 |
@@ -235,6 +236,15 @@
 - `POST /api/local/team/channels/{channel_id}/threads/{thread_id}:read`：写入当前 identity 已读到的 latest sequence；Handoff、submit 与 Gate 在同一事务中重验该 Thread 的 freshness。
 
 所有写请求需要 `Idempotency-Key`。请求、响应与错误以 [`team-attention.schema.json`](../../specs/v1/team-attention.schema.json) 为准；它不是飞书/Slack/Email、Thread/DM 存储、自动通知、真实调度或身份认证。完整边界见 [Team Attention](TEAM_ATTENTION.md)。
+
+## Team Session Continuity（ADR-0037，本机受限控制面）
+
+- `GET /api/local/team/sessions/runtime`：固定声明 protocol identity / Agent Runtime / telemetry 未连接，模型/工具调用为零，且没有自动 Session rotation 或消息历史。
+- `GET/POST /api/local/team/sessions`：只列出或创建当前 protocol identity 在已授权 Channel 上的 Team Session；同 identity/Channel 同时最多一个 active Session，可一次继承同 scope/identity 的 Handoff。
+- `GET /api/local/team/sessions/{session_id}?actor_id=...`：读取一个 Session、由当前 Task/Gate/Attention/cursor 状态重新生成的无正文 Snapshot，以及可见的 inherited Handoff。
+- `POST /api/local/team/sessions/{session_id}:handoff`：以 Session version CAS 生成由服务端派生的 Snapshot 并 retire 当前 Session；不修改/认领 Task、Attention、Gate 或 Run。
+
+所有写请求需要 `Idempotency-Key`。请求、响应与错误以 [`team-session-continuity.schema.json`](../../specs/v1/team-session-continuity.schema.json) 为准；它不是 Provider/模型会话、聊天历史、自动 compaction/rotation、Daemon/Computer、真实身份认证或自动恢复。完整边界见 [Team Session Continuity](TEAM_SESSION_CONTINUITY.md)。
 
 ## Team Coordination（ADR-0033 + ADR-0035，本机受限控制面）
 

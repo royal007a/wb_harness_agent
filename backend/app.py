@@ -224,6 +224,28 @@ def create_app(db_path=None, run_worker=True):
     def team_attention_runtime():
         return app.state.service.team_attention.runtime_status()
 
+    @app.get('/api/local/team/sessions/runtime')
+    def team_session_runtime():
+        return app.state.service.team_sessions.runtime_status()
+
+    @app.get('/api/local/team/sessions')
+    def team_sessions(actor_id: str, channel_id: str | None = None):
+        return app.state.service.team_sessions.sessions(actor_id, channel_id)
+
+    @app.post('/api/local/team/sessions', status_code=201)
+    async def team_session_create(request: Request):
+        return app.state.service.team_sessions.create_session(
+            await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/team/sessions/{session_id}')
+    def team_session_detail(session_id: str, actor_id: str):
+        return app.state.service.team_sessions.detail(session_id, actor_id)
+
+    @app.post('/api/local/team/sessions/{session_id}:handoff', status_code=201)
+    async def team_session_handoff(session_id: str, request: Request):
+        return app.state.service.team_sessions.handoff(
+            session_id, await json_body(request), request.headers.get('idempotency-key'))
+
     @app.get('/api/local/team/inbox')
     def team_inbox(actor_id: str):
         return app.state.service.team_attention.inbox(actor_id)
@@ -925,6 +947,35 @@ def create_app(db_path=None, run_worker=True):
     ):
         generated['paths'][attention_path]['get']['responses']['200']['content'] = {
             'application/json': {'schema': {'$ref': '#/components/schemas/ha0038_' + response_definition}}}
+    session_schema = json.loads((ROOT / 'specs/v1/team-session-continuity.schema.json').read_text())
+    session_definitions = json.loads(json.dumps(session_schema['$defs']).replace(
+        '#/$defs/', '#/components/schemas/ha0041_'))
+    session_definitions = {'ha0041_' + name: value for name, value in session_definitions.items()}
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(session_definitions)
+    session_post_contracts = (
+        ('/api/local/team/sessions', 'session_create_request', '201', 'session_create_result'),
+        ('/api/local/team/sessions/{session_id}:handoff', 'session_handoff_create_request', '201', 'session_handoff_result'),
+    )
+    for session_path, request_definition, status, response_definition in session_post_contracts:
+        operation = generated['paths'][session_path]['post']
+        operation['requestBody'] = {
+            'required': True,
+            'content': {'application/json': {'schema': {
+                '$ref': '#/components/schemas/ha0041_' + request_definition}}},
+        }
+        operation['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/ha0041_' + response_definition}}}
+        operation.setdefault('parameters', []).append({
+            'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+            'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+        })
+    for session_path, response_definition in (
+        ('/api/local/team/sessions/runtime', 'runtime_status'),
+        ('/api/local/team/sessions', 'session_list'),
+        ('/api/local/team/sessions/{session_id}', 'session_detail'),
+    ):
+        generated['paths'][session_path]['get']['responses']['200']['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/ha0041_' + response_definition}}}
     team_schema = json.loads((ROOT / 'specs/v1/team-coordination.schema.json').read_text())
     team_definitions = json.loads(json.dumps(team_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
     generated.setdefault('components', {}).setdefault('schemas', {}).update(team_definitions)

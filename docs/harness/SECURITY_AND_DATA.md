@@ -75,6 +75,7 @@ ADR-0024 Native Claude Research 的默认门禁会在 `query()`、CLI、Keychain
 - ADR-0034 Recovery Loop Guard 同样拒绝凭证样式输入；只保存稳定错误码、外部引用/SHA-256、根因**假设**、受限 Checkpoint 引用、输入/Task 摘要、候选/Reminder/Cancel 审计，不保存工具参数、模型推理、原始日志或外部 stdout/stderr。它的固定 `recovery_no_tool_execution@1` 快照只说明本切片没有工具能力，不构成未来真实工具的授权；任何真实 restore/取消/外部补偿须由身份、权限和副作用审计层另行批准。
 - ADR-0035 Team Foundation 将 Workspace、Agent Identity、Workspace/Channel membership 与 Channel data class 持久化，但这些只是本机协议授权记录。Task v2 读写要求 active identity、membership、clearance 和 role；历史 Task 不自动获得新 membership。它不保存凭据、登录会话、Provider/模型绑定、消息/Thread、私有 memory、工具输出、工作目录或 Keychain，也不把请求里的 `actor_id` 误表述为真实认证。任何外部身份、跨设备/公网访问仍需独立的 token/session、审计、撤销和 L3 验证。
 - ADR-0036 Team Attention 只允许按已授权 Channel 写入 opaque `source_ref`、kind、sequence、read cursor、work mark 和 lease 元数据；请求中不接受消息正文、附件、Prompt、URL payload、token 或工具结果。`human_correction` 的高优先级只是 protocol metadata，不等价于真实人类会话认证。自动 dispatch、真实消息传输、外部身份和任何运行时动作保持关闭。
+- ADR-0037 Team Session Continuity 只保存已授权 identity/Workspace/Channel 的 Session lifecycle、受限原因和由服务端生成的 Task/Attention/Thread ID/版本/状态 Snapshot；不保存 Task/Handoff 正文、消息、Prompt、附件、模型上下文、工作目录、凭据或 Provider Session。历史 Handoff 不授予新 Session 操作权限；创建 successor 时重新生成当前 Snapshot，且 Task/Attention 的 CAS/freshness 仍独立生效。
 
 ## 高风险边界
 

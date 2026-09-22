@@ -2,7 +2,7 @@
 
 ## 结论
 
-当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器、无模型 Intent Contract 预检和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、ADR-0023 的三角色投研 Agent / Skill / Tool 模拟垂直切片、ADR-0024 的 Native Claude SubAgent / Plugin Skill / 进程内 MCP 资料运行时实现（默认门禁关闭）、ADR-0025 的外部 ZIP Skill 一次性隔离执行器（默认门禁关闭）、ADR-0026 M1 / ADR-0027 M2-A / ADR-0028 M3-A / ADR-0029 M3-B 的来源优先 Memory Plane、ADR-0033 的 Team Task/Handoff/Gate 与 ADR-0034 的恢复/防循环本机控制面、合成去标识的模型化意图离线/影子评测门禁、无密 Provider/Model/Agent Profile + 本地确定性 POST SSE Agent Lab、ADR-0022 的独立 Provider/Model/Agent/Session/Exchange Runtime，以及已验证 OAuth 连通但数据面关闭的百度网盘连接器；默认仍无真实模型调用、真实 Claude 子 Agent 连通、网盘数据访问或完整长期记忆。
+当前仓库已具备 **本地工作台 v0.1**：原生 JavaScript/CSS 前端、FastAPI API、SQLite 持久状态、固定 CSV 分析适配器、无模型 Intent Contract 预检和 launchd 部署。另有 Colima VM 沙箱、真实 Smolagents SDK + 脚本模型探针、离线 Skill CLI、本地固定函数 Child Run 编排、ADR-0023 的三角色投研 Agent / Skill / Tool 模拟垂直切片、ADR-0024 的 Native Claude SubAgent / Plugin Skill / 进程内 MCP 资料运行时实现（默认门禁关闭）、ADR-0025 的外部 ZIP Skill 一次性隔离执行器（默认门禁关闭）、ADR-0026 M1 / ADR-0027 M2-A / ADR-0028 M3-A / ADR-0029 M3-B 的来源优先 Memory Plane、ADR-0033 的 Team Task/Handoff/Gate、ADR-0034 的恢复/防循环、ADR-0035/0036 的 Channel/Attention 控制面，以及 ADR-0037 的 Team Session Continuity 本机控制面、合成去标识的模型化意图离线/影子评测门禁、无密 Provider/Model/Agent Profile + 本地确定性 POST SSE Agent Lab、ADR-0022 的独立 Provider/Model/Agent/Session/Exchange Runtime，以及已验证 OAuth 连通但数据面关闭的百度网盘连接器；默认仍无真实模型调用、真实 Claude 子 Agent 连通、网盘数据访问或完整长期记忆。
 
 ```mermaid
 flowchart LR
@@ -37,7 +37,9 @@ ADR-0034 新增 `FastAPI → RecoveryLoopGuard → SQLite recovery_cases / attem
 
 ADR-0035 新增 `FastAPI → TeamFoundation → SQLite workspace / agent identity / memberships / channels` 的本机协议身份与 Channel 数据边界。新 `team-task@2` 在 create/read/claim/handoff/submit/close/Gate 时要求 active Agent Identity、Workspace membership/clearance 和 Channel membership/role；历史 `team-task@1` 不自动映射或扩权。它不实现 HTTP 登录、token/OIDC、消息/Thread/DM、Inbox、Daemon、Computer、模型/工具或真实 Agent runtime；`actor_id` 仍不是外部认证 principal。详见 [Team Foundation](TEAM_FOUNDATION.md)。
 
-ADR-0036 正在将 `FastAPI → TeamAttention → SQLite conversation cursor / attention item / read cursor / work mark / attention lease` 加到 ADR-0035 之后。它只接收不含正文的手工 protocol `source_ref`，按 Channel membership 管理注意力和过期稿阻断；不接入消息传输、自动唤醒、Agent Runtime、模型、工具或真实身份认证。详见 [Team Attention](TEAM_ATTENTION.md)。
+ADR-0036 已将 `FastAPI → TeamAttention → SQLite conversation cursor / attention item / read cursor / work mark / attention lease` 加到 ADR-0035 之后。它只接收不含正文的手工 protocol `source_ref`，按 Channel membership 管理注意力和过期稿阻断；不接入消息传输、自动唤醒、Agent Runtime、模型、工具或真实身份认证。详见 [Team Attention](TEAM_ATTENTION.md)。
+
+ADR-0037 正在以 `FastAPI → TeamSessionContinuity → SQLite team session / session handoff` 在上述状态之上生成有界当前工作摘要；它只引用 Task/Attention/Thread 状态，不复制消息或模型上下文，不连接 Provider/Runtime Session、telemetry、自动换代、Daemon/Computer 或真实身份认证。详见 [Team Session Continuity](TEAM_SESSION_CONTINUITY.md)。
 
 本地分析表单在创建 Task 前调用 `Service → IntentRouter`。该 Router 用 `rules@1` 只识别 CSV 分析，返回 `ready`、`clarification_required` 或 `rejected`；不持久化自然语言输入、没有模型调用，也不会自动创建 Task 或换引擎。规则与固定评测见 [INTENT_ROUTING.md](INTENT_ROUTING.md)。
 

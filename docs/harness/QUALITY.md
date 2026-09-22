@@ -55,6 +55,7 @@
 - ADR-0034 Recovery Loop Guard 必须覆盖：服务端 Error Contract 目录、失败点/根因假设/回滚 Checkpoint/Replan 起点分离、Task/输入/权限快照/Checkpoint/预算 Confirm 绑定、Try/Cancel 零执行、连续失败 Reminder、turn/时间/候选/重复 operation/取消硬停止、同一 Task Handoff + Gate pass 才能 resolved、幂等/版本/重启与 OpenAPI 一致性。它不构成真实恢复、工具取消、动态授权、通用 Agent Loop 或自动 Gate 通过。
 - ADR-0035 Team Foundation 必须覆盖：Workspace/AgentIdentity/Workspace membership/Channel membership 的 Schema、Public/Internal/Restricted clearance、Workspace/Channel/role 隔离、Task v2 的 create/read/claim/handoff/submit/Gate 授权、legacy Task 不自动扩权、幂等/重启/OpenAPI 与零模型/工具/消息状态。它不构成 HTTP 登录、token/OIDC、真实 Agent identity、Daemon、Inbox 或权限副作用通过。
 - ADR-0036 Team Attention 必须覆盖：不含正文的 source metadata、server-derived priority、Workspace/Channel/clearance/target 隔离、read cursor 与 work mark 分离、每个 identity 单 attention lease、lease 到期不清 mark、同 Thread sequence、item completion 与 Task Handoff/submit/Gate 的 freshness 阻断、幂等/版本/重启/OpenAPI 与零模型/工具/自动 dispatch。它不构成消息传输、真实调度、自动唤醒、token/OIDC 或 Agent Runtime 通过。
+- ADR-0037 Team Session Continuity 必须覆盖：严格 Session/Handoff/Snapshot Schema、Workspace/Channel/clearance/owner 隔离、每 identity/Channel 单 active Session、CAS handoff/retire、一次性同 scope/identity 继承、successor 创建时的 current Snapshot、Task/Attention/Thread 引用上限与零正文、Task/Attention 未变更且 freshness 不被绕过、重启/幂等/OpenAPI 与零模型/工具/Runtime telemetry/自动 rotation。它不构成 Provider/模型 Session resume、聊天压缩、Computer 换绑、token/OIDC 或真实 Agent Runtime 通过。
 
 ## 完成定义 DoD
 

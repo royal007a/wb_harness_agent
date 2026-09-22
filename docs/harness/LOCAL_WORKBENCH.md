@@ -30,6 +30,10 @@ HA-0007 增加 Adapter 生命周期、`GET /api/v1/readiness` 历史探针报告
 
 入口为 http://127.0.0.1:8765/research-agents。它与 `/research` 的固定函数演示并存，但为每家公司固定创建财务、行业、风险三个 Child Run，并把第一方 Skill 文件摘要、唯一工具 `resource.inspect` 和二步预算冻结到运行树。每个 Child 记录 `agent.turn.started → skill.loaded → resource.inspect → agent.observation.received → agent.finalized`，父 Run 只聚合重新按资源摘要校验的 Child artifact。
 
+## Team 协作控制面（ADR-0033 至 ADR-0037）
+
+`/api/local/team/*` 是与 Product Task/Run 和 Agent Lab/Runtime 分离的本机协议控制面：它已有 Workspace/Channel membership 与 clearance、Team Task/Handoff/Gate、Error Contract/Recovery Guard、metadata-only Attention/Inbox/freshness，以及 Team Session 的手工 Handoff。Team Session 只从当前已授权的 Task、Gate、Attention 和 cursor 派生有界 ID/版本/状态/Thread sequence；它不会保存聊天正文、Prompt、模型上下文或 Provider Session，也没有自动换代、自动派发、模型或工具调用。`actor_id` 仍是 protocol identity，**不是 HTTP 登录 principal**；因此此模块不应承载敏感正文或当作真实 Agent Team 服务。具体边界见 [Team Foundation](TEAM_FOUNDATION.md)、[Team Coordination](TEAM_COORDINATION.md)、[Team Attention](TEAM_ATTENTION.md) 和 [Team Session Continuity](TEAM_SESSION_CONTINUITY.md)。
+
 ## Native Claude 投研准入（ADR-0024）
 
 这个端点没有 UI，先通过 `GET /api/local/research-native/runtime` 查看 blocker。只有部署者在受控终端完成 Claude 身份配置，并在不提交秘密的前提下配置模型、精确允许域名、搜索/财务资料 endpoint、费用上限与两项环境门禁后，才可用 `POST /api/local/research-native/documents?name=<public-report.pdf>` 登记 Public PDF，并向 `POST /api/local/research-native` 提交机器契约。默认端点拒绝，不会启动 CLI、访问 Keychain、联网上传资料或生成模拟报告。运行后通过 `/api/local/research-native/{runId}`、通用 Run Event/Artifact 接口审计原生 `Agent` 委派、Child 证据与 source ID；完整规则见 [Native Claude 投研运行时](CLAUDE_RESEARCH_RUNTIME.md)。
