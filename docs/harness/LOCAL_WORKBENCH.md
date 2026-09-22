@@ -36,6 +36,8 @@ HA-0007 增加 Adapter 生命周期、`GET /api/v1/readiness` 历史探针报告
 
 ## Native Claude 投研准入（ADR-0024）
 
+公网工作台入口可按部署选择 HTTP；nginx 会把实际 `$scheme` 传给上游，认证边界仍由 nginx 保留。这个入口协议选择不放宽资料源安全要求：搜索/财务 connector 仍必须是无凭证 URL 参数的 HTTPS endpoint，Keychain 引用也只在获准的 HTTPS 请求边界解析。
+
 这个端点没有 UI，先通过 `GET /api/local/research-native/runtime` 查看 blocker 与无密 `claude-research-admission@1` 摘要。默认 profile 是 `not_admitted`，所以模型、CLI、Keychain 与资料 HTTP 均为 0 调用；环境变量误设也不会绕过它。只有部署者在受控终端完成 Claude CLI 身份配置，并让档案与环境逐项精确匹配 Provider/模型、USD 每 Run 费用/turn/超时、排序的允许域名、搜索/财务 JSON connector endpoint、仅 `keychain://harnessagent/<name>` 引用、单一 Public PDF SHA-256、取消/回滚负责人和审批记录后，才可用 `POST /api/local/research-native/documents?name=<public-report.pdf>` 登记该 PDF，并向 `POST /api/local/research-native` 提交机器契约。
 
 - 默认端点拒绝，不会启动 CLI、访问 Keychain、联网上传资料或生成模拟报告；当前不应称为真实投研已跑通。
