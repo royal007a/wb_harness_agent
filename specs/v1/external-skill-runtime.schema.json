@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/external-skill-runtime.schema.json",
+  "title": "External Skill Runtime contract",
+  "type": "object",
+  "$defs": {
+    "skill_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "skill_id", "version", "entrypoint", "runtime", "capabilities"],
+      "properties": {
+        "schema_version": {"const": "external-skill-manifest@1"},
+        "skill_id": {"type": "string", "pattern": "^ext_[a-z][a-z0-9_-]{2,63}$"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "entrypoint": {"const": "entry.py"},
+        "runtime": {"const": "python-stdlib@3.12"},
+        "capabilities": {"type": "array", "items": {"enum": ["transform_json"]}, "minItems": 1, "maxItems": 1, "uniqueItems": true}
+      }
+    },
+    "package_registration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_label"],
+      "properties": {
+        "source_label": {"type": "string", "minLength": 1, "maxLength": 160, "pattern": "^[A-Za-z0-9 ._:/@+-]+$"}
+      }
+    },
+    "execution_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input"],
+      "properties": {
+        "input": {"type": "object", "maxProperties": 32, "additionalProperties": true}
+      }
+    },
+    "execution_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_id", "package_id", "package_sha256", "status", "output", "isolation_profile", "audit"],
+      "properties": {
+        "execution_id": {"type": "string", "pattern": "^extx_[a-f0-9]{32}$"},
+        "package_id": {"type": "string", "pattern": "^extpkg_[a-f0-9]{32}$"},
+        "package_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "status": {"const": "succeeded"},
+        "output": {"type": "object"},
+        "isolation_profile": {"const": "external-skill-stdlib-v1"},
+        "audit": {"type": "object"}
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": "HA-0028",
+  "recorded_at": "2026-09-19T08:35:00Z",
+  "scope": "Strict local ZIP registration, immutable content digest, default-off external Skill runtime, one-shot Colima isolation and audit.",
+  "environment": {
+    "python": "3.14",
+    "docker_context": "colima",
+    "docker_server": "29.5.2",
+    "image": "harnessagent-external-skill:0.1",
+    "profile": "external-skill-stdlib-v1"
+  },
+  "commands": [
+    "HARNESS_DOCKER_TESTS=1 .venv/bin/python -m pytest -q --junitxml=harness/evidence/HA-0028/all-tests.xml",
+    "sh harness/verify.sh",
+    "git diff --check"
+  ],
+  "results": {
+    "full_opt_in_tests": {"passed": 197, "failed": 0, "skipped": 0},
+    "default_verification": {"passed": 185, "failed": 0, "skipped": 12},
+    "real_container_probe": {
+      "non_root_uid": 65532,
+      "network_denied": true,
+      "host_path_visible": false,
+      "docker_socket_visible": false,
+      "host_environment_secret_inherited": false,
+      "container_cleaned": true
+    }
+  },
+  "artifacts": [
+    "harness/evidence/HA-0028/all-tests.xml",
+    "harness/evidence/HA-0028/acceptance.md"
+  ],
+  "not_evidence": [
+    "No third-party package registry, network, dependency installation, model, MCP, credential, Product Task/Run or production multi-tenant execution was enabled.",
+    "The local Colima probe is not evidence of a production supply-chain or kernel-isolation certification."
+  ]
+}
