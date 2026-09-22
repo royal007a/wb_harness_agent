@@ -78,6 +78,12 @@ class Store:
             CREATE TABLE IF NOT EXISTS recovery_observations(id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES recovery_cases(id), doc TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS recovery_reminders(id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES recovery_cases(id), doc TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS recovery_cancel_audits(id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES recovery_cases(id), doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS team_workspaces(id TEXT PRIMARY KEY, doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS team_agent_identities(id TEXT PRIMARY KEY, doc TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS team_workspace_memberships(workspace_id TEXT NOT NULL REFERENCES team_workspaces(id), agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL, PRIMARY KEY(workspace_id, agent_id));
+            CREATE TABLE IF NOT EXISTS team_channels(id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL REFERENCES team_workspaces(id), doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS team_channels_workspace ON team_channels(workspace_id);
+            CREATE TABLE IF NOT EXISTS team_channel_memberships(channel_id TEXT NOT NULL REFERENCES team_channels(id), agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL, PRIMARY KEY(channel_id, agent_id));
         ''')
 
     @contextmanager

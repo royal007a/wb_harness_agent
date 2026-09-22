@@ -216,17 +216,66 @@ def create_app(db_path=None, run_worker=True):
     def team_runtime():
         return app.state.service.team.runtime_status()
 
+    @app.get('/api/local/team/foundation/runtime')
+    def team_foundation_runtime():
+        return app.state.service.team_foundation.runtime_status()
+
+    @app.get('/api/local/team/workspaces')
+    def team_workspaces(actor_id: str):
+        return app.state.service.team_foundation.workspaces(actor_id)
+
+    @app.post('/api/local/team/workspaces', status_code=201)
+    async def team_workspace_create(request: Request):
+        return app.state.service.team_foundation.create_workspace(
+            await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/team/workspaces/{workspace_id}')
+    def team_workspace_detail(workspace_id: str, actor_id: str):
+        return app.state.service.team_foundation.workspace_detail(workspace_id, actor_id)
+
+    @app.get('/api/local/team/workspaces/{workspace_id}/agents')
+    def team_workspace_agents(workspace_id: str, actor_id: str):
+        return app.state.service.team_foundation.agents(workspace_id, actor_id)
+
+    @app.post('/api/local/team/workspaces/{workspace_id}/agents', status_code=201)
+    async def team_agent_create(workspace_id: str, request: Request):
+        return app.state.service.team_foundation.create_agent(
+            workspace_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/team/workspaces/{workspace_id}/memberships', status_code=201)
+    async def team_workspace_membership_grant(workspace_id: str, request: Request):
+        return app.state.service.team_foundation.grant_workspace_membership(
+            workspace_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/team/workspaces/{workspace_id}/channels')
+    def team_workspace_channels(workspace_id: str, actor_id: str):
+        return app.state.service.team_foundation.channels(workspace_id, actor_id)
+
+    @app.post('/api/local/team/workspaces/{workspace_id}/channels', status_code=201)
+    async def team_channel_create(workspace_id: str, request: Request):
+        return app.state.service.team_foundation.create_channel(
+            workspace_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/team/channels/{channel_id}')
+    def team_channel_detail(channel_id: str, actor_id: str):
+        return app.state.service.team_foundation.channel_detail(channel_id, actor_id)
+
+    @app.post('/api/local/team/channels/{channel_id}/memberships', status_code=201)
+    async def team_channel_membership_grant(channel_id: str, request: Request):
+        return app.state.service.team_foundation.grant_channel_membership(
+            channel_id, await json_body(request), request.headers.get('idempotency-key'))
+
     @app.get('/api/local/team/tasks')
-    def team_tasks():
-        return app.state.service.team.tasks()
+    def team_tasks(actor_id: str):
+        return app.state.service.team.tasks(actor_id)
 
     @app.post('/api/local/team/tasks', status_code=201)
     async def team_task_create(request: Request):
         return app.state.service.team.create_task(await json_body(request), request.headers.get('idempotency-key'))
 
     @app.get('/api/local/team/tasks/{task_id}')
-    def team_task_detail(task_id: str):
-        return app.state.service.team.detail(task_id)
+    def team_task_detail(task_id: str, actor_id: str):
+        return app.state.service.team.detail(task_id, actor_id)
 
     @app.post('/api/local/team/tasks/{task_id}:claim')
     async def team_task_claim(task_id: str, request: Request):
@@ -253,16 +302,16 @@ def create_app(db_path=None, run_worker=True):
         return app.state.service.recovery.runtime_status()
 
     @app.get('/api/local/recovery/cases')
-    def recovery_cases():
-        return app.state.service.recovery.cases()
+    def recovery_cases(actor_id: str):
+        return app.state.service.recovery.cases(actor_id)
 
     @app.post('/api/local/recovery/cases', status_code=201)
     async def recovery_case_create(request: Request):
         return app.state.service.recovery.create_case(await json_body(request), request.headers.get('idempotency-key'))
 
     @app.get('/api/local/recovery/cases/{case_id}')
-    def recovery_case_detail(case_id: str):
-        return app.state.service.recovery.detail(case_id)
+    def recovery_case_detail(case_id: str, actor_id: str):
+        return app.state.service.recovery.detail(case_id, actor_id)
 
     @app.post('/api/local/recovery/cases/{case_id}/observations', status_code=201)
     async def recovery_observation_create(case_id: str, request: Request):
@@ -777,6 +826,41 @@ def create_app(db_path=None, run_worker=True):
         'in': 'header', 'name': 'Idempotency-Key', 'required': True,
         'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
     })
+    foundation_schema = json.loads((ROOT / 'specs/v1/team-foundation.schema.json').read_text())
+    foundation_definitions = json.loads(json.dumps(foundation_schema['$defs']).replace(
+        '#/$defs/', '#/components/schemas/ha0040_'))
+    foundation_definitions = {'ha0040_' + name: value for name, value in foundation_definitions.items()}
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(foundation_definitions)
+    foundation_post_contracts = (
+        ('/api/local/team/workspaces', 'workspace_create_request', '201', 'workspace'),
+        ('/api/local/team/workspaces/{workspace_id}/agents', 'agent_create_request', '201', None),
+        ('/api/local/team/workspaces/{workspace_id}/memberships', 'workspace_membership_grant_request', '201', 'workspace_membership'),
+        ('/api/local/team/workspaces/{workspace_id}/channels', 'channel_create_request', '201', None),
+        ('/api/local/team/channels/{channel_id}/memberships', 'channel_membership_grant_request', '201', 'channel_membership'),
+    )
+    for foundation_path, request_definition, status, response_definition in foundation_post_contracts:
+        operation = generated['paths'][foundation_path]['post']
+        operation['requestBody'] = {
+            'required': True,
+            'content': {'application/json': {'schema': {'$ref': '#/components/schemas/ha0040_' + request_definition}}},
+        }
+        if response_definition:
+            operation['responses'][status]['content'] = {
+                'application/json': {'schema': {'$ref': '#/components/schemas/ha0040_' + response_definition}}}
+        operation.setdefault('parameters', []).append({
+            'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+            'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+        })
+    for foundation_path, response_definition in (
+        ('/api/local/team/foundation/runtime', 'runtime_status'),
+        ('/api/local/team/workspaces', 'workspace_list'),
+        ('/api/local/team/workspaces/{workspace_id}', 'workspace_detail'),
+        ('/api/local/team/workspaces/{workspace_id}/agents', 'agent_list'),
+        ('/api/local/team/workspaces/{workspace_id}/channels', 'channel_list'),
+        ('/api/local/team/channels/{channel_id}', 'channel_detail'),
+    ):
+        generated['paths'][foundation_path]['get']['responses']['200']['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/ha0040_' + response_definition}}}
     team_schema = json.loads((ROOT / 'specs/v1/team-coordination.schema.json').read_text())
     team_definitions = json.loads(json.dumps(team_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
     generated.setdefault('components', {}).setdefault('schemas', {}).update(team_definitions)

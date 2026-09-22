@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/team-foundation.schema.json",
+  "title": "Local Workspace, Agent Identity and Channel Boundary contract",
+  "type": "object",
+  "$defs": {
+    "agent_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{1,127}$"
+    },
+    "workspace_id": {
+      "type": "string",
+      "pattern": "^ws_[A-Za-z0-9_-]{3,80}$"
+    },
+    "channel_id": {
+      "type": "string",
+      "pattern": "^ch_[A-Za-z0-9_-]{3,80}$"
+    },
+    "data_class": {
+      "enum": ["Public", "Internal", "Restricted"]
+    },
+    "workspace_role": {
+      "enum": ["owner", "admin", "member"]
+    },
+    "channel_role": {
+      "enum": ["coordinator", "contributor", "reviewer", "observer"]
+    },
+    "agent_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "kind", "display_name", "status", "created_at"],
+      "properties": {
+        "schema_version": {"const": "agent-identity@1"},
+        "id": {"$ref": "#/$defs/agent_id"},
+        "kind": {"enum": ["human", "agent"]},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 120},
+        "status": {"enum": ["active", "suspended"]},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "name", "data_class", "status", "created_by_id", "created_at"],
+      "properties": {
+        "schema_version": {"const": "team-workspace@1"},
+        "id": {"$ref": "#/$defs/workspace_id"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 160},
+        "data_class": {"$ref": "#/$defs/data_class"},
+        "status": {"enum": ["active", "archived"]},
+        "created_by_id": {"$ref": "#/$defs/agent_id"},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "workspace_membership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "workspace_id", "agent_id", "role", "clearance", "status", "created_at"],
+      "properties": {
+        "schema_version": {"const": "workspace-membership@1"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "role": {"$ref": "#/$defs/workspace_role"},
+        "clearance": {"$ref": "#/$defs/data_class"},
+        "status": {"enum": ["active", "revoked"]},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "workspace_id", "title", "data_class", "status", "created_by_id", "version", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "team-channel@1"},
+        "id": {"$ref": "#/$defs/channel_id"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 160},
+        "data_class": {"$ref": "#/$defs/data_class"},
+        "status": {"enum": ["active", "archived"]},
+        "created_by_id": {"$ref": "#/$defs/agent_id"},
+        "version": {"type": "integer", "minimum": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "channel_membership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "channel_id", "agent_id", "roles", "status", "created_at"],
+      "properties": {
+        "schema_version": {"const": "channel-membership@1"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/channel_role"}
+        },
+        "status": {"enum": ["active", "revoked"]},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "workspace_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "id", "name", "data_class"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "id": {"$ref": "#/$defs/workspace_id"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 160},
+        "data_class": {"$ref": "#/$defs/data_class"}
+      }
+    },
+    "agent_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "workspace_id", "id", "kind", "display_name", "clearance"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "id": {"$ref": "#/$defs/agent_id"},
+        "kind": {"enum": ["human", "agent"]},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 120},
+        "clearance": {"$ref": "#/$defs/data_class"}
+      }
+    },
+    "workspace_membership_grant_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "agent_id", "role", "clearance"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "role": {"$ref": "#/$defs/workspace_role"},
+        "clearance": {"$ref": "#/$defs/data_class"}
+      }
+    },
+    "channel_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "id", "title", "data_class"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "id": {"$ref": "#/$defs/channel_id"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 160},
+        "data_class": {"$ref": "#/$defs/data_class"}
+      }
+    },
+    "channel_membership_grant_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "agent_id", "roles"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "roles": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/channel_role"}}
+      }
+    },
+    "workspace_detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workspace", "memberships"],
+      "properties": {
+        "workspace": {"$ref": "#/$defs/workspace"},
+        "memberships": {"type": "array", "items": {"$ref": "#/$defs/workspace_membership"}}
+      }
+    },
+    "channel_detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "memberships"],
+      "properties": {
+        "channel": {"$ref": "#/$defs/channel"},
+        "memberships": {"type": "array", "items": {"$ref": "#/$defs/channel_membership"}}
+      }
+    },
+    "workspace_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/workspace"}},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "agent_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/agent_identity"}},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "channel_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/channel"}},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "runtime_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "protocol_identity_authentication", "agent_runtime", "external_model_calls", "external_tool_calls", "message_delivery", "note"],
+      "properties": {
+        "mode": {"const": "team_foundation_boundary@1"},
+        "protocol_identity_authentication": {"const": "not_connected"},
+        "agent_runtime": {"const": "not_connected"},
+        "external_model_calls": {"const": 0},
+        "external_tool_calls": {"const": 0},
+        "message_delivery": {"const": "not_implemented"},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

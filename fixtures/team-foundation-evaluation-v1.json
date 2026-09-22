@@ -1,0 +1,5 @@
+{
+  "evaluation_version": "team-foundation-boundary-synthetic@1",
+  "scope": "synthetic local protocol identity, Workspace/Channel membership, clearance and Team Task authorization",
+  "pass_threshold": 1.0
+}

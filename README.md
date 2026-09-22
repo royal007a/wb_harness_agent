@@ -42,6 +42,7 @@ sh harness/start.sh
 - [本地意图契约与规则路由](docs/harness/INTENT_ROUTING.md)
 - [模型化意图路由的离线评测与影子门禁](docs/harness/INTENT_MODEL_EVALUATION.md)
 - [Plan / Replan 执行控制合同](docs/harness/PLAN_REPLAN_CONTROL.md)
+- [Team Workspace / Identity / Channel 数据边界](docs/harness/TEAM_FOUNDATION.md)
 - [Provider / Agent / 对话引擎六篇阅读总结](docs/research/CLAUDE_CODE_PROVIDER_AGENT_CHAT_SIX_PDFS.md)
 - [Local Provider / Agent / Chat Runtime](docs/harness/AGENT_RUNTIME.md)
 - [P0 CodeAct 激活决策包](docs/harness/P0_ACTIVATION_DECISION.md)

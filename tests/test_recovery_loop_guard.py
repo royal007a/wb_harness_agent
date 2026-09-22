@@ -11,7 +11,9 @@ from backend.team_coordination import iso_now
 
 
 TASK = {
+    'workspace_id': 'ws_local',
     'channel_id': 'ch_recovery_local', 'thread_id': 'thread-recovery-01', 'title': '恢复受限流程',
+    'creator_id': 'local_admin',
     'objective': '保留既有交接与验收约束。', 'requirements': ['R1：结果必须可追溯。'],
     'scope': {'allowed_paths': ['internal/'], 'forbidden_paths': ['db/'], 'resource_refs': ['repo:local']},
     'stop_conditions': ['需要扩大权限时停止并转人工。'],
@@ -28,7 +30,26 @@ ARTIFACT = {'kind': 'test_result', 'ref': 'checks/recovery.log', 'sha256': 'c' *
 @pytest.fixture
 def client(tmp_path):
     with TestClient(create_app(tmp_path / 'recovery.db', False), base_url='http://127.0.0.1') as value:
+        bootstrap(value)
         yield value
+
+
+def bootstrap(client):
+    for agent_id, name in (('builder-01', 'Builder One'), ('reviewer-01', 'Reviewer One')):
+        response = client.post('/api/local/team/workspaces/ws_local/agents', json={
+            'actor_id': 'local_admin', 'workspace_id': 'ws_local', 'id': agent_id,
+            'kind': 'agent', 'display_name': name, 'clearance': 'Restricted',
+        }, headers={'Idempotency-Key': 'recovery-bootstrap-agent-' + agent_id})
+        assert response.status_code == 201, response.text
+    response = client.post('/api/local/team/workspaces/ws_local/channels', json={
+        'actor_id': 'local_admin', 'id': 'ch_recovery_local', 'title': 'Recovery Local', 'data_class': 'Internal',
+    }, headers={'Idempotency-Key': 'recovery-bootstrap-channel'})
+    assert response.status_code == 201, response.text
+    for agent_id, roles in (('builder-01', ['contributor']), ('reviewer-01', ['reviewer'])):
+        response = client.post('/api/local/team/channels/ch_recovery_local/memberships', json={
+            'actor_id': 'local_admin', 'agent_id': agent_id, 'roles': roles,
+        }, headers={'Idempotency-Key': 'recovery-bootstrap-member-' + agent_id})
+        assert response.status_code == 201, response.text
 
 
 def task_and_claim(client, suffix='one'):
@@ -103,7 +124,7 @@ def test_try_confirm_requires_team_handoff_and_gate_before_resolution(client):
     tried = try_candidate(client, case)
     assert tried['attempt']['status'] == 'proposed'
     assert tried['case']['status'] == 'open'
-    assert client.get('/api/local/team/tasks/' + task['id']).json()['task']['version'] == task['version']
+    assert client.get('/api/local/team/tasks/' + task['id'] + '?actor_id=builder-01').json()['task']['version'] == task['version']
 
     confirmed = client.post(f'/api/local/recovery/cases/{case["id"]}:confirm', json={
         'actor_id': 'builder-01', 'expected_case_version': tried['case']['case_version'], 'input_digest': 'd' * 64,
@@ -199,7 +220,7 @@ def test_soft_reminder_then_hard_repeat_limit_and_cancel_stays_audit_only(client
     }, headers={'Idempotency-Key': 'no-progress-2'})
     assert second_no_progress.status_code == 201, second_no_progress.text
     assert second_no_progress.json()['reminder']['reason'] == 'no_verifiable_progress'
-    team_detail = client.get('/api/local/team/tasks/' + task2['id']).json()
+    team_detail = client.get('/api/local/team/tasks/' + task2['id'] + '?actor_id=builder-01').json()
     assert team_detail['task']['version'] == task2['version'] and team_detail['handoffs'] == []
 
 
@@ -237,6 +258,7 @@ def test_binding_changes_and_unavailable_checkpoint_are_rejected(client):
 def test_recovery_case_and_cancel_audit_survive_restart(tmp_path):
     database = tmp_path / 'restart-recovery.db'
     with TestClient(create_app(database, False), base_url='http://127.0.0.1') as first:
+        bootstrap(first)
         task = task_and_claim(first, 'restart')
         case = create_case(first, task, 'restart')
         tried = try_candidate(first, case, 'restart')
@@ -245,7 +267,7 @@ def test_recovery_case_and_cancel_audit_survive_restart(tmp_path):
         }, headers={'Idempotency-Key': 'restart-cancel'})
         assert cancelled.status_code == 200, cancelled.text
     with TestClient(create_app(database, False), base_url='http://127.0.0.1') as second:
-        detail = second.get(f'/api/local/recovery/cases/{case["id"]}')
+        detail = second.get(f'/api/local/recovery/cases/{case["id"]}?actor_id=builder-01')
         assert detail.status_code == 200, detail.text
         detail = detail.json()
         assert detail['case']['status'] == 'cancelled'

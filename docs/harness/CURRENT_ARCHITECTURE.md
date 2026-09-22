@@ -35,6 +35,8 @@ ADR-0033 新增 `FastAPI → TeamCoordination → SQLite team_tasks / handoffs /
 
 ADR-0034 新增 `FastAPI → RecoveryLoopGuard → SQLite recovery_cases / attempts / observations / reminders / cancel audits` 的独立恢复决策旁路。它由服务端 Error Contract 目录记录失败点、根因假设、回滚 Checkpoint 和 Replan 起点；Try/Confirm/Cancel 都不执行恢复，硬预算与重复 operation 只停止或转人工，且必须回到 ADR-0033 Handoff + Gate pass 才能 resolved。它不实现真实 Checkpoint restore、工具取消、动态权限、通用 Replan 或任何 Agent Runtime。详见 [Recovery Loop Guard](RECOVERY_LOOP_GUARD.md)。
 
+ADR-0035 新增 `FastAPI → TeamFoundation → SQLite workspace / agent identity / memberships / channels` 的本机协议身份与 Channel 数据边界。新 `team-task@2` 在 create/read/claim/handoff/submit/close/Gate 时要求 active Agent Identity、Workspace membership/clearance 和 Channel membership/role；历史 `team-task@1` 不自动映射或扩权。它不实现 HTTP 登录、token/OIDC、消息/Thread/DM、Inbox、Daemon、Computer、模型/工具或真实 Agent runtime；`actor_id` 仍不是外部认证 principal。详见 [Team Foundation](TEAM_FOUNDATION.md)。
+
 本地分析表单在创建 Task 前调用 `Service → IntentRouter`。该 Router 用 `rules@1` 只识别 CSV 分析，返回 `ready`、`clarification_required` 或 `rejected`；不持久化自然语言输入、没有模型调用，也不会自动创建 Task 或换引擎。规则与固定评测见 [INTENT_ROUTING.md](INTENT_ROUTING.md)。
 
 模型化意图路由仅有离线/影子评测准备：`fixture → candidate-output validator → evaluator → policy gate`。夹具是手写合成去标识数据；没有模型客户端、生产文本或 API 路由接入。候选即使通过也只可申请下一阶段影子回放，详见 [INTENT_MODEL_EVALUATION.md](INTENT_MODEL_EVALUATION.md)。

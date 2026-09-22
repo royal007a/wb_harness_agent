@@ -8,6 +8,7 @@ cd "$(dirname "$0")/.."
 .venv/bin/python harness/memory_temporal_read_evaluation.py
 .venv/bin/python harness/verify_semantic_retrieval_admission.py
 .venv/bin/python harness/recovery_loop_guard_evaluation.py
+.venv/bin/python harness/team_foundation_evaluation.py
 node --check frontend/app.js
 node --check frontend/research.js
 node --check frontend/research-agents.js

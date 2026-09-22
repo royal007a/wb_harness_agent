@@ -142,7 +142,9 @@ class RecoveryLoopGuard:
     def _task_for_owner(self, db, case, actor_id, require_claim=True):
         task = self.team._expire_lease(db, self.team._row_task(db, case['team_task_id']))
         if require_claim:
-            self.team._assert_active_claim(task, actor_id)
+            self.team._assert_active_claim(db, task, actor_id)
+        else:
+            self.team.foundation.assert_task_access(db, task, actor_id, {'contributor', 'coordinator'})
         return task
 
     @staticmethod
@@ -227,7 +229,7 @@ class RecoveryLoopGuard:
 
         def create(db):
             task = self.team._expire_lease(db, self.team._row_task(db, body['team_task_id']))
-            self.team._assert_active_claim(task, body['actor_id'])
+            self.team._assert_active_claim(db, task, body['actor_id'])
             created_at = now()
             permissions = dict(NO_TOOL_PERMISSION_SNAPSHOT)
             binding = {
@@ -255,18 +257,25 @@ class RecoveryLoopGuard:
             return case
         return self._idempotent('recovery-case:create', key, body, create)
 
-    def cases(self):
+    def cases(self, actor_id):
         with self.store.transaction() as db:
             items = []
             for row in db.execute('SELECT doc FROM recovery_cases ORDER BY rowid DESC').fetchall():
-                items.append(self._expire_if_needed(db, json.loads(row['doc'])))
+                case = self._expire_if_needed(db, json.loads(row['doc']))
+                task = self.team._expire_lease(db, self.team._row_task(db, case['team_task_id']))
+                try:
+                    self.team.foundation.assert_task_access(db, task, actor_id)
+                except Problem:
+                    continue
+                items.append(case)
             result = {'items': items, 'runtime': self.runtime_status()}
             validate_contract('recovery_case_list', result)
             return result
 
-    def detail(self, case_id):
+    def detail(self, case_id, actor_id):
         with self.store.transaction() as db:
             case = self._expire_if_needed(db, self._row_case(db, case_id))
+            self._task_for_owner(db, case, actor_id, require_claim=False)
             result = {
                 'case': case,
                 'attempts': [json.loads(row['doc']) for row in db.execute('SELECT doc FROM recovery_attempts WHERE case_id=? ORDER BY rowid', (case_id,)).fetchall()],
@@ -285,6 +294,7 @@ class RecoveryLoopGuard:
         def observe(db):
             case = self._row_case(db, case_id)
             self._assert_owner(case, body['actor_id'])
+            self._task_for_owner(db, case, body['actor_id'], require_claim=False)
             self._assert_case_version(case, body['expected_case_version'])
             if case['status'] in TERMINAL or case['hard_stop']['tripped']:
                 raise Problem('RECOVERY_CASE_STATE_INVALID', '结束或熔断的 Recovery Case 不再接收 Observation。', 409)
@@ -406,6 +416,7 @@ class RecoveryLoopGuard:
         def cancel_attempt(db):
             case = self._row_case(db, case_id)
             self._assert_owner(case, body['actor_id'])
+            self._task_for_owner(db, case, body['actor_id'], require_claim=False)
             self._assert_case_version(case, body['expected_case_version'])
             if case['status'] in TERMINAL:
                 raise Problem('RECOVERY_CASE_STATE_INVALID', '已结束的 Recovery Case 不能再次取消。', 409)
@@ -463,7 +474,7 @@ class RecoveryLoopGuard:
             self._assert_case_version(case, body['expected_case_version'])
             if case['status'] != 'recovery_reported' or not case['linked_handoff_id']:
                 raise Problem('RECOVERY_GATE_REQUIRED', '恢复结果必须先通过 Handoff 关联，且仍需正常 Gate。', 409)
-            task = self.team._expire_lease(db, self.team._row_task(db, case['team_task_id']))
+            task = self._task_for_owner(db, case, body['actor_id'], require_claim=False)
             row = db.execute('SELECT doc FROM team_task_gate_decisions WHERE id=? AND task_id=?', (body['gate_decision_id'], case['team_task_id'])).fetchone()
             if not row:
                 raise Problem('RECOVERY_GATE_NOT_FOUND', '同一 Team Task 中不存在该 Gate 决策。', 404)

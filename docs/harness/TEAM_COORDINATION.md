@@ -4,13 +4,13 @@
 
 ADR-0033 提供的是一个本机、单进程、local-admin 的协作控制面纵切：它把一次可交付工作固定为 `Team Task → Handoff → Gate`，而不是把团队约定留在某段 Agent 对话里。
 
-它**没有**连接 Agent Runtime、模型、MCP、外部工具、Daemon、消息投递、身份认证、Workspace/Channel 服务或跨设备执行。运行时状态固定报告 `agent_runtime=not_connected`、模型调用和外部工具调用均为零；因此不能把它称为“已运行的 Agent Team”。
+它没有连接 Agent Runtime、模型、MCP、外部工具、Daemon、消息投递、真实身份认证或跨设备执行。ADR-0035 已补上本机协议级的 Workspace、Agent Identity、Channel membership 与数据等级，并使新 `team-task@2` 在每次读写时检查这些边界；但 `actor_id` 尚不是经 token/OIDC/会话认证的真实用户或 Agent principal。运行时固定报告 `agent_runtime=not_connected`、模型调用和外部工具调用均为零；因此不能把它称为“已运行的 Agent Team”。
 
 ## 对象与不变量
 
 | 对象 | 持久化内容 | 核心不变量 |
 |---|---|---|
-| Team Task | Channel/Thread 引用、目标、requirements、scope、停止条件、Gate、负责人、租约、版本 | requirements 与 Gate 在创建后不修改；scope 只是交接约束，不是执行授权 |
+| Team Task | Workspace/Channel/Thread 引用、创建者、目标、requirements、scope、停止条件、Gate、负责人、租约、版本 | `team-task@2` 的访问要求 active identity + Workspace membership/clearance + Channel membership/role；requirements 与 Gate 在创建后不修改；scope 只是交接约束，不是执行授权 |
 | Handoff | 任务版本、requirements/Gate 摘要、决策、产物引用、证据、缺口、风险、下一步 | 只追加；只有有效 lease 的负责人可写；不能换一份 requirements/Gate 伪装交付 |
 | Gate decision | reviewer、任务版本、摘要、证据、原因、`pass/reject/needs_human` | 只追加；仅预设 reviewer 可写；Gate pass 才表示 done |
 | Closure | 关闭人、原因、时间 | `closed` 只表示停止跟踪，不是验收通过；已关闭 Child 不再阻塞父项 |
@@ -52,7 +52,7 @@ todo / in_progress / in_review --close(reason)--> closed
 ## 后续顺序
 
 1. [Recovery Loop Guard](RECOVERY_LOOP_GUARD.md)：失败恢复必须先是候选、再重验绑定，并仍经 Handoff + Gate 交付；不让“重试成功”绕过验收。
-2. Inbox / attention / work mark：按用户决定暂缓；实施时先做权限过滤、执行租约、同 Thread 消息合并和人类纠正优先，不可用“每条消息都唤醒 Agent”替代。
+2. Inbox / attention / work mark：按用户决定暂缓；ADR-0035 已提供权限过滤前提，重新启动时再做执行租约、同 Thread 消息合并和人类纠正优先，不可用“每条消息都唤醒 Agent”替代。
 3. freshness：把 read sequence 与发送/提交的版本检查放在同一事务，过期草稿须补读再决定。
-4. Agent/Computer/Session：只有 Runtime、身份、工具政策和证据链经过独立 L3 审查后，才将 Handoff/Gate 接到真实执行。
+4. Agent/Computer/Session：只有 Runtime、真实身份认证、工具政策和证据链经过独立 L3 审查后，才将 Handoff/Gate 接到真实执行。
 5. 子 Agent：默认只读、父权限收窄、预算/取消/结果引用；不能把本地 Task 对象误称为已经并发运行的 Subagent。

@@ -417,11 +417,255 @@ paths:
                 $ref: './team-coordination.schema.json#/$defs/runtime_status'
         default:
           $ref: '#/components/responses/Error'
+  /local/team/foundation/runtime:
+    servers:
+      - url: /api
+    get:
+      operationId: getTeamFoundationRuntime
+      description: Returns the local protocol identity and Channel boundary. It is not HTTP authentication or an Agent runtime.
+      responses:
+        '200':
+          description: Fixed-zero Team Foundation boundary status.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/runtime_status'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/workspaces:
+    servers:
+      - url: /api
+    get:
+      operationId: listTeamWorkspaces
+      parameters:
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
+      responses:
+        '200':
+          description: Workspaces visible to the requesting local protocol identity.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/workspace_list'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createTeamWorkspace
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-foundation.schema.json#/$defs/workspace_create_request'
+      responses:
+        '201':
+          description: A Workspace and owner membership created by the local bootstrap administrator.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/workspace'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/workspaces/{workspaceId}:
+    servers:
+      - url: /api
+    get:
+      operationId: getTeamWorkspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/workspace_id'
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
+      responses:
+        '200':
+          description: Authorized Workspace metadata and memberships, without messages or private Agent state.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/workspace_detail'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/workspaces/{workspaceId}/agents:
+    servers:
+      - url: /api
+    get:
+      operationId: listTeamWorkspaceAgents
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/workspace_id'
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
+      responses:
+        '200':
+          description: Agent protocol identities in an authorized Workspace.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/agent_list'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createTeamAgentIdentity
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-foundation.schema.json#/$defs/agent_create_request'
+      responses:
+        '201':
+          description: An Agent protocol identity and member record. It has no Provider, credential or runtime binding.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/workspaces/{workspaceId}/memberships:
+    servers:
+      - url: /api
+    post:
+      operationId: grantTeamWorkspaceMembership
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/workspace_id'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-foundation.schema.json#/$defs/workspace_membership_grant_request'
+      responses:
+        '201':
+          description: Adds an existing protocol identity to a Workspace.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/workspace_membership'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/workspaces/{workspaceId}/channels:
+    servers:
+      - url: /api
+    get:
+      operationId: listTeamWorkspaceChannels
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/workspace_id'
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
+      responses:
+        '200':
+          description: Only Channels to which the requesting identity belongs.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/channel_list'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createTeamChannel
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-foundation.schema.json#/$defs/channel_create_request'
+      responses:
+        '201':
+          description: A Channel and its creator coordinator membership.
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/channels/{channelId}:
+    servers:
+      - url: /api
+    get:
+      operationId: getTeamChannel
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/channel_id'
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
+      responses:
+        '200':
+          description: Authorized Channel metadata and member roles, without messages or Inbox state.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/channel_detail'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/channels/{channelId}/memberships:
+    servers:
+      - url: /api
+    post:
+      operationId: grantTeamChannelMembership
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/channel_id'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-foundation.schema.json#/$defs/channel_membership_grant_request'
+      responses:
+        '201':
+          description: Grants Channel role(s) only after Workspace membership and clearance checks.
+          content:
+            application/json:
+              schema:
+                $ref: './team-foundation.schema.json#/$defs/channel_membership'
+        default:
+          $ref: '#/components/responses/Error'
   /local/team/tasks:
     servers:
       - url: /api
     get:
       operationId: listLocalTeamTasks
+      parameters:
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
       responses:
         '200':
           description: Team Task summaries and local coordination boundary.
@@ -461,6 +705,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
       responses:
         '200':
           description: One Team Task with append-only Handoffs and Gate decisions.
@@ -626,6 +875,12 @@ paths:
       - url: /api
     get:
       operationId: listRecoveryCases
+      parameters:
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
       responses:
         '200':
           description: Recovery cases and the fixed-zero runtime boundary.
@@ -665,6 +920,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-foundation.schema.json#/$defs/agent_id'
       responses:
         '200':
           description: Recovery case, candidates, observations, reminders and cancellation audit.

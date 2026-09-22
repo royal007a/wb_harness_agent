@@ -216,22 +216,32 @@
 
 请求与响应以 [`memory-plane.schema.json`](../../specs/v1/memory-plane.schema.json)、[`memory-context.schema.json`](../../specs/v1/memory-context.schema.json)、[`memory-graph.schema.json`](../../specs/v1/memory-graph.schema.json) 与 [`memory-entity-catalog.schema.json`](../../specs/v1/memory-entity-catalog.schema.json) 为准。它不替代权威事实源，也不是完整 RAG/Memory 系统；限制和生命周期见 [Memory Plane M1](MEMORY_PLANE_M1.md)、[Memory Context M2-A](MEMORY_CONTEXT_M2A.md)、[Memory Graph M3-A](MEMORY_GRAPH_M3A.md) 与 [Memory Entity Catalog M3-B](MEMORY_ENTITY_CATALOG_M3B.md)。
 
-## Team Coordination（ADR-0033，本机受限控制面）
+## Team Foundation（ADR-0035，本机协议授权边界）
+
+- `GET /api/local/team/foundation/runtime`：明确返回 `protocol_identity_authentication=not_connected`、Agent Runtime 未连接、模型/工具调用为零、消息投递未实现。
+- `GET/POST /api/local/team/workspaces`：按 protocol `actor_id` 返回可见 Workspace；创建仅允许本机 bootstrap `local_admin`，并不构成 HTTP 登录能力。
+- `GET /api/local/team/workspaces/{workspace_id}`、`/agents`、`/channels`：必须具有 active Workspace membership；返回元数据/成员关系，不返回消息、Thread、私有 Agent state 或凭据。
+- `POST /api/local/team/workspaces/{workspace_id}/agents`、`/memberships`、`/channels`：Workspace owner/admin 创建 Agent protocol identity、加入已有 identity 或创建 Channel；所有写入使用 `Idempotency-Key`。
+- `GET /api/local/team/channels/{channel_id}`、`POST /api/local/team/channels/{channel_id}/memberships`：Channel 读取/role 授权需 Workspace membership、clearance 和 Channel membership；data class 为 `Public / Internal / Restricted`。
+
+请求和响应以 [`team-foundation.schema.json`](../../specs/v1/team-foundation.schema.json) 为准。它不实现 token/OIDC、真实用户或 Agent 认证、消息/Thread/DM、Inbox、Daemon、Computer、模型或工具权限执行；完整边界见 [Team Foundation](TEAM_FOUNDATION.md)。
+
+## Team Coordination（ADR-0033 + ADR-0035，本机受限控制面）
 
 - `GET /api/local/team/runtime`：返回本地 Team control-plane 状态；固定为未连接 Agent Runtime、模型/外部工具调用为零。
-- `GET /api/local/team/tasks`、`POST /api/local/team/tasks`、`GET /api/local/team/tasks/{task_id}`：读取或创建带冻结 requirements、scope、停止条件与 Gate 的协作 Task。
+- `GET /api/local/team/tasks?actor_id=...`、`POST /api/local/team/tasks`、`GET /api/local/team/tasks/{task_id}?actor_id=...`：读取或创建带冻结 requirements、scope、停止条件与 Gate 的协作 Task；新 `team-task@2` 要求 Workspace、Channel、clearance 和 role 边界。
 - `POST /api/local/team/tasks/{task_id}:claim`：在 SQLite 事务中原子写入有期限的执行 lease。
 - `POST /api/local/team/tasks/{task_id}/handoffs`：只有有效负责人可追加与 requirements/Gate digest、task version 绑定的 Handoff。
 - `POST /api/local/team/tasks/{task_id}:submit`：必须已有 Handoff 且没有开放 Child，才转为 `in_review`。
 - `POST /api/local/team/tasks/{task_id}/gate-decisions`：只有预设 reviewer 可记录 `pass` / `reject` / `needs_human`；只有 pass 进入 `done`。
 - `POST /api/local/team/tasks/{task_id}:close`：保存关闭人和原因，进入 `closed`；它不代表 Gate 通过。
 
-所有写请求需要 `Idempotency-Key`，并以 `expected_task_version` 防止旧读取覆盖当前状态。请求、响应与错误约束以 [`team-coordination.schema.json`](../../specs/v1/team-coordination.schema.json) 为准；产品语义和非目标见 [Team Coordination](TEAM_COORDINATION.md)。它不是 Workspace/Channel/Thread 服务、消息 Inbox、真实 Agent/Daemon/Computer 或身份认证 API。
+所有写请求需要 `Idempotency-Key`，并以 `expected_task_version` 防止旧读取覆盖当前状态。请求、响应与错误约束以 [`team-coordination.schema.json`](../../specs/v1/team-coordination.schema.json) 为准；产品语义和非目标见 [Team Coordination](TEAM_COORDINATION.md)。它没有消息 Inbox、真实 Agent/Daemon/Computer 或生产身份认证；历史 `team-task@1` 不会被新 protocol identity 静默访问。
 
 ## Recovery Loop Guard（ADR-0034，本机受限控制面）
 
 - `GET /api/local/recovery/runtime`：返回固定零执行边界；不会启动模型、工具、Checkpoint restore 或自动审批。
-- `GET/POST /api/local/recovery/cases`：读取或创建绑定一个已 claim Team Task 的失败 Case。创建同时记录 Error Contract、失败点、根因**假设**、回滚 Checkpoint 和 Replan 起点，并冻结 Task/requirements/Gate/scope/输入/无工具权限摘要。
+- `GET /api/local/recovery/cases?actor_id=...`、`POST /api/local/recovery/cases`：读取或创建绑定一个已 claim Team Task 的失败 Case。创建同时记录 Error Contract、失败点、根因**假设**、回滚 Checkpoint 和 Replan 起点，并冻结 Task/requirements/Gate/scope/输入/无工具权限摘要。
 - `POST /api/local/recovery/cases/{case_id}/observations`：追加 failure 或 `verified_progress` Evidence；在连续失败时只写 Reminder，在 turn/时间/候选/重复 operation 或取消边界上硬停止。
 - `POST /api/local/recovery/cases/{case_id}:try`：只生成 `proposed` 候选，不执行恢复。
 - `POST /api/local/recovery/cases/{case_id}:confirm`：重新核对 Task、Checkpoint、固定权限、预算和输入摘要；成功后仍只进入 `confirmed_pending_handoff`。

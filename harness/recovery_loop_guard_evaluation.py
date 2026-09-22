@@ -30,8 +30,22 @@ def post(client, path, body, key, expected):
 def main():
     with tempfile.TemporaryDirectory() as directory:
         with TestClient(create_app(Path(directory) / 'evaluation.db', False), base_url='http://127.0.0.1') as client:
+            for agent_id, name in (('builder-01', 'Synthetic Builder'), ('reviewer-01', 'Synthetic Reviewer')):
+                post(client, '/api/local/team/workspaces/ws_local/agents', {
+                    'actor_id': 'local_admin', 'workspace_id': 'ws_local', 'id': agent_id,
+                    'kind': 'agent', 'display_name': name, 'clearance': 'Restricted',
+                }, 'evaluation-agent-' + agent_id, 201)
+            post(client, '/api/local/team/workspaces/ws_local/channels', {
+                'actor_id': 'local_admin', 'id': 'ch_recovery_eval', 'title': 'Synthetic Recovery',
+                'data_class': 'Internal',
+            }, 'evaluation-channel', 201)
+            for agent_id, roles in (('builder-01', ['contributor']), ('reviewer-01', ['reviewer'])):
+                post(client, '/api/local/team/channels/ch_recovery_eval/memberships', {
+                    'actor_id': 'local_admin', 'agent_id': agent_id, 'roles': roles,
+                }, 'evaluation-channel-member-' + agent_id, 201)
             task = post(client, '/api/local/team/tasks', {
-                'channel_id': 'ch_recovery_eval', 'thread_id': 'thread-eval', 'title': 'synthetic recovery',
+                'workspace_id': 'ws_local', 'channel_id': 'ch_recovery_eval', 'creator_id': 'local_admin',
+                'thread_id': 'thread-eval', 'title': 'synthetic recovery',
                 'objective': 'verify recovery controls', 'requirements': ['R1 traceable result'],
                 'scope': {'allowed_paths': ['internal/'], 'forbidden_paths': ['db/'], 'resource_refs': ['repo:synthetic']},
                 'stop_conditions': ['stop on expanded permission'],

@@ -7,7 +7,6 @@ obey, while keeping it separate from the fixed CSV Product Task/Run contract.
 from __future__ import annotations
 
 import json
-import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -15,16 +14,13 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
+from .team_foundation import TeamFoundation
+from .team_security import reject_sensitive
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = json.loads((ROOT / 'specs/v1/team-coordination.schema.json').read_text())
 TERMINAL = {'done', 'closed'}
-SENSITIVE_INPUT = re.compile(
-    r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token|password)\s*[:=]'
-    r'|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
-
-
 def validate_contract(name, value):
     schema = {'$ref': '#/$defs/' + name, '$defs': CONTRACT['$defs']}
     errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(value))
@@ -40,24 +36,12 @@ def parse_time(value):
     return datetime.fromisoformat(value.replace('Z', '+00:00'))
 
 
-def reject_sensitive(value):
-    """Keep collaboration metadata out of the local secret store by default."""
-    if isinstance(value, str):
-        if SENSITIVE_INPUT.search(value):
-            raise Problem('SENSITIVE_INPUT_REJECTED', 'Team 协作记录不接收或保存凭证样式内容。', 422)
-    elif isinstance(value, list):
-        for item in value:
-            reject_sensitive(item)
-    elif isinstance(value, dict):
-        for item in value.values():
-            reject_sensitive(item)
-
-
 class TeamCoordination:
-    """One-process, local-admin Team Task state machine with auditable writes."""
+    """Team Task state machine guarded by Workspace/Channel protocol access."""
 
-    def __init__(self, store):
+    def __init__(self, store, foundation: TeamFoundation):
         self.store = store
+        self.foundation = foundation
 
     @staticmethod
     def runtime_status():
@@ -66,7 +50,9 @@ class TeamCoordination:
             'agent_runtime': 'not_connected',
             'external_model_calls': 0,
             'external_tool_calls': 0,
-            'note': '只持久化 Task/Handoff/Gate；不启动 Agent、模型、外部工具或自动审批。',
+            'protocol_identity_authentication': 'not_connected',
+            'note': ('Task/Handoff/Gate 受本机 Workspace/Channel 协议边界约束；actor_id 不是登录身份。'
+                     '不启动 Agent、模型、外部工具、消息或自动审批。'),
         }
 
     @staticmethod
@@ -123,8 +109,8 @@ class TeamCoordination:
         if task['version'] != expected:
             raise Problem('TEAM_TASK_VERSION_CONFLICT', 'Task 已变化；请重新读取后再写入。', 409)
 
-    @staticmethod
-    def _assert_active_claim(task, actor_id):
+    def _assert_active_claim(self, db, task, actor_id):
+        self.foundation.assert_task_access(db, task, actor_id, {'contributor', 'coordinator'})
         lease = task.get('lease')
         if (task['status'] != 'in_progress' or task.get('assignee_id') != actor_id or not lease
                 or lease['claimant_id'] != actor_id or parse_time(lease['expires_at']) <= iso_now()):
@@ -140,17 +126,26 @@ class TeamCoordination:
         reject_sensitive(body)
 
         def create(db):
+            workspace, _, _, _ = self.foundation.assert_channel_access(
+                db, body['channel_id'], body['creator_id'], {'coordinator'})
+            if workspace['id'] != body['workspace_id']:
+                raise Problem('TEAM_TASK_SCOPE_INVALID', 'Task Workspace 必须与 Channel 所属 Workspace 一致。', 409)
+            self.foundation.assert_channel_access(db, body['channel_id'], body['gate']['reviewer_id'],
+                                                  {'reviewer', 'coordinator'})
             parent_id = body['parent_task_id']
             if parent_id:
                 parent = self._row_task(db, parent_id)
+                self.foundation.assert_task_access(db, parent, body['creator_id'], {'coordinator'})
                 if parent['status'] in TERMINAL:
                     raise Problem('TEAM_TASK_PARENT_TERMINAL', '不能向已结束的父 Task 新增 Child。', 409)
-                if parent['channel_id'] != body['channel_id']:
-                    raise Problem('TEAM_TASK_PARENT_SCOPE_INVALID', 'Child Task 必须属于与父项相同的 Channel。', 409)
+                if parent['channel_id'] != body['channel_id'] or parent['workspace_id'] != body['workspace_id']:
+                    raise Problem('TEAM_TASK_PARENT_SCOPE_INVALID', 'Child Task 必须属于与父项相同的 Workspace 和 Channel。', 409)
             created_at = now()
             task = {
-                'schema_version': 'team-task@1', 'id': uid('teamtask'), 'workspace_id': 'ws_local',
-                **body, 'requirements_digest': digest(dumps(body['requirements']).encode()),
+                'schema_version': 'team-task@2', 'id': uid('teamtask'),
+                'created_by_id': body['creator_id'],
+                **{name: value for name, value in body.items() if name != 'creator_id'},
+                'requirements_digest': digest(dumps(body['requirements']).encode()),
                 'gate_digest': digest(dumps(body['gate']).encode()), 'status': 'todo', 'assignee_id': None,
                 'lease': None, 'closure': None, 'version': 1, 'handoff_count': 0, 'latest_gate_decision_id': None,
                 'created_at': created_at, 'updated_at': created_at,
@@ -160,12 +155,24 @@ class TeamCoordination:
             return task
         return self._idempotent('team-task:create', key, body, create)
 
-    def tasks(self):
-        return {'items': self.store.team_tasks(), 'runtime': self.runtime_status()}
+    def tasks(self, actor_id):
+        with self.store.transaction() as db:
+            self.foundation._agent(db, actor_id)
+            rows = db.execute('SELECT doc FROM team_tasks ORDER BY rowid DESC').fetchall()
+            visible = []
+            for row in rows:
+                task = json.loads(row['doc'])
+                try:
+                    self.foundation.assert_task_access(db, task, actor_id)
+                except Problem:
+                    continue
+                visible.append(task)
+            return {'items': visible, 'runtime': self.runtime_status()}
 
-    def detail(self, task_id):
+    def detail(self, task_id, actor_id):
         with self.store.transaction() as db:
             task = self._expire_lease(db, self._row_task(db, task_id))
+            self.foundation.assert_task_access(db, task, actor_id)
             children = [json.loads(row['doc']) for row in db.execute(
                 'SELECT doc FROM team_tasks WHERE parent_task_id=? ORDER BY rowid', (task_id,)).fetchall()]
             handoffs = [json.loads(row['doc']) for row in db.execute(
@@ -183,6 +190,7 @@ class TeamCoordination:
 
         def claim(db):
             task = self._expire_lease(db, self._row_task(db, task_id))
+            self.foundation.assert_task_access(db, task, body['actor_id'], {'contributor', 'coordinator'})
             if task['status'] not in {'todo', 'in_progress'}:
                 raise Problem('TEAM_TASK_STATE_INVALID', '只有 todo 或待返工的 in_progress Task 可以认领。', 409)
             if task['status'] == 'in_progress' and task['assignee_id'] not in {None, body['actor_id']}:
@@ -203,7 +211,7 @@ class TeamCoordination:
         def create(db):
             task = self._expire_lease(db, self._row_task(db, task_id))
             self._assert_version(task, body['expected_task_version'])
-            self._assert_active_claim(task, body['actor_id'])
+            self._assert_active_claim(db, task, body['actor_id'])
             handoff = {
                 'schema_version': 'task-handoff@1', 'id': uid('handoff'), 'task_id': task_id,
                 'sequence': task['handoff_count'] + 1, 'actor_id': body['actor_id'], 'task_version': task['version'],
@@ -227,7 +235,7 @@ class TeamCoordination:
         def submit(db):
             task = self._expire_lease(db, self._row_task(db, task_id))
             self._assert_version(task, body['expected_task_version'])
-            self._assert_active_claim(task, body['actor_id'])
+            self._assert_active_claim(db, task, body['actor_id'])
             if task['handoff_count'] == 0:
                 raise Problem('TEAM_TASK_HANDOFF_REQUIRED', '提交审核前必须写入至少一份 Handoff。', 409)
             if self._open_children(db, task_id):
@@ -251,10 +259,12 @@ class TeamCoordination:
         def close(db):
             task = self._expire_lease(db, self._row_task(db, task_id))
             self._assert_version(task, body['expected_task_version'])
+            self.foundation.assert_task_access(db, task, body['actor_id'],
+                                                {'contributor', 'coordinator', 'reviewer'})
             if task['status'] in TERMINAL:
                 raise Problem('TEAM_TASK_STATE_INVALID', '已结束的 Task 不能再次关闭。', 409)
             if task['status'] == 'in_progress':
-                self._assert_active_claim(task, body['actor_id'])
+                self._assert_active_claim(db, task, body['actor_id'])
             elif task['status'] == 'in_review' and body['actor_id'] not in {
                     task['assignee_id'], task['gate']['reviewer_id']}:
                 raise Problem('TEAM_TASK_CLOSE_FORBIDDEN', '审核中的 Task 仅负责人或 Gate reviewer 可以关闭。', 403)
@@ -273,6 +283,7 @@ class TeamCoordination:
         def decide(db):
             task = self._expire_lease(db, self._row_task(db, task_id))
             self._assert_version(task, body['expected_task_version'])
+            self.foundation.assert_task_access(db, task, body['reviewer_id'], {'reviewer', 'coordinator'})
             if task['status'] != 'in_review':
                 raise Problem('TEAM_TASK_STATE_INVALID', '只有 in_review Task 可以接受 Gate 决策。', 409)
             if task['gate']['reviewer_id'] != body['reviewer_id']:

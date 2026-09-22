@@ -62,9 +62,11 @@
     "team_task_create_request": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["channel_id", "thread_id", "title", "objective", "requirements", "scope", "stop_conditions", "gate", "parent_task_id"],
+      "required": ["workspace_id", "channel_id", "creator_id", "thread_id", "title", "objective", "requirements", "scope", "stop_conditions", "gate", "parent_task_id"],
       "properties": {
+        "workspace_id": {"type": "string", "pattern": "^ws_[A-Za-z0-9_-]{3,80}$"},
         "channel_id": {"type": "string", "pattern": "^ch_[A-Za-z0-9_-]{3,80}$"},
+        "creator_id": {"$ref": "#/$defs/actor_id"},
         "thread_id": {"type": ["string", "null"], "maxLength": 128},
         "title": {"type": "string", "minLength": 1, "maxLength": 240},
         "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
@@ -78,12 +80,13 @@
     "team_task": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema_version", "id", "workspace_id", "channel_id", "thread_id", "parent_task_id", "title", "objective", "requirements", "scope", "stop_conditions", "gate", "requirements_digest", "gate_digest", "status", "assignee_id", "lease", "closure", "version", "handoff_count", "latest_gate_decision_id", "created_at", "updated_at"],
+      "required": ["schema_version", "id", "workspace_id", "channel_id", "created_by_id", "thread_id", "parent_task_id", "title", "objective", "requirements", "scope", "stop_conditions", "gate", "requirements_digest", "gate_digest", "status", "assignee_id", "lease", "closure", "version", "handoff_count", "latest_gate_decision_id", "created_at", "updated_at"],
       "properties": {
-        "schema_version": {"const": "team-task@1"},
+        "schema_version": {"const": "team-task@2"},
         "id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
-        "workspace_id": {"const": "ws_local"},
+        "workspace_id": {"type": "string", "pattern": "^ws_[A-Za-z0-9_-]{3,80}$"},
         "channel_id": {"type": "string", "pattern": "^ch_[A-Za-z0-9_-]{3,80}$"},
+        "created_by_id": {"$ref": "#/$defs/actor_id"},
         "thread_id": {"type": ["string", "null"], "maxLength": 128},
         "parent_task_id": {"type": ["string", "null"], "pattern": "^teamtask_[a-f0-9]{32}$"},
         "title": {"type": "string", "minLength": 1, "maxLength": 240},
@@ -244,12 +247,13 @@
     "runtime_status": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mode", "agent_runtime", "external_model_calls", "external_tool_calls", "note"],
+      "required": ["mode", "agent_runtime", "external_model_calls", "external_tool_calls", "protocol_identity_authentication", "note"],
       "properties": {
         "mode": {"const": "local_team_coordination@1"},
         "agent_runtime": {"const": "not_connected"},
         "external_model_calls": {"const": 0},
         "external_tool_calls": {"const": 0},
+        "protocol_identity_authentication": {"const": "not_connected"},
         "note": {"type": "string", "minLength": 1}
       }
     }

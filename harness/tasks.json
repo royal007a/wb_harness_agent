@@ -1,7 +1,33 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T02:31:00Z",
+  "generated_at": "2026-09-22T03:10:00Z",
   "tasks": [
+    {
+      "id": "HA-0040",
+      "title": "实现 Workspace、Agent 身份与 Channel 授权数据边界",
+      "status": "running",
+      "risk": "high",
+      "scope": [
+        "独立 Workspace、AgentIdentity、Workspace/Channel membership 与 Public/Internal/Restricted 数据等级",
+        "Team Task v2 的 Channel role、clearance 与 workspace 隔离；旧 Team Task 不自动扩权",
+        "零真实认证/执行的合成评测，以及本机和 118.196.123.132 双环境 Evidence"
+      ],
+      "non_goals": [
+        "HTTP 登录、OIDC/token、真实 Agent/用户认证、Daemon、Computer、消息/Thread/DM、Inbox、work mark、freshness 或自动委派",
+        "模型、Provider、工具、网络、Keychain/工作目录迁移、真实投研或真实权限执行"
+      ],
+      "acceptance": [
+        "Workspace/Channel/membership/data-class 由机器契约验证，Task v2 所有读写路径均检查 role/clearance/隔离",
+        "legacy Team Task 不被静默授予新身份，运行时明确 protocol identity 不是登录认证",
+        "定向/全量回归、OpenAPI、双环境发布健康与无密 Evidence 完整"
+      ],
+      "depends_on": ["HA-0037", "HA-0039"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0040-team-workspace-identity-channel-boundary.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
     {
       "id": "HA-0039",
       "title": "实现 Recovery Loop Guard 与 Team Gate 回接",

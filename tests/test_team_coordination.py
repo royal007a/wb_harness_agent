@@ -14,7 +14,9 @@ from backend.team_coordination import iso_now
 
 
 CREATE = {
+    'workspace_id': 'ws_local',
     'channel_id': 'ch_harness_local',
+    'creator_id': 'local_admin',
     'thread_id': 'thread-demo-01',
     'title': '修复刷新重试逻辑',
     'objective': '保留兼容层，并确保同一批并发请求最多刷新一次。',
@@ -35,7 +37,35 @@ ARTIFACT = {'kind': 'test_result', 'ref': 'checks/refresh.log', 'sha256': 'a' * 
 @pytest.fixture
 def client(tmp_path):
     with TestClient(create_app(tmp_path / 'team.db', False), base_url='http://127.0.0.1') as value:
+        bootstrap(value)
         yield value
+
+
+def bootstrap(client):
+    for agent_id, kind, name in (
+        ('builder-01', 'agent', 'Builder One'),
+        ('builder-02', 'agent', 'Builder Two'),
+        ('reviewer-01', 'agent', 'Reviewer One'),
+        ('other-reviewer', 'agent', 'Other Reviewer'),
+    ):
+        response = client.post('/api/local/team/workspaces/ws_local/agents', json={
+            'actor_id': 'local_admin', 'workspace_id': 'ws_local', 'id': agent_id,
+            'kind': kind, 'display_name': name, 'clearance': 'Restricted',
+        }, headers={'Idempotency-Key': 'bootstrap-agent-' + agent_id})
+        assert response.status_code == 201, response.text
+    response = client.post('/api/local/team/workspaces/ws_local/channels', json={
+        'actor_id': 'local_admin', 'id': 'ch_harness_local', 'title': 'Harness Local',
+        'data_class': 'Internal',
+    }, headers={'Idempotency-Key': 'bootstrap-channel'})
+    assert response.status_code == 201, response.text
+    for agent_id, roles in (
+        ('builder-01', ['contributor']), ('builder-02', ['contributor']),
+        ('reviewer-01', ['reviewer']), ('other-reviewer', ['reviewer']),
+    ):
+        response = client.post('/api/local/team/channels/ch_harness_local/memberships', json={
+            'actor_id': 'local_admin', 'agent_id': agent_id, 'roles': roles,
+        }, headers={'Idempotency-Key': 'bootstrap-channel-member-' + agent_id})
+        assert response.status_code == 201, response.text
 
 
 def create_task(client, key='team-create', **changes):
@@ -87,12 +117,13 @@ def test_team_task_freezes_contract_and_idempotent_create(client):
     changed = client.post('/api/local/team/tasks', json={**CREATE, 'title': '其他任务'},
                           headers={'Idempotency-Key': 'team-create'})
     assert changed.status_code == 409
-    assert first['schema_version'] == 'team-task@1'
+    assert first['schema_version'] == 'team-task@2'
     assert len(first['requirements_digest']) == len(first['gate_digest']) == 64
     assert first['status'] == 'todo' and first['lease'] is None
-    listed = client.get('/api/local/team/tasks').json()
+    listed = client.get('/api/local/team/tasks?actor_id=builder-01').json()
     assert [item['id'] for item in listed['items']] == [first['id']]
     assert listed['runtime']['agent_runtime'] == 'not_connected'
+    assert listed['runtime']['protocol_identity_authentication'] == 'not_connected'
 
 
 def test_atomic_claim_handoff_and_version_binding(client):
@@ -120,7 +151,7 @@ def test_atomic_claim_handoff_and_version_binding(client):
     assert result['handoff']['requirements_digest'] == claimed['requirements_digest']
     assert result['handoff']['gate_digest'] == claimed['gate_digest']
     assert result['task']['version'] == claimed['version'] + 1
-    detail = client.get('/api/local/team/tasks/' + task['id']).json()
+    detail = client.get('/api/local/team/tasks/' + task['id'] + '?actor_id=' + claimed['assignee_id']).json()
     assert len(detail['handoffs']) == 1 and detail['handoffs'][0] == result['handoff']
 
 
@@ -167,12 +198,13 @@ def test_parent_child_gate_three_exits_and_reject_reclaim(client):
 def test_team_state_persists_across_restart_and_openapi_is_explicit(tmp_path):
     database = tmp_path / 'restart-team.db'
     with TestClient(create_app(database, False), base_url='http://127.0.0.1') as local:
+        bootstrap(local)
         task = create_task(local, key='restart-create')
         claimed = claim(local, task['id'], key='restart-claim')
         expected = handoff(local, claimed, key='restart-handoff')
         assert expected['task']['handoff_count'] == 1
     with TestClient(create_app(database, False), base_url='http://127.0.0.1') as restarted:
-        detail = restarted.get('/api/local/team/tasks/' + task['id']).json()
+        detail = restarted.get('/api/local/team/tasks/' + task['id'] + '?actor_id=builder-01').json()
         assert detail['task']['handoff_count'] == 1
         assert detail['handoffs'][0]['artifact_refs'] == [ARTIFACT]
         assert detail['runtime']['external_model_calls'] == detail['runtime']['external_tool_calls'] == 0
@@ -199,9 +231,9 @@ def test_team_state_persists_across_restart_and_openapi_is_explicit(tmp_path):
 
 
 def test_team_contract_rejects_unknown_fields_and_wrong_gate_reviewer(client):
-    invalid = client.post('/api/local/team/tasks', json={**CREATE, 'workspace_id': 'not-accepted'},
+    invalid = client.post('/api/local/team/tasks', json={**CREATE, 'workspace_id': 'ws_other'},
                           headers={'Idempotency-Key': 'bad-team'})
-    assert invalid.status_code == 422
+    assert invalid.status_code == 409 and invalid.json()['error']['code'] == 'TEAM_TASK_SCOPE_INVALID'
     task = create_task(client, key='reviewer-create')
     claimed = claim(client, task['id'], key='reviewer-claim')
     review = submit(client, handoff(client, claimed, key='reviewer-handoff')['task'], key='reviewer-submit')
@@ -229,7 +261,7 @@ def test_expired_lease_releases_task_and_closed_child_no_longer_blocks_parent(cl
         stored = team._row_task(db, child['id'])
         stored['lease']['expires_at'] = (iso_now() - timedelta(seconds=1)).isoformat().replace('+00:00', 'Z')
         team._write_task(db, stored)
-    released = client.get(f'/api/local/team/tasks/{child["id"]}').json()['task']
+    released = client.get(f'/api/local/team/tasks/{child["id"]}?actor_id=builder-01').json()['task']
     assert released['status'] == 'todo' and released['assignee_id'] is None and released['lease'] is None
     reclaimed = claim(client, child['id'], key='close-child-reclaim', actor='builder-02')
     closed = client.post(f'/api/local/team/tasks/{child["id"]}:close', json={
