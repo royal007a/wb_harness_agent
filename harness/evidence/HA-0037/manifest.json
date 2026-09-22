@@ -1,0 +1,18 @@
+{
+  "work_item": "HA-0037",
+  "status": "completed",
+  "release_commit": "a243283472ced243465d20cb5b8e686a29fa60ba",
+  "contract": "specs/v1/team-coordination.schema.json",
+  "verification": {
+    "junit": "all-tests.xml",
+    "result": "225 passed, 12 skipped, 0 failed; one upstream deprecation warning",
+    "targeted": "tests/test_team_coordination.py: 7 passed",
+    "schema": "Draft 2020-12 and static/runtime OpenAPI paths validated"
+  },
+  "deployment": "deployment.json",
+  "limitations": [
+    "This is a local-admin Task/Handoff/Gate control plane, not a Workspace, Channel, Thread or Inbox service.",
+    "No Agent Runtime, Daemon, Computer, model, external tool, automatic approval, identity authorization or Subagent execution is connected.",
+    "Team Task scope is a collaboration contract and does not grant tool permissions."
+  ]
+}

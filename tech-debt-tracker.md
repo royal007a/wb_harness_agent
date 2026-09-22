@@ -37,6 +37,7 @@
 | TD-026 | ADR-0024 已实现默认关闭的 Native Claude SubAgent / Plugin Skill / MCP 来源代码与 Product Run 证据链，但尚无真实模型、WebSearch/WebFetch、财务 API 或 PDF 的 L3 执行证据 | 不得把模拟/门禁测试报告作为真实研报、投资建议或 Claude 多 Agent 验证 / P1 | 任何将 `engine_claude_research_native` 标记 available 或输入真实资料前 | mymaccodex；SDK 端到端探针、隔离执行、授权数据源、时效/引用/安全评测、L3 取消与成本证据 |
 | TD-027 | ADR-0025 外部 Skill 只支持本地 ZIP、stdlib JSON transform 与单用户 Colima；无签名/许可证/SBOM、身份、Product Run 关联、网络/依赖审批或生产运行器 | 不得把它描述为通用 Skill 市场、第三方认证或多租户生产执行器 / P1 | 申请接入第三方 Skill、网络/依赖或真实 Run 前 | mymaccodex；供应链审计、身份/Task-Run 绑定、审批/预算、L3 逃逸与故障注入证据 |
 | TD-028 | ADR-0026/0027/0028/0029/0030 已实现单用户显式 Source/Fact、FTS5 Fact Capsule / detail、as-of 时间过滤、至多两跳 relation path 与 canonical/alias exact Entity Catalog；ADR-0031 仅提供 semantic/vector/RRF 的未准入 Gate。仍无身份/租户、自动摄取/抽取/消歧、语义/图索引或图排序、RRF/rerank、权威源冲突裁决、真实会话集成或 Reflect | 不得把 Gate 或 M3-B 写成完整 Hindsight、RAG、动态知识图谱、自然语言 GraphQA、模型上下文管理或可替代业务事实源 / P2 | 任何模型自动记忆、外部资料/Adapter 或多用户知识库接入前 | mymaccodex；M2-B/M4 实现、数据处理评估、权限/删除 L3、版本化真实基线和性能/成本测量 |
+| TD-029 | ADR-0033 只实现本机 Team Task/Handoff/Gate/closure；没有 Workspace/Channel/Thread、身份、Inbox、freshness、Agent Runtime、Daemon、Computer 或真实工具策略绑定 | 不得把 `actor_id`/`reviewer_id` 当成真实授权，或把本地 Task 记录表述为 Agent Team 已运行 / P1 | 任何外部用户、自动委派、跨设备或真实 Agent/工具接入前 | mymaccodex；身份/隔离 ADR、Inbox/freshness 契约、执行租约、工具策略与 L3 故障/权限验证 |
 
 ## 维护规则
 

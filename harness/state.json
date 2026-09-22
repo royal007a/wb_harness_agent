@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "fact_lineage_evidence_completed",
+  "phase": "team_task_handoff_gate_completed",
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0036 已完成：已知 Fact ID 可读取有界 supersede 历史并区分 current_applicable/historical；230 项 opt-in 回归及本机/公网发布通过。",
-  "last_updated_at": "2026-09-20T18:18:00Z",
-  "next_action": "等待 M2-B semantic retrieval 的语料与数据/模型审批；Gate 在此之前必须保持关闭。",
+  "last_checkpoint": "HA-0037 已完成：独立 Team Task/Handoff/Gate/closure 控制面经 225 项回归、本机与公网发布验证；Agent Runtime、模型和外部工具仍为零。",
+  "last_updated_at": "2026-09-22T01:35:00Z",
+  "next_action": "如需继续 Agent Team，先设计并实现 HA-0038 Inbox/work mark/execution lease/freshness；真实 Agent、身份和工具政策保持独立 L3 准入。",
   "release": "0.1.0-local"
 }

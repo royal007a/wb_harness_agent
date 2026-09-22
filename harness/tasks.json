@@ -1,11 +1,11 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-20T17:07:00Z",
+  "generated_at": "2026-09-22T01:35:00Z",
   "tasks": [
     {
       "id": "HA-0037",
       "title": "实现 Team Task Handoff 与 Gate 最小纵切",
-      "status": "in_progress",
+      "status": "completed",
       "risk": "high",
       "scope": [
         "独立于 P0 Product Task/Run 的 Team Task、Lease、Handoff 和 Gate Decision 契约",
@@ -23,10 +23,15 @@
       ],
       "depends_on": ["HA-0036"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0037-team-task-handoff-gate.md",
+      "plan": "exec-plans/completed/HA-0037-team-task-handoff-gate.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": []
+      "evidence": [
+        "harness/evidence/HA-0037/manifest.json",
+        "harness/evidence/HA-0037/all-tests.xml",
+        "harness/evidence/HA-0037/deployment.json",
+        "harness/evidence/HA-0037/acceptance.md"
+      ]
     },
     {"id":"HA-0036","title":"实现 Fact Lineage Evidence 纠正链","status":"completed","risk":"high","scope":["已知 Fact ID 的同 Bank supersede 历史链","current/history applicability、time/lifecycle/隔离反例","双环境发布 Evidence"],"non_goals":["自然语言冲突裁决、模型、语义/vector、Reflect 或自动记忆"],"acceptance":["返回可追溯有界历史而不把 superseded 当当前结论","time/lifecycle/隔离/无原文测试和部署通过"],"depends_on":["HA-0029","HA-0034"],"owner":"mymaccodex","plan":"exec-plans/completed/HA-0036-fact-lineage-evidence.md","blocked_reason":null,"recovery_condition":null,"evidence":["harness/evidence/HA-0036/manifest.json","harness/evidence/HA-0036/all-tests.xml","harness/evidence/HA-0036/deployment.json"]},
     {

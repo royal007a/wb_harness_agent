@@ -1,0 +1,21 @@
+{
+  "release_commit": "a243283472ced243465d20cb5b8e686a29fa60ba",
+  "local": {
+    "backup": ".local/backups/pre-ha0037-20260922T012854Z.db",
+    "service": "launchd local.harnessagent.workbench running",
+    "health": "ok",
+    "team_runtime": "local_team_coordination@1; agent_runtime=not_connected; external_model_calls=0; external_tool_calls=0",
+    "openapi": "team close path present"
+  },
+  "public": {
+    "backup": "/var/lib/harnessagent/backups/pre-ha0037-20260922T013251Z.db",
+    "staging_preflight": "py_compile, Draft 2020-12 schema validation and pip check passed",
+    "service": "harnessagent.service active",
+    "health": "ok",
+    "team_runtime": "local_team_coordination@1; agent_runtime=not_connected; external_model_calls=0; external_tool_calls=0",
+    "nginx": "configuration test passed and reloaded",
+    "unauthenticated_public_status": 401
+  },
+  "promotion_note": "A first promotion attempt referenced a local staging path and did not copy live code; the service was immediately started with its previous release. The corrected local-to-remote promotion completed after the database backup and passed all final health checks.",
+  "live_rsync_exclusions": [".git", ".venv", ".local", ".pytest_cache", "__pycache__", "tests", "harness/evidence"]
+}

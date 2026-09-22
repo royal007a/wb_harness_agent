@@ -1,6 +1,6 @@
 # HA-0037：Team Task、Handoff 与 Gate 最小纵切
 
-状态：active
+状态：completed
 
 风险：high（协作状态与验收语义；不涉及外部执行）
 
@@ -28,3 +28,9 @@
 - 只有有效认领的执行者可交接/提交，只有 Gate reviewer 可裁决，且版本不匹配被拒绝；
 - 父任务有未结束 Child 时不能提交；`pass/reject/needs_human` 状态转换正确，`closed` 记录原因且不被误认为交付；
 - 全量测试、OpenAPI、双环境健康和端点验证通过，Evidence 已入库。
+
+## 验收结果
+
+- `tests/test_team_coordination.py` 覆盖创建幂等、并发 claim、lease 到期、Handoff/version 绑定、父子阻塞、close、Gate 三出口、重启、OpenAPI 与敏感输入拒绝；7 项通过。
+- 完整 `harness/verify.sh` 为 225 passed、12 skipped、0 failed；四项既有合成 Memory 评测均通过，semantic Gate 仍为 `not_admitted`。
+- 本机与公网均备份 SQLite 后发布。两端 health 正常，Team Runtime 均为 `agent_runtime=not_connected`、模型/外部工具调用为 0；公网未认证入口保持 401。
