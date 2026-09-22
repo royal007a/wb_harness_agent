@@ -1,0 +1,56 @@
+{
+  "task": "HA-0026",
+  "status": "passed",
+  "scope": "local research multi-agent simulation only",
+  "tests": {
+    "tests": 182,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 11
+  },
+  "browser_checks": [
+    "artifact_download",
+    "clear_simulation_label",
+    "event_trace",
+    "mobile_layout",
+    "partial_risk_failure",
+    "reload",
+    "rerun_new_tree",
+    "three_agent_fanout",
+    "zero_external_calls"
+  ],
+  "runtime_counters": {
+    "model_calls": 0,
+    "provider_calls": 0,
+    "network_calls": 0,
+    "external_tool_calls": 0
+  },
+  "contract": {
+    "engine": "engine_research_multi_agent_simulation",
+    "roles": [
+      "financial",
+      "industry",
+      "risk"
+    ],
+    "child_max_turns": 2,
+    "only_child_tool": "resource.inspect",
+    "skills": [
+      "research.financial",
+      "research.industry",
+      "research.risk"
+    ]
+  },
+  "verified_boundaries": [
+    "Skill snapshot drift, permission expansion and resource-scope violation are rejected",
+    "Child outputs are independently recomputed from their assigned synthetic resource before aggregation",
+    "Partial risk evidence remains not_assessed and is never represented as no risk",
+    "No Claude SDK execution, Provider, model, network, external tool or real financial input is enabled"
+  ],
+  "artifacts": [
+    "all-tests.xml",
+    "browser.json",
+    "research-agents-desktop.png",
+    "research-agents-mobile.png",
+    "acceptance.md"
+  ]
+}

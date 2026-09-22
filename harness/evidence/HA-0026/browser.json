@@ -1,0 +1,15 @@
+{
+  "browser": "151.0.7922.34",
+  "errors": [],
+  "checks": [
+    "clear_simulation_label",
+    "three_agent_fanout",
+    "zero_external_calls",
+    "artifact_download",
+    "rerun_new_tree",
+    "partial_risk_failure",
+    "event_trace",
+    "reload",
+    "mobile_layout"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "HA-0027",
+  "deployed_at": "2026-09-19T07:23:44Z",
+  "local": {
+    "service": "launchd gui/501/local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "health": {"status": "ok", "model_calls_enabled": false},
+    "native_runtime_route": "/api/local/research-native/runtime",
+    "external_model_or_source_calls": 0
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "systemd harnessagent",
+    "service_status": "active",
+    "upstream": "127.0.0.1:8765",
+    "public_url": "https://118.196.123.132/harness/",
+    "public_access": "TLS uses the existing self-signed certificate and nginx HTTP Basic authentication; unauthenticated request returned 401.",
+    "database_backup": "/var/lib/harnessagent/backups/pre-ha0027-20260919T072344Z.db",
+    "native_runtime": {
+      "sdk_version": "0.2.152",
+      "mcp_version": "1.29.1",
+      "runtime_enabled": false,
+      "external_data_enabled": false
+    },
+    "nginx_config_test": "passed",
+    "external_model_or_source_calls": 0
+  },
+  "not_evidence": [
+    "Deployment is not a real Claude model, SubAgent, WebSearch, WebFetch, financial-data or PDF L3 execution.",
+    "No model credential, source credential, secret or HTTP Basic password is recorded here."
+  ]
+}

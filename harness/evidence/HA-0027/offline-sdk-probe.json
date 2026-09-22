@@ -1,0 +1,129 @@
+{
+  "default_runtime_status": {
+    "allowed_domains": [],
+    "blockers": [
+      "runtime_gate_disabled",
+      "external_data_gate_disabled",
+      "model_not_configured",
+      "allowed_domains_not_configured",
+      "search_source_not_configured",
+      "financial_source_not_configured"
+    ],
+    "cli_path": "claude",
+    "external_data_enabled": false,
+    "mcp_version": "2.2.0",
+    "mode": "claude_native_research@1",
+    "model": null,
+    "plugin_sha256": "6d5a373a0ab3320b65a6f0a37fba9883335253e284e5ffb5a09a05b87b420ed9",
+    "runtime_enabled": false,
+    "sdk_version": "0.2.152"
+  },
+  "mcp_server": {
+    "name": "research_sources",
+    "type": "sdk"
+  },
+  "not_performed": [
+    "query",
+    "claude_cli",
+    "keychain",
+    "http"
+  ],
+  "options": {
+    "agents": {
+      "financial": {
+        "background": true,
+        "description": "财务报告与指标证据分析",
+        "disallowedTools": null,
+        "effort": "high",
+        "initialPrompt": null,
+        "maxTurns": 4,
+        "mcpServers": [
+          "research_sources"
+        ],
+        "memory": null,
+        "model": "inherit",
+        "permissionMode": "dontAsk",
+        "prompt": "你是财务专项子代理。只使用获准的 MCP 资料工具和指定 Skill；保留来源 ID、期间、单位与不确定性，不给投资建议。",
+        "skills": [
+          "research-skills:financial-analysis"
+        ],
+        "tools": [
+          "mcp__research_sources__financial_data",
+          "mcp__research_sources__pdf_extract",
+          "mcp__research_sources__web_fetch"
+        ]
+      },
+      "industry": {
+        "background": true,
+        "description": "行业新闻与趋势证据整理",
+        "disallowedTools": null,
+        "effort": "high",
+        "initialPrompt": null,
+        "maxTurns": 4,
+        "mcpServers": [
+          "research_sources"
+        ],
+        "memory": null,
+        "model": "inherit",
+        "permissionMode": "dontAsk",
+        "prompt": "你是行业专项子代理。只使用获准的 MCP 资料工具和指定 Skill；事实必须附来源 ID 和时间，不给投资建议。",
+        "skills": [
+          "research-skills:industry-analysis"
+        ],
+        "tools": [
+          "mcp__research_sources__web_search",
+          "mcp__research_sources__web_fetch"
+        ]
+      },
+      "risk": {
+        "background": true,
+        "description": "A 股风险证据覆盖审查",
+        "disallowedTools": null,
+        "effort": "high",
+        "initialPrompt": null,
+        "maxTurns": 4,
+        "mcpServers": [
+          "research_sources"
+        ],
+        "memory": null,
+        "model": "inherit",
+        "permissionMode": "dontAsk",
+        "prompt": "你是风险专项子代理。只使用获准的 MCP 资料工具和指定 Skill；缺少资料必须写未评估，不能推断无风险或给投资建议。",
+        "skills": [
+          "research-skills:risk-review"
+        ],
+        "tools": [
+          "mcp__research_sources__financial_data",
+          "mcp__research_sources__pdf_extract",
+          "mcp__research_sources__web_search",
+          "mcp__research_sources__web_fetch"
+        ]
+      }
+    },
+    "allowed_tools": [
+      "Agent"
+    ],
+    "disallowed_tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "max_budget_usd": 3.0,
+    "max_turns": 12,
+    "permission_mode": "dontAsk",
+    "plugin_paths": [
+      "/Users/weberzhao/code/ai/harnessagent/plugins/research-skills"
+    ],
+    "setting_sources": [],
+    "skills": [],
+    "strict_mcp_config": true,
+    "tools": [
+      "Agent"
+    ]
+  }
+}

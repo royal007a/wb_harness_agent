@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Harness / 投研多 Agent 模拟</title>
+  <link rel="stylesheet" href="/static/styles.css"><link rel="stylesheet" href="/static/research.css">
+  <script src="/static/research-agents.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/"><span class="brand-icon">H</span> harness<span class="version">LOCAL</span></a>
+    <div class="workspace"><span class="avatar">L</span><div>Local workspace<small>本地开发工作空间</small></div></div>
+    <p class="nav-label">WORKSPACE</p>
+    <nav><a class="nav-item" href="/">◫ 分析工作台</a><a class="nav-item" href="/research">⑂ 固定函数编排</a><a class="nav-item active" aria-current="page" href="/research-agents">◌ 投研 Agent 模拟</a></nav>
+    <div class="sidebar-bottom"><span class="online-dot"></span>契约驱动模拟<small>零模型 · 零网络 · 受控 Skill / Tool</small></div>
+  </aside>
+  <main>
+    <header class="topbar"><div>Workspace <span>/</span> <strong>投研多 Agent 模拟</strong></div><span class="local-badge">● ZERO-EXTERNAL DEMO</span></header>
+    <section class="page">
+      <div class="page-heading"><div class="eyebrow">PARENT RUN · THREE SPECIALISTS · EVIDENCE</div><h1>角色可审计，结论有边界。</h1><p>每家公司固定委派财务、行业、风险三个 Child Agent；主控仅汇总已验证的证据。</p></div>
+      <div class="demo-banner">模拟运行时：Skill 是项目内 instruction-only 文件，工具只有已分配资料的只读检查。它不是 Claude Agent SDK、真实财报分析、联网新闻或投资建议。</div>
+      <div id="agent-message" role="status" aria-live="polite"></div>
+      <div class="research-layout">
+        <form id="agent-form" class="panel research-controls">
+          <h2>创建模拟任务</h2>
+          <fieldset><legend>演示公司</legend>
+            <label><input type="checkbox" name="companies" value="demo_a" checked> 演示公司 A</label>
+            <label><input type="checkbox" name="companies" value="demo_b"> 演示公司 B</label>
+            <label><input type="checkbox" name="companies" value="demo_c"> 演示公司 C</label>
+          </fieldset>
+          <p class="muted">每家公司自动运行：财务 Agent、行业 Agent、风险 Agent。每个 Child 的唯一工具为 <code>resource.inspect</code>，每个最多两步。</p>
+          <label for="agent-concurrency">并发上限</label><select id="agent-concurrency"><option value="3">3 个 Child Agent</option><option value="2">2 个 Child Agent</option><option value="1">1 个（串行）</option></select>
+          <label for="agent-failure-policy">失败策略</label><select id="agent-failure-policy"><option value="continue_with_warning">保留有效证据并披露缺口</option><option value="fail_parent">任一 Child 失败则不出父报告</option></select>
+          <label for="agent-scenario">资料场景</label><select id="agent-scenario"><option value="complete">全部 synthetic 输入</option><option value="missing_risk">缺失风险输入（验证未评估）</option></select>
+          <button id="agent-submit" class="primary" type="submit">创建 Agent 模拟运行</button>
+        </form>
+        <div class="research-results">
+          <section class="panel research-root">
+            <div class="root-heading"><h2>父 Run 与运行树</h2><span id="agent-root-status" class="status">尚未运行</span></div>
+            <label for="agent-history">运行历史</label><select id="agent-history"><option value="">暂无运行</option></select>
+            <p id="agent-root-id" class="mono muted">重跑会建立完整新树，不改写旧证据。</p>
+            <p id="agent-configuration" class="muted">所有外部调用均为零。</p>
+            <div class="research-actions"><button id="agent-cancel" type="button" disabled>取消整棵运行树</button><button id="agent-rerun" type="button" disabled>重新运行</button></div>
+            <div id="agent-summary" class="research-summary">选择至少一家公司后创建任务。</div>
+            <div id="agent-downloads" class="artifact-links"></div>
+          </section>
+          <div id="agent-children" class="research-children"></div>
+          <section class="panel research-root"><h2>父任务事件</h2><ol id="agent-events" class="research-events"><li>尚无事件</li></ol></section>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/claude-research-runtime.schema.json",
+  "title": "Controlled Native Claude Research Runtime Contract",
+  "$defs": {
+    "native_research_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["company", "stock_code", "objective", "report_resource_id", "timeout_seconds", "max_cost_minor"],
+      "properties": {
+        "company": {"type": "string", "minLength": 1, "maxLength": 120},
+        "stock_code": {"type": "string", "pattern": "^(?:SH|SZ)?[0-9]{6}$"},
+        "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "report_resource_id": {"type": "string", "pattern": "^res_[A-Za-z0-9]+$"},
+        "timeout_seconds": {"type": "integer", "minimum": 30, "maximum": 900},
+        "max_cost_minor": {"type": "integer", "minimum": 3, "maximum": 100000},
+        "failure_policy": {"enum": ["fail_parent", "continue_with_warning"], "default": "fail_parent"}
+      }
+    },
+    "runtime_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "sdk_version", "mcp_version", "cli_path", "model", "runtime_enabled", "external_data_enabled", "plugin_sha256", "allowed_domains", "blockers"],
+      "properties": {
+        "mode": {"const": "claude_native_research@1"},
+        "sdk_version": {"const": "0.2.152"},
+        "mcp_version": {"type": "string", "minLength": 1},
+        "cli_path": {"type": "string", "minLength": 1},
+        "model": {"type": ["string", "null"]},
+        "runtime_enabled": {"type": "boolean"},
+        "external_data_enabled": {"type": "boolean"},
+        "plugin_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "allowed_domains": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9.-]+$"}, "uniqueItems": true},
+        "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "source_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "uri", "sha256", "retrieved_at", "bytes", "excerpt"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^src_[A-Za-z0-9]+$"},
+        "kind": {"enum": ["financial_api", "web_search", "web_fetch", "pdf_extract"]},
+        "uri": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "retrieved_at": {"type": "string", "format": "date-time"},
+        "bytes": {"type": "integer", "minimum": 1, "maximum": 524288},
+        "excerpt": {"type": "string", "maxLength": 12000}
+      }
+    },
+    "sdk_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "agent_scope", "parent_tool_use_id", "payload"],
+      "properties": {
+        "kind": {"enum": ["assistant.text", "assistant.tool_use", "assistant.tool_result", "sdk.system", "sdk.result", "sdk.rate_limit"]},
+        "agent_scope": {"enum": ["parent", "child"]},
+        "parent_tool_use_id": {"type": ["string", "null"]},
+        "payload": {"type": "object"}
+      }
+    }
+  }
+}

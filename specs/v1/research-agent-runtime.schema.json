@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/research-agent-runtime.schema.json",
+  "title": "Research Multi-Agent Simulation Contract",
+  "$defs": {
+    "research_agent_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["companies", "concurrency", "failure_policy", "scenario", "timeout_seconds", "max_steps"],
+      "properties": {
+        "companies": {"type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true, "items": {"enum": ["demo_a", "demo_b", "demo_c"]}},
+        "concurrency": {"type": "integer", "minimum": 1, "maximum": 3},
+        "failure_policy": {"enum": ["fail_parent", "continue_with_warning"]},
+        "scenario": {"enum": ["complete", "missing_risk"]},
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 120},
+        "max_steps": {"type": "integer", "minimum": 7, "maximum": 30}
+      }
+    },
+    "skill_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "path", "sha256", "mode", "external_access"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^research\\.[a-z_]+$"},
+        "version": {"const": "1.0.0"},
+        "path": {"type": "string", "pattern": "^skills/research-[a-z-]+/SKILL\\.md$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "mode": {"const": "first_party_local_instruction_only"},
+        "external_access": {"const": false}
+      }
+    },
+    "agent_definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "runtime", "skill", "allowed_tools", "max_turns", "model_calls", "network_calls"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^research\\.(financial|industry|risk)@1$"},
+        "role": {"enum": ["financial", "industry", "risk"]},
+        "runtime": {"const": "deterministic_simulation"},
+        "skill": {"$ref": "#/$defs/skill_manifest"},
+        "allowed_tools": {"const": ["resource.inspect"]},
+        "max_turns": {"const": 2},
+        "model_calls": {"const": 0},
+        "network_calls": {"const": 0}
+      }
+    },
+    "tool_call": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "input", "risk"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^call_[A-Za-z0-9]+$"},
+        "name": {"const": "resource.inspect"},
+        "input": {"type": "object", "additionalProperties": false, "required": ["resource_id"], "properties": {"resource_id": {"type": "string", "pattern": "^res_[A-Za-z0-9]+$"}}},
+        "risk": {"const": "read"}
+      }
+    },
+    "tool_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["call_id", "ok", "resource_id", "sha256", "bytes", "truncated"],
+      "properties": {
+        "call_id": {"type": "string", "pattern": "^call_[A-Za-z0-9]+$"},
+        "ok": {"const": true},
+        "resource_id": {"type": "string", "pattern": "^res_[A-Za-z0-9]+$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1, "maximum": 65536},
+        "truncated": {"const": false}
+      }
+    }
+  }
+}
