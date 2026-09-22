@@ -1,6 +1,6 @@
 # HA-0040：Workspace、Agent Identity 与 Channel 授权数据边界
 
-状态：running
+状态：completed
 
 风险：high（协作身份/隔离语义；不涉及真实认证或外部执行）
 
@@ -29,3 +29,9 @@
 - Team Task v2 的各读写路径在 membership/role/clearance 不满足时稳定拒绝，Gate reviewer 仍需 task-level 一致；
 - legacy Task 不被静默扩权；完整回归、OpenAPI、本机/远端备份发布、health、认证边界和新增端点验证通过；
 - Evidence 说明外部能力仍关闭。
+
+## 发布记录（2026-09-22）
+
+- 本机 launchd 已重启并验证 health 与 Team Foundation runtime；公网 systemd/nginx 已完成 staging 预检、受控依赖补齐、发布和 loopback/OpenAPI 校验。
+- 首次远端预检暴露 `PyYAML` 未被 `requirements.txt` 声明，已固定为 `PyYAML==6.0.3` 后重跑通过；不是业务能力变更。
+- 首次备份错误地假定远端默认 `.local/harness.db`。随后已从运行中的 systemd 解析实际 `HARNESS_DB`，生成完整性校验通过的 pre-deploy finalization backup，再执行 exact staged source finalization restart。此规则已固化到运维硬规则，完整时间线见 HA-0040 Evidence。

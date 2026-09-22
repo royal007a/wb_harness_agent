@@ -1,0 +1,9 @@
+{
+  "mode": "team_foundation_boundary@1",
+  "protocol_identity_authentication": "not_connected",
+  "agent_runtime": "not_connected",
+  "external_model_calls": 0,
+  "external_tool_calls": 0,
+  "message_delivery": "not_implemented",
+  "note": "只保存本机协议身份、成员关系与 Channel 数据边界；actor_id 不是登录或签名身份，不会启动模型、工具、消息、Inbox、Daemon 或自动审批。"
+}

@@ -73,7 +73,7 @@
 ## 双环境部署硬规则
 
 - 用户已要求：每次需要部署的实现变更，都必须先部署并健康检查本机 `http://127.0.0.1:8765`，再同步部署到公网主机 `118.196.123.132` 的既有 HarnessAgent systemd/nginx 拓扑；除非用户明确声明“仅本地”或“不部署”。
-- 发布前固定版本并运行适用验证；远端先创建可恢复的数据库备份，再同步应用代码/依赖与版本化部署文件，重启服务后验证 loopback health、受认证的 `/harness/` 代理和新增接口。两端的版本、时间、健康结果和未启用的门禁必须写入对应 Work Item Evidence。
+- 发布前固定版本并运行适用验证；远端先从**当前运行的 systemd 服务**解析 `HARNESS_DB`，确认它位于批准的数据根目录后，对该实际 SQLite 文件创建可恢复备份，再同步应用代码/依赖与版本化部署文件。不得假定默认 `.local/harness.db` 就是远端数据文件。重启后验证 loopback health、受认证的 `/harness/` 代理和新增接口。两端的版本、时间、健康结果和未启用的门禁必须写入对应 Work Item Evidence。
 - 远端发布必须先在独立 staging 目录做语法/依赖预检；promotion 到 `/opt/harnessagent` 时，`rsync --delete` 必须再次显式排除并保留远端运行时拥有的 `.venv/` 与数据目录，绝不能把 staging 的排除规则误当成 live-target 的保留规则。若运行环境意外丢失，先如实记录影响、从版本化依赖重建并恢复 health，再继续验收。
 - 不在仓库、AGENTS、脚本、日志、Prompt 或 Evidence 写入或回显远端密码、HTTP Basic 密码、token 或其他秘密；凭证仅通过当次受控终端交互使用。远端服务不得复用本机 SQLite、Keychain、测试数据或未批准的运行时开关。
 

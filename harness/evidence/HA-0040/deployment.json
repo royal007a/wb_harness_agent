@@ -1,0 +1,51 @@
+{
+  "work_item": "HA-0040",
+  "released_at": "2026-09-22T04:20:00Z",
+  "release_commits": ["2bfe9d7", "8995a47d3775c8734646363d2c3ca5b60a1d6e06"],
+  "local": {
+    "service": "launchd local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "database_backup": ".local/backups/HA0040_20260922T041424Z.predeploy.sqlite",
+    "checks": [
+      "service running after restart",
+      "health returned status=ok",
+      "Team Foundation runtime reported protocol_identity_authentication=not_connected, external model/tool calls=0"
+    ]
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "harnessagent.service behind nginx",
+    "public_url": "https://118.196.123.132/harness/",
+    "staging": "/opt/harnessagent-staging/ha0040.nMQ1GH",
+    "checks": [
+      "stage requirements install, py_compile, targeted 17-test regression and pip check passed",
+      "nginx -t succeeded; harnessagent and nginx active",
+      "loopback health returned status=ok after restart",
+      "Team Foundation runtime returned protocol_identity_authentication=not_connected and external model/tool calls=0",
+      "workspace list exposed only ws_local to local_admin",
+      "OpenAPI exposed three checked Team Foundation paths",
+      "unauthenticated public Team Foundation URL returned 401 over existing self-signed TLS configuration"
+    ],
+    "database_backup": {
+      "initial_attempt": "not recorded: first command incorrectly assumed the default .local/harness.db rather than resolving active HARNESS_DB",
+      "post_deploy_recovery_copy": "/var/lib/harnessagent/backups/HA0040_20260922T042123Z.postdeploy.sqlite",
+      "finalization_pre_promotion": "/var/lib/harnessagent/backups/HA0040_20260922T042439Z.predeploy-finalization.sqlite",
+      "integrity": "sqlite-integrity=ok for both copies",
+      "finalization": "after resolving active HARNESS_DB under an approved data root, an exact staged source promotion and service restart passed the runtime boundary check"
+    },
+    "warnings": [
+      "nginx -t reported an existing duplicate MIME type text/html warning while returning syntax success",
+      "PyYAML was absent from the remote venv because it was not declared; requirements.txt now pins PyYAML==6.0.3 and the stage preflight was rerun"
+    ]
+  },
+  "integrity": {
+    "backend/team_foundation.py": "79dff8d2ba00187e33b061251dca584e80240caf292df0449f5492174d605bdc",
+    "backend/team_security.py": "1aa2b76bec5e164f09ff7cd2422b952b9380483ae5ad818828f21383cbec0b37",
+    "backend/team_coordination.py": "bd4c4302337a3e9f98862b65c66da0de0789268bd685aec32dc7c6a423531b0a",
+    "specs/v1/team-foundation.schema.json": "ff54d690996e49b525ce834c929019842a36dceaeee183000b41f1828513084a",
+    "specs/v1/openapi.yaml": "756894113fb0f3676d9eb904d440013538660a9a85fc9397902ca52ca5eccd8b",
+    "requirements.txt": "1b6b7fa3e6eba168e874daa32ef74dbc7c8c5dcfd07447c76da80558ace6bcb9",
+    "remote_hashes_match_local": true
+  },
+  "secrets": "none recorded"
+}

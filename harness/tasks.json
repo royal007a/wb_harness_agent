@@ -1,11 +1,11 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T03:10:00Z",
+  "generated_at": "2026-09-22T04:25:00Z",
   "tasks": [
     {
       "id": "HA-0040",
       "title": "实现 Workspace、Agent 身份与 Channel 授权数据边界",
-      "status": "running",
+      "status": "completed",
       "risk": "high",
       "scope": [
         "独立 Workspace、AgentIdentity、Workspace/Channel membership 与 Public/Internal/Restricted 数据等级",
@@ -23,10 +23,16 @@
       ],
       "depends_on": ["HA-0037", "HA-0039"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0040-team-workspace-identity-channel-boundary.md",
+      "plan": "exec-plans/completed/HA-0040-team-workspace-identity-channel-boundary.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": []
+      "evidence": [
+        "harness/evidence/HA-0040/manifest.json",
+        "harness/evidence/HA-0040/all-tests.xml",
+        "harness/evidence/HA-0040/team-foundation-evaluation.json",
+        "harness/evidence/HA-0040/deployment.json",
+        "harness/evidence/HA-0040/acceptance.md"
+      ]
     },
     {
       "id": "HA-0039",

@@ -1,0 +1,41 @@
+{
+  "work_item": "HA-0040",
+  "generated_at": "2026-09-22T04:22:45Z",
+  "status": "released",
+  "scope": "Local protocol Workspace, AgentIdentity, Channel membership/data class, and Team Task v2 authorization boundary",
+  "inputs": {
+    "implementation_commit": "2bfe9d7",
+    "dependency_commit": "8995a47d3775c8734646363d2c3ca5b60a1d6e06",
+    "team_foundation_sha256": "79dff8d2ba00187e33b061251dca584e80240caf292df0449f5492174d605bdc",
+    "team_security_sha256": "1aa2b76bec5e164f09ff7cd2422b952b9380483ae5ad818828f21383cbec0b37",
+    "team_coordination_sha256": "bd4c4302337a3e9f98862b65c66da0de0789268bd685aec32dc7c6a423531b0a",
+    "schema_sha256": "ff54d690996e49b525ce834c929019842a36dceaeee183000b41f1828513084a"
+  },
+  "checks": [
+    {"name": "targeted_team_foundation", "command": "PYTHONPATH=. .venv/bin/python -m pytest -q tests/test_team_foundation.py tests/test_team_coordination.py tests/test_recovery_loop_guard.py", "result": "17 passed"},
+    {"name": "full_regression", "command": "PYTHONPATH=. .venv/bin/python -m pytest -q --junitxml=harness/evidence/HA-0040/all-tests.xml", "result": "235 passed, 12 skipped, 0 failed"},
+    {"name": "harness_verification", "command": "sh harness/verify.sh", "result": "passed; team-foundation synthetic evaluation passed"},
+    {"name": "remote_stage_preflight", "command": "remote requirements install, py_compile, targeted pytest, pip check", "result": "17 passed; pip check passed"}
+  ],
+  "boundaries": {
+    "protocol_identity_authentication": "not_connected",
+    "external_model_calls": 0,
+    "external_tool_calls": 0,
+    "message_delivery": "not_implemented",
+    "not_evidence": [
+      "HTTP login, token or OIDC validation",
+      "real Agent identity, daemon, computer, session, thread, DM, Inbox, work mark or freshness",
+      "model, Provider, MCP, tool, network, real research or permission execution"
+    ]
+  },
+  "artifacts": [
+    "harness/evidence/HA-0040/all-tests.xml",
+    "harness/evidence/HA-0040/team-foundation-evaluation.json",
+    "harness/evidence/HA-0040/local-health.json",
+    "harness/evidence/HA-0040/local-foundation-runtime.json",
+    "harness/evidence/HA-0040/deployment.json",
+    "harness/evidence/HA-0040/acceptance.md"
+  ],
+  "deployment": "local and 118.196.123.132 runtime checks passed; an actual HARNESS_DB pre-deploy backup and finalization restart closed the recorded remote backup-order follow-up; see deployment.json",
+  "secrets": "none recorded"
+}

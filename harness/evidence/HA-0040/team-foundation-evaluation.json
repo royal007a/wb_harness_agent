@@ -1,0 +1,18 @@
+{
+  "evaluation_version": "team-foundation-boundary-synthetic@1",
+  "scope": "synthetic local protocol identity, Workspace/Channel membership, clearance and Team Task authorization",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "channel_visibility_isolated": 1.0,
+    "clearance_enforced": 1.0,
+    "task_role_enforced": 1.0,
+    "legacy_not_auto_authorized": 1.0,
+    "external_execution_calls": 1.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not authenticate an HTTP caller, validate a token/OIDC session, or test a real Agent identity.",
+    "The evaluation uses only synthetic metadata in a temporary SQLite database and invokes no model, tool, network or message delivery."
+  ]
+}
