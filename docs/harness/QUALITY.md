@@ -54,6 +54,7 @@
 - ADR-0033 Team Coordination 必须覆盖：未知字段/凭证样式内容拒绝、幂等创建、原子 claim 与 lease 过期释放、requirements/Gate/task version 绑定、Handoff 只追加、父项的开放/closed Child 行为、Gate 三出口与 reviewer 拒绝、重启持久化、OpenAPI 一致性及零模型/零外部工具状态。它不构成真实身份认证、Agent Runtime、Subagent 并行、消息调度、自动审批或权限执行通过。
 - ADR-0034 Recovery Loop Guard 必须覆盖：服务端 Error Contract 目录、失败点/根因假设/回滚 Checkpoint/Replan 起点分离、Task/输入/权限快照/Checkpoint/预算 Confirm 绑定、Try/Cancel 零执行、连续失败 Reminder、turn/时间/候选/重复 operation/取消硬停止、同一 Task Handoff + Gate pass 才能 resolved、幂等/版本/重启与 OpenAPI 一致性。它不构成真实恢复、工具取消、动态授权、通用 Agent Loop 或自动 Gate 通过。
 - ADR-0035 Team Foundation 必须覆盖：Workspace/AgentIdentity/Workspace membership/Channel membership 的 Schema、Public/Internal/Restricted clearance、Workspace/Channel/role 隔离、Task v2 的 create/read/claim/handoff/submit/Gate 授权、legacy Task 不自动扩权、幂等/重启/OpenAPI 与零模型/工具/消息状态。它不构成 HTTP 登录、token/OIDC、真实 Agent identity、Daemon、Inbox 或权限副作用通过。
+- ADR-0036 Team Attention 必须覆盖：不含正文的 source metadata、server-derived priority、Workspace/Channel/clearance/target 隔离、read cursor 与 work mark 分离、每个 identity 单 attention lease、lease 到期不清 mark、同 Thread sequence、item completion 与 Task Handoff/submit/Gate 的 freshness 阻断、幂等/版本/重启/OpenAPI 与零模型/工具/自动 dispatch。它不构成消息传输、真实调度、自动唤醒、token/OIDC 或 Agent Runtime 通过。
 
 ## 完成定义 DoD
 

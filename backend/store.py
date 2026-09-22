@@ -84,6 +84,12 @@ class Store:
             CREATE TABLE IF NOT EXISTS team_channels(id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL REFERENCES team_workspaces(id), doc TEXT NOT NULL);
             CREATE INDEX IF NOT EXISTS team_channels_workspace ON team_channels(workspace_id);
             CREATE TABLE IF NOT EXISTS team_channel_memberships(channel_id TEXT NOT NULL REFERENCES team_channels(id), agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL, PRIMARY KEY(channel_id, agent_id));
+            CREATE TABLE IF NOT EXISTS team_attention_conversations(channel_id TEXT NOT NULL REFERENCES team_channels(id), thread_id TEXT NOT NULL, doc TEXT NOT NULL, PRIMARY KEY(channel_id, thread_id));
+            CREATE TABLE IF NOT EXISTS team_attention_items(id TEXT PRIMARY KEY, channel_id TEXT NOT NULL REFERENCES team_channels(id), thread_id TEXT NOT NULL, target_agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS team_attention_items_target ON team_attention_items(target_agent_id, channel_id, thread_id);
+            CREATE TABLE IF NOT EXISTS team_attention_read_cursors(channel_id TEXT NOT NULL REFERENCES team_channels(id), thread_id TEXT NOT NULL, agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL, PRIMARY KEY(channel_id, thread_id, agent_id));
+            CREATE TABLE IF NOT EXISTS team_attention_work_marks(item_id TEXT NOT NULL REFERENCES team_attention_items(id), agent_id TEXT NOT NULL REFERENCES team_agent_identities(id), doc TEXT NOT NULL, PRIMARY KEY(item_id, agent_id));
+            CREATE TABLE IF NOT EXISTS team_attention_leases(id TEXT PRIMARY KEY, item_id TEXT NOT NULL UNIQUE REFERENCES team_attention_items(id), agent_id TEXT NOT NULL UNIQUE REFERENCES team_agent_identities(id), doc TEXT NOT NULL);
         ''')
 
     @contextmanager

@@ -37,6 +37,8 @@ ADR-0034 新增 `FastAPI → RecoveryLoopGuard → SQLite recovery_cases / attem
 
 ADR-0035 新增 `FastAPI → TeamFoundation → SQLite workspace / agent identity / memberships / channels` 的本机协议身份与 Channel 数据边界。新 `team-task@2` 在 create/read/claim/handoff/submit/close/Gate 时要求 active Agent Identity、Workspace membership/clearance 和 Channel membership/role；历史 `team-task@1` 不自动映射或扩权。它不实现 HTTP 登录、token/OIDC、消息/Thread/DM、Inbox、Daemon、Computer、模型/工具或真实 Agent runtime；`actor_id` 仍不是外部认证 principal。详见 [Team Foundation](TEAM_FOUNDATION.md)。
 
+ADR-0036 正在将 `FastAPI → TeamAttention → SQLite conversation cursor / attention item / read cursor / work mark / attention lease` 加到 ADR-0035 之后。它只接收不含正文的手工 protocol `source_ref`，按 Channel membership 管理注意力和过期稿阻断；不接入消息传输、自动唤醒、Agent Runtime、模型、工具或真实身份认证。详见 [Team Attention](TEAM_ATTENTION.md)。
+
 本地分析表单在创建 Task 前调用 `Service → IntentRouter`。该 Router 用 `rules@1` 只识别 CSV 分析，返回 `ready`、`clarification_required` 或 `rejected`；不持久化自然语言输入、没有模型调用，也不会自动创建 Task 或换引擎。规则与固定评测见 [INTENT_ROUTING.md](INTENT_ROUTING.md)。
 
 模型化意图路由仅有离线/影子评测准备：`fixture → candidate-output validator → evaluator → policy gate`。夹具是手写合成去标识数据；没有模型客户端、生产文本或 API 路由接入。候选即使通过也只可申请下一阶段影子回放，详见 [INTENT_MODEL_EVALUATION.md](INTENT_MODEL_EVALUATION.md)。

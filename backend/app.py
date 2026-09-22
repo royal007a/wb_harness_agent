@@ -220,6 +220,39 @@ def create_app(db_path=None, run_worker=True):
     def team_foundation_runtime():
         return app.state.service.team_foundation.runtime_status()
 
+    @app.get('/api/local/team/attention/runtime')
+    def team_attention_runtime():
+        return app.state.service.team_attention.runtime_status()
+
+    @app.get('/api/local/team/inbox')
+    def team_inbox(actor_id: str):
+        return app.state.service.team_attention.inbox(actor_id)
+
+    @app.post('/api/local/team/attention/items', status_code=201)
+    async def team_attention_item_create(request: Request):
+        return app.state.service.team_attention.create_item(
+            await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/team/attention/items/{item_id}:claim')
+    async def team_attention_item_claim(item_id: str, request: Request):
+        return app.state.service.team_attention.claim(
+            item_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/team/attention/items/{item_id}:release')
+    async def team_attention_item_release(item_id: str, request: Request):
+        return app.state.service.team_attention.release(
+            item_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/team/attention/items/{item_id}:complete')
+    async def team_attention_item_complete(item_id: str, request: Request):
+        return app.state.service.team_attention.complete(
+            item_id, await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.post('/api/local/team/channels/{channel_id}/threads/{thread_id}:read')
+    async def team_attention_read(channel_id: str, thread_id: str, request: Request):
+        return app.state.service.team_attention.read_cursor(
+            channel_id, thread_id, await json_body(request), request.headers.get('idempotency-key'))
+
     @app.get('/api/local/team/workspaces')
     def team_workspaces(actor_id: str):
         return app.state.service.team_foundation.workspaces(actor_id)
@@ -861,6 +894,37 @@ def create_app(db_path=None, run_worker=True):
     ):
         generated['paths'][foundation_path]['get']['responses']['200']['content'] = {
             'application/json': {'schema': {'$ref': '#/components/schemas/ha0040_' + response_definition}}}
+    attention_schema = json.loads((ROOT / 'specs/v1/team-attention.schema.json').read_text())
+    attention_definitions = json.loads(json.dumps(attention_schema['$defs']).replace(
+        '#/$defs/', '#/components/schemas/ha0038_'))
+    attention_definitions = {'ha0038_' + name: value for name, value in attention_definitions.items()}
+    generated.setdefault('components', {}).setdefault('schemas', {}).update(attention_definitions)
+    attention_post_contracts = (
+        ('/api/local/team/attention/items', 'attention_item_create_request', '201', 'attention_mutation_result'),
+        ('/api/local/team/attention/items/{item_id}:claim', 'attention_claim_request', '200', 'attention_mutation_result'),
+        ('/api/local/team/attention/items/{item_id}:release', 'attention_release_request', '200', 'attention_mutation_result'),
+        ('/api/local/team/attention/items/{item_id}:complete', 'attention_complete_request', '200', 'attention_mutation_result'),
+        ('/api/local/team/channels/{channel_id}/threads/{thread_id}:read', 'read_cursor_update_request', '200', 'read_cursor_result'),
+    )
+    for attention_path, request_definition, status, response_definition in attention_post_contracts:
+        operation = generated['paths'][attention_path]['post']
+        operation['requestBody'] = {
+            'required': True,
+            'content': {'application/json': {'schema': {
+                '$ref': '#/components/schemas/ha0038_' + request_definition}}},
+        }
+        operation['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/ha0038_' + response_definition}}}
+        operation.setdefault('parameters', []).append({
+            'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+            'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+        })
+    for attention_path, response_definition in (
+        ('/api/local/team/attention/runtime', 'runtime_status'),
+        ('/api/local/team/inbox', 'inbox_list'),
+    ):
+        generated['paths'][attention_path]['get']['responses']['200']['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/ha0038_' + response_definition}}}
     team_schema = json.loads((ROOT / 'specs/v1/team-coordination.schema.json').read_text())
     team_definitions = json.loads(json.dumps(team_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
     generated.setdefault('components', {}).setdefault('schemas', {}).update(team_definitions)

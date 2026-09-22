@@ -432,6 +432,176 @@ paths:
                 $ref: './team-foundation.schema.json#/$defs/runtime_status'
         default:
           $ref: '#/components/responses/Error'
+  /local/team/attention/runtime:
+    servers:
+      - url: /api
+    get:
+      operationId: getTeamAttentionRuntime
+      description: Returns the local metadata-only Inbox/freshness boundary. It never sends messages or starts an Agent, model or tool.
+      responses:
+        '200':
+          description: Fixed-zero Team Attention runtime status.
+          content:
+            application/json:
+              schema:
+                $ref: './team-attention.schema.json#/$defs/runtime_status'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/inbox:
+    servers:
+      - url: /api
+    get:
+      operationId: getTeamInbox
+      parameters:
+        - name: actor_id
+          in: query
+          required: true
+          schema:
+            $ref: './team-attention.schema.json#/$defs/agent_id'
+      responses:
+        '200':
+          description: Authorized attention and work-mark metadata for one protocol identity, without message content.
+          content:
+            application/json:
+              schema:
+                $ref: './team-attention.schema.json#/$defs/inbox_list'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/attention/items:
+    servers:
+      - url: /api
+    post:
+      operationId: createTeamAttentionItem
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-attention.schema.json#/$defs/attention_item_create_request'
+      responses:
+        '201':
+          description: Metadata-only attention item with server-derived priority, sequence and open work mark.
+          content:
+            application/json:
+              schema:
+                $ref: './team-attention.schema.json#/$defs/attention_mutation_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/attention/items/{itemId}:claim:
+    servers:
+      - url: /api
+    post:
+      operationId: claimTeamAttentionItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-attention.schema.json#/$defs/attention_claim_request'
+      responses:
+        '200':
+          description: One protocol identity has atomically claimed one attention work item.
+          content:
+            application/json:
+              schema:
+                $ref: './team-attention.schema.json#/$defs/attention_mutation_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/attention/items/{itemId}:release:
+    servers:
+      - url: /api
+    post:
+      operationId: releaseTeamAttentionItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-attention.schema.json#/$defs/attention_release_request'
+      responses:
+        '200':
+          description: Releases the attention lease while retaining an open work mark.
+          content:
+            application/json:
+              schema:
+                $ref: './team-attention.schema.json#/$defs/attention_mutation_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/attention/items/{itemId}:complete:
+    servers:
+      - url: /api
+    post:
+      operationId: completeTeamAttentionItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-attention.schema.json#/$defs/attention_complete_request'
+      responses:
+        '200':
+          description: Completes an item only after an active lease and latest read sequence match.
+          content:
+            application/json:
+              schema:
+                $ref: './team-attention.schema.json#/$defs/attention_mutation_result'
+        default:
+          $ref: '#/components/responses/Error'
+  /local/team/channels/{channelId}/threads/{threadId}:read:
+    servers:
+      - url: /api
+    post:
+      operationId: updateTeamThreadReadCursor
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            $ref: './team-attention.schema.json#/$defs/channel_id'
+        - name: threadId
+          in: path
+          required: true
+          schema:
+            $ref: './team-attention.schema.json#/$defs/thread_id'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './team-attention.schema.json#/$defs/read_cursor_update_request'
+      responses:
+        '200':
+          description: Records the latest observed metadata sequence for the current protocol identity.
+          content:
+            application/json:
+              schema:
+                $ref: './team-attention.schema.json#/$defs/read_cursor_result'
+        default:
+          $ref: '#/components/responses/Error'
   /local/team/workspaces:
     servers:
       - url: /api

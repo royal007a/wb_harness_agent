@@ -49,6 +49,14 @@
         "expires_at": {"type": "string", "format": "date-time"}
       }
     },
+    "freshness_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read_sequence"],
+      "properties": {
+        "read_sequence": {"type": "integer", "minimum": 0}
+      }
+    },
     "closure": {
       "type": "object",
       "additionalProperties": false,
@@ -130,7 +138,8 @@
         "evidence": {"type": "array", "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 1000}},
         "remaining": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
         "risks": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
-        "next_action": {"type": "string", "minLength": 1, "maxLength": 600}
+        "next_action": {"type": "string", "minLength": 1, "maxLength": 600},
+        "freshness": {"$ref": "#/$defs/freshness_proof"}
       }
     },
     "task_handoff": {
@@ -162,7 +171,8 @@
       "required": ["actor_id", "expected_task_version"],
       "properties": {
         "actor_id": {"$ref": "#/$defs/actor_id"},
-        "expected_task_version": {"type": "integer", "minimum": 1}
+        "expected_task_version": {"type": "integer", "minimum": 1},
+        "freshness": {"$ref": "#/$defs/freshness_proof"}
       }
     },
     "close_request": {
@@ -184,7 +194,8 @@
         "expected_task_version": {"type": "integer", "minimum": 1},
         "decision": {"enum": ["pass", "reject", "needs_human"]},
         "evidence": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"$ref": "#/$defs/artifact_reference"}},
-        "reason": {"type": "string", "minLength": 1, "maxLength": 2000}
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "freshness": {"$ref": "#/$defs/freshness_proof"}
       }
     },
     "gate_decision": {

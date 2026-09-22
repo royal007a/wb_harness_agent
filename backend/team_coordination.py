@@ -15,6 +15,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from .analysis import Problem, digest
 from .store import dumps, now, uid
 from .team_foundation import TeamFoundation
+from .team_attention import TeamAttention
 from .team_security import reject_sensitive
 
 
@@ -39,9 +40,10 @@ def parse_time(value):
 class TeamCoordination:
     """Team Task state machine guarded by Workspace/Channel protocol access."""
 
-    def __init__(self, store, foundation: TeamFoundation):
+    def __init__(self, store, foundation: TeamFoundation, attention: TeamAttention):
         self.store = store
         self.foundation = foundation
+        self.attention = attention
 
     @staticmethod
     def runtime_status():
@@ -212,6 +214,7 @@ class TeamCoordination:
             task = self._expire_lease(db, self._row_task(db, task_id))
             self._assert_version(task, body['expected_task_version'])
             self._assert_active_claim(db, task, body['actor_id'])
+            self.attention.assert_task_freshness(db, task, body['actor_id'], body.get('freshness'))
             handoff = {
                 'schema_version': 'task-handoff@1', 'id': uid('handoff'), 'task_id': task_id,
                 'sequence': task['handoff_count'] + 1, 'actor_id': body['actor_id'], 'task_version': task['version'],
@@ -236,6 +239,7 @@ class TeamCoordination:
             task = self._expire_lease(db, self._row_task(db, task_id))
             self._assert_version(task, body['expected_task_version'])
             self._assert_active_claim(db, task, body['actor_id'])
+            self.attention.assert_task_freshness(db, task, body['actor_id'], body.get('freshness'))
             if task['handoff_count'] == 0:
                 raise Problem('TEAM_TASK_HANDOFF_REQUIRED', '提交审核前必须写入至少一份 Handoff。', 409)
             if self._open_children(db, task_id):
@@ -288,6 +292,7 @@ class TeamCoordination:
                 raise Problem('TEAM_TASK_STATE_INVALID', '只有 in_review Task 可以接受 Gate 决策。', 409)
             if task['gate']['reviewer_id'] != body['reviewer_id']:
                 raise Problem('TEAM_TASK_GATE_FORBIDDEN', '只有预设 Gate reviewer 可以作出该决策。', 403)
+            self.attention.assert_task_freshness(db, task, body['reviewer_id'], body.get('freshness'))
             if body['decision'] == 'pass' and self._open_children(db, task_id):
                 raise Problem('TEAM_TASK_CHILDREN_OPEN', '仍有未结束 Child Task，父项不能通过 Gate。', 409)
             decision = {

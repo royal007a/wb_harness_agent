@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "team_foundation_authorization_completed",
+  "phase": "team_attention_inbox_freshness_in_progress",
   "implementation_started": true,
-  "active_task_id": null,
-  "active_plan": null,
-  "last_checkpoint": "HA-0040 已完成：Workspace、AgentIdentity、Channel membership/data class 与 Team Task v2 授权边界已双环境发布。235 项回归、合成隔离评测、health/runtime/OpenAPI 均通过；protocol identity 仍不是登录认证，模型/外部工具调用为零。",
-  "last_updated_at": "2026-09-22T04:25:00Z",
-  "next_action": "推荐用户确认后启动 HA-0038：仅以已验证的 Channel membership 为前提，设计并实现 Inbox、work mark、execution lease 与 freshness；不引入真实 Agent/Provider/工具/自动委派。真实身份认证和真实投研仍保持独立 L3 准入。",
+  "active_task_id": "HA-0038",
+  "active_plan": "exec-plans/active/HA-0038-team-attention-inbox-freshness.md",
+  "last_checkpoint": "HA-0038 已完成本机实现和验证：metadata-only attention ingress、Inbox、read cursor、work mark、单 identity attention lease 与 Task Handoff/submit/Gate freshness 均由机器契约和合成反例覆盖；240 项回归、12 skipped、0 failed。等待双环境发布与无密 Evidence。",
+  "last_updated_at": "2026-09-22T05:20:00Z",
+  "next_action": "固定 HA-0038 源码版本后，先重启/验证本机 launchd，再对 118.196.123.132 做 staging 预检、从实际 HARNESS_DB 创建可恢复备份、promotion、health/runtime/OpenAPI 与未认证边界检查；全程不启用消息传输、Agent/Provider/工具或真实认证。",
   "release": "0.1.0-local"
 }

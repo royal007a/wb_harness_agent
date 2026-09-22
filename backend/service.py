@@ -80,6 +80,7 @@ class Service:
         from .external_skills import ExternalSkillRuntime
         from .memory import MemoryPlane
         from .team_foundation import TeamFoundation
+        from .team_attention import TeamAttention
         from .team_coordination import TeamCoordination
         from .recovery_loop_guard import RecoveryLoopGuard
         self.research = Research(self)
@@ -91,7 +92,8 @@ class Service:
         self.external_skills = ExternalSkillRuntime(store)
         self.memory = MemoryPlane(store)
         self.team_foundation = TeamFoundation(store)
-        self.team = TeamCoordination(store, self.team_foundation)
+        self.team_attention = TeamAttention(store, self.team_foundation)
+        self.team = TeamCoordination(store, self.team_foundation, self.team_attention)
         self.recovery = RecoveryLoopGuard(store, self.team)
 
     def resource(self, name, raw):

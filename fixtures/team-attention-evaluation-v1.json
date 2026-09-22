@@ -1,0 +1,5 @@
+{
+  "evaluation_version": "team-attention-freshness-synthetic@1",
+  "scope": "synthetic metadata-only Team Attention Inbox, work mark, single identity lease and Task freshness boundary",
+  "pass_threshold": 1.0
+}

@@ -224,16 +224,26 @@
 - `POST /api/local/team/workspaces/{workspace_id}/agents`、`/memberships`、`/channels`：Workspace owner/admin 创建 Agent protocol identity、加入已有 identity 或创建 Channel；所有写入使用 `Idempotency-Key`。
 - `GET /api/local/team/channels/{channel_id}`、`POST /api/local/team/channels/{channel_id}/memberships`：Channel 读取/role 授权需 Workspace membership、clearance 和 Channel membership；data class 为 `Public / Internal / Restricted`。
 
-请求和响应以 [`team-foundation.schema.json`](../../specs/v1/team-foundation.schema.json) 为准。它不实现 token/OIDC、真实用户或 Agent 认证、消息/Thread/DM、Inbox、Daemon、Computer、模型或工具权限执行；完整边界见 [Team Foundation](TEAM_FOUNDATION.md)。
+请求和响应以 [`team-foundation.schema.json`](../../specs/v1/team-foundation.schema.json) 为准。它不实现 token/OIDC、真实用户或 Agent 认证、消息/Thread/DM、Daemon、Computer、模型或工具权限执行；完整边界见 [Team Foundation](TEAM_FOUNDATION.md)。
+
+## Team Attention（ADR-0036，本机受限控制面）
+
+- `GET /api/local/team/attention/runtime`：固定声明 protocol identity 未认证、Agent Runtime 未连接、模型/工具调用为 0、仅接受手工 source metadata ingress、没有自动 dispatch。
+- `GET /api/local/team/inbox?actor_id=...`：只返回该 protocol identity 当前仍有 Workspace/Channel/clearance 权限的 attention、work mark 和 sequence 元数据；不返回消息正文或附件。
+- `POST /api/local/team/attention/items`：手工登记 opaque `source_ref`、目标 identity 与类型。服务端生成 Conversation sequence、固定 priority 和 open work mark，不接收消息内容。
+- `POST /api/local/team/attention/items/{item_id}:claim`、`:release`、`:complete`：单 identity attention lease；到期/release 保留 open work mark，complete 只有在 item version、lease 与当前 read cursor 都匹配时才清除 mark。
+- `POST /api/local/team/channels/{channel_id}/threads/{thread_id}:read`：写入当前 identity 已读到的 latest sequence；Handoff、submit 与 Gate 在同一事务中重验该 Thread 的 freshness。
+
+所有写请求需要 `Idempotency-Key`。请求、响应与错误以 [`team-attention.schema.json`](../../specs/v1/team-attention.schema.json) 为准；它不是飞书/Slack/Email、Thread/DM 存储、自动通知、真实调度或身份认证。完整边界见 [Team Attention](TEAM_ATTENTION.md)。
 
 ## Team Coordination（ADR-0033 + ADR-0035，本机受限控制面）
 
 - `GET /api/local/team/runtime`：返回本地 Team control-plane 状态；固定为未连接 Agent Runtime、模型/外部工具调用为零。
 - `GET /api/local/team/tasks?actor_id=...`、`POST /api/local/team/tasks`、`GET /api/local/team/tasks/{task_id}?actor_id=...`：读取或创建带冻结 requirements、scope、停止条件与 Gate 的协作 Task；新 `team-task@2` 要求 Workspace、Channel、clearance 和 role 边界。
 - `POST /api/local/team/tasks/{task_id}:claim`：在 SQLite 事务中原子写入有期限的执行 lease。
-- `POST /api/local/team/tasks/{task_id}/handoffs`：只有有效负责人可追加与 requirements/Gate digest、task version 绑定的 Handoff。
-- `POST /api/local/team/tasks/{task_id}:submit`：必须已有 Handoff 且没有开放 Child，才转为 `in_review`。
-- `POST /api/local/team/tasks/{task_id}/gate-decisions`：只有预设 reviewer 可记录 `pass` / `reject` / `needs_human`；只有 pass 进入 `done`。
+- `POST /api/local/team/tasks/{task_id}/handoffs`：只有有效负责人可追加与 requirements/Gate digest、task version 绑定的 Handoff；当其 Thread 已有 attention sequence 时还必须携带新鲜的 read sequence。
+- `POST /api/local/team/tasks/{task_id}:submit`：必须已有 Handoff 且没有开放 Child，才转为 `in_review`；存在 Thread attention 时阻断过期提交。
+- `POST /api/local/team/tasks/{task_id}/gate-decisions`：只有预设 reviewer 可记录 `pass` / `reject` / `needs_human`；存在 Thread attention 时阻断过期审核；只有 pass 进入 `done`。
 - `POST /api/local/team/tasks/{task_id}:close`：保存关闭人和原因，进入 `closed`；它不代表 Gate 通过。
 
 所有写请求需要 `Idempotency-Key`，并以 `expected_task_version` 防止旧读取覆盖当前状态。请求、响应与错误约束以 [`team-coordination.schema.json`](../../specs/v1/team-coordination.schema.json) 为准；产品语义和非目标见 [Team Coordination](TEAM_COORDINATION.md)。它没有消息 Inbox、真实 Agent/Daemon/Computer 或生产身份认证；历史 `team-task@1` 不会被新 protocol identity 静默访问。

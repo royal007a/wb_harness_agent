@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/team-attention.schema.json",
+  "title": "Local Team Inbox, Work Mark, Attention Lease and Freshness contract",
+  "type": "object",
+  "$defs": {
+    "agent_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{1,127}$"},
+    "workspace_id": {"type": "string", "pattern": "^ws_[A-Za-z0-9_-]{3,80}$"},
+    "channel_id": {"type": "string", "pattern": "^ch_[A-Za-z0-9_-]{3,80}$"},
+    "thread_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "source_ref": {"type": "string", "minLength": 2, "maxLength": 255, "pattern": "^[A-Za-z][A-Za-z0-9_.:#-]{1,127}(?:/[A-Za-z0-9_.:#-]{1,127})*$"},
+    "attention_kind": {"enum": ["human_correction", "direct_mention", "task_review", "subscription_update"]},
+    "attention_status": {"enum": ["pending", "in_progress", "completed", "cancelled"]},
+    "work_mark_status": {"enum": ["open", "in_progress", "cleared"]},
+    "attention_lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "claimant_id", "expires_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^attentionlease_[a-f0-9]{32}$"},
+        "claimant_id": {"$ref": "#/$defs/agent_id"},
+        "expires_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "conversation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "workspace_id", "channel_id", "thread_id", "latest_sequence", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "team-conversation@1"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "thread_id": {"$ref": "#/$defs/thread_id"},
+        "latest_sequence": {"type": "integer", "minimum": 0},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "read_cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "workspace_id", "channel_id", "thread_id", "agent_id", "read_sequence", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "team-read-cursor@1"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "thread_id": {"$ref": "#/$defs/thread_id"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "read_sequence": {"type": "integer", "minimum": 0},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "work_mark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "item_id", "agent_id", "status", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "team-work-mark@1"},
+        "id": {"type": "string", "pattern": "^workmark_[a-f0-9]{32}$"},
+        "item_id": {"type": "string", "pattern": "^attention_[a-f0-9]{32}$"},
+        "agent_id": {"$ref": "#/$defs/agent_id"},
+        "status": {"$ref": "#/$defs/work_mark_status"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "attention_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "workspace_id", "channel_id", "thread_id", "source_ref", "author_id", "target_agent_id", "kind", "priority", "sequence", "status", "version", "lease", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "team-attention-item@1"},
+        "id": {"type": "string", "pattern": "^attention_[a-f0-9]{32}$"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "thread_id": {"$ref": "#/$defs/thread_id"},
+        "source_ref": {"$ref": "#/$defs/source_ref"},
+        "author_id": {"$ref": "#/$defs/agent_id"},
+        "target_agent_id": {"$ref": "#/$defs/agent_id"},
+        "kind": {"$ref": "#/$defs/attention_kind"},
+        "priority": {"enum": [100, 80, 60, 40]},
+        "sequence": {"type": "integer", "minimum": 1},
+        "status": {"$ref": "#/$defs/attention_status"},
+        "version": {"type": "integer", "minimum": 1},
+        "lease": {"oneOf": [{"$ref": "#/$defs/attention_lease"}, {"type": "null"}]},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "attention_item_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "workspace_id", "channel_id", "thread_id", "source_ref", "target_agent_id", "kind"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "workspace_id": {"$ref": "#/$defs/workspace_id"},
+        "channel_id": {"$ref": "#/$defs/channel_id"},
+        "thread_id": {"$ref": "#/$defs/thread_id"},
+        "source_ref": {"$ref": "#/$defs/source_ref"},
+        "target_agent_id": {"$ref": "#/$defs/agent_id"},
+        "kind": {"$ref": "#/$defs/attention_kind"}
+      }
+    },
+    "attention_claim_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "lease_seconds"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "lease_seconds": {"type": "integer", "minimum": 30, "maximum": 1800}
+      }
+    },
+    "attention_release_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "expected_item_version", "reason"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "expected_item_version": {"type": "integer", "minimum": 1},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 600}
+      }
+    },
+    "read_cursor_update_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "expected_latest_sequence"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "expected_latest_sequence": {"type": "integer", "minimum": 0}
+      }
+    },
+    "freshness_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read_sequence"],
+      "properties": {"read_sequence": {"type": "integer", "minimum": 0}}
+    },
+    "attention_complete_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "expected_item_version", "freshness"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/agent_id"},
+        "expected_item_version": {"type": "integer", "minimum": 1},
+        "freshness": {"$ref": "#/$defs/freshness_proof"}
+      }
+    },
+    "attention_mutation_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item", "work_mark", "conversation"],
+      "properties": {
+        "item": {"$ref": "#/$defs/attention_item"},
+        "work_mark": {"$ref": "#/$defs/work_mark"},
+        "conversation": {"$ref": "#/$defs/conversation"}
+      }
+    },
+    "read_cursor_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cursor", "conversation"],
+      "properties": {
+        "cursor": {"$ref": "#/$defs/read_cursor"},
+        "conversation": {"$ref": "#/$defs/conversation"}
+      }
+    },
+    "inbox_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item", "work_mark", "read_sequence", "latest_sequence"],
+      "properties": {
+        "item": {"$ref": "#/$defs/attention_item"},
+        "work_mark": {"$ref": "#/$defs/work_mark"},
+        "read_sequence": {"type": "integer", "minimum": 0},
+        "latest_sequence": {"type": "integer", "minimum": 0}
+      }
+    },
+    "inbox_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/inbox_item"}},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "runtime_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "protocol_identity_authentication", "agent_runtime", "external_model_calls", "external_tool_calls", "message_delivery", "automatic_dispatch", "note"],
+      "properties": {
+        "mode": {"const": "local_team_attention@1"},
+        "protocol_identity_authentication": {"const": "not_connected"},
+        "agent_runtime": {"const": "not_connected"},
+        "external_model_calls": {"const": 0},
+        "external_tool_calls": {"const": 0},
+        "message_delivery": {"const": "manual_protocol_ingest_only"},
+        "automatic_dispatch": {"const": false},
+        "note": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

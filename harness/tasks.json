@@ -1,7 +1,33 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T04:25:00Z",
+  "generated_at": "2026-09-22T04:35:00Z",
   "tasks": [
+    {
+      "id": "HA-0038",
+      "title": "实现 Team Attention Inbox、work mark、执行租约与 freshness",
+      "status": "running",
+      "risk": "high",
+      "scope": [
+        "Workspace/Channel 授权后的手工 protocol attention ingress、Inbox、read cursor、work mark 与单身份 attention lease",
+        "同 Thread sequence freshness，阻断过期 completion、Team Task Handoff、submit 与 Gate",
+        "零消息正文、零自动 dispatch/模型/工具的合成评测，以及本机和 118.196.123.132 双环境 Evidence"
+      ],
+      "non_goals": [
+        "HTTP 登录、OIDC/token、消息/Thread/DM 正文、飞书/Slack 接入、通知、WebSocket、自动派发、自动委派、Daemon、Computer 或真实 Agent Runtime",
+        "模型、Provider、MCP、工具、网络、Keychain、Session/工作目录迁移、真实投研或真实权限执行"
+      ],
+      "acceptance": [
+        "Attention/read cursor/work mark/lease/freshness 有机器契约；所有路径检查 Workspace/Channel/membership/clearance",
+        "单 identity 不会并行领取两件 attention work，租约到期不清除 work mark，新 sequence 阻断过期写入",
+        "定向/全量回归、OpenAPI、本机与远端备份/健康/认证边界及无密 Evidence 完整，外部能力保持关闭"
+      ],
+      "depends_on": ["HA-0037", "HA-0039", "HA-0040"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0038-team-attention-inbox-freshness.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
     {
       "id": "HA-0040",
       "title": "实现 Workspace、Agent 身份与 Channel 授权数据边界",
