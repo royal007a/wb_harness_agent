@@ -1,0 +1,60 @@
+{
+  "work_item": "HA-0042",
+  "generated_at": "2026-09-22T06:31:56Z",
+  "status": "accepted_design_only",
+  "scope": "Team identity admission decision: retain the metadata-only protocol control plane and do not implement authentication",
+  "inputs": {
+    "decision_commit": "ba10c03",
+    "owner_decision": "design: 保持当前 metadata-only 控制面，不实施认证",
+    "identity_path_selected": "C_design_only"
+  },
+  "checks": [
+    {
+      "name": "governance_contract",
+      "command": "task registry schema, ADR/plan/evidence linkage and metadata-only assertions",
+      "result": "passed"
+    },
+    {
+      "name": "targeted_control_plane_regression",
+      "command": "PYTHONPATH=. .venv/bin/pytest -q tests/test_team_foundation.py tests/test_team_session_continuity.py tests/test_workbench.py",
+      "result": "64 passed, 0 failed; one upstream deprecation warning"
+    },
+    {
+      "name": "local_runtime_boundary",
+      "command": "GET http://127.0.0.1:8765/api/local/team/sessions/runtime",
+      "result": "protocol identity/Runtime/telemetry not_connected; external model/tool calls 0"
+    },
+    {
+      "name": "remote_runtime_boundary",
+      "command": "loopback GET on 118.196.123.132 /api/local/team/sessions/runtime",
+      "result": "protocol identity/Runtime/telemetry not_connected; external model/tool calls 0"
+    },
+    {
+      "name": "unchanged_service_boundary",
+      "command": "local and remote loopback GET /api/v1/health; unauthenticated public GET https://118.196.123.132/harness/",
+      "result": "both loopback health status=ok; existing public Basic Auth boundary returned 401"
+    }
+  ],
+  "boundaries": {
+    "protocol_identity_authentication": "not_connected",
+    "authentication_implementation": false,
+    "message_content_storage": false,
+    "agent_delegation": false,
+    "external_model_calls": 0,
+    "external_tool_calls": 0,
+    "not_evidence": [
+      "HTTP login, Basic-to-principal mapping, OIDC, token validation or account management",
+      "Team Channel/Thread/DM message bodies, attachments, content retrieval or content authorization",
+      "real Agent identity/delegation, Runtime, Provider, model, MCP, tool, network or research execution"
+    ]
+  },
+  "artifacts": [
+    "docs/decisions/ADR-0038-team-identity-admission.md",
+    "docs/harness/TEAM_IDENTITY_ADMISSION.md",
+    "exec-plans/completed/HA-0042-team-identity-admission.md",
+    "harness/evidence/HA-0042/runtime-boundary.json",
+    "harness/evidence/HA-0042/acceptance.md"
+  ],
+  "deployment": "not applicable: design-only decision; no application, nginx, account or service configuration changed",
+  "secrets": "none recorded"
+}

@@ -1,0 +1,27 @@
+{
+  "work_item": "HA-0042",
+  "verified_at": "2026-09-22T06:31:56Z",
+  "local": {
+    "url": "http://127.0.0.1:8765/api/local/team/sessions/runtime",
+    "health": "ok",
+    "protocol_identity_authentication": "not_connected",
+    "agent_runtime": "not_connected",
+    "runtime_telemetry": "not_connected",
+    "external_model_calls": 0,
+    "external_tool_calls": 0,
+    "message_history": false
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "transport": "service loopback runtime check",
+    "health": "ok",
+    "unauthenticated_public_harness_status": 401,
+    "protocol_identity_authentication": "not_connected",
+    "agent_runtime": "not_connected",
+    "runtime_telemetry": "not_connected",
+    "external_model_calls": 0,
+    "external_tool_calls": 0,
+    "message_history": false
+  },
+  "conclusion": "The decision retained the metadata-only control-plane boundary. No identity/content/runtime capability was enabled."
+}

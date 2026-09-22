@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "team_identity_admission_waiting_approval",
+  "phase": "team_identity_admission_design_accepted",
   "implementation_started": true,
-  "active_task_id": "HA-0042",
-  "active_plan": "exec-plans/active/HA-0042-team-identity-admission.md",
-  "last_checkpoint": "HA-0041 已完成双环境发布：Team Session、CAS 手工 Handoff、一次性同 scope/identity 继承和由 Team Task/Attention/read cursor 派生的无正文有界 Snapshot 均由机器契约和合成反例覆盖；244 项回归、12 skipped、0 failed；本机和远端 health/runtime/OpenAPI 通过，远端实际 HARNESS_DB 已先在线备份并完整性校验，公网未认证入口为 401。",
-  "last_updated_at": "2026-09-22T05:24:00Z",
-  "next_action": "HA-0042 等待负责人选择 OIDC + PKCE、受控 nginx Basic principal 映射或仅设计；未选择前不得将 protocol actor_id、metadata-only Session 或 Snapshot 用作 HTTP 身份、消息系统、Provider Session 或真实 Agent Runtime。",
+  "active_task_id": null,
+  "active_plan": null,
+  "last_checkpoint": "HA-0042 已完成设计验收：负责人选择保持 metadata-only 控制面，不实施认证。ADR-0038 已冻结 actor_id 只为 protocol identity；OIDC、nginx principal 映射、账户/登录、Team 正文/附件/检索和 Agent delegation 均不实现。2026-09-22 本机与远端 Session runtime 复核仍报告 protocol identity/Runtime/telemetry 未连接、外部模型/工具调用均为 0。",
+  "last_updated_at": "2026-09-22T06:31:56Z",
+  "next_action": "继续已获授权且不依赖真实身份的独立 Work Item。只有负责人将来显式改选 OIDC + PKCE 或受控 nginx principal 映射，并提供非秘密信任边界/责任人时，才新建独立 Public identity probe；当前不得将 actor_id、Session 或 Snapshot 用作 HTTP 身份、消息系统、Provider Session 或真实 Agent Runtime。",
   "release": "0.1.0-local"
 }

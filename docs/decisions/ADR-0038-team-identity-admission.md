@@ -1,6 +1,6 @@
 # ADR-0038：Team 内容面前的真实身份认证准入
 
-状态：Proposed（等待负责人选择；未实现）
+状态：Accepted（选择 C：仅设计；未实现认证）
 
 日期：2026-09-22
 
@@ -16,6 +16,17 @@ ADR-0035 至 ADR-0037 已在本机 SQLite 中保存 Workspace、protocol Agent i
 2. **服务器派生 actor。** 完成认证后，human 的 `actor_id` 必须从 server-side subject mapping 派生；HTTP body/query 的 `actor_id` 只能在兼容期被显式拒绝或比对，不能授予权限。
 3. **人和 Agent 分离。** Agent protocol identity 不能用浏览器登录伪造；未来 Agent Run 必须有一个经认证 human 创建、可过期/撤销、绑定 Workspace/Channel/Task/能力上限的 delegation grant。它不等价于模型、工具或 Provider 授权。
 4. **不把 Basic Auth 当多租户系统。** Basic Auth 可以作为既有受认证反向代理的短期入口，但不足以单独证明 Team 内容面的角色、会话撤销、跨设备 SSO 或 Agent 委派。
+
+## 负责人决定
+
+2026-09-22，负责人选择 **C：保持当前 metadata-only 控制面，不实施认证**。
+
+- 保留当前 `actor_id` 仅为 protocol identity 的事实；它不是 HTTP human principal，不能成为内容、成员资格、权限或 Agent delegation 的认证依据。
+- 不接入 OIDC，不改 nginx principal header/Basic Auth 语义，不创建账户、登录会话或身份映射，也不读取或记录身份凭据。
+- 不实现 Team 消息正文、Thread/DM、附件、内容检索、真实 Agent delegation 或任何依赖真实身份的运行时能力。
+- 这项选择不改变现有双环境运行态：protocol identity authentication、Agent Runtime 与 telemetry 继续是 `not_connected`，外部模型/工具调用保持为 `0`。
+
+若以后要重新讨论身份或内容面，必须由负责人显式选择 OIDC + PKCE 或受控 nginx principal 映射，并为新的独立 Work Item 提供该路径所需的非秘密信任边界与责任人；本 ADR 不自动开启实现。
 
 ## 选项
 
