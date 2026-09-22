@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/team-coordination.schema.json",
+  "title": "Local Team Task, Handoff and Gate contract",
+  "type": "object",
+  "$defs": {
+    "actor_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{1,127}$"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_paths", "forbidden_paths", "resource_refs"],
+      "properties": {
+        "allowed_paths": {"type": "array", "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 240}},
+        "forbidden_paths": {"type": "array", "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 240}},
+        "resource_refs": {"type": "array", "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 240}}
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "checks", "evidence_requirements", "on_reject"],
+      "properties": {
+        "reviewer_id": {"$ref": "#/$defs/actor_id"},
+        "checks": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "evidence_requirements": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "on_reject": {"type": "string", "minLength": 1, "maxLength": 600}
+      }
+    },
+    "artifact_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref", "sha256"],
+      "properties": {
+        "kind": {"enum": ["git_commit", "test_result", "artifact", "report", "other"]},
+        "ref": {"type": "string", "minLength": 1, "maxLength": 512},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "claimant_id", "expires_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^lease_[a-f0-9]{32}$"},
+        "claimant_id": {"$ref": "#/$defs/actor_id"},
+        "expires_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "reason", "closed_at"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "closed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "team_task_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel_id", "thread_id", "title", "objective", "requirements", "scope", "stop_conditions", "gate", "parent_task_id"],
+      "properties": {
+        "channel_id": {"type": "string", "pattern": "^ch_[A-Za-z0-9_-]{3,80}$"},
+        "thread_id": {"type": ["string", "null"], "maxLength": 128},
+        "title": {"type": "string", "minLength": 1, "maxLength": 240},
+        "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "requirements": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "scope": {"$ref": "#/$defs/scope"},
+        "stop_conditions": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "gate": {"$ref": "#/$defs/gate"},
+        "parent_task_id": {"type": ["string", "null"], "pattern": "^teamtask_[a-f0-9]{32}$"}
+      }
+    },
+    "team_task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "workspace_id", "channel_id", "thread_id", "parent_task_id", "title", "objective", "requirements", "scope", "stop_conditions", "gate", "requirements_digest", "gate_digest", "status", "assignee_id", "lease", "closure", "version", "handoff_count", "latest_gate_decision_id", "created_at", "updated_at"],
+      "properties": {
+        "schema_version": {"const": "team-task@1"},
+        "id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
+        "workspace_id": {"const": "ws_local"},
+        "channel_id": {"type": "string", "pattern": "^ch_[A-Za-z0-9_-]{3,80}$"},
+        "thread_id": {"type": ["string", "null"], "maxLength": 128},
+        "parent_task_id": {"type": ["string", "null"], "pattern": "^teamtask_[a-f0-9]{32}$"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 240},
+        "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "requirements": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "scope": {"$ref": "#/$defs/scope"},
+        "stop_conditions": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "gate": {"$ref": "#/$defs/gate"},
+        "requirements_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "gate_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "status": {"enum": ["todo", "in_progress", "in_review", "done", "closed"]},
+        "assignee_id": {"oneOf": [{"$ref": "#/$defs/actor_id"}, {"type": "null"}]},
+        "lease": {"oneOf": [{"$ref": "#/$defs/lease"}, {"type": "null"}]},
+        "closure": {"oneOf": [{"$ref": "#/$defs/closure"}, {"type": "null"}]},
+        "version": {"type": "integer", "minimum": 1},
+        "handoff_count": {"type": "integer", "minimum": 0},
+        "latest_gate_decision_id": {"type": ["string", "null"], "pattern": "^gate_[a-f0-9]{32}$"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "claim_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "lease_seconds"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "lease_seconds": {"type": "integer", "minimum": 30, "maximum": 1800}
+      }
+    },
+    "handoff_create_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "expected_task_version", "summary", "decisions", "artifact_refs", "evidence", "remaining", "risks", "next_action"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "expected_task_version": {"type": "integer", "minimum": 1},
+        "summary": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "decisions": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "artifact_refs": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/artifact_reference"}},
+        "evidence": {"type": "array", "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 1000}},
+        "remaining": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "risks": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "next_action": {"type": "string", "minLength": 1, "maxLength": 600}
+      }
+    },
+    "task_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "task_id", "sequence", "actor_id", "task_version", "requirements_digest", "gate_digest", "summary", "decisions", "artifact_refs", "evidence", "remaining", "risks", "next_action", "created_at"],
+      "properties": {
+        "schema_version": {"const": "task-handoff@1"},
+        "id": {"type": "string", "pattern": "^handoff_[a-f0-9]{32}$"},
+        "task_id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
+        "sequence": {"type": "integer", "minimum": 1},
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "task_version": {"type": "integer", "minimum": 1},
+        "requirements_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "gate_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "summary": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "decisions": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "artifact_refs": {"type": "array", "maxItems": 32, "items": {"$ref": "#/$defs/artifact_reference"}},
+        "evidence": {"type": "array", "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 1000}},
+        "remaining": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "risks": {"type": "array", "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 600}},
+        "next_action": {"type": "string", "minLength": 1, "maxLength": 600},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "submit_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "expected_task_version"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "expected_task_version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "close_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "expected_task_version", "reason"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/actor_id"},
+        "expected_task_version": {"type": "integer", "minimum": 1},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2000}
+      }
+    },
+    "gate_decision_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "expected_task_version", "decision", "evidence", "reason"],
+      "properties": {
+        "reviewer_id": {"$ref": "#/$defs/actor_id"},
+        "expected_task_version": {"type": "integer", "minimum": 1},
+        "decision": {"enum": ["pass", "reject", "needs_human"]},
+        "evidence": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"$ref": "#/$defs/artifact_reference"}},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2000}
+      }
+    },
+    "gate_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "task_id", "task_version", "reviewer_id", "decision", "requirements_digest", "gate_digest", "evidence", "reason", "created_at"],
+      "properties": {
+        "schema_version": {"const": "task-gate-decision@1"},
+        "id": {"type": "string", "pattern": "^gate_[a-f0-9]{32}$"},
+        "task_id": {"type": "string", "pattern": "^teamtask_[a-f0-9]{32}$"},
+        "task_version": {"type": "integer", "minimum": 1},
+        "reviewer_id": {"$ref": "#/$defs/actor_id"},
+        "decision": {"enum": ["pass", "reject", "needs_human"]},
+        "requirements_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "gate_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "evidence": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"$ref": "#/$defs/artifact_reference"}},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "team_task_detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task", "children", "handoffs", "gate_decisions", "runtime"],
+      "properties": {
+        "task": {"$ref": "#/$defs/team_task"},
+        "children": {"type": "array", "items": {"$ref": "#/$defs/team_task"}},
+        "handoffs": {"type": "array", "items": {"$ref": "#/$defs/task_handoff"}},
+        "gate_decisions": {"type": "array", "items": {"$ref": "#/$defs/gate_decision"}},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "team_task_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/team_task"}},
+        "runtime": {"$ref": "#/$defs/runtime_status"}
+      }
+    },
+    "handoff_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task", "handoff"],
+      "properties": {
+        "task": {"$ref": "#/$defs/team_task"},
+        "handoff": {"$ref": "#/$defs/task_handoff"}
+      }
+    },
+    "gate_decision_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task", "decision"],
+      "properties": {
+        "task": {"$ref": "#/$defs/team_task"},
+        "decision": {"$ref": "#/$defs/gate_decision"}
+      }
+    },
+    "runtime_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "agent_runtime", "external_model_calls", "external_tool_calls", "note"],
+      "properties": {
+        "mode": {"const": "local_team_coordination@1"},
+        "agent_runtime": {"const": "not_connected"},
+        "external_model_calls": {"const": 0},
+        "external_tool_calls": {"const": 0},
+        "note": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
