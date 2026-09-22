@@ -39,6 +39,7 @@
 | [ADR-0035](../decisions/ADR-0035-team-workspace-identity-channel-boundary.md) | Proposed（本地受限实现） | Workspace、Agent protocol identity、membership、Channel data class 与 Team Task v2 授权边界；不是真实身份认证或消息系统 |
 | [ADR-0036](../decisions/ADR-0036-team-attention-inbox-freshness.md) | Proposed（本地受限实现） | Attention Inbox、read cursor、work mark、单 identity lease 与 Thread freshness；仅手工 metadata ingress，不连接消息传输、自动 dispatch 或 Runtime |
 | [ADR-0037](../decisions/ADR-0037-team-session-continuity-handoff.md) | Proposed（本机受限实现） | Team Session、手工 Handoff 与由 Task/Attention 生成的无正文当前工作摘要；不连接 Runtime Session、消息历史、自动换代或 Computer |
+| [ADR-0038](../decisions/ADR-0038-team-identity-admission.md) | Proposed（等待负责人选择） | Team 内容面前的真实身份认证准入：OIDC + PKCE、受控 nginx principal 映射或仅设计；不实现认证、消息正文或 Agent delegation |
 
 ## 待决策
 

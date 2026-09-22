@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "team_session_continuity_handoff_released",
+  "phase": "team_identity_admission_waiting_approval",
   "implementation_started": true,
-  "active_task_id": null,
-  "active_plan": null,
+  "active_task_id": "HA-0042",
+  "active_plan": "exec-plans/active/HA-0042-team-identity-admission.md",
   "last_checkpoint": "HA-0041 已完成双环境发布：Team Session、CAS 手工 Handoff、一次性同 scope/identity 继承和由 Team Task/Attention/read cursor 派生的无正文有界 Snapshot 均由机器契约和合成反例覆盖；244 项回归、12 skipped、0 failed；本机和远端 health/runtime/OpenAPI 通过，远端实际 HARNESS_DB 已先在线备份并完整性校验，公网未认证入口为 401。",
-  "last_updated_at": "2026-09-22T05:15:13Z",
-  "next_action": "若继续 Team 协作路线，先设计真实身份认证、tenant/session/revocation/audit 与敏感正文保留边界；在此之前不得将 protocol actor_id、metadata-only Session 或 Snapshot 用作 HTTP 身份、消息系统、Provider Session 或真实 Agent Runtime。",
+  "last_updated_at": "2026-09-22T05:24:00Z",
+  "next_action": "HA-0042 等待负责人选择 OIDC + PKCE、受控 nginx Basic principal 映射或仅设计；未选择前不得将 protocol actor_id、metadata-only Session 或 Snapshot 用作 HTTP 身份、消息系统、Provider Session 或真实 Agent Runtime。",
   "release": "0.1.0-local"
 }

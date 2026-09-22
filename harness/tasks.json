@@ -1,7 +1,33 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T05:15:13Z",
+  "generated_at": "2026-09-22T05:24:00Z",
   "tasks": [
+    {
+      "id": "HA-0042",
+      "title": "冻结 Team 真实身份认证准入决策包",
+      "status": "waiting_approval",
+      "risk": "high",
+      "scope": [
+        "OIDC + PKCE、受控 nginx principal 映射与仅设计三条 Team identity 路径的事实/风险矩阵",
+        "subject→human identity mapping、session/revocation/audit、CSRF/header spoof 与 Agent delegation 的准入边界",
+        "为 Public identity probe 准备非秘密输入与停止条件；运行态保持不变"
+      ],
+      "non_goals": [
+        "OIDC/代理配置、账户、凭据、部署或 HTTP 登录实现",
+        "消息/Thread/DM 正文、附件、检索、Daemon/Computer、模型、Provider、工具或真实 Agent delegation"
+      ],
+      "acceptance": [
+        "ADR-0038 说明现有 Basic Auth 与 actor_id 的信任断层、三条路线与 fail-closed 边界",
+        "负责人选择身份路线并给出该路线所需的非秘密责任/配置边界；未选择前不实现内容面",
+        "文档链接、任务 Schema 和现有运行态不变的检查通过"
+      ],
+      "depends_on": ["HA-0040", "HA-0041"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0042-team-identity-admission.md",
+      "blocked_reason": "需要负责人选择 OIDC + PKCE、受控 nginx Basic principal 映射或仅维持设计，并提供该路径的非秘密责任和边界。",
+      "recovery_condition": "收到明确路线及最小非秘密输入后，建立独立的 Public identity probe Work Item；在该前不得写入 Team 内容正文或改动认证配置。",
+      "evidence": []
+    },
     {
       "id": "HA-0041",
       "title": "实现 Team Session Continuity Handoff 与有界当前工作摘要",
