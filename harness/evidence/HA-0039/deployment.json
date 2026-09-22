@@ -1,0 +1,36 @@
+{
+  "work_item": "HA-0039",
+  "release_commit": "f21f95358718f9fc864f2da503dfb11692b736e2",
+  "released_at": "2026-09-22T02:30:05Z",
+  "local": {
+    "service": "launchd local.harnessagent.workbench",
+    "url": "http://127.0.0.1:8765",
+    "database_backup": ".local/backups/pre-ha0039-20260922T023000Z.db",
+    "checks": [
+      "health returned status=ok",
+      "GET /api/local/recovery/runtime returned recovery_loop_guard@1 with model/tool calls=0 and automatic_recovery_execution=false",
+      "runtime OpenAPI includes recovery cases and complete path"
+    ]
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "harnessagent.service behind nginx",
+    "public_url": "https://118.196.123.132/harness/",
+    "staging": "/tmp/harnessagent-ha0039-stage (syntax/schema/pip preflight passed; removed after promotion)",
+    "database_backup": "/var/lib/harnessagent/backups/pre-ha0039-20260922T023100Z.db",
+    "checks": [
+      "loopback health returned status=ok after restart",
+      "GET /api/local/recovery/runtime returned recovery_loop_guard@1 with model/tool calls=0 and automatic_recovery_execution=false",
+      "remote OpenAPI includes recovery cases and complete path",
+      "pip check passed; nginx -t passed; harnessagent and nginx are active",
+      "unauthenticated public /harness/ returned 401 over existing self-signed TLS configuration"
+    ],
+    "warnings": ["nginx -t reported pre-existing duplicate MIME type text/html warning while returning syntax success"]
+  },
+  "integrity": {
+    "backend/recovery_loop_guard.py": "0c2faa1fc703fd6df275b28c8c05ce90f50b2a2785fa67482b31661c68d9d83e",
+    "specs/v1/recovery-loop-guard.schema.json": "9bd11288783cde39db4b4718953462bd4348cbd489f55db849412507efbaf2cb",
+    "remote_hashes_match_local": true
+  },
+  "secrets": "none recorded"
+}

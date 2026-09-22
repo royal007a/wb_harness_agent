@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "recovery_loop_guard_implementation",
+  "phase": "recovery_loop_guard_completed",
   "implementation_started": true,
-  "active_task_id": "HA-0039",
-  "active_plan": "exec-plans/active/HA-0039-recovery-loop-guard.md",
-  "last_checkpoint": "HA-0037 已完成：独立 Team Task/Handoff/Gate/closure 控制面经 225 项回归、本机与公网发布验证；Agent Runtime、模型和外部工具仍为零。HA-0039 正在实现恢复决策与防循环旁路。",
-  "last_updated_at": "2026-09-22T02:10:00Z",
-  "next_action": "完成 HA-0039 的定向/全量验证与双环境发布；HA-0038 Inbox 依用户决定暂缓，真实 Agent、身份和工具政策保持独立 L3 准入。",
+  "active_task_id": null,
+  "active_plan": null,
+  "last_checkpoint": "HA-0039 已完成：Recovery Case 以 Error Contract、四位置、Try/Confirm/Cancel、硬停止/软 Reminder 约束恢复候选；只有 HA-0037 Handoff + Gate pass 才能 resolved。231 项回归与双环境发布通过，模型/外部工具仍为零。",
+  "last_updated_at": "2026-09-22T02:31:00Z",
+  "next_action": "HA-0038 Inbox/work mark/execution lease/freshness 仍依用户决定暂缓；若继续 Agent Team，下一候选是 HA-0040 Computer/Session handoff 的规格冻结，真实 Agent、身份和工具政策保持独立 L3 准入。",
   "release": "0.1.0-local"
 }

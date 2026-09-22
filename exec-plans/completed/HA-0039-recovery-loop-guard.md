@@ -1,6 +1,6 @@
 # HA-0039：Recovery Loop Guard 与 Team Gate 回接
 
-状态：running
+状态：completed
 
 风险：high（恢复/停止/交付语义；不涉及真实外部执行）
 
@@ -22,10 +22,12 @@
 - 不将根因假设写成事实，不把 Reminder 视为安全边界；
 - 不修改 Product Task/Run 或把此旁路描述为通用 Agent Replan。
 
-## 完成条件
+## 完成条件与结果
 
-- Error Contract 由服务端稳定目录派生；失败点、根因假设、回滚 Checkpoint、Replan 起点分别可读；
-- Try/Confirm/Cancel 不产生副作用，Confirm 复核 Task/Checkpoint/权限/预算/输入绑定；
-- turn、时间、候选次数、单 operation 重复失败和取消被硬停止；连续失败只产生软 Reminder；
-- 只有同 Team Task 的 Handoff 加 Gate `pass` 才能把 Case 标为 `resolved`；
-- 定向和完整回归、OpenAPI、双环境备份/发布/健康/API 边界 Evidence 完成。
+- Error Contract 由服务端稳定目录派生；失败点、根因假设、回滚 Checkpoint、Replan 起点分别可读：通过。
+- Try/Confirm/Cancel 不产生副作用，Confirm 复核 Task/Checkpoint/权限/预算/输入绑定：通过。
+- turn、时间、候选次数、单 operation 重复失败和取消被硬停止；连续失败/无进展只产生软 Reminder：通过。
+- 只有同 Team Task 的 Handoff 加 Gate `pass` 才能把 Case 标为 `resolved`：通过。
+- 6 项定向测试、231 项完整回归（12 skipped）、合成评测、本机和远端备份/发布/health/API/认证边界验证：通过。
+
+Evidence：[`harness/evidence/HA-0039/`](../../harness/evidence/HA-0039/)。

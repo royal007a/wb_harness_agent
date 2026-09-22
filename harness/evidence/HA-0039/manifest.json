@@ -1,7 +1,7 @@
 {
   "work_item": "HA-0039",
   "generated_at": "2026-09-22T02:28:29Z",
-  "status": "pre_deployment_verified",
+  "status": "released",
   "scope": "Local Recovery Loop Guard / Error Contract / loop limits / Team Handoff and Gate return path",
   "inputs": {
     "base_commit": "55f6b41d989afe6e32a5ab131e51afdbe4b24188",
@@ -30,5 +30,5 @@
     "harness/evidence/HA-0039/all-tests.xml",
     "harness/evidence/HA-0039/recovery-loop-guard-evaluation.json"
   ],
-  "deployment": "pending local then 118.196.123.132 release verification"
+  "deployment": "verified locally and on 118.196.123.132; see deployment.json"
 }
