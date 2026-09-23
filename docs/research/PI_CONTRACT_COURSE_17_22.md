@@ -24,6 +24,7 @@
 - `external_calls=0`、`model_calls=0` 是契约字段，不能把该切片描述为真实 Pi 或外部模型运行。
 - review 端点从服务端重新构建预览，不接受调用方伪造的 chunk；输出始终是 `needs_human`，并为每个 chunk 生成 `evidence://` 引用。
 - review-stream 只发送结构化 preview/finding/done 事件，不发送合同原文；仍然是确定性、无模型、无网络的 ChatPanel 数据源。
+- `harness/pi_contract_tui.py` 将相同事件映射为窄宽度终端输出，作为课程 22 的平台侧 TUI 边界；不把 `pi-tui` 引入服务端，也不宣称具备 Pi runtime。
 
 ## 非目标与后续顺序
 
@@ -31,5 +32,5 @@
 
 1. 将 chunk 结果接入 `contract-risk-review` Skill，并增加跨 chunk 风险聚合与人工 Gate。
 2. 把课程 20 的护栏抽成独立事件拦截器，覆盖工具调用、路径、域名、费用和取消。
-3. `review-stream` 已完成事件 SSE 适配；最后再做 TUI 事件渲染。
+3. `review-stream` 与 metadata-only TUI 事件渲染已完成；真实 Pi TUI 仍属于独立 TypeScript sidecar 适配范围。
 4. 只有模型/Provider 准入契约、费用上限、端点白名单、Keychain 引用和取消负责人齐备后，才开启真实模型探针。

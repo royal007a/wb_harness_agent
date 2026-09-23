@@ -29,6 +29,7 @@
 - `backend/pi_contract_pipeline.py`、`specs/v1/pi-contract-pipeline.schema.json`：课程 17–19 的 Public PDF 无模型解析/分类/分块、敏感信息预览与 `needs_human` Skill 候选；`/api/local/pi-contract-pipeline/{preview,review,review-stream}` 不访问网络、不调用模型；review-stream 提供课程 21 的结构化 SSE 事件；
 - `skills/contract-risk-review/`：课程 19 的确定性风险候选 Skill 与脚本，Evidence 绑定资源/chunk SHA256；不输出法律结论；
 - `backend/pi_security_guard.py`、`specs/v1/pi-security-guard.schema.json`：课程 20 metadata-only Guard Contract；仅评估动作准入，不执行工具、文件、网络或 Provider 调用；未知能力 fail-closed；
+- `harness/pi_contract_tui.py`：课程 22 的 metadata-only 终端事件渲染器；消费 preview/finding/done JSONL，不连接 Pi runtime 或模型；
 - `harness/pi_evidence.py`、`harness/evidence/PI-P2/manifest.json`：Pi 离线纵切的可重复验证 Evidence Bundle；不宣称真实 Provider 或生产 SLA；
 - `adapters/pi_sidecar.py`、`tests/test_pi_sidecar.py`：Python 侧 JSONL sidecar transport smoke client；只允许离线 Faux Provider，验证 health/start/stream 与事件读取，不写 Run 状态；
 - `frontend/research.*`：多专项演示页面；`tests/test_research.py` 和 `browser_research.py` 验证；

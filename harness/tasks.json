@@ -3,6 +3,21 @@
   "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
+      "id": "HA-0047",
+      "title": "实现 Pi 合同审查 metadata-only TUI 事件渲染",
+      "status": "in_progress",
+      "risk": "low",
+      "scope": ["preview/finding/done 事件的终端摘要渲染", "JSONL CLI 与宽度限制"],
+      "non_goals": ["pi-tui/真实 Pi runtime/模型与工具执行"],
+      "acceptance": ["定向 CLI/单元测试通过", "全量 Harness 验证通过"],
+      "depends_on": ["HA-0046"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0047-pi-contract-tui-renderer.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0047/acceptance.md"]
+    },
+    {
       "id": "HA-0046",
       "title": "接入 Pi 合同审查 ChatPanel SSE 事件适配",
       "status": "completed",
