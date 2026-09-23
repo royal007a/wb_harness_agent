@@ -112,6 +112,7 @@ def create_app(db_path=None, run_worker=True):
             {'id': 'engine_local_research_demo', 'name': 'Research Orchestration', 'status': 'available', 'description': '离线编排演示 · 最多 9 个 Child Run / 3 并发 · 非 Claude 运行'},
             {'id': 'engine_research_multi_agent_simulation', 'name': 'Research Agent Simulation', 'status': 'available', 'description': '三角色 Agent / Skill / Tool 契约模拟 · 零模型零网络 · 非 Claude 运行'},
             {'id': 'engine_claude_research_native', 'name': 'Native Claude Research', 'status': 'blocked', 'description': '原生 SubAgent / Skills / MCP 已受控实现 · 需模型、数据源、预算与 L3 探针授权'},
+            {'id': 'engine_pi_contract_review_offline', 'name': 'Pi Contract Review (offline)', 'status': 'available', 'description': 'Pi sidecar Faux Provider · Public PDF · Evidence + Human Gate · 零模型零网络'},
             {'id': 'engine_smolagents_code', 'name': 'Smolagents', 'status': 'blocked', 'description': 'CodeAct · 真实模型尚未接入 · SDK/VM 探针状态见 /api/v1/readiness'},
             {'id': 'engine_claude', 'name': 'Claude Agent SDK', 'status': 'planned', 'description': '研报与复杂编排 · P1'},
             {'id': 'engine_deepagents', 'name': 'Deep Agents', 'status': 'planned', 'description': '动态知识与记忆 · P2'},
@@ -624,6 +625,18 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/api/local/research-native/{run_id}')
     def research_native_detail(run_id: str):
         return app.state.service.research_native.detail(run_id)
+
+    @app.post('/api/local/pi-contract-review', status_code=202)
+    async def pi_contract_review_create(request: Request):
+        return app.state.service.pi_contract_review.create(await json_body(request), request.headers.get('idempotency-key'))
+
+    @app.get('/api/local/pi-contract-review/{run_id}')
+    def pi_contract_review_detail(run_id: str):
+        return app.state.service.pi_contract_review.detail(run_id)
+
+    @app.post('/api/local/pi-contract-review/{run_id}:gate')
+    async def pi_contract_review_gate(run_id: str, request: Request):
+        return app.state.service.pi_contract_review.gate(run_id, await json_body(request), request.headers.get('idempotency-key'))
 
     @app.get('/research-agents', include_in_schema=False)
     def research_agents_page():

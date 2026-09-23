@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/pi-contract-review-runtime.schema.json",
+  "title": "Pi Contract Review Offline Runtime Request",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource_id", "objective", "timeout_seconds"],
+      "properties": {
+        "resource_id": { "type": "string", "pattern": "^res_[A-Za-z0-9]+$" },
+        "objective": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "timeout_seconds": { "type": "integer", "minimum": 1, "maximum": 120 }
+      }
+    },
+    "gate_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reason"],
+      "properties": {
+        "decision": { "enum": ["pass", "reject"] },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 2000 }
+      }
+    }
+  }
+}

@@ -74,6 +74,7 @@ class Service:
         from .research import Research
         from .research_agents import ResearchAgents
         from .research_native import NativeResearch
+        from .pi_contract_review import PiContractReviewRuns
         from .baidu_netdisk import BaiduNetdiskConnector
         from .agent_lab import LocalAgentLab
         from .agent_runtime import AgentRuntime
@@ -87,6 +88,7 @@ class Service:
         self.research = Research(self)
         self.research_agents = ResearchAgents(self)
         self.research_native = NativeResearch(self)
+        self.pi_contract_review = PiContractReviewRuns(self)
         self.baidu_netdisk = BaiduNetdiskConnector(store)
         self.agent_lab = LocalAgentLab(store)
         self.agent_runtime = AgentRuntime(store)
@@ -187,6 +189,8 @@ class Service:
             return self.research_agents.new_run(db, task, based_on)
         if task['engine_policy']['engine_id'] == 'engine_claude_research_native':
             return self.research_native.new_run(db, task, based_on)
+        if task['engine_policy']['engine_id'] == 'engine_pi_contract_review_offline':
+            return self.pi_contract_review.new_run(db, task, based_on)
         active = [r for r in self.store.listing('runs') if r['status'] not in TERMINAL]
         if len(active) >= 32:
             raise Problem('RATE_LIMITED', '本地待执行队列已满（32）。', 429)
@@ -242,6 +246,8 @@ class Service:
             return self.research_agents.cancel(run_id)
         if engine == 'engine_claude_research_native':
             return self.research_native.cancel(run_id)
+        if engine == 'engine_pi_contract_review_offline':
+            return self.pi_contract_review.cancel(run_id)
         with self.store.transaction() as db:
             run = self.store.get('runs', run_id)
             if run['status'] not in TERMINAL:
@@ -734,6 +740,8 @@ class Service:
             return self.research_agents.execute(run_id)
         if engine == 'engine_claude_research_native':
             return self.research_native.execute(run_id)
+        if engine == 'engine_pi_contract_review_offline':
+            return self.pi_contract_review.execute(run_id)
         adapter = None
         try:
             with self.store.transaction() as db:
@@ -883,6 +891,7 @@ class Service:
         self.research.recover()
         self.research_agents.recover()
         self.research_native.recover()
+        self.pi_contract_review.recover()
         with self.store.transaction() as db:
             for run in self.store.listing('runs'):
                 if run['status'] == 'running':

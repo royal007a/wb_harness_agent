@@ -239,7 +239,7 @@ Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类�
 - [x] 已实现 Faux Provider sidecar 的 `start/stream/cancel/health` JSONL 协议、非准入模型拒绝，以及 Python 侧 transport smoke client；
 - [x] 已接入固定 Public PDF 夹具边界、`evidence.locate`、结构化高风险输出和 `needs_human` Gate 候选；实现见 `adapters/pi_contract_review.py`；
 - [x] 固化 `specs/v1/pi-contract-review.schema.json`，约束 Evidence 引用、风险输出和 Gate 候选的机器形状；
-- [ ] 将适配器结果写入 Product Run、Artifact/Evidence 和正式平台 Gate；
+- [x] 将适配器结果写入 Product Run、Artifact/Evidence，并停在正式人工 Gate；通过/拒绝由独立 Gate API 写入终态；
 - [ ] 用平台假 Tool Runtime 验证权限、预算、引用和人工 Gate；
 - [ ] 评测召回、误报、引用覆盖、schema 通过率、取消延迟和成本估算。
 
@@ -251,4 +251,4 @@ Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类�
 
 ## 10. 当前结论
 
-Pi 的分层和事件驱动设计已经通过本地 Faux Provider 离线探针验证；当前仓库仍没有 TypeScript sidecar 服务、合同审查工具、Python Product Adapter 或真实模型调用。本文与 `pi-adapter/` 只冻结并验证接入边界，不把离线探针误写成生产合同审查能力。
+Pi 的分层和事件驱动设计已经通过本地 Faux Provider 离线探针验证；当前仓库已具备离线 Product Run → Artifact/Evidence → Human Gate 纵切，但仍没有真实模型调用、联网合同资料读取或生产级 Provider 准入。本文与 `pi-adapter/` 不把离线纵切误写成生产合同审查能力。

@@ -1,0 +1,71 @@
+from pathlib import Path
+
+import pytest
+from fastapi.testclient import TestClient
+
+from backend.app import create_app
+
+
+PI_ROOT = Path(__file__).parents[1] / 'pi-adapter'
+
+
+@pytest.fixture
+def app(tmp_path):
+    return create_app(tmp_path / 'pi-runtime.db', run_worker=False)
+
+
+@pytest.fixture
+def client(app):
+    with TestClient(app, base_url='http://127.0.0.1') as test_client:
+        yield test_client
+
+
+@pytest.mark.skipif(not (PI_ROOT / 'node_modules').is_dir(), reason='run npm ci in pi-adapter first')
+def test_pi_product_run_persists_artifact_evidence_and_requires_gate(client, app):
+    uploaded = client.post(
+        '/api/local/research-native/documents?name=contract-fixture.pdf',
+        content=b'%PDF-1.7\nfixture',
+        headers={'content-type': 'application/pdf'},
+    )
+    assert uploaded.status_code == 201, uploaded.text
+    resource = uploaded.json()
+    created = client.post(
+        '/api/local/pi-contract-review',
+        json={'resource_id': resource['id'], 'objective': '审查价格调整条款', 'timeout_seconds': 30},
+        headers={'Idempotency-Key': 'pi-runtime-create-1'},
+    )
+    assert created.status_code == 202, created.text
+    run_id = created.json()['initial_run']['id']
+
+    app.state.service.execute(run_id)
+    detail = client.get('/api/local/pi-contract-review/' + run_id).json()
+    assert detail['run']['status'] == 'waiting_approval'
+    assert detail['gate_required'] is True
+    assert detail['runtime_enabled'] is False and detail['external_calls'] == 0
+    assert detail['artifacts'][0]['name'] == 'pi-contract-review.json'
+    events = app.state.service.store.events(run_id)
+    proposed = [event for event in events if event['event_type'] == 'evidence.proposed']
+    assert proposed and proposed[-1]['data']['evidence_refs'] == [
+        f"evidence://{resource['id']}/clause-12.3/page-8"
+    ]
+    assert not any(event['event_type'] == 'run.succeeded' for event in events)
+
+    gate = client.post(
+        f'/api/local/pi-contract-review/{run_id}:gate',
+        json={'decision': 'pass', 'reason': '人工核对引用与风险建议'},
+        headers={'Idempotency-Key': 'pi-runtime-gate-1'},
+    )
+    assert gate.status_code == 200, gate.text
+    assert gate.json()['status'] == 'succeeded'
+
+
+def test_pi_product_run_rejects_non_public_pdf(client):
+    uploaded = client.post('/api/v1/resources?name=input.csv', content=b'a,b\n1,2\n')
+    assert uploaded.status_code == 201
+    response = client.post(
+        '/api/local/pi-contract-review',
+        json={'resource_id': uploaded.json()['id'], 'objective': '不应运行', 'timeout_seconds': 30},
+        headers={'Idempotency-Key': 'pi-runtime-invalid-1'},
+    )
+    assert response.status_code == 422
+    assert response.json()['error']['code'] == 'PDF_RESOURCE_INVALID'
