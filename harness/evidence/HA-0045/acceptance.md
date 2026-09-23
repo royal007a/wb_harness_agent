@@ -9,3 +9,4 @@
 - 本机：`http://127.0.0.1:8765/api/v1/health` 为 ok；security-check 未知工具返回 deny，model/external calls 均为 0。
 - 公网机：`118.196.123.132` systemd 服务重启后 loopback health 为 ok；同一 security-check 冒烟返回 deny，数据目录数据库已先备份。
 - 发布提交：`13cb52a`。
+- HA-0046 的 SSE 适配在后续提交中单独记录，不改变 HA-0045 的 Guard Contract 边界。
