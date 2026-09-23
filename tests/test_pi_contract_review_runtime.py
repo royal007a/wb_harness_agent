@@ -71,3 +71,47 @@ def test_pi_product_run_rejects_non_public_pdf(client):
     )
     assert response.status_code == 422
     assert response.json()['error']['code'] == 'PDF_RESOURCE_INVALID'
+
+
+@pytest.mark.skipif(not (PI_ROOT / 'node_modules').is_dir(), reason='run npm ci in pi-adapter first')
+def test_pi_gate_rejects_before_open_and_is_terminal_after_reject(client, app):
+    uploaded = client.post(
+        '/api/local/research-native/documents?name=contract-reject.pdf',
+        content=b'%PDF-1.7\nfixture', headers={'content-type': 'application/pdf'},
+    )
+    body = {'resource_id': uploaded.json()['id'], 'objective': '审查', 'timeout_seconds': 30}
+    created = client.post('/api/local/pi-contract-review', json=body,
+                          headers={'Idempotency-Key': 'pi-reject-create-1'}).json()
+    run_id = created['initial_run']['id']
+    early = client.post(f'/api/local/pi-contract-review/{run_id}:gate',
+                        json={'decision': 'pass', 'reason': '过早'},
+                        headers={'Idempotency-Key': 'pi-reject-early-1'})
+    assert early.status_code == 409
+
+    app.state.service.execute(run_id)
+    rejected = client.post(f'/api/local/pi-contract-review/{run_id}:gate',
+                           json={'decision': 'reject', 'reason': 'Evidence 页码需要人工复核'},
+                           headers={'Idempotency-Key': 'pi-reject-final-1'})
+    assert rejected.status_code == 200 and rejected.json()['status'] == 'failed'
+    again = client.post(f'/api/local/pi-contract-review/{run_id}:gate',
+                        json={'decision': 'pass', 'reason': '不能绕过拒绝'},
+                        headers={'Idempotency-Key': 'pi-reject-again-1'})
+    assert again.status_code == 409
+
+
+@pytest.mark.skipif(not (PI_ROOT / 'node_modules').is_dir(), reason='run npm ci in pi-adapter first')
+def test_pi_cancel_before_execution_is_terminal_and_does_not_start_sidecar(client, app):
+    uploaded = client.post(
+        '/api/local/research-native/documents?name=contract-cancel.pdf',
+        content=b'%PDF-1.7\nfixture', headers={'content-type': 'application/pdf'},
+    )
+    created = client.post('/api/local/pi-contract-review',
+                          json={'resource_id': uploaded.json()['id'], 'objective': '取消', 'timeout_seconds': 30},
+                          headers={'Idempotency-Key': 'pi-cancel-create-1'}).json()
+    run_id = created['initial_run']['id']
+    cancelled = client.post(f'/api/v1/runs/{run_id}:cancel', json={})
+    assert cancelled.status_code == 200 and cancelled.json()['status'] == 'cancelled'
+    app.state.service.execute(run_id)
+    detail = client.get('/api/local/pi-contract-review/' + run_id).json()
+    assert detail['run']['status'] == 'cancelled'
+    assert detail['artifacts'] == []
