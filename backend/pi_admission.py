@@ -105,4 +105,24 @@ def require_approved(path: Path | None = None) -> dict[str, Any]:
     return value
 
 
-__all__ = ['load', 'require_approved', 'runtime_status', 'validate']
+def assert_runtime_binding(admission: dict[str, Any], *, package: str, model: str,
+                           max_cost_minor: int, max_turns: int, timeout_seconds: int,
+                           allowed_domains: tuple[str, ...] = ()) -> None:
+    """Fail closed when a future real Probe exceeds its approved snapshot."""
+    if admission.get('status') != 'approved_for_l3_probe' or not admission.get('admission_enabled'):
+        raise Problem('PI_ADMISSION_NOT_APPROVED', 'Pi L3 准入尚未批准。', 409)
+    provider, budget, sources = admission['provider'], admission['budget'], admission['sources']
+    if (provider['package'] != package or admission['model'] != model or
+            max_cost_minor > budget['max_cost_minor'] or max_turns > budget['max_turns'] or
+            timeout_seconds > budget['timeout_seconds'] or
+            tuple(sources['allowed_domains']) != tuple(allowed_domains)):
+        raise Problem('PI_ADMISSION_MISMATCH', 'Pi 运行配置超出已批准的准入档案。', 409)
+
+
+def assert_public_pdf_binding(admission: dict[str, Any], resource: dict[str, Any]) -> None:
+    approved = admission.get('public_pdf')
+    if not approved or resource.get('data_class') != 'Public' or resource.get('name') != approved['name'] or resource.get('sha256') != approved['sha256']:
+        raise Problem('PI_PUBLIC_PDF_MISMATCH', 'Public PDF 与 Pi 准入档案不匹配。', 409)
+
+
+__all__ = ['assert_public_pdf_binding', 'assert_runtime_binding', 'load', 'require_approved', 'runtime_status', 'validate']

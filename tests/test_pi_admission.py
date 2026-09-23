@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.app import create_app
-from backend.pi_admission import load, require_approved, runtime_status, validate
+from backend.pi_admission import assert_public_pdf_binding, assert_runtime_binding, load, require_approved, runtime_status, validate
 
 
 ROOT = Path(__file__).parents[1]
@@ -64,3 +64,27 @@ def test_pi_admission_approval_requires_exact_endpoint_and_keychain_ref():
     assert validate(approved)['status'] == 'approved_for_l3_probe'
     with pytest.raises(ValueError):
         validate({**approved, 'sources': {**approved['sources'], 'search': {'endpoint': 'https://other.example/search', 'credential_ref': 'keychain://harnessagent/search'}}})
+
+
+def test_pi_approved_profile_binds_runtime_limits_and_public_pdf():
+    value = json.loads((ROOT / 'harness/pi-admission.json').read_text())
+    approved = {**value, 'status': 'approved_for_l3_probe', 'admission_enabled': True,
+                'provider': {'kind': 'pi_sidecar', 'package': '@earendil-works/pi-agent-core@0.87.1',
+                             'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                'model': 'approved-model',
+                'budget': {'currency': 'USD', 'max_cost_minor': 100, 'max_turns': 4, 'timeout_seconds': 60},
+                'sources': {'allowed_domains': ['example.com'],
+                            'search': {'endpoint': 'https://example.com/search', 'credential_ref': 'keychain://harnessagent/search'},
+                            'financial': {'endpoint': 'https://example.com/financial', 'credential_ref': 'keychain://harnessagent/financial'}},
+                'public_pdf': {'name': 'contract.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                'operators': {'cancel_owner': 'ops-a', 'rollback_owner': 'ops-b'}, 'blockers': [],
+                'admission_evidence': {'approval_record': 'approval.md', 'data_egress_review': 'egress.md',
+                                       'probe_runbook': 'probe.md', 'rollback_runbook': 'rollback.md'}}
+    approved = validate(approved)
+    assert_runtime_binding(approved, package='@earendil-works/pi-agent-core@0.87.1', model='approved-model',
+                           max_cost_minor=90, max_turns=3, timeout_seconds=30, allowed_domains=('example.com',))
+    assert_public_pdf_binding(approved, {'name': 'contract.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'})
+    with pytest.raises(Exception) as exc:
+        assert_runtime_binding(approved, package='@earendil-works/pi-agent-core@0.87.1', model='other-model',
+                               max_cost_minor=90, max_turns=3, timeout_seconds=30, allowed_domains=('example.com',))
+    assert getattr(exc.value, 'code', None) == 'PI_ADMISSION_MISMATCH'
