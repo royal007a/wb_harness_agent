@@ -71,3 +71,19 @@ test("sidecar rejects non-admitted models before execution", async () => {
   child.kill();
   await once(child, "close");
 });
+
+test("sidecar cancel is explicit and remains offline", async () => {
+  const { child, output } = startProcess();
+  send(child, {
+    protocol: "pi-adapter@1", op: "start", request_id: "s-cancel", run_id: "run_cancel_1",
+    model: { provider: "faux", model_id: "offline-contract-review" },
+    resource_ref: "contract-fixture-1", capabilities: ["evidence.locate"], limits: { max_turns: 4 },
+  });
+  await waitFor(output, (item) => item.op === "started");
+  send(child, { protocol: "pi-adapter@1", op: "cancel", request_id: "c1", run_id: "run_cancel_1" });
+  const cancelled = await waitFor(output, (item) => item.op === "cancelled");
+  assert.equal(cancelled.external_calls, 0);
+  assert.ok(output.some((item) => item.op === "event" && item.platform_type === "run.result.proposed"));
+  child.kill();
+  await once(child, "close");
+});
