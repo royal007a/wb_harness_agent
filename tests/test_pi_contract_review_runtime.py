@@ -43,6 +43,7 @@ def test_pi_product_run_persists_artifact_evidence_and_requires_gate(client, app
     detail = client.get('/api/local/pi-contract-review/' + run_id).json()
     assert detail['run']['status'] == 'waiting_approval'
     assert detail['gate_required'] is True
+    assert detail['gate']['decision_options'] == ['pass', 'reject']
     assert detail['runtime_enabled'] is False and detail['external_calls'] == 0
     assert {item['name'] for item in detail['artifacts']} == {
         'pi-contract-review.json', 'pi-contract-review-handoff.json'
@@ -64,6 +65,8 @@ def test_pi_product_run_persists_artifact_evidence_and_requires_gate(client, app
     )
     assert gate.status_code == 200, gate.text
     assert gate.json()['status'] == 'succeeded'
+    final_detail = client.get('/api/local/pi-contract-review/' + run_id).json()
+    assert final_detail['gate']['decision'] == 'pass'
 
 
 def test_pi_product_run_rejects_non_public_pdf(client):

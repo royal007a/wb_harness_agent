@@ -80,10 +80,12 @@ class PiContractReviewRuns:
         run = self.store.get('runs', run_id)
         if run['selected_engine'] != ENGINE:
             raise Problem('NOT_FOUND', 'Pi 合同审查 Run 不存在。', 404)
+        gate_events = [event for event in self.store.events(run_id) if event['event_type'] in {'gate.awaiting_human', 'gate.decision'}]
         return {'run': run, 'task': self.store.get('tasks', run['task_id']),
                 'artifacts': self.store.artifact_list(run_id), 'mode': RUNTIME,
                 'runtime_enabled': False, 'external_calls': 0,
-                'gate_required': run['status'] == 'waiting_approval'}
+                'gate_required': run['status'] == 'waiting_approval',
+                'gate': gate_events[-1]['data'] if gate_events else None}
 
     def listing(self):
         return {'items': [run for run in self.store.listing('runs')
