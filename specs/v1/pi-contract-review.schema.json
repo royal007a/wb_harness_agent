@@ -16,6 +16,30 @@
         "reason": { "const": "高风险条款必须人工确认" }
       }
     },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "requirements", "gate", "summary", "decisions", "evidence", "remaining", "risks", "next_action"],
+      "properties": {
+        "schema_version": { "const": "pi-contract-review-handoff@1" },
+        "requirements": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "gate": {
+          "type": "object", "additionalProperties": false,
+          "required": ["reviewer", "checks", "on_reject"],
+          "properties": {
+            "reviewer": { "const": "human" },
+            "checks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+            "on_reject": { "type": "string", "minLength": 1 }
+          }
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "decisions": { "type": "array", "items": { "type": "string" } },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence_ref" } },
+        "remaining": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "risks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "next_action": { "type": "string", "minLength": 1 }
+      }
+    },
     "result": {
       "type": "object",
       "additionalProperties": false,

@@ -17,6 +17,7 @@ from .store import dumps, now, uid
 ENGINE = 'engine_pi_contract_review_offline'
 RUNTIME = 'pi_contract_review_offline@1'
 SCHEMA = json.loads((ROOT / 'specs/v1/pi-contract-review-runtime.schema.json').read_text())
+REVIEW_SCHEMA = json.loads((ROOT / 'specs/v1/pi-contract-review.schema.json').read_text())
 
 
 class PiContractReviewRuns:
@@ -135,6 +136,11 @@ class PiContractReviewRuns:
                     'risks': ['Faux Provider 结果不代表法律意见'],
                     'next_action': '请人工 Reviewer 核对引用后执行 Gate pass 或 reject',
                 }
+                handoff_errors = list(Draft202012Validator(
+                    {'$ref': '#/$defs/handoff', '$defs': REVIEW_SCHEMA['$defs']}
+                ).iter_errors(handoff))
+                if handoff_errors:
+                    raise Problem('HANDOFF_INVALID', 'Pi Task Handoff 不满足机器契约。', 409)
                 handoff_artifact = self._publish(db, current, 'pi-contract-review-handoff.json', handoff)
                 self.store.event(db, current, 'evidence.proposed', {
                     'artifact_id': artifact['id'], 'handoff_artifact_id': handoff_artifact['id'], 'evidence_refs': evidence,
