@@ -61,6 +61,7 @@ sh harness/start.sh
 - [工具与沙箱](docs/harness/TOOL_AND_SANDBOX.md)
 - [模型与模态路由](docs/harness/MODEL_ROUTING.md)
 - [四类 Agent 框架接入路线](docs/harness/FRAMEWORK_INTEGRATION.md)
+- [Pi Adapter 与合同审查 Agent 设计](docs/harness/PI_ADAPTER_DESIGN.md)
 - [领域映射](docs/harness/DOMAIN_MAP.md)
 - [开发约定](docs/harness/CONVENTIONS.md)
 - [质量门禁](docs/harness/QUALITY.md)

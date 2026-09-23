@@ -65,6 +65,8 @@ ADR-0026 已先实现框架无关的本机 Memory Plane M1：显式 Source/Fact�
 
 当前官方仓库已从 `badlogic/pi-mono` 重定向到 `earendil-works/pi`，提供 TypeScript 的 `pi-agent-core`、多模型层和 coding agent。官方同时说明 Pi 没有内置文件、进程、网络或凭证权限系统，默认继承启动进程权限；合同审查 Adapter 必须使用平台 Tool Runtime 和沙箱。来源：[Pi 官方仓库](https://github.com/earendil-works/pi)。
 
+当前项目接入方案见 [Pi Adapter 与合同审查 Agent 设计](PI_ADAPTER_DESIGN.md)：采用 `pi-ai + pi-agent-core` 的 TypeScript sidecar，`pi-coding-agent`/`pi-tui` 暂不进入服务端生产路径；Pi 事件必须映射为平台 Engine Events，真实模型仍需单独准入。当前没有 Pi 依赖、sidecar 或合同审查运行时。
+
 ## 路由规则
 
 1. 用户或 Agent Spec 明确选择场景策略；Capability Router 只验证，不凭偏好猜测。

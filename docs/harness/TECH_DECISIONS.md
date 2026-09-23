@@ -41,6 +41,7 @@
 | [ADR-0037](../decisions/ADR-0037-team-session-continuity-handoff.md) | Proposed（本机受限实现） | Team Session、手工 Handoff 与由 Task/Attention 生成的无正文当前工作摘要；不连接 Runtime Session、消息历史、自动换代或 Computer |
 | [ADR-0038](../decisions/ADR-0038-team-identity-admission.md) | Accepted（选择 C：仅设计） | Team 内容面前的真实身份认证准入已冻结为 metadata-only；不实现认证、消息正文或 Agent delegation |
 | [ADR-0039](../decisions/ADR-0039-llm-wiki-knowledge-compiler.md) | Proposed | 以 raw/wiki/schema 三层 Markdown + Git 知识编译层持续维护可审计页面；不替代 RAG、权威事实源或 Memory Policy Gateway |
+| [ADR-0040](../decisions/ADR-0040-pi-agent-adapter-boundary.md) | Proposed | Pi 分层运行时以 TypeScript sidecar 接入合同审查；Harness 保留 Task/Run、工具、权限、预算、证据和 Gate |
 
 ## 待决策
 
