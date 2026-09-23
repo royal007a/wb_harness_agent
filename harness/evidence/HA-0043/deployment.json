@@ -1,0 +1,24 @@
+{
+  "commit": "cf4ea40",
+  "local": {
+    "transport": "launchd",
+    "url": "http://127.0.0.1:8765",
+    "health": "ok",
+    "model_calls_enabled": false
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "transport": "systemd/nginx",
+    "working_directory": "/opt/harnessagent",
+    "database_root": "/var/lib/harnessagent/harness.db",
+    "database_backup": "created before promotion; timestamped path retained on host",
+    "health": "ok",
+    "pi_admission": "not_admitted",
+    "proxy_http_observation": "301 to existing HTTPS policy",
+    "proxy_https_unauthenticated": "401",
+    "runtime": "HARNESS_AGENT_RUNTIME=disabled"
+  },
+  "external_calls": 0,
+  "model_calls": 0,
+  "secrets_recorded": false
+}
