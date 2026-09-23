@@ -248,6 +248,7 @@ Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类�
 
 - [x] 已固化 `specs/v1/pi-admission.schema.json` 与 `harness/pi-admission.json`；默认 `not_admitted`，将 Provider/模型/预算、精确端点与域名、Keychain 引用、Public PDF、取消/回滚负责人和审批 Evidence 绑定为一个 profile；
 - [x] `/api/local/pi/runtime` 只读返回准入状态，不解析 Keychain、不启动 sidecar，默认 `model_calls=0/external_calls=0`；
+- [x] `harness/pi_evidence.py` 可重复生成 `harness/evidence/PI-P2/manifest.json`，固化 Node/Python/Harness 验证与未覆盖边界；
 - [ ] 完成 Provider/模型/域名/Keychain/费用和数据外发准入；
 - [ ] 运行固定合同集的真实模型 Probe，记录每个 turn、工具、引用、费用和失败恢复；
 - [ ] 通过人工审查与回滚演练后，才允许灰度路由。

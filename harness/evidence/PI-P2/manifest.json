@@ -1,0 +1,50 @@
+{
+  "evidence_version": "pi-p2-offline@1",
+  "generated_at": "2026-09-23T06:14:46.507362Z",
+  "status": "passed",
+  "scope": "Pi sidecar + offline contract review Product Run + admission boundary",
+  "checks": {
+    "node_sidecar_tests": [
+      "# pass 8",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 3439.132459"
+    ],
+    "pi_targeted_tests": [
+      "",
+      "-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+      "12 passed, 1 warning in 1.36s"
+    ],
+    "harness_verify_tail": [
+      "    \"The evaluation uses only synthetic metadata in a temporary SQLite database.\"",
+      "  ]",
+      "}",
+      "claude research admission: not_admitted; enabled=False"
+    ]
+  },
+  "runtime_assertions": {
+    "admission_status": "not_admitted",
+    "admission_enabled": false,
+    "model_calls": 0,
+    "external_calls": 0,
+    "keychain_resolved": false,
+    "network_calls": 0,
+    "real_provider_enabled": false
+  },
+  "covered": [
+    "Pi event mapping and JSONL sidecar protocol",
+    "Public PDF resource binding",
+    "Risk/Evidence/Handoff/Gate artifacts",
+    "Gate and cancellation terminal boundaries",
+    "fail-closed L3 admission and runtime binding checks"
+  ],
+  "not_covered": [
+    "real Provider connectivity",
+    "network/WebSearch/WebFetch",
+    "Keychain resolution",
+    "legal advice quality",
+    "production SLA"
+  ]
+}
