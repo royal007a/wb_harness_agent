@@ -1,0 +1,28 @@
+{
+  "schema_version": "pi-admission@1",
+  "status": "not_admitted",
+  "admission_enabled": false,
+  "model_calls": 0,
+  "external_calls": 0,
+  "provider": null,
+  "model": null,
+  "budget": null,
+  "sources": {
+    "allowed_domains": [],
+    "search": {"endpoint": null, "credential_ref": null},
+    "financial": {"endpoint": null, "credential_ref": null}
+  },
+  "public_pdf": null,
+  "operators": {"cancel_owner": null, "rollback_owner": null},
+  "blockers": [
+    "provider_identity_missing",
+    "model_identity_missing",
+    "budget_approval_missing",
+    "exact_endpoints_missing",
+    "keychain_references_missing",
+    "public_pdf_binding_missing",
+    "cancel_owner_missing",
+    "rollback_owner_missing"
+  ],
+  "admission_evidence": null
+}

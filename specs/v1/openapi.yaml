@@ -1959,6 +1959,14 @@ paths:
             application/json:
               schema: {$ref: './claude-research-runtime.schema.json#/$defs/runtime_configuration'}
         default: {$ref: '#/components/responses/Error'}
+  /local/pi/runtime:
+    servers: [{url: /api}]
+    get:
+      operationId: getPiRuntimeAdmission
+      description: Read-only Pi admission status. It does not resolve Keychain credentials or start a sidecar.
+      responses:
+        '200': {description: Pi admission digest, blockers and zero-call status.}
+        default: {$ref: '#/components/responses/Error'}
   /local/research-native/documents:
     servers: [{url: /api}]
     post:

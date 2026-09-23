@@ -607,6 +607,11 @@ def create_app(db_path=None, run_worker=True):
         from adapters.claude_research import runtime_status
         return runtime_status()
 
+    @app.get('/api/local/pi/runtime')
+    def pi_runtime():
+        from .pi_admission import runtime_status
+        return runtime_status()
+
     @app.post('/api/local/research-native/documents', status_code=201)
     async def research_native_document(request: Request, name: str):
         if request.headers.get('content-type', '').split(';')[0] != 'application/pdf':

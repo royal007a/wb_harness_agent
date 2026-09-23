@@ -25,6 +25,7 @@
 - `pi-adapter/`：P2-Pi-0 的 Node/Faux Provider 离线 Agent Loop 探针、Pi 事件到平台事件映射、有界背压/abort 测试与 `pi-adapter@1` JSON Schema；不连接 Python Product Run、真实模型或网络；
 - `adapters/pi_contract_review.py`：P2-Pi-1 离线 Public PDF 合同审查适配器；校验结构化风险、Evidence 引用和 `needs_human` Gate 候选，不启用真实模型；
 - `backend/pi_contract_review.py`：将离线适配器接入 Product Run 的 Run/Artifact/Evidence/Gate 状态链路；默认 Faux/offline，Gate 通过前不会进入 succeeded；
+- `backend/pi_admission.py`、`harness/pi-admission.json`：Pi P2 准入档案与默认关闭状态；不解析凭据、不启动真实 Provider；
 - `adapters/pi_sidecar.py`、`tests/test_pi_sidecar.py`：Python 侧 JSONL sidecar transport smoke client；只允许离线 Faux Provider，验证 health/start/stream 与事件读取，不写 Run 状态；
 - `frontend/research.*`：多专项演示页面；`tests/test_research.py` 和 `browser_research.py` 验证；
 - `frontend/baidu-netdisk.*`：本地 OAuth 状态与授权入口；`tests/test_baidu_netdisk.py` 验证；
