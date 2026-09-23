@@ -2153,6 +2153,26 @@ paths:
             application/json:
               schema: {$ref: '#/components/schemas/PiSecurityGuardResponse'}
         default: {$ref: '#/components/responses/Error'}
+  /local/pi-contract-pipeline/review-stream:
+    servers: [{url: /api}]
+    post:
+      operationId: streamPiContractPipelineReview
+      description: Deterministic ChatPanel event stream for a Public PDF; emits preview, finding and done without sending contract正文 or invoking a model/network.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/AcceptEventStream'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PiContractPipelineRequest'}
+      responses:
+        '200':
+          description: Structured SSE event stream.
+          content:
+            text/event-stream:
+              schema: {$ref: '#/components/schemas/PiContractReviewStreamEvent'}
+        default: {$ref: '#/components/responses/Error'}
 components:
   parameters:
     IdempotencyKey:
@@ -2163,6 +2183,12 @@ components:
         type: string
         minLength: 1
         maxLength: 128
+    AcceptEventStream:
+      name: Accept
+      in: header
+      required: true
+      schema:
+        const: text/event-stream
     TaskId:
       name: taskId
       in: path
@@ -2258,6 +2284,13 @@ components:
       $ref: './pi-security-guard.schema.json#/$defs/request'
     PiSecurityGuardResponse:
       $ref: './pi-security-guard.schema.json#/$defs/response'
+    PiContractReviewStreamEvent:
+      type: object
+      additionalProperties: false
+      required: [event, data]
+      properties:
+        event: {enum: [preview, finding, done]}
+        data: {type: object}
     ContractRiskReviewFinding:
       $ref: './pi-contract-pipeline.schema.json#/$defs/finding'
     Error:

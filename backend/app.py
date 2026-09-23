@@ -669,6 +669,25 @@ def create_app(db_path=None, run_worker=True):
     async def pi_contract_pipeline_security_check(request: Request):
         return app.state.service.pi_security_guard.check(await json_body(request), request.headers.get('idempotency-key'))
 
+    @app.post('/api/local/pi-contract-pipeline/review-stream')
+    async def pi_contract_pipeline_review_stream(request: Request):
+        if 'text/event-stream' not in request.headers.get('accept', ''):
+            raise Problem('VALIDATION_ERROR', '流式合同审查要求 Accept: text/event-stream。', 406)
+        body = await json_body(request)
+        key = request.headers.get('idempotency-key')
+        preview = app.state.service.pi_contract_pipeline.preview(body, f'{key}:preview' if key else None)
+        finding = app.state.service.pi_contract_pipeline.review(body, f'{key}:review' if key else None)
+        # ChatPanel is an event transport, not a document export.  Headings can
+        # contain arbitrary contract text, so stream only stable chunk labels.
+        stream_preview = dict(preview)
+        stream_preview['chunks'] = [dict(chunk, heading=f"chunk-{chunk['index']}") for chunk in preview['chunks']]
+
+        async def stream():
+            for event, payload in (('preview', stream_preview), ('finding', finding), ('done', {'model_calls': 0, 'external_calls': 0})):
+                yield f'data: {json.dumps({"event": event, "data": payload}, ensure_ascii=False)}\n\n'
+
+        return StreamingResponse(stream(), media_type='text/event-stream', headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
+
     @app.get('/research-agents', include_in_schema=False)
     def research_agents_page():
         return FileResponse(ROOT / 'frontend/research-agents.html')

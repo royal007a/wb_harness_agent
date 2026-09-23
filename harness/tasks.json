@@ -3,6 +3,21 @@
   "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
+      "id": "HA-0046",
+      "title": "接入 Pi 合同审查 ChatPanel SSE 事件适配",
+      "status": "in_progress",
+      "risk": "medium",
+      "scope": ["Public PDF 离线 review 的 preview/finding/done 结构化 SSE 事件"],
+      "non_goals": ["真实模型/Provider、自动 Gate、正文外发"],
+      "acceptance": ["Accept=text/event-stream 时事件顺序稳定且不含原文", "全量验证与双部署健康检查通过"],
+      "depends_on": ["HA-0045"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0046-pi-contract-review-stream.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0046/acceptance.md"]
+    },
+    {
       "id": "HA-0045",
       "title": "实现 Pi metadata-only Guard Contract",
       "status": "completed",

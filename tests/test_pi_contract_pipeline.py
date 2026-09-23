@@ -98,3 +98,22 @@ def test_pipeline_review_returns_cited_human_gate_candidate(tmp_path):
         replay = client.post('/api/local/pi-contract-pipeline/review', json=body,
                              headers={'Idempotency-Key': 'pipeline-review-1'})
         assert replay.json() == finding
+
+
+def test_pipeline_review_stream_emits_preview_finding_and_done_without_raw_text(tmp_path):
+    app = create_app(tmp_path / 'pipeline-stream.db', run_worker=False)
+    with TestClient(app, base_url='http://127.0.0.1') as client:
+        uploaded = client.post(
+            '/api/local/research-native/documents?name=stream.pdf',
+            content=pdf_fixture('software development source code delivery and liability.'),
+            headers={'content-type': 'application/pdf'},
+        )
+        response = client.post('/api/local/pi-contract-pipeline/review-stream', json={'resource_id': uploaded.json()['id']},
+                               headers={'Accept': 'text/event-stream', 'Idempotency-Key': 'pipeline-stream-1'})
+        assert response.status_code == 200
+        assert response.headers['content-type'].startswith('text/event-stream')
+        assert [line for line in response.text.splitlines() if line.startswith('data: ')]
+        assert '"event": "preview"' in response.text
+        assert '"event": "finding"' in response.text
+        assert '"event": "done"' in response.text
+        assert 'software development' not in response.text

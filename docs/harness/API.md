@@ -33,7 +33,7 @@
 | Local Agent Runtime | ADR-0022 受控聊天运行时 | `GET/POST /local/agent-runtime/*` | 独立 Provider/Model/Agent/Session/Exchange、上下文窗口与 POST SSE；默认外部模型调用关闭 |
 | Research Agent Simulation | ADR-0023 本地模拟切片 | `GET/POST /local/research-agents` | 三角色 Child Agent、Skill/Tool 快照与父级证据汇总；模型和网络调用为零 |
 | Native Claude Research | ADR-0024 Proposed 受控准入 | `GET/POST /local/research-native*` | 原生 SubAgent、第一方插件 Skills、进程内 MCP 资料工具；默认所有外部调用关闭 |
-| Pi Contract Pipeline | HA-0043/0044 已实现的离线切片 | `POST /local/pi-contract-pipeline/preview`、`/review` | Public PDF 解析/分类/分块与确定性 Skill 候选；始终人工 Gate，模型/网络调用为零 |
+| Pi Contract Pipeline | HA-0043/0044/0046 已实现的离线切片 | `POST /local/pi-contract-pipeline/preview`、`/review`、`/review-stream` | Public PDF 解析/分类/分块、确定性 Skill 候选与 SSE 事件适配；始终人工 Gate，模型/网络调用为零 |
 | Pi Security Guard | HA-0045 课程 20 metadata-only 护栏 | `POST /local/pi-contract-pipeline/security-check` | 对 tool_call/tool_result/context/provider_request 做确定性准入判断；未知能力、越权路径、非白名单域名、敏感内容与预算超限 fail-closed；不执行动作 |
 | Team Session Continuity | ADR-0037 Proposed 受限控制面 | `GET/POST /local/team/sessions*` | Team Session、手工 Handoff 与无正文当前工作摘要；不连接模型/Runtime Session |
 | Resources | P0 | `POST/GET /resources` | 文件、数据源和上下文引用 |
