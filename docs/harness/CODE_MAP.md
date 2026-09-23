@@ -26,6 +26,8 @@
 - `adapters/pi_contract_review.py`：P2-Pi-1 离线 Public PDF 合同审查适配器；校验结构化风险、Evidence 引用和 `needs_human` Gate 候选，不启用真实模型；
 - `backend/pi_contract_review.py`：将离线适配器接入 Product Run 的 Run/Artifact/Evidence/Gate 状态链路；默认 Faux/offline，Gate 通过前不会进入 succeeded；
 - `backend/pi_admission.py`、`harness/pi-admission.json`：Pi P2 准入档案与默认关闭状态；不解析凭据、不启动真实 Provider；
+- `backend/pi_contract_pipeline.py`、`specs/v1/pi-contract-pipeline.schema.json`：课程 17–19 的 Public PDF 无模型解析/分类/分块、敏感信息预览与 `needs_human` Skill 候选；`/api/local/pi-contract-pipeline/{preview,review}` 不访问网络、不调用模型；
+- `skills/contract-risk-review/`：课程 19 的确定性风险候选 Skill 与脚本，Evidence 绑定资源/chunk SHA256；不输出法律结论；
 - `harness/pi_evidence.py`、`harness/evidence/PI-P2/manifest.json`：Pi 离线纵切的可重复验证 Evidence Bundle；不宣称真实 Provider 或生产 SLA；
 - `adapters/pi_sidecar.py`、`tests/test_pi_sidecar.py`：Python 侧 JSONL sidecar transport smoke client；只允许离线 Faux Provider，验证 health/start/stream 与事件读取，不写 Run 状态；
 - `frontend/research.*`：多专项演示页面；`tests/test_research.py` 和 `browser_research.py` 验证；
