@@ -3,6 +3,56 @@
   "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
+      "id": "HA-0044",
+      "title": "将合同风险 Skill 基线接入 Pi PDF 流水线 API",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "服务端重新构建 Public PDF preview 并生成带 chunk SHA256 Evidence 的 needs_human 候选",
+        "Skill/API 幂等、严格 Schema、零模型零外部调用验证与双环境部署"
+      ],
+      "non_goals": [
+        "真实 Provider、跨块模型复盘、法律结论、自动 Gate、联网或身份认证"
+      ],
+      "acceptance": [
+        "POST /api/local/pi-contract-pipeline/review 通过 Schema，调用方不能伪造 chunk",
+        "Skill validator、定向回归与全量 harness/verify 通过；本机与公网 health=ok"
+      ],
+      "depends_on": ["HA-0043"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0044-contract-risk-skill-baseline.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0044/acceptance.md"]
+    },
+    {
+      "id": "HA-0043",
+      "title": "实现课程 17–22 的 Pi 合同 PDF 无模型预览纵切片",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "Public PDF 解析、确定性合同分类、条款分块与敏感信息类型/数量检测",
+        "机器 Schema、幂等 API、课程资料摘要、测试和本机/公网部署 Evidence"
+      ],
+      "non_goals": [
+        "真实 Pi/Provider、联网搜索、法律判断、ChatPanel、TUI、身份认证"
+      ],
+      "acceptance": [
+        "POST /api/local/pi-contract-pipeline/preview 输出不含原文正文的结构化结果",
+        "全量回归通过且 model_calls/external_calls=0；两端 health=ok"
+      ],
+      "depends_on": [],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0043-pi-contract-pipeline-course-slice.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/course-17-22-manifest.json",
+        "harness/evidence/HA-0043/acceptance.md",
+        "harness/evidence/HA-0043/deployment.json"
+      ]
+    },
+    {
       "id": "HA-0042",
       "title": "冻结 Team 真实身份认证准入决策包",
       "status": "completed",
