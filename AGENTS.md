@@ -11,6 +11,11 @@
 - 2026-09-12 用户授权 P1 准备切片：本地固定函数 Child Run 编排演示，见 ADR-0011；不是实际 Claude 运行。
 - 图片理解显式路由到用户指定的 `doubao-seed-2.1-turbo`，能力探针通过前不得启用。
 
+## 课程参考资料
+
+- Harness Agent 脚手架实战课本地资料目录：`/Users/weberzhao/Downloads/Harness Agent 脚手架实战课`
+- 该目录仅作为阅读、对照和设计参考；课程内容不是本项目已实现能力、规范或准入证据。引用其中方案时，必须落回本项目的契约、ADR、测试和 Evidence。
+
 ## 每次工作前必读
 
 1. `README.md`
