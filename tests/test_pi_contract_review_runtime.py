@@ -42,7 +42,9 @@ def test_pi_product_run_persists_artifact_evidence_and_requires_gate(client, app
     assert detail['run']['status'] == 'waiting_approval'
     assert detail['gate_required'] is True
     assert detail['runtime_enabled'] is False and detail['external_calls'] == 0
-    assert detail['artifacts'][0]['name'] == 'pi-contract-review.json'
+    assert {item['name'] for item in detail['artifacts']} == {
+        'pi-contract-review.json', 'pi-contract-review-handoff.json'
+    }
     events = app.state.service.store.events(run_id)
     proposed = [event for event in events if event['event_type'] == 'evidence.proposed']
     assert proposed and proposed[-1]['data']['evidence_refs'] == [

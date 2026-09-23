@@ -121,8 +121,23 @@ class PiContractReviewRuns:
                 current = self.store.get('runs', run_id)
                 artifact = self._publish(db, current, 'pi-contract-review.json', result.finding)
                 evidence = result.finding['evidence_refs']
+                handoff = {
+                    'schema_version': 'pi-contract-review-handoff@1',
+                    'requirements': [
+                        'R1：每个高风险结论必须绑定当前 Public PDF 的 Evidence 引用',
+                        'R2：人工确认前不得将结果标记为正式交付',
+                    ],
+                    'gate': {'reviewer': 'human', 'checks': ['核对 Evidence 页码与原始 PDF', '确认风险建议是否可接受'],
+                             'on_reject': '保留审计记录并退回审查 Run'},
+                    'summary': 'Pi 离线合同审查候选结果，等待人工 Gate',
+                    'decisions': [], 'evidence': evidence,
+                    'remaining': ['人工确认高风险条款'],
+                    'risks': ['Faux Provider 结果不代表法律意见'],
+                    'next_action': '请人工 Reviewer 核对引用后执行 Gate pass 或 reject',
+                }
+                handoff_artifact = self._publish(db, current, 'pi-contract-review-handoff.json', handoff)
                 self.store.event(db, current, 'evidence.proposed', {
-                    'artifact_id': artifact['id'], 'evidence_refs': evidence,
+                    'artifact_id': artifact['id'], 'handoff_artifact_id': handoff_artifact['id'], 'evidence_refs': evidence,
                     'source_resource_id': resource['id'], 'source_sha256': resource['sha256'],
                 }, artifact['step_id'])
                 self.store.event(db, current, 'run.result.proposed', {
@@ -131,6 +146,7 @@ class PiContractReviewRuns:
                 }, artifact['step_id'])
                 current['status'], current['exit_reason'] = 'waiting_approval', 'GATE_REQUIRED'
                 self.store.event(db, current, 'gate.awaiting_human', {'artifact_id': artifact['id'],
+                                                                        'handoff_artifact_id': handoff_artifact['id'],
                                                                         'decision_options': ['pass', 'reject']})
         except Exception as exc:
             with self.store.transaction() as db:
@@ -147,10 +163,14 @@ class PiContractReviewRuns:
 
         def decide(db):
             current = self.store.get('runs', run_id)
+            handoffs = [item for item in self.store.artifact_list(run_id) if item['name'] == 'pi-contract-review-handoff.json']
+            if not handoffs:
+                raise Problem('HANDOFF_MISSING', 'Gate 前必须存在可审计的 Pi Task Handoff。', 409)
             status = 'succeeded' if body['decision'] == 'pass' else 'failed'
             reason = 'GATE_PASSED' if status == 'succeeded' else 'GATE_REJECTED'
             current['status'], current['exit_reason'] = status, reason
-            self.store.event(db, current, 'gate.decision', {'decision': body['decision'], 'reason': body['reason']})
+            self.store.event(db, current, 'gate.decision', {'decision': body['decision'], 'reason': body['reason'],
+                                                            'handoff_artifact_id': handoffs[-1]['id']})
             self.store.event(db, current, 'run.' + status, {'exit_reason': reason, 'handoff_required': True})
             return current
 
