@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/pi-contract-review.schema.json",
+  "title": "Pi Contract Review Offline Result",
+  "$defs": {
+    "evidence_ref": {
+      "type": "string",
+      "pattern": "^evidence://[^/]+/[^/]+/page-[1-9][0-9]*$"
+    },
+    "gate_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": { "const": "needs_human" },
+        "reason": { "const": "高风险条款必须人工确认" }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "status", "risk_level", "evidence_refs",
+        "recommendation", "source_resource_id", "verification", "gate"
+      ],
+      "properties": {
+        "schema_version": { "const": "pi-contract-review@1" },
+        "status": { "const": "needs_human" },
+        "risk_level": { "enum": ["high"] },
+        "evidence_refs": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "$ref": "#/$defs/evidence_ref" }
+        },
+        "recommendation": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "source_resource_id": { "type": "string", "minLength": 1 },
+        "verification": { "const": "sidecar_event_and_evidence_ref_checked" },
+        "gate": { "$ref": "#/$defs/gate_candidate" }
+      }
+    }
+  }
+}

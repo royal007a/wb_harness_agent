@@ -9,7 +9,10 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
+
+from jsonschema import Draft202012Validator
 
 from backend.analysis import Problem, digest
 from .pi_sidecar import PiSidecarClient
@@ -72,13 +75,18 @@ class PiContractReviewAdapter:
             not isinstance(ref, str) or not ref.startswith(f'evidence://{resource_id}/') for ref in refs
         ):
             raise Problem('PI_EVIDENCE_INVALID', '合同审查结果缺少绑定到当前资源的 Evidence 引用。', 409)
-        return {
+        result = {
             'schema_version': 'pi-contract-review@1',
             **finding,
             'source_resource_id': resource_id,
             'verification': 'sidecar_event_and_evidence_ref_checked',
             'gate': {'status': 'needs_human', 'reason': '高风险条款必须人工确认'},
         }
+        schema_path = Path(__file__).resolve().parents[1] / 'specs/v1/pi-contract-review.schema.json'
+        schema = json.loads(schema_path.read_text())
+        if list(Draft202012Validator({'$ref': '#/$defs/result', '$defs': schema['$defs']}).iter_errors(result)):
+            raise Problem('PI_RESULT_INVALID', '合同审查结果不满足平台结构化契约。', 409)
+        return result
 
     def start_run(self, request, emit, check) -> PiContractReviewResult:
         if not request.resource.get('name', '').lower().endswith('.pdf') or not request.input_bytes.startswith(b'%PDF-'):
