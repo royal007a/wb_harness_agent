@@ -2115,6 +2115,25 @@ paths:
             application/json:
               schema: {$ref: '#/components/schemas/PiContractPipelinePreview'}
         default: {$ref: '#/components/responses/Error'}
+  /local/pi-contract-pipeline/review:
+    servers: [{url: /api}]
+    post:
+      operationId: reviewPiContractPipeline
+      description: Deterministic Skill baseline over a server-built preview. Always returns a human-gated candidate and never invokes a model or network.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PiContractPipelineRequest'}
+      responses:
+        '200':
+          description: Human-gated candidate with chunk evidence references.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ContractRiskReviewFinding'}
+        default: {$ref: '#/components/responses/Error'}
 components:
   parameters:
     IdempotencyKey:
@@ -2216,6 +2235,8 @@ components:
       $ref: './pi-contract-pipeline.schema.json#/$defs/request'
     PiContractPipelinePreview:
       $ref: './pi-contract-pipeline.schema.json#/$defs/preview'
+    ContractRiskReviewFinding:
+      $ref: './pi-contract-pipeline.schema.json#/$defs/finding'
     Error:
       type: object
       additionalProperties: false

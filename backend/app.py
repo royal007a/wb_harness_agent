@@ -661,6 +661,10 @@ def create_app(db_path=None, run_worker=True):
     async def pi_contract_pipeline_preview(request: Request):
         return app.state.service.pi_contract_pipeline.preview(await json_body(request), request.headers.get('idempotency-key'))
 
+    @app.post('/api/local/pi-contract-pipeline/review')
+    async def pi_contract_pipeline_review(request: Request):
+        return app.state.service.pi_contract_pipeline.review(await json_body(request), request.headers.get('idempotency-key'))
+
     @app.get('/research-agents', include_in_schema=False)
     def research_agents_page():
         return FileResponse(ROOT / 'frontend/research-agents.html')

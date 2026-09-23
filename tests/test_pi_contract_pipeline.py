@@ -76,3 +76,25 @@ def test_pipeline_rejects_non_public_resource(tmp_path):
         )
         assert response.status_code == 422
         assert response.json()['error']['code'] == 'PDF_RESOURCE_INVALID'
+
+
+def test_pipeline_review_returns_cited_human_gate_candidate(tmp_path):
+    app = create_app(tmp_path / 'pipeline-review.db', run_worker=False)
+    with TestClient(app, base_url='http://127.0.0.1') as client:
+        uploaded = client.post(
+            '/api/local/research-native/documents?name=review.pdf',
+            content=pdf_fixture('software development source code delivery and liability.'),
+            headers={'content-type': 'application/pdf'},
+        )
+        body = {'resource_id': uploaded.json()['id']}
+        response = client.post('/api/local/pi-contract-pipeline/review', json=body,
+                               headers={'Idempotency-Key': 'pipeline-review-1'})
+        assert response.status_code == 200, response.text
+        finding = response.json()
+        assert finding['status'] == 'needs_human'
+        assert finding['method'] == 'deterministic_skill_baseline@1'
+        assert finding['evidence_refs'][0].startswith('evidence://' + body['resource_id'] + '/chunk-0/')
+        assert finding['model_calls'] == finding['external_calls'] == 0
+        replay = client.post('/api/local/pi-contract-pipeline/review', json=body,
+                             headers={'Idempotency-Key': 'pipeline-review-1'})
+        assert replay.json() == finding

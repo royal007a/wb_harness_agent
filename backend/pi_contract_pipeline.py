@@ -118,6 +118,29 @@ def build_preview(resource: dict, raw: bytes, chunk_max_chars: int = 6000) -> di
     return json.loads(dumps(result))
 
 
+def build_finding(preview: dict) -> dict:
+    """Course-19 Skill baseline: cite chunks, require human review, never infer law."""
+    _validate('preview', preview)
+    security = preview['security']
+    focus = preview['classification']['focus_areas']
+    if security['status'] != 'clear':
+        level = 'high'
+        recommendation = '先完成敏感信息人工复核，再决定是否继续合同审查。'
+    else:
+        level = 'medium' if focus else 'low'
+        recommendation = '逐项核对关注领域并由法务或业务负责人确认；该候选不构成法律意见。'
+    finding = {
+        'schema_version': 'contract-risk-review-candidate@1', 'status': 'needs_human',
+        'risk_level': level, 'source_resource_id': preview['resource_id'],
+        'source_sha256': preview['source_sha256'], 'method': 'deterministic_skill_baseline@1',
+        'focus_areas': focus,
+        'evidence_refs': [f"evidence://{preview['resource_id']}/chunk-{item['index']}/{item['text_sha256']}" for item in preview['chunks']],
+        'recommendation': recommendation, 'model_calls': 0, 'external_calls': 0,
+    }
+    _validate('finding', finding)
+    return json.loads(dumps(finding))
+
+
 class PiContractPipeline:
     """Service facade for the offline Pi lessons 16-18 vertical slice."""
 
@@ -139,5 +162,19 @@ class PiContractPipeline:
 
         return self.service.idempotent('pi-contract-pipeline:preview', key, request, create)
 
+    def review(self, body: dict, key: str | None):
+        if not isinstance(body, dict):
+            raise Problem('VALIDATION_ERROR', '请求体必须是 JSON 对象。', 422)
+        request = {name: body[name] for name in ('resource_id', 'chunk_max_chars') if name in body}
+        _validate('request', request)
+        resource = self.store.get('resources', request['resource_id'])
 
-__all__ = ['PiContractPipeline', 'build_preview', 'classify', 'chunk', 'extract_pdf', 'security_preview']
+        def create(_db):
+            with self.store.lock:
+                raw = self.store.db.execute('SELECT raw FROM resources WHERE id=?', (resource['id'],)).fetchone()[0]
+            return build_finding(build_preview(resource, raw, request.get('chunk_max_chars', 6000)))
+
+        return self.service.idempotent('pi-contract-pipeline:review', key, request, create)
+
+
+__all__ = ['PiContractPipeline', 'build_finding', 'build_preview', 'classify', 'chunk', 'extract_pdf', 'security_preview']

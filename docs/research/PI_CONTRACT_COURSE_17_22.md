@@ -14,13 +14,15 @@
 
 ## 已落地的第一条纵切片
 
-`POST /api/local/pi-contract-pipeline/preview` 实现课程 16–18 的无模型预览：
+`POST /api/local/pi-contract-pipeline/preview` 实现课程 16–18 的无模型预览；
+`POST /api/local/pi-contract-pipeline/review` 接入课程 19 的确定性 Skill 基线：
 
 - 仅接受已登记 `Public` PDF；解析使用 `pypdf`，输出不包含原文正文。
 - 生成确定性合同类型、关注点、章节/条款 chunk 摘要和 SHA256。
 - 扫描身份证号、手机号、银行卡号、邮箱；命中时返回 `needs_human`，只返回类型与数量，不泄漏原值。
 - 响应通过 `specs/v1/pi-contract-pipeline.schema.json` 校验；幂等键保证重放一致。
 - `external_calls=0`、`model_calls=0` 是契约字段，不能把该切片描述为真实 Pi 或外部模型运行。
+- review 端点从服务端重新构建预览，不接受调用方伪造的 chunk；输出始终是 `needs_human`，并为每个 chunk 生成 `evidence://` 引用。
 
 ## 非目标与后续顺序
 
