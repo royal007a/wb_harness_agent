@@ -236,7 +236,7 @@ Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类�
 
 ### P2-Pi-1：合同审查模拟纵切
 
-- [~] 已实现 Faux Provider sidecar 的 `start/stream/cancel/health` JSONL 协议和非准入模型拒绝；Python Product Adapter 尚未接入；
+- [~] 已实现 Faux Provider sidecar 的 `start/stream/cancel/health` JSONL 协议、非准入模型拒绝，以及 Python 侧 transport smoke client；尚未写入 Product Run 或平台 Gate；
 - [ ] 接入固定合同夹具、条款 Schema、Evidence locator 和结构化风险输出；
 - [ ] 用平台假 Tool Runtime 验证权限、预算、引用和人工 Gate；
 - [ ] 评测召回、误报、引用覆盖、schema 通过率、取消延迟和成本估算。
