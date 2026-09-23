@@ -25,6 +25,7 @@ def test_default_pi_admission_is_valid_and_disabled():
     assert status['admission_enabled'] is False
     assert status['model_calls'] == 0 and status['external_calls'] == 0
     assert status['blocker_count'] >= 8
+    assert 'provider_identity_missing' in status['blockers']
     with pytest.raises(Exception) as exc:
         require_approved()
     assert getattr(exc.value, 'code', None) == 'PI_ADMISSION_NOT_APPROVED'

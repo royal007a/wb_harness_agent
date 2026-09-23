@@ -91,10 +91,12 @@ def runtime_status(path: Path | None = None) -> dict[str, Any]:
     except Problem:
         return {'schema_version': 'pi-admission@1', 'status': 'invalid_not_admitted',
                 'admission_enabled': False, 'model_calls': 0, 'external_calls': 0,
-                'blocker_count': 1, 'admission_digest': None, 'error': 'admission_profile_invalid'}
+                'blocker_count': 1, 'blockers': ['admission_profile_invalid'],
+                'admission_digest': None, 'error': 'admission_profile_invalid'}
     return {'schema_version': value['schema_version'], 'status': value['status'],
             'admission_enabled': value['admission_enabled'], 'model_calls': value['model_calls'],
             'external_calls': value['external_calls'], 'blocker_count': len(value['blockers']),
+            'blockers': value['blockers'],
             'admission_digest': _digest(value), 'error': None}
 
 
