@@ -22,6 +22,7 @@
 - `harness/configure_baidu_netdisk.py`：用户本机 TTY 配置助手；无回显 Client Secret 只进 Keychain，公开 App Key 仅注入当前登录会话；
 - `adapters/research_demo.py`：自建 synthetic 资料与固定专项函数，非真实研报；
 - `adapters/claude_config.py`：实际 SDK AgentDefinition 离线配置验证，无 query/CLI 启动；
+- `pi-adapter/`：P2-Pi-0 的 Node/Faux Provider 离线 Agent Loop 探针、Pi 事件到平台事件映射和有界背压/abort 测试；不连接 Python Product Run、真实模型或网络；
 - `frontend/research.*`：多专项演示页面；`tests/test_research.py` 和 `browser_research.py` 验证；
 - `frontend/baidu-netdisk.*`：本地 OAuth 状态与授权入口；`tests/test_baidu_netdisk.py` 验证；
 - `frontend/agent-lab.*`：配置与 POST SSE 聊天演示；`tests/test_agent_lab.py` 和 `tests/browser_agent_lab.py` 验证；

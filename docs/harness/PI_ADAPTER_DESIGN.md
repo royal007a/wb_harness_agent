@@ -1,6 +1,6 @@
 # Pi Adapter 与合同审查 Agent 设计
 
-状态：Proposed（设计，不代表已安装或已接入）  
+状态：Proposed（P2-Pi-0 离线探针已实现；生产接入未开启）
 适用阶段：P2 合同审查助手  
 关联：`docs/harness/ADAPTER_CONTRACT.md`、`docs/harness/FRAMEWORK_INTEGRATION.md`、ADR-0040
 
@@ -230,9 +230,9 @@ Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类�
 
 ### P2-Pi-0：离线契约探针
 
-- [ ] 固定 Pi 官方仓库、版本、许可证和 Node/TypeScript 运行环境；
-- [ ] 用假 Model 生成完整事件序列，验证 turn、tool、steering、followUp、abort、未知事件和背压；
-- [ ] 将事件映射为 `Engine Events`，不调用网络、不读取凭证、不执行真实工具。
+- [x] 固定 Pi 官方仓库、版本、许可证和 Node/TypeScript 运行环境；当前包为 `@earendil-works/pi-agent-core@0.87.1`、`@earendil-works/pi-ai@0.87.1`、Node `>=22.19.0`；
+- [~] 用 Faux Provider 生成事件序列，已验证 turn、tool、abort、未知事件和背压；steering/followUp 仍需独立队列探针；
+- [x] 将事件映射为 `Engine Events`，不调用网络、不读取凭证、不执行真实工具。实现见 [`pi-adapter/`](../../pi-adapter/)。
 
 ### P2-Pi-1：合同审查模拟纵切
 
@@ -249,4 +249,4 @@ Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类�
 
 ## 10. 当前结论
 
-Pi 的分层和事件驱动设计值得吸收，但当前仓库没有 Pi 依赖、TypeScript sidecar、合同审查工具或真实模型调用。本文只冻结接入边界和验收顺序，不把架构图误写成已实现功能。
+Pi 的分层和事件驱动设计已经通过本地 Faux Provider 离线探针验证；当前仓库仍没有 TypeScript sidecar 服务、合同审查工具、Python Product Adapter 或真实模型调用。本文与 `pi-adapter/` 只冻结并验证接入边界，不把离线探针误写成生产合同审查能力。

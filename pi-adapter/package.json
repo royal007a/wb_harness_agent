@@ -1,0 +1,15 @@
+{
+  "name": "@harnessagent/pi-adapter",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=22.19.0"},
+  "scripts": {
+    "probe": "node src/probe.mjs",
+    "test": "node --test test/probe.test.mjs"
+  },
+  "dependencies": {
+    "@earendil-works/pi-agent-core": "0.87.1",
+    "@earendil-works/pi-ai": "0.87.1",
+    "typebox": "1.3.7"
+  }
+}
