@@ -21,7 +21,12 @@ def readiness():
                  'tests': saved.get('tests'), 'real_model': False}
     except (OSError, ValueError):
         probe = {'status': 'not_run', 'real_model': False}
+    from .pi_admission import runtime_status as pi_admission_status
+    pi = pi_admission_status()
     return {'baseline': 'available', 'smolagents_version': sdk, 'sandbox_probe': probe,
+            'pi': {'status': pi['status'], 'admission_enabled': pi['admission_enabled'],
+                   'model_calls': pi['model_calls'], 'external_calls': pi['external_calls'],
+                   'admission_digest': pi['admission_digest']},
             'research_demo': {'status':'available', 'real_model':False, 'max_children':9, 'max_concurrency':3,
                               'url':'/research', 'execution':'fixed_functions'},
             'model_route_enabled': False,

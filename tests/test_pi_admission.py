@@ -39,6 +39,13 @@ def test_pi_admission_http_status_is_read_only(client):
     assert body['model_calls'] == 0 and body['external_calls'] == 0
 
 
+def test_global_readiness_exposes_pi_as_default_closed(client):
+    response = client.get('/api/v1/readiness')
+    assert response.status_code == 200
+    assert response.json()['pi']['status'] == 'not_admitted'
+    assert response.json()['pi']['external_calls'] == 0
+
+
 def test_pi_admission_rejects_secret_and_incomplete_approval():
     value = json.loads((ROOT / 'harness/pi-admission.json').read_text())
     with pytest.raises(ValueError):
