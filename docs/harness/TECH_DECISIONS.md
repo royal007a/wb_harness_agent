@@ -40,6 +40,7 @@
 | [ADR-0036](../decisions/ADR-0036-team-attention-inbox-freshness.md) | Proposed（本地受限实现） | Attention Inbox、read cursor、work mark、单 identity lease 与 Thread freshness；仅手工 metadata ingress，不连接消息传输、自动 dispatch 或 Runtime |
 | [ADR-0037](../decisions/ADR-0037-team-session-continuity-handoff.md) | Proposed（本机受限实现） | Team Session、手工 Handoff 与由 Task/Attention 生成的无正文当前工作摘要；不连接 Runtime Session、消息历史、自动换代或 Computer |
 | [ADR-0038](../decisions/ADR-0038-team-identity-admission.md) | Accepted（选择 C：仅设计） | Team 内容面前的真实身份认证准入已冻结为 metadata-only；不实现认证、消息正文或 Agent delegation |
+| [ADR-0039](../decisions/ADR-0039-llm-wiki-knowledge-compiler.md) | Proposed | 以 raw/wiki/schema 三层 Markdown + Git 知识编译层持续维护可审计页面；不替代 RAG、权威事实源或 Memory Policy Gateway |
 
 ## 待决策
 

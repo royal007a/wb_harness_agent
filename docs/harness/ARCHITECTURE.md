@@ -114,7 +114,7 @@ P0 基线默认无网络、无 Child Run、无外部写入，也不发送图片�
 
 ## 多框架演进
 
-框架融合发生在契约层，不发生在运行时嵌套层：P0 只验证 Smolagents CodeAct；Claude Agent SDK 的 Skills/研报与复杂编排进入 P1；Deep Agents 动态知识工作区和 Pi TypeScript 合同审查进入 P2。每个阶段都复用同一 Task/Run、Policy、Tool、Event、Artifact 和 Evaluation 边界，详细责任与准入证据见 [FRAMEWORK_INTEGRATION.md](FRAMEWORK_INTEGRATION.md)。
+框架融合发生在契约层，不发生在运行时嵌套层：P0 只验证 Smolagents CodeAct；Claude Agent SDK 的 Skills/研报与复杂编排进入 P1；Deep Agents 动态知识工作区、LLM-Wiki 知识编译层和 Pi TypeScript 合同审查进入 P2。LLM-Wiki 仅是 raw/wiki/schema 三层的可审计派生知识层，不替代普通 RAG、业务事实源或 Memory Policy Gateway。每个阶段都复用同一 Task/Run、Policy、Tool、Event、Artifact 和 Evaluation 边界，详细责任与准入证据见 [FRAMEWORK_INTEGRATION.md](FRAMEWORK_INTEGRATION.md) 与 [LLM-Wiki 知识编译层设计](LLM_WIKI.md)。
 
 ## 数据流约束
 

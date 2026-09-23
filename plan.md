@@ -132,6 +132,22 @@ flowchart TB
 
 Memory Plane 复用平台的 Task/Run、Policy、Tool、Event、Artifact、Trace 和 Evaluation 契约，不进入某个 Adapter 的私有状态。Deep Agents 可作为 P2 动态知识场景的候选适配器，但不能成为长期记忆的唯一数据模型。
 
+### 4.1 LLM-Wiki 知识编译层
+
+LLM-Wiki 是 Memory Plane 旁边的**受治理派生知识层**，不是普通 RAG 的替代品，也不是新的事实权威源。它把一次性资料检索升级为可持续维护的知识库：`raw/` 保存不可变来源或带 digest 的来源指针，`wiki/` 保存按 schema 编译的 Markdown 页面，`schema/` 保存页面格式、状态迁移、链接和维护规则。页面通过稳定 ID 与相对链接形成知识网络，`index.md` 负责导航，`log.md` 负责可重建的追加式审计。
+
+其最小流程为：登记 Source Evidence → 读取/脱敏/规范化 → 提取候选实体、事实、关系和时间 → schema/来源覆盖校验 → 生成最小 Markdown diff → 校验链接、索引和审计 → Gate/Git 提交 → Recall 按需读取。新资料只更新受影响页面；出现矛盾时保留双方证据并标记 `needs_review`，不能由模型静默覆盖旧页面。
+
+与当前 Memory Plane 的交接规则：
+
+- raw 对应 Source Evidence，必须保留来源、时间、分类、许可证和 digest；
+- wiki 页面属于派生 Artifact/Fact Capsule，默认不是 Canonical Fact；
+- 只有显式 Retain、来源绑定和质量 Gate 通过后，页面事实才能进入 Memory Canonical Store；
+- 页面查询可以作为普通 RAG 或 Recall Router 的受控适配器，但不得绕过 Policy、权限、`as_of`、删除和预算过滤；
+- `index.md`、`log.md` 和 Git 历史用于导航/审计，不替代数据库、业务 API、普通 RAG 或事实源。
+
+完整 schema、安全边界、分阶段清单和完成定义见 [LLM-Wiki 知识编译层设计](docs/harness/LLM_WIKI.md)。该能力当前保持 Proposed，不改变已实现 M1–M3 的运行时状态。
+
 ## 5. Retain、Recall、Reflect 契约
 
 ### 5.1 Retain
@@ -220,6 +236,8 @@ Reflect 默认关闭。只有明确需要历史综合判断、策略允许且延
 - [ ] 用 ADR 决定自建契约、采用现有产品或仅借鉴设计；
 - [ ] 确认 Memory Plane 与 Context Manager、Deep Agents 动态知识场景的边界；
 - [ ] 建立匿名化业务评测集、威胁模型和数据处理评估。
+- [ ] 固化 `wiki-page@1`、raw Source manifest、状态迁移、来源覆盖与 `index.md`/`log.md` schema；
+- [ ] 用 Public PDF、网页和冲突更新夹具验证 LLM-Wiki 的权限边界、链接完整性和可重建性。
 
 退出条件：官方来源与许可证据完整，ADR 获批，评测基线可复现。
 
@@ -243,6 +261,7 @@ Reflect 默认关闭。只有明确需要历史综合判断、策略允许且延
 - [~] 定义 Evidence Bundle、权限过滤、状态过滤和 Token 预算；M2-A 完成受限 Capsule/Detail Bundle 与过滤，未接入 Product Run token/latency budget；
 - [ ] 增加 RRF、rerank、缓存与超时降级；
 - [ ] 与普通 RAG 做相同任务和成本基线对比。
+- [ ] 明确 Wiki 页面作为 RAG/Recall 适配器时的 Evidence Bundle、`source_refs`、`as_of` 和删除失效语义。
 
 退出条件：在项目内评测集上提高关键记忆命中率，且噪声、延迟和成本在预算内。
 

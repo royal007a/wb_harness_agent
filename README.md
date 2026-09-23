@@ -36,6 +36,7 @@ sh harness/start.sh
 - [Memory Graph M3-A](docs/harness/MEMORY_GRAPH_M3A.md)
 - [Memory Entity Catalog M3-B](docs/harness/MEMORY_ENTITY_CATALOG_M3B.md)
 - [Hindsight / Context 阅读总结](docs/research/HINDSIGHT_MEMORY_CONTEXT_READING.md)
+- [LLM-Wiki 知识编译层设计](docs/harness/LLM_WIKI.md)
 - [引擎与 VM 探针使用](docs/harness/ENGINE_PROBES.md)
 - [多专项编排架构与 API](docs/harness/MULTI_AGENT.md)
 - [百度网盘 OAuth 连接器](docs/harness/BAIDU_NETDISK_CONNECTOR.md)
