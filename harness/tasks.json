@@ -5,7 +5,7 @@
     {
       "id": "HA-0046",
       "title": "接入 Pi 合同审查 ChatPanel SSE 事件适配",
-      "status": "in_progress",
+      "status": "completed",
       "risk": "medium",
       "scope": ["Public PDF 离线 review 的 preview/finding/done 结构化 SSE 事件"],
       "non_goals": ["真实模型/Provider、自动 Gate、正文外发"],
