@@ -60,14 +60,84 @@ Pi 的事件流是运行时观察面，不是平台状态机。一个 `turn` 表
 
 未知 Pi 事件必须进入 `adapter.protocol_error` 并终止当前 Run；不能透传成平台成功事件。`message_update` 只作为 UI/Telemetry 可选流，不应让每个 token 形成一条持久业务事件。
 
-### 3.2 Steering 与 followUp
+### 3.2 运行序列与背压
+
+```text
+agent_start
+  → turn_start
+  → message_start(user) → message_end(user)
+  → message_start(assistant) → message_update* → message_end(assistant)
+  → tool_execution_start
+  → Harness authorize → Tool Runtime execute
+  → tool_execution_end
+  → message_start(toolResult) → message_end(toolResult)
+  → turn_end
+  → (next turn | run.result.proposed)
+  → agent_end
+```
+
+Sidecar 不把整个事件流无界地推给控制面：事件先进入有界队列，`message_update` 可合并为 50–200ms 的增量，工具和状态事件不得丢失。控制面消费变慢时，优先丢弃可重建的显示增量，保留 `tool_execution_*`、预算、取消、错误和结果事件；队列溢出必须产生 `adapter.backpressure` 并安全终止，而不是静默丢证据。
+
+### 3.3 Steering 与 followUp
 
 - steering 只能注入当前 Run 已授权范围内的人类纠正或策略消息；不能扩大工具、网络、文件或预算权限；
 - followUp 只能排队为下一 turn 的输入，并带上来源消息、Task 版本和新鲜度检查；
 - 当前 turn 收到取消、Task 版本变化或权限撤回时，Pi 侧立即停止生成，平台仍以事务方式记录终止原因；
 - 同一 Run 的 steering/followUp 必须受 Inbox/freshness 规则约束，不能由 Pi 私有队列绕开平台。
 
-## 4. 合同审查业务纵切
+## 4. Sidecar 协议与部署形态
+
+首版采用本机/同机容器的长驻 TypeScript Worker，由 Python 控制面通过版本化 JSONL over stdio 或 loopback Unix socket 连接；不直接开放公网端口。若后续迁移到独立 Computer，再将同一消息合同封装为出站 WebSocket，不改变 Engine Event 语义。
+
+### 4.1 请求
+
+```json
+{
+  "protocol": "pi-adapter@1",
+  "op": "start",
+  "task_id": "task_123",
+  "run_id": "run_456",
+  "task_version": 3,
+  "agent_revision": "pi-contract-review@0.1.0",
+  "model": {"provider": "approved-ref", "model_id": "approved-ref"},
+  "context": {"resource_refs": ["res_contract_1"], "rule_set": "contract-risk@1"},
+  "limits": {"max_turns": 12, "timeout_seconds": 300, "max_cost_minor": 100},
+  "capabilities": ["clause.extract", "evidence.locate"]
+}
+```
+
+`model.provider` 和 `credential_ref` 只允许是控制面签发的引用；sidecar 不接收明文 Key。所有输入带 Task/资源版本，防止旧 Run 继续处理已变更合同。
+
+### 4.2 输出
+
+每行一个带序号的事件：
+
+```json
+{
+  "protocol": "pi-adapter@1",
+  "seq": 17,
+  "run_id": "run_456",
+  "event": "tool.call.requested",
+  "turn": 2,
+  "payload": {"tool": "evidence.locate", "input_digest": "sha256:..."},
+  "usage": {"input_tokens": 1200, "output_tokens": 180, "cost_minor": 2}
+}
+```
+
+控制面按 `run_id + seq` 幂等写入；重连从最后确认序号继续。sidecar 只能发送 `run.result.proposed`，最终成功由平台根据产物、Evidence、Gate 和任务版本提交。
+
+### 4.3 操作
+
+| 操作 | 语义 | 结果 |
+|---|---|---|
+| `start` | 用固定 Task/Run/Revision 启动一轮 | 事件流和 sidecar execution id |
+| `steer` | 注入经 freshness 校验的人类纠正 | 排队到当前/下一 turn，不能扩权 |
+| `follow_up` | 追加下一轮输入 | 需匹配当前 Task 版本 |
+| `cancel` | 请求中止生成和工具 | `accepted`/`terminated`/`unknown`，均写审计 |
+| `health` | 返回版本、能力和是否有活动执行 | 不调用模型 |
+| `probe` | 假模型、假工具和事件契约验证 | 结构化 Evidence，不进入 Product Run |
+
+## 5. 合同审查业务纵切
 
 输入是已授权的合同资源句柄、合同类型、我方角色、审查规则版本和语言；输出不是一句“风险很高”，而是可审计的风险项集合：
 
@@ -96,13 +166,57 @@ Pi 的事件流是运行时观察面，不是平台状态机。一个 `turn` 表
 
 Pi 的总结、推断和建议必须与 Evidence 分离；没有定位证据的内容只能标为 `unverified`，不能作为法律结论。系统不自动替代律师意见。
 
-## 5. Checkpoint、上下文和恢复
+### 5.1 领域对象
+
+| 对象 | 关键字段 | 产生者 | 是否权威 |
+|---|---|---|---|
+| `ContractResource` | 资源 ID、版本、页数、分类、SHA-256 | Resource Service | 合同原文版本 |
+| `ClauseCandidate` | 条款 ID、位置、文本摘要、章节 | Pi + Tool Runtime | 待验证 |
+| `Evidence` | 来源资源、页码/偏移、摘录 digest、规则 | Tool Runtime | 可审计证据 |
+| `RiskFinding` | 风险、等级、依据、建议、状态 | Pi，平台校验 | `unverified`/`needs_human`/`accepted` |
+| `ReviewDecision` | 审核人、决策、理由、版本 | Human Gate | 审核事实 |
+| `RedlineArtifact` | 修订稿、差异、引用、规则版本 | 平台 Artifact | 需再次审核 |
+
+禁止让 `RiskFinding` 直接覆盖合同原文或自动生成可签署版本；任何修改建议必须以独立 Artifact 交付。
+
+## 6. 上下文、Session 与 Checkpoint
 
 Pi 的内部 Context/Compaction 不直接等同于平台 Checkpoint。首版只允许保存：Pi/Adapter 版本、模型快照、已完成 turn、输入资源版本、工具结果引用、风险候选和剩余预算。不得把明文 Key、隐式 session 文件或不可验证的内部状态当作可恢复依据。
 
+将 Pi 的上下文分成三层：
+
+1. **Working Context**：当前 turn 的消息、工具结果和临时草稿，只在 sidecar 内存中存在；
+2. **Session Context**：经压缩的目标、已确认事实、未决风险、Evidence refs 和下一步，平台以受限 Handoff 保存；
+3. **Durable Evidence**：合同资源、条款定位、审查规则、风险产物和 Gate 决策，进入平台 Artifact/Evidence。
+
+Pi 的 Context Compaction 只能生成候选 Session 摘要，必须通过字段校验和来源覆盖检查。摘要丢失的细节通过 `evidence.locate` 按资源版本、条款 ID、页码或 digest 重新召回，而不是把全部原文永久塞进 Session。
+
 只有当 Pi 能提供版本化、无密、可校验的状态快照，且恢复前通过 Adapter/工具/权限/资源兼容性检查，才可申请 `state.restore`。否则错误恢复使用新的 Pi Session，并从 Evidence/Artifact/Handoff 重新装配上下文。
 
-## 6. 安全与运行准入
+## 7. Sidecar 工程结构（目标）
+
+```text
+pi-adapter/
+├── package.json                 # 锁定 Node、Pi 包和脚本
+├── src/
+│   ├── protocol.ts              # pi-adapter@1 请求/事件 Schema
+│   ├── runtime.ts               # pi-ai + pi-agent-core 组装
+│   ├── event-bridge.ts          # Pi 事件 → Engine Events
+│   ├── tool-gateway.ts          # 转发 Harness Tool Runtime
+│   ├── budget-guard.ts           # turn/time/token/cost/cancel
+│   ├── context-handoff.ts        # 压缩候选与平台 Handoff
+│   └── contract-review.ts        # 领域 prompt/输出校验，不持有权限
+├── schemas/
+│   ├── pi-adapter.schema.json
+│   └── contract-review.schema.json
+└── probes/
+    ├── fake-model.ts
+    └── event-sequence.ts
+```
+
+Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类型、Session 文件或 Provider 私有状态写入 Python 数据库。两侧通过 `task_id/run_id/seq/artifact_ref/evidence_ref` 交接。
+
+## 8. 安全与运行准入
 
 - Pi 进程运行在独立 sidecar/Worker，不直接拥有宿主项目目录、网络和凭证；
 - 所有工具请求必须经过平台 Tool Runtime；Pi 的工具定义、扩展和 prompt 不是安全边界；
@@ -112,7 +226,7 @@ Pi 的内部 Context/Compaction 不直接等同于平台 Checkpoint。首版只�
 - 合同原文按 Workspace/数据分类隔离；跨项目、外部分享和训练用途默认拒绝；
 - 发生未知事件、工具越权、引用缺失、schema 失败或费用超限时 fail closed。
 
-## 7. 分阶段实施
+## 9. 分阶段实施
 
 ### P2-Pi-0：离线契约探针
 
@@ -133,6 +247,6 @@ Pi 的内部 Context/Compaction 不直接等同于平台 Checkpoint。首版只�
 - [ ] 运行固定合同集的真实模型 Probe，记录每个 turn、工具、引用、费用和失败恢复；
 - [ ] 通过人工审查与回滚演练后，才允许灰度路由。
 
-## 8. 当前结论
+## 10. 当前结论
 
 Pi 的分层和事件驱动设计值得吸收，但当前仓库没有 Pi 依赖、TypeScript sidecar、合同审查工具或真实模型调用。本文只冻结接入边界和验收顺序，不把架构图误写成已实现功能。
