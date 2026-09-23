@@ -5,7 +5,7 @@
     {
       "id": "HA-0047",
       "title": "实现 Pi 合同审查 metadata-only TUI 事件渲染",
-      "status": "in_progress",
+      "status": "completed",
       "risk": "low",
       "scope": ["preview/finding/done 事件的终端摘要渲染", "JSONL CLI 与宽度限制"],
       "non_goals": ["pi-tui/真实 Pi runtime/模型与工具执行"],
