@@ -1,0 +1,12 @@
+{
+  "scope": "Harness Agent 脚手架实战课 PDF 17-22",
+  "pages": 50,
+  "files": [
+    {"name": "17 - 15｜起点：基于 pimono 打造生产级合同审查 Agent Runtime.pdf", "pages": 10, "sha256": "627c75c3247bda261d23b4287a790b1fd23d1235e43fcaa1fe5a323438408875"},
+    {"name": "18 - 16｜基础：统一工具接口与结构化输出实现合同文档解析与分类.pdf", "pages": 10, "sha256": "ccce36e7331439af8186a3bde107bac10a022b6b06caed1f467fd71cc2c59a0f"},
+    {"name": "19 - 17｜进阶：长上下文与 Skill 调用构建大合同审查流水线.pdf", "pages": 7, "sha256": "6f23f72aa57f69f09c11dc445408dc96efa0c57b14c1e5c24811b67748dd01a0"},
+    {"name": "20 - 18｜进阶：拦截管道构建合同敏感信息的多层安全护栏.pdf", "pages": 9, "sha256": "2cf47cce3d66f68457337cf509da7e4a1b8fd8f6caa429994dd84998abc66fa8"},
+    {"name": "21 - 19｜扩展：ChatPanel 助力 Agent 丝滑接入聊天对话 Web 页面.pdf", "pages": 7, "sha256": "a31b35f08a5aa6b8cf40fab7a825d663c663611f70c6a76035534ad3763c2ada"},
+    {"name": "22 - 20｜TUI：Pimono TUI 自绘引擎与内置组件库实战.pdf", "pages": 7, "sha256": "52cdeeff25f43894c8c5f90e7dc05b975152d0560e6a4059ef0b4c0a48bf6ecd"}
+  ]
+}

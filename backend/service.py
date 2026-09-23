@@ -75,6 +75,7 @@ class Service:
         from .research_agents import ResearchAgents
         from .research_native import NativeResearch
         from .pi_contract_review import PiContractReviewRuns
+        from .pi_contract_pipeline import PiContractPipeline
         from .baidu_netdisk import BaiduNetdiskConnector
         from .agent_lab import LocalAgentLab
         from .agent_runtime import AgentRuntime
@@ -89,6 +90,7 @@ class Service:
         self.research_agents = ResearchAgents(self)
         self.research_native = NativeResearch(self)
         self.pi_contract_review = PiContractReviewRuns(self)
+        self.pi_contract_pipeline = PiContractPipeline(self)
         self.baidu_netdisk = BaiduNetdiskConnector(store)
         self.agent_lab = LocalAgentLab(store)
         self.agent_runtime = AgentRuntime(store)

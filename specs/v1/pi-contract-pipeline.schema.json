@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/pi-contract-pipeline.schema.json",
+  "title": "Pi Contract Pipeline Preview",
+  "description": "Deterministic, offline parse/classify/chunk/security preview for a registered Public PDF.",
+  "$defs": {
+    "request": {
+      "type": "object", "additionalProperties": false, "required": ["resource_id"],
+      "properties": {
+        "resource_id": {"type": "string", "minLength": 1, "maxLength": 180},
+        "chunk_max_chars": {"type": "integer", "minimum": 1000, "maximum": 16000, "default": 6000}
+      }
+    },
+    "chunk": {
+      "type": "object", "additionalProperties": false,
+      "required": ["index", "heading", "char_count", "text_sha256"],
+      "properties": {
+        "index": {"type": "integer", "minimum": 0},
+        "heading": {"type": "string", "maxLength": 160},
+        "char_count": {"type": "integer", "minimum": 1, "maximum": 16000},
+        "text_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "classification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contract_type", "focus_areas", "method"],
+      "properties": {
+        "contract_type": {"enum": ["技术服务", "采购供货", "劳务用工", "房屋租赁", "股权投资", "保密协议", "合作协议", "其他"]},
+        "focus_areas": {"type": "array", "minItems": 1, "maxItems": 6, "items": {"type": "string", "minLength": 1}},
+        "method": {"const": "deterministic_keyword_rules@1"}
+      }
+    },
+    "security": {
+      "type": "object", "additionalProperties": false, "required": ["status", "hits", "external_calls", "model_calls"],
+      "properties": {
+        "status": {"enum": ["clear", "needs_human"]},
+        "hits": {"type": "array", "maxItems": 12, "items": {"type": "object", "additionalProperties": false, "required": ["kind", "count"], "properties": {"kind": {"type": "string", "minLength": 1}, "count": {"type": "integer", "minimum": 1}}}},
+        "external_calls": {"const": 0},
+        "model_calls": {"const": 0}
+      }
+    },
+    "preview": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "resource_id", "source_sha256", "format", "page_count", "char_count", "classification", "chunks", "security", "status"],
+      "properties": {
+        "schema_version": {"const": "pi-contract-pipeline-preview@1"},
+        "resource_id": {"type": "string", "minLength": 1},
+        "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "format": {"const": "pdf"},
+        "page_count": {"type": "integer", "minimum": 1},
+        "char_count": {"type": "integer", "minimum": 1},
+        "classification": {"$ref": "#/$defs/classification"},
+        "chunks": {"type": "array", "minItems": 1, "maxItems": 256, "items": {"$ref": "#/$defs/chunk"}},
+        "security": {"$ref": "#/$defs/security"},
+        "status": {"enum": ["ready_for_skill", "needs_human"]}
+      }
+    }
+  }
+}
