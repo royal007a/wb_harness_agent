@@ -2176,6 +2176,8 @@ components:
       $ref: './pi-contract-review.schema.json#/$defs/result'
     PiContractReviewHandoff:
       $ref: './pi-contract-review.schema.json#/$defs/handoff'
+    PiContractReviewGateDecision:
+      $ref: './pi-contract-review.schema.json#/$defs/gate_decision_record'
     Error:
       type: object
       additionalProperties: false

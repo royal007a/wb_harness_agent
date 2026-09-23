@@ -40,6 +40,19 @@
         "next_action": { "type": "string", "minLength": 1 }
       }
     },
+    "gate_decision_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "decision", "reviewer", "reason", "handoff_artifact_id", "evidence_artifact_id"],
+      "properties": {
+        "schema_version": { "const": "pi-contract-review-gate@1" },
+        "decision": { "enum": ["pass", "reject"] },
+        "reviewer": { "const": "human" },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "handoff_artifact_id": { "type": "string", "pattern": "^art_[A-Za-z0-9]+$" },
+        "evidence_artifact_id": { "type": "string", "pattern": "^art_[A-Za-z0-9]+$" }
+      }
+    },
     "result": {
       "type": "object",
       "additionalProperties": false,

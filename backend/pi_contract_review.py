@@ -190,8 +190,19 @@ class PiContractReviewRuns:
             status = 'succeeded' if body['decision'] == 'pass' else 'failed'
             reason = 'GATE_PASSED' if status == 'succeeded' else 'GATE_REJECTED'
             current['status'], current['exit_reason'] = status, reason
+            evidence_artifacts = [item for item in self.store.artifact_list(run_id) if item['name'] == 'pi-contract-review.json']
+            gate_record = {'schema_version': 'pi-contract-review-gate@1', 'decision': body['decision'],
+                           'reviewer': 'human', 'reason': body['reason'],
+                           'handoff_artifact_id': handoffs[-1]['id'], 'evidence_artifact_id': evidence_artifacts[-1]['id']}
+            gate_errors = list(Draft202012Validator(
+                {'$ref': '#/$defs/gate_decision_record', '$defs': REVIEW_SCHEMA['$defs']}
+            ).iter_errors(gate_record))
+            if gate_errors:
+                raise Problem('GATE_DECISION_INVALID', 'Pi Gate Decision 不满足机器契约。', 409)
+            gate_artifact = self._publish(db, current, 'pi-contract-review-gate.json', gate_record)
             self.store.event(db, current, 'gate.decision', {'decision': body['decision'], 'reason': body['reason'],
-                                                            'handoff_artifact_id': handoffs[-1]['id']})
+                                                            'handoff_artifact_id': handoffs[-1]['id'],
+                                                            'gate_artifact_id': gate_artifact['id']})
             self.store.event(db, current, 'run.' + status, {'exit_reason': reason, 'handoff_required': True})
             return current
 
