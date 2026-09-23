@@ -89,6 +89,15 @@ class PiContractReviewRuns:
         return {'items': [run for run in self.store.listing('runs')
                           if run['selected_engine'] == ENGINE and not run.get('parent_run_id')]}
 
+    def events(self, run_id, after=0):
+        run = self.store.get('runs', run_id)
+        if run['selected_engine'] != ENGINE:
+            raise Problem('NOT_FOUND', 'Pi 合同审查 Run 不存在。', 404)
+        if not isinstance(after, int) or after < 0:
+            raise Problem('VALIDATION_ERROR', 'after_seq 必须是不小于 0 的整数。', 422)
+        return {'run_id': run_id, 'events': self.store.events(run_id, after=after),
+                'next_seq': run['latest_sequence'], 'status': run['status']}
+
     def _publish(self, db, run, name, value, media='application/json'):
         body = value.encode() if isinstance(value, str) else dumps(value).encode()
         if len(body) > 65536:

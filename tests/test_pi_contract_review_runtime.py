@@ -53,6 +53,9 @@ def test_pi_product_run_persists_artifact_evidence_and_requires_gate(client, app
         f"evidence://{resource['id']}/clause-12.3/page-8"
     ]
     assert not any(event['event_type'] == 'run.succeeded' for event in events)
+    audit = client.get(f'/api/local/pi-contract-review/{run_id}/events?after_seq=0')
+    assert audit.status_code == 200
+    assert audit.json()['events'][-1]['event_type'] == 'gate.awaiting_human'
 
     gate = client.post(
         f'/api/local/pi-contract-review/{run_id}:gate',

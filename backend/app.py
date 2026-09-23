@@ -643,6 +643,10 @@ def create_app(db_path=None, run_worker=True):
     def pi_contract_review_detail(run_id: str):
         return app.state.service.pi_contract_review.detail(run_id)
 
+    @app.get('/api/local/pi-contract-review/{run_id}/events')
+    def pi_contract_review_events(run_id: str, after_seq: int = 0):
+        return app.state.service.pi_contract_review.events(run_id, after_seq)
+
     @app.post('/api/local/pi-contract-review/{run_id}:gate')
     async def pi_contract_review_gate(run_id: str, request: Request):
         return app.state.service.pi_contract_review.gate(run_id, await json_body(request), request.headers.get('idempotency-key'))
