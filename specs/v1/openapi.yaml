@@ -2134,6 +2134,25 @@ paths:
             application/json:
               schema: {$ref: '#/components/schemas/ContractRiskReviewFinding'}
         default: {$ref: '#/components/responses/Error'}
+  /local/pi-contract-pipeline/security-check:
+    servers: [{url: /api}]
+    post:
+      operationId: checkPiContractPipelineSecurity
+      description: Metadata-only guard decision. It never executes a tool, opens a file, calls a provider, or sends network traffic; unknown capabilities fail closed.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PiSecurityGuardRequest'}
+      responses:
+        '200':
+          description: Deterministic allow/deny decision with zero external or model calls.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PiSecurityGuardResponse'}
+        default: {$ref: '#/components/responses/Error'}
 components:
   parameters:
     IdempotencyKey:
@@ -2235,6 +2254,10 @@ components:
       $ref: './pi-contract-pipeline.schema.json#/$defs/request'
     PiContractPipelinePreview:
       $ref: './pi-contract-pipeline.schema.json#/$defs/preview'
+    PiSecurityGuardRequest:
+      $ref: './pi-security-guard.schema.json#/$defs/request'
+    PiSecurityGuardResponse:
+      $ref: './pi-security-guard.schema.json#/$defs/response'
     ContractRiskReviewFinding:
       $ref: './pi-contract-pipeline.schema.json#/$defs/finding'
     Error:

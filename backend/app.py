@@ -665,6 +665,10 @@ def create_app(db_path=None, run_worker=True):
     async def pi_contract_pipeline_review(request: Request):
         return app.state.service.pi_contract_pipeline.review(await json_body(request), request.headers.get('idempotency-key'))
 
+    @app.post('/api/local/pi-contract-pipeline/security-check')
+    async def pi_contract_pipeline_security_check(request: Request):
+        return app.state.service.pi_security_guard.check(await json_body(request), request.headers.get('idempotency-key'))
+
     @app.get('/research-agents', include_in_schema=False)
     def research_agents_page():
         return FileResponse(ROOT / 'frontend/research-agents.html')

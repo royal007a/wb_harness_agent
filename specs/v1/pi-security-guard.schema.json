@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/pi-security-guard.schema.json",
+  "title": "Pi metadata-only security guard",
+  "$defs": {
+    "action": {
+      "type": "object", "additionalProperties": false, "required": ["phase"],
+      "properties": {
+        "phase": {"enum": ["tool_call", "tool_result", "context", "provider_request"]},
+        "tool": {"type": ["string", "null"], "maxLength": 160},
+        "path": {"type": ["string", "null"], "maxLength": 2000},
+        "url": {"type": ["string", "null"], "maxLength": 2000},
+        "content": {"type": ["string", "null"], "maxLength": 20000},
+        "estimated_tokens": {"type": "integer", "minimum": 0},
+        "estimated_cost_minor": {"type": "integer", "minimum": 0}
+      }
+    },
+    "policy": {
+      "type": "object", "additionalProperties": false, "required": ["allowed_tools", "allowed_domains", "max_input_tokens", "max_cost_minor", "provider_admitted"],
+      "properties": {
+        "allowed_tools": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1, "maxLength": 160}},
+        "allowed_domains": {"type": "array", "maxItems": 64, "items": {"type": "string", "pattern": "^[a-z0-9.-]+$"}},
+        "max_input_tokens": {"type": "integer", "minimum": 0},
+        "max_cost_minor": {"type": "integer", "minimum": 0},
+        "provider_admitted": {"type": "boolean"}
+      }
+    },
+    "request": {
+      "type": "object", "additionalProperties": false, "required": ["action", "policy"],
+      "properties": {"action": {"$ref": "#/$defs/action"}, "policy": {"$ref": "#/$defs/policy"}}
+    },
+    "response": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "decision", "phase", "tool", "reasons", "model_calls", "external_calls"],
+      "properties": {
+        "schema_version": {"const": "pi-security-guard@1"},
+        "decision": {"enum": ["allow", "deny"]},
+        "phase": {"type": "string"}, "tool": {"type": ["string", "null"]},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "model_calls": {"const": 0}, "external_calls": {"const": 0}
+      }
+    }
+  }
+}

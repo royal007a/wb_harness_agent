@@ -3,6 +3,21 @@
   "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
+      "id": "HA-0045",
+      "title": "实现 Pi metadata-only Guard Contract",
+      "status": "in_progress",
+      "risk": "high",
+      "scope": ["工具调用/结果、上下文、Provider 请求的机器准入契约", "未知能力、路径、域名、敏感内容、预算的 fail-closed 评估"],
+      "non_goals": ["真实模型/Provider/网络/文件执行", "OS 沙箱与身份认证"],
+      "acceptance": ["security-check API 幂等且 Schema 有效", "定向与全量验证通过", "本机和公网部署 health=ok"],
+      "depends_on": ["HA-0044"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0045-pi-security-guard.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0045/acceptance.md"]
+    },
+    {
       "id": "HA-0044",
       "title": "将合同风险 Skill 基线接入 Pi PDF 流水线 API",
       "status": "completed",
