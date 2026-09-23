@@ -5,7 +5,7 @@
   "engines": {"node": ">=22.19.0"},
   "scripts": {
     "probe": "node src/probe.mjs",
-    "test": "node --test test/probe.test.mjs"
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
     "@earendil-works/pi-agent-core": "0.87.1",
