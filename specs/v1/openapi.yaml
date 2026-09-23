@@ -2009,6 +2009,51 @@ paths:
       responses:
         '200': {description: Parent/Child Run tree, SDK delegation events, artifacts and source evidence.}
         default: {$ref: '#/components/responses/Error'}
+  /local/pi-contract-review:
+    servers: [{url: /api}]
+    post:
+      operationId: createOfflinePiContractReview
+      description: Creates a Faux-only Pi Product Run for a registered Public PDF. The Run stops at a human Gate.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './pi-contract-review-runtime.schema.json#/$defs/request'}
+      responses:
+        '202': {description: Queued Pi Product Run.}
+        default: {$ref: '#/components/responses/Error'}
+  /local/pi-contract-review/{runId}:
+    servers: [{url: /api}]
+    get:
+      operationId: getOfflinePiContractReview
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Pi Run, Risk Artifact, Evidence and Handoff/Gate status.}
+        default: {$ref: '#/components/responses/Error'}
+  /local/pi-contract-review/{runId}:gate:
+    servers: [{url: /api}]
+    post:
+      operationId: decideOfflinePiContractReviewGate
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string}
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './pi-contract-review-runtime.schema.json#/$defs/gate_decision'}
+      responses:
+        '200': {description: Gate decision and resulting terminal Run state.}
+        default: {$ref: '#/components/responses/Error'}
 components:
   parameters:
     IdempotencyKey:
@@ -2098,6 +2143,10 @@ components:
           minItems: 1
           items:
             $ref: './execution-control.schema.json#/$defs/gap'
+    PiContractReviewResult:
+      $ref: './pi-contract-review.schema.json#/$defs/result'
+    PiContractReviewHandoff:
+      $ref: './pi-contract-review.schema.json#/$defs/handoff'
     Error:
       type: object
       additionalProperties: false
