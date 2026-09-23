@@ -36,6 +36,8 @@ def test_pi_product_run_persists_artifact_evidence_and_requires_gate(client, app
     )
     assert created.status_code == 202, created.text
     run_id = created.json()['initial_run']['id']
+    listed = client.get('/api/local/pi-contract-review')
+    assert listed.status_code == 200 and any(item['id'] == run_id for item in listed.json()['items'])
 
     app.state.service.execute(run_id)
     detail = client.get('/api/local/pi-contract-review/' + run_id).json()

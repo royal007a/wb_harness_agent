@@ -85,6 +85,10 @@ class PiContractReviewRuns:
                 'runtime_enabled': False, 'external_calls': 0,
                 'gate_required': run['status'] == 'waiting_approval'}
 
+    def listing(self):
+        return {'items': [run for run in self.store.listing('runs')
+                          if run['selected_engine'] == ENGINE and not run.get('parent_run_id')]}
+
     def _publish(self, db, run, name, value, media='application/json'):
         body = value.encode() if isinstance(value, str) else dumps(value).encode()
         if len(body) > 65536:

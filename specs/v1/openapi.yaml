@@ -2019,6 +2019,11 @@ paths:
         default: {$ref: '#/components/responses/Error'}
   /local/pi-contract-review:
     servers: [{url: /api}]
+    get:
+      operationId: listOfflinePiContractReviews
+      responses:
+        '200': {description: Offline Pi Product Runs and their current Gate states.}
+        default: {$ref: '#/components/responses/Error'}
     post:
       operationId: createOfflinePiContractReview
       description: Creates a Faux-only Pi Product Run for a registered Public PDF. The Run stops at a human Gate.

@@ -635,6 +635,10 @@ def create_app(db_path=None, run_worker=True):
     async def pi_contract_review_create(request: Request):
         return app.state.service.pi_contract_review.create(await json_body(request), request.headers.get('idempotency-key'))
 
+    @app.get('/api/local/pi-contract-review')
+    def pi_contract_review_list():
+        return app.state.service.pi_contract_review.listing()
+
     @app.get('/api/local/pi-contract-review/{run_id}')
     def pi_contract_review_detail(run_id: str):
         return app.state.service.pi_contract_review.detail(run_id)
