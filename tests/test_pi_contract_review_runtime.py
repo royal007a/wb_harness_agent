@@ -70,6 +70,10 @@ def test_pi_product_run_persists_artifact_evidence_and_requires_gate(client, app
     assert {item['name'] for item in final_detail['artifacts']} == {
         'pi-contract-review.json', 'pi-contract-review-handoff.json', 'pi-contract-review-gate.json'
     }
+    for artifact in final_detail['artifacts']:
+        downloaded = client.get(f"/api/v1/artifacts/{artifact['id']}/content")
+        assert downloaded.status_code == 200
+        assert downloaded.content and len(downloaded.content) == artifact['size_bytes']
 
 
 def test_pi_product_run_rejects_non_public_pdf(client):
