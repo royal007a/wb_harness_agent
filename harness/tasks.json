@@ -5,7 +5,7 @@
     {
       "id": "HA-0045",
       "title": "实现 Pi metadata-only Guard Contract",
-      "status": "in_progress",
+      "status": "completed",
       "risk": "high",
       "scope": ["工具调用/结果、上下文、Provider 请求的机器准入契约", "未知能力、路径、域名、敏感内容、预算的 fail-closed 评估"],
       "non_goals": ["真实模型/Provider/网络/文件执行", "OS 沙箱与身份认证"],
