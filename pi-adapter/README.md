@@ -18,6 +18,7 @@ node src/sidecar.mjs
 
 支持 `health`、`start`、`stream`、`cancel`；`start` 只接受
 `provider=faux, model_id=offline-contract-review`，其他模型在执行前拒绝。
+请求包络的机器可读形状见 [`schemas/pi-adapter.schema.json`](schemas/pi-adapter.schema.json)；Schema 只约束对象形状，模型准入、权限和状态转换仍由 sidecar 运行时校验。
 
 探针固定 `@earendil-works/pi-agent-core@0.87.1` 与 `@earendil-works/pi-ai@0.87.1`，使用 Pi 官方 Faux Provider，不读取 Keychain、不调用网络、不启用真实模型。它验证：
 

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/pi-adapter@1.json",
+  "title": "HarnessAgent Pi sidecar protocol v1",
+  "description": "Machine-readable envelope for the offline Pi adapter sidecar. This schema validates shape; admission and state transitions remain runtime checks.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/healthRequest"
+    },
+    {
+      "$ref": "#/$defs/startRequest"
+    },
+    {
+      "$ref": "#/$defs/streamRequest"
+    },
+    {
+      "$ref": "#/$defs/cancelRequest"
+    }
+  ],
+  "$defs": {
+    "protocol": {
+      "const": "pi-adapter@1"
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "healthRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "op"],
+      "properties": {
+        "protocol": { "$ref": "#/$defs/protocol" },
+        "op": { "const": "health" },
+        "request_id": { "$ref": "#/$defs/requestId" }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model_id"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_turns"],
+      "properties": {
+        "max_turns": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "startRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "op", "run_id", "model", "capabilities", "limits"],
+      "properties": {
+        "protocol": { "$ref": "#/$defs/protocol" },
+        "op": { "const": "start" },
+        "request_id": { "$ref": "#/$defs/requestId" },
+        "run_id": { "$ref": "#/$defs/runId" },
+        "model": { "$ref": "#/$defs/model" },
+        "resource_ref": { "type": "string", "minLength": 1 },
+        "capabilities": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "limits": { "$ref": "#/$defs/limits" }
+      }
+    },
+    "streamRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "op", "run_id"],
+      "properties": {
+        "protocol": { "$ref": "#/$defs/protocol" },
+        "op": { "const": "stream" },
+        "request_id": { "$ref": "#/$defs/requestId" },
+        "run_id": { "$ref": "#/$defs/runId" },
+        "after_seq": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "cancelRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "op", "run_id"],
+      "properties": {
+        "protocol": { "$ref": "#/$defs/protocol" },
+        "op": { "const": "cancel" },
+        "request_id": { "$ref": "#/$defs/requestId" },
+        "run_id": { "$ref": "#/$defs/runId" }
+      }
+    }
+  }
+}

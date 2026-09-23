@@ -4,9 +4,16 @@ import { once } from "node:events";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { readFile } from "node:fs/promises";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const script = join(root, "src", "sidecar.mjs");
+
+test("sidecar protocol schema is valid JSON and pins the protocol", async () => {
+  const schema = JSON.parse(await readFile(join(root, "schemas", "pi-adapter.schema.json"), "utf8"));
+  assert.equal(schema.$defs.protocol.const, "pi-adapter@1");
+  assert.deepEqual(schema.$defs.startRequest.required, ["protocol", "op", "run_id", "model", "capabilities", "limits"]);
+});
 
 function startProcess() {
   const child = spawn(process.execPath, [script], { stdio: ["pipe", "pipe", "pipe"] });
