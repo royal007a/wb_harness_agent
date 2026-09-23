@@ -1,6 +1,6 @@
 # Pi Adapter 与合同审查 Agent 设计
 
-状态：Proposed（P2-Pi-0 离线探针已实现；生产接入未开启）
+状态：Proposed（P2-Pi-0 离线探针与 P2-Pi-1 适配器契约已实现；生产接入未开启）
 适用阶段：P2 合同审查助手  
 关联：`docs/harness/ADAPTER_CONTRACT.md`、`docs/harness/FRAMEWORK_INTEGRATION.md`、ADR-0040
 
@@ -236,8 +236,9 @@ Python 侧只新增一个 `PiAdapter` 实现 `ADAPTER_CONTRACT`；不把 Pi 类�
 
 ### P2-Pi-1：合同审查模拟纵切
 
-- [~] 已实现 Faux Provider sidecar 的 `start/stream/cancel/health` JSONL 协议、非准入模型拒绝，以及 Python 侧 transport smoke client；尚未写入 Product Run 或平台 Gate；
-- [ ] 接入固定合同夹具、条款 Schema、Evidence locator 和结构化风险输出；
+- [x] 已实现 Faux Provider sidecar 的 `start/stream/cancel/health` JSONL 协议、非准入模型拒绝，以及 Python 侧 transport smoke client；
+- [x] 已接入固定 Public PDF 夹具边界、`evidence.locate`、结构化高风险输出和 `needs_human` Gate 候选；实现见 `adapters/pi_contract_review.py`；
+- [ ] 将适配器结果写入 Product Run、Artifact/Evidence 和正式平台 Gate；
 - [ ] 用平台假 Tool Runtime 验证权限、预算、引用和人工 Gate；
 - [ ] 评测召回、误报、引用覆盖、schema 通过率、取消延迟和成本估算。
 
