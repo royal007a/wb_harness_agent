@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/framework-catalog.schema.json",
+  "title": "HarnessAgent Framework Catalog",
+  "description": "Read-only, explicit catalog of candidate Agent runtimes and orchestration layers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "items"],
+  "properties": {
+    "schema_version": {"const": "framework-catalog@1"},
+    "items": {"type": "array", "items": {"$ref": "#/$defs/item"}, "minItems": 1}
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "language", "role", "abstraction", "status", "adapter_id", "external_calls", "control_plane", "selection_rule", "capabilities"],
+      "properties": {
+        "id": {"type": "string", "enum": ["pi", "claude_agent_sdk", "langchain", "langgraph"]},
+        "name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "language": {"type": "string", "enum": ["typescript", "python", "typescript_and_python"]},
+        "role": {"type": "string", "enum": ["agent_runtime", "agent_sdk", "component_ecosystem", "orchestration_runtime"]},
+        "abstraction": {"type": "string", "enum": ["loop_first", "state_first", "component_first"]},
+        "status": {"type": "string", "enum": ["available_offline", "blocked", "planned", "reference_only"]},
+        "adapter_id": {"anyOf": [{"type": "string", "pattern": "^engine_[a-z0-9_]+$"}, {"type": "null"}]},
+        "external_calls": {"type": "integer", "minimum": 0, "maximum": 0},
+        "control_plane": {"const": "harnessagent"},
+        "selection_rule": {"type": "string", "minLength": 1, "maxLength": 500},
+        "capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      }
+    }
+  }
+}

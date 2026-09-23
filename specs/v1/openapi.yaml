@@ -6,6 +6,19 @@ info:
 servers:
   - url: /api/v1
 paths:
+  /frameworks:
+    get:
+      operationId: listFrameworkCatalog
+      description: Returns explicit framework selection metadata. This endpoint is read-only and never enables a runtime or performs external calls.
+      responses:
+        '200':
+          description: Framework catalog with adapter status and control-plane boundary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrameworkCatalog'
+        default:
+          $ref: '#/components/responses/Error'
   /local/external-skills/runtime:
     servers:
       - url: /api
@@ -2112,6 +2125,8 @@ components:
       schema:
         type: string
   schemas:
+    FrameworkCatalog:
+      $ref: './framework-catalog.schema.json'
     CreateTaskRequest:
       $ref: './core-contracts.schema.json#/$defs/task_create'
     CreateTaskResponse:

@@ -15,6 +15,7 @@ from .analysis import MAX_BYTES, Problem
 from .service import BUNDLE, CONTROL, ROOT, Service, local_task
 from .store import Store, uid
 from .readiness import readiness
+from .framework_catalog import catalog as framework_catalog
 
 
 def create_app(db_path=None, run_worker=True):
@@ -117,6 +118,11 @@ def create_app(db_path=None, run_worker=True):
             {'id': 'engine_claude', 'name': 'Claude Agent SDK', 'status': 'planned', 'description': '研报与复杂编排 · P1'},
             {'id': 'engine_deepagents', 'name': 'Deep Agents', 'status': 'planned', 'description': '动态知识与记忆 · P2'},
             {'id': 'engine_pi', 'name': 'Pi', 'status': 'planned', 'description': 'TypeScript 审查 · P2'}]}
+
+    @app.get('/api/v1/frameworks')
+    def frameworks():
+        """Expose selection metadata without enabling any runtime."""
+        return framework_catalog()
 
     @app.get('/api/v1/readiness')
     def engine_readiness():
