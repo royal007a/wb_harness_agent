@@ -43,6 +43,7 @@
 | [ADR-0039](../decisions/ADR-0039-llm-wiki-knowledge-compiler.md) | Proposed | 以 raw/wiki/schema 三层 Markdown + Git 知识编译层持续维护可审计页面；不替代 RAG、权威事实源或 Memory Policy Gateway |
 | [ADR-0040](../decisions/ADR-0040-pi-agent-adapter-boundary.md) | Proposed | Pi 分层运行时以 TypeScript sidecar 接入合同审查；Harness 保留 Task/Run、工具、权限、预算、证据和 Gate |
 | [ADR-0041](../decisions/ADR-0041-iterative-retrieval-control.md) | Proposed | 以 Evidence Gap 驱动非重复 Query，统一 Evidence Bundle、增量合并、动态排序和效果/资源双停止；语义/外部检索仍受 Admission Gate |
+| [ADR-0049](../decisions/ADR-0049-agentic-rag-goal-budget-cache.md) | Proposed | Agentic RAG 作为迭代检索之上的目标/数据源/工具/验证/停止控制；最小充分检索、动态预算与可失效 Evidence 缓存，默认未启用 |
 
 ## 待决策
 
