@@ -5,14 +5,14 @@
     {
       "id": "HA-0048",
       "title": "固化迭代式检索控制契约与评测门禁",
-      "status": "running",
+      "status": "completed",
       "risk": "medium",
       "scope": ["Retrieval State JSON Schema", "非重复 Query、增量合并、停止条件和排序公式", "确定性检索评测口径"],
       "non_goals": ["embedding/RRF/reranker", "外部网络、真实 Provider 或模型化 Query Expansion", "自动事实冲突裁决"],
       "acceptance": ["Schema、计划、ADR、Harness 文档和 Evidence 互相引用", "默认阈值、query_key、近似重复、novelty、排序和 source trust 口径可机器校验", "评测与复审证据归档"],
       "depends_on": ["HA-0031"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0048-iterative-retrieval-control.md",
+      "plan": "exec-plans/completed/HA-0048-iterative-retrieval-control.md",
       "blocked_reason": null,
       "recovery_condition": null,
       "evidence": ["harness/evidence/HA-0048/acceptance.md"]

@@ -8,6 +8,9 @@ def validate_retrieval_state(value: Mapping) -> list[str]:
     errors: list[str] = []
     rounds = value.get("rounds", [])
     max_rounds = value.get("max_rounds")
+    policy = value.get("policy", {})
+    if isinstance(policy, Mapping) and policy.get("max_rounds") != max_rounds:
+        errors.append("policy_max_rounds_mismatch")
     if isinstance(max_rounds, int) and len(rounds) > max_rounds:
         errors.append("rounds_exceed_max_rounds")
     numbers = [item.get("round") for item in rounds if isinstance(item, Mapping)]
@@ -28,4 +31,3 @@ def validate_retrieval_state(value: Mapping) -> list[str]:
 
 def valid_retrieval_state(value: Mapping, schema_validator) -> bool:
     return not list(schema_validator.iter_errors(value)) and not validate_retrieval_state(value)
-

@@ -56,6 +56,13 @@ def test_five_negative_instances_are_rejected():
     x = copy.deepcopy(valid_state()); x["rounds"][0]["methods"] = ["semantic"]; cases.append(x)
     x = copy.deepcopy(valid_state()); x["rounds"][0]["attempt"] = 2; cases.append(x)
     x = copy.deepcopy(valid_state()); x["stop_reason"] = None; x["rounds"][0]["continue_reason"] = None; cases.append(x)
-    x = copy.deepcopy(valid_state()); x["max_rounds"] = 0; cases.append(x)
-    x = copy.deepcopy(valid_state()); x["rounds"][0]["round"] = 2; cases.append(x)
-    assert all(not valid_retrieval_state(case, validator()) for case in cases)
+    x = copy.deepcopy(valid_state()); x["policy"]["max_rounds"] = 10; cases.append(x)
+    x = copy.deepcopy(valid_state()); x["rounds"] = [copy.deepcopy(x["rounds"][0]), copy.deepcopy(x["rounds"][0])]; x["rounds"][1]["round"] = 2; x["rounds"][1]["query_key"] = "b" * 64; x["max_rounds"] = 1; x["policy"]["max_rounds"] = 1; cases.append(x)
+    x = copy.deepcopy(valid_state()); x["rounds"] = [copy.deepcopy(x["rounds"][0]), copy.deepcopy(x["rounds"][0])]; x["rounds"][1]["round"] = 1; x["rounds"][1]["query_key"] = "b" * 64; x["max_rounds"] = 2; x["policy"]["max_rounds"] = 2; cases.append(x)
+    expected = ["schema", "schema", "schema", "policy_max_rounds_mismatch", "rounds_exceed_max_rounds", "rounds_must_be_contiguous_and_unique"]
+    for case, marker in zip(cases, expected):
+        errors = list(validator().iter_errors(case))
+        semantic = __import__("harness.retrieval_state_validation", fromlist=["validate_retrieval_state"]).validate_retrieval_state(case)
+        assert errors or semantic
+        if marker not in ("schema",):
+            assert marker in semantic
