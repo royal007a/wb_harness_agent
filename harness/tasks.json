@@ -5,14 +5,14 @@
     {
       "id": "HA-0049",
       "title": "设计 Agentic RAG 最小目标与预算控制",
-      "status": "running",
+      "status": "completed",
       "risk": "medium",
       "scope": ["迭代式检索与 Agentic RAG 边界", "最小充分检索、动态预算、缓存失效与端到端评测契约"],
       "non_goals": ["自主数据源/工具选择运行时", "embedding/RRF/reranker/外部网络/Provider/缓存实现"],
       "acceptance": ["retrieval-state@2 Schema 与三目标 fixture 可校验", "目标/预算/缓存/评测映射到 Task/Run/Evidence/Gate", "默认 fail-closed 且不声称 Agentic RAG available"],
       "depends_on": ["HA-0048"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0049-agentic-rag-goal-budget.md",
+      "plan": "exec-plans/completed/HA-0049-agentic-rag-goal-budget.md",
       "blocked_reason": null,
       "recovery_condition": null,
       "evidence": ["harness/evidence/HA-0049/acceptance.md"]
