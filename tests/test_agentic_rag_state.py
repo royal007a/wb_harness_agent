@@ -36,12 +36,24 @@ def test_three_goal_fixture_is_valid():
     state = valid_state(); assert not list(validator().iter_errors(state)); assert not validate_agentic_state(state)
 
 
-def test_negative_fixtures_are_rejected_individually():
-    cases = []
-    x = copy.deepcopy(valid_state()); x["strategy_tiers"][2]["admitted"] = True; x["strategy_tiers"][2]["admission_ref"] = None; cases.append(x)
-    x = copy.deepcopy(valid_state()); x["rounds"][0]["methods"] = ["semantic"]; x["rounds"][0]["strategy_tier"] = 3; cases.append(x)
-    x = copy.deepcopy(valid_state()); x["cache_policy"]["enabled"] = True; cases.append(x)
-    x = copy.deepcopy(valid_state()); x["goals"][0]["status"] = "completed"; x["goals"][0]["blocking_gap_ids"] = ["gap:x"]; cases.append(x)
-    x = copy.deepcopy(valid_state()); x["remaining_budget"] = budget(0); x["stop_reason"] = None; cases.append(x)
-    for case in cases:
-        assert list(validator().iter_errors(case)) or validate_agentic_state(case)
+def assert_reject(case, code):
+    schema_errors = list(validator().iter_errors(case))
+    semantic_errors = validate_agentic_state(case)
+    assert schema_errors or semantic_errors
+    assert code in semantic_errors or any(code in error.message for error in schema_errors), (code, semantic_errors, schema_errors)
+
+
+def test_negative_fixtures_are_rejected_with_specific_codes():
+    x = copy.deepcopy(valid_state()); x["remaining_budget"]["elapsed_ms"] = 0; x["stop_reason"] = None; assert_reject(x, "budget_exhausted_must_hard_stop")
+    x = copy.deepcopy(valid_state()); x["stop_reason"] = "budget_exhausted"; assert_reject(x, "budget_exhausted_without_exhaustion")
+    x = copy.deepcopy(valid_state()); x["rounds"][0]["methods"] = ["temporal"]; assert_reject(x, "strategy_method_tier_mismatch")
+    x = copy.deepcopy(valid_state()); x["strategy_tiers"][2]["admitted"] = True; x["strategy_tiers"][2]["admission_ref"] = "future@1"; assert_reject(x, "strategy_tier_snapshot_invalid")
+    x = copy.deepcopy(valid_state()); x["goals"][0]["depends_on"] = ["goal:optimize-project"]; assert_reject(x, "goal_dependency_cycle")
+    x = copy.deepcopy(valid_state()); x["goals"][0]["status"] = "active"; assert_reject(x, "goal_dependency_not_completed")
+    x = copy.deepcopy(valid_state()); x["goals"][1]["user_confirmation"] = "pending"; assert_reject(x, "active_goal_without_user_confirmation")
+    x = copy.deepcopy(valid_state()); x["goals"][0]["evidence_count_by_claim"]["extra"] = 1; assert_reject(x, "completed_goal_claim_coverage_incomplete")
+    x = copy.deepcopy(valid_state()); x["rounds"][0]["goal_id"] = "goal:missing"; assert_reject(x, "round_goal_missing")
+    x = copy.deepcopy(valid_state()); second = copy.deepcopy(x["rounds"][0]); second["round"] = 2; second["query_key"] = "b" * 64; second["budget_spent"] = budget(10); second["remaining_budget_after"] = budget(80); x["rounds"] = [x["rounds"][0], second]; x["remaining_budget"] = budget(80); x["policy"]["max_rounds"] = 1; assert_reject(x, "rounds_exceed_max_rounds")
+    x = copy.deepcopy(valid_state()); x["rounds"][0]["query_key"] = "a" * 64; x["rounds"][0]["attempt"] = 1; second = copy.deepcopy(x["rounds"][0]); second["round"] = 2; second["budget_spent"] = budget(10); second["remaining_budget_after"] = budget(80); x["rounds"] = [x["rounds"][0], second]; x["remaining_budget"] = budget(80); x["policy"]["max_rounds"] = 3; assert_reject(x, "duplicate_query_key_requires_rerun_attempt")
+    x = copy.deepcopy(valid_state()); x["cache_policy"]["enabled"] = True; assert_reject(x, "cache_policy_disabled")
+    x = copy.deepcopy(valid_state()); x["stop_reason"] = "minimal_target_satisfied"; x["goals"][0]["status"] = "active"; assert_reject(x, "minimal_target_not_completed")

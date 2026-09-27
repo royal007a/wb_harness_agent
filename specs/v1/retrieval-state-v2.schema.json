@@ -38,7 +38,12 @@
         "admitted": {"type": "boolean"},
         "admission_ref": {"type": ["string", "null"], "minLength": 1}
       },
-      "allOf": [{"if": {"properties": {"admitted": {"const": true}}}, "then": {"required": ["admission_ref"], "properties": {"admission_ref": {"type": "string", "minLength": 1}}}}]
+      "allOf": [
+        {"if": {"properties": {"admitted": {"const": true}}}, "then": {"required": ["admission_ref"], "properties": {"admission_ref": {"type": "string", "minLength": 1}}}},
+        {"if": {"properties": {"id": {"const": "admitted_semantic_or_external"}}}, "then": {"properties": {"tier": {"const": 3}, "admitted": {"const": false}, "admission_ref": {"const": null}}}},
+        {"if": {"properties": {"id": {"const": "local_keyword"}}}, "then": {"properties": {"tier": {"const": 1}, "admitted": {"const": true}}}},
+        {"if": {"properties": {"id": {"const": "local_temporal_graph"}}}, "then": {"properties": {"tier": {"const": 2}, "admitted": {"const": true}}}}
+      ]
     },
     "goal": {
       "type": "object", "additionalProperties": false,
@@ -84,18 +89,12 @@
     "cache": {
       "type": "object", "additionalProperties": false, "required": ["enabled", "negative_cache", "ttl_seconds", "identity_scope_digest", "invalidation_mode"],
       "properties": {
-        "enabled": {"type": "boolean"},
+        "enabled": {"const": false},
         "negative_cache": {"const": false},
         "ttl_seconds": {"type": "integer", "minimum": 1},
-        "identity_scope_digest": {"type": ["string", "null"], "pattern": "^(null|[a-f0-9]{64})$"},
+        "identity_scope_digest": {"const": null},
         "invalidation_mode": {"const": "evidence_reverse_index"}
-      },
-      "allOf": [
-        {
-          "if": {"properties": {"enabled": {"const": true}}},
-          "then": {"properties": {"identity_scope_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}
-        }
-      ]
+      }
     }
   }
 }
