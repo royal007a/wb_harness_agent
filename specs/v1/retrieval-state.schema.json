@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/retrieval-state.schema.json",
+  "title": "HarnessAgent Iterative Retrieval State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "session_id", "max_rounds", "source_trust_mode", "policy", "rounds", "stop_reason"],
+  "properties": {
+    "schema_version": {"const": "retrieval-state@1"},
+    "session_id": {"type": "string", "minLength": 1},
+    "max_rounds": {"type": "integer", "minimum": 1, "maximum": 10},
+    "source_trust_mode": {"const": "unavailable"},
+    "policy": {"$ref": "#/$defs/policy"},
+    "rounds": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/round"}
+    },
+    "stop_reason": {
+      "type": ["string", "null"],
+      "enum": [null, "evidence_sufficient", "gaps_covered", "no_progress", "duplicate_rate", "sources_exhausted", "budget_exhausted", "unretrievable_gap", "clarification_required", "max_rounds"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"stop_reason": {"const": null}}},
+      "then": {"properties": {"rounds": {"items": {"properties": {"continue_reason": {"type": "string", "minLength": 1}, "next_round_goal": {"type": "string", "minLength": 1}}, "required": ["continue_reason", "next_round_goal"]}}}}
+    }
+  ],
+  "$defs": {
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["round", "query", "query_delta", "query_key", "source_ids", "methods", "candidate_evidence", "new_evidence_ids", "confirmed_fact_ids", "open_gap_ids", "continue_reason", "next_round_goal", "attempt", "rerun_reason", "budget", "duplicate_rate", "coverage_delta"],
+      "properties": {
+        "round": {"type": "integer", "minimum": 1},
+        "query": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "query_delta": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "query_key": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "source_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "methods": {"type": "array", "items": {"enum": ["keyword", "temporal", "graph"]}, "uniqueItems": true, "minItems": 1},
+        "candidate_evidence": {"type": "array", "items": {"$ref": "#/$defs/candidate"}},
+        "new_evidence_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "confirmed_fact_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "open_gap_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "continue_reason": {"type": ["string", "null"], "maxLength": 500},
+        "next_round_goal": {"type": ["string", "null"], "maxLength": 500},
+        "attempt": {"type": "integer", "minimum": 1},
+        "rerun_reason": {"type": ["string", "null"], "maxLength": 500},
+        "budget": {"$ref": "#/$defs/budget"},
+        "duplicate_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "coverage_delta": {"type": "number", "minimum": 0, "maximum": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"attempt": {"exclusiveMinimum": 1}}},
+          "then": {"properties": {"rerun_reason": {"type": "string", "minLength": 1}}, "required": ["rerun_reason"]}
+        }
+      ]
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "source_ref", "summary", "summary_kind", "rank", "novelty", "gap_ids"],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1},
+        "source_ref": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "summary_kind": {"enum": ["derived_redacted", "structured_excerpt"]},
+        "rank": {"type": "integer", "minimum": 1},
+        "novelty": {"type": "number", "minimum": 0, "maximum": 1},
+        "gap_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_rounds", "dup_threshold", "near_duplicate_jaccard", "min_new_evidence", "no_progress_rounds", "min_evidence_per_claim"],
+      "properties": {
+        "max_rounds": {"type": "integer", "minimum": 1, "maximum": 10},
+        "dup_threshold": {"type": "number", "const": 0.8},
+        "near_duplicate_jaccard": {"type": "number", "const": 0.8},
+        "min_new_evidence": {"type": "integer", "const": 2},
+        "no_progress_rounds": {"type": "integer", "const": 2},
+        "min_evidence_per_claim": {"type": "integer", "const": 1}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["elapsed_ms", "token_count", "tool_calls", "cost_minor"],
+      "properties": {
+        "elapsed_ms": {"type": "integer", "minimum": 0},
+        "token_count": {"type": "integer", "minimum": 0},
+        "tool_calls": {"type": "integer", "minimum": 0},
+        "cost_minor": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

@@ -42,6 +42,7 @@
 | [ADR-0038](../decisions/ADR-0038-team-identity-admission.md) | Accepted（选择 C：仅设计） | Team 内容面前的真实身份认证准入已冻结为 metadata-only；不实现认证、消息正文或 Agent delegation |
 | [ADR-0039](../decisions/ADR-0039-llm-wiki-knowledge-compiler.md) | Proposed | 以 raw/wiki/schema 三层 Markdown + Git 知识编译层持续维护可审计页面；不替代 RAG、权威事实源或 Memory Policy Gateway |
 | [ADR-0040](../decisions/ADR-0040-pi-agent-adapter-boundary.md) | Proposed | Pi 分层运行时以 TypeScript sidecar 接入合同审查；Harness 保留 Task/Run、工具、权限、预算、证据和 Gate |
+| [ADR-0041](../decisions/ADR-0041-iterative-retrieval-control.md) | Proposed | 以 Evidence Gap 驱动非重复 Query，统一 Evidence Bundle、增量合并、动态排序和效果/资源双停止；语义/外部检索仍受 Admission Gate |
 
 ## 待决策
 
