@@ -1,6 +1,6 @@
 # HA-0050 Acceptance Evidence
 
-- 状态：implemented locally; awaiting independent review
+- 状态：completed; independent review Approved（HEAD a694de3）
 - `tests/test_adaptive_retrieval.py`: 5 passed
 - `adaptive-chunk@1` Schema 校验父子 ID、哈希、结构路径和策略枚举。
 - weighted RRF 在函数内部拒绝未准入路由，限制每路 TopK，并记录权重快照；Slot/Gap 控制器在预算耗尽时硬停，并支持一次无进展策略切换。
