@@ -44,6 +44,7 @@
 | [ADR-0040](../decisions/ADR-0040-pi-agent-adapter-boundary.md) | Proposed | Pi 分层运行时以 TypeScript sidecar 接入合同审查；Harness 保留 Task/Run、工具、权限、预算、证据和 Gate |
 | [ADR-0041](../decisions/ADR-0041-iterative-retrieval-control.md) | Proposed | 以 Evidence Gap 驱动非重复 Query，统一 Evidence Bundle、增量合并、动态排序和效果/资源双停止；语义/外部检索仍受 Admission Gate |
 | [ADR-0049](../decisions/ADR-0049-agentic-rag-goal-budget-cache.md) | Proposed | Agentic RAG 作为迭代检索之上的目标/数据源/工具/验证/停止控制；最小充分检索、动态预算与可失效 Evidence 缓存，默认未启用 |
+| [ADR-0050](../decisions/ADR-0050-adaptive-chunk-retrieval.md) | Proposed | 结构边界父子 Chunk、加权 RRF 与 Slot/Gap 停止的本地确定性切片；semantic/api/外部检索仍未准入 |
 
 ## 待决策
 

@@ -386,3 +386,6 @@ SSE 客户端使用 `Last-Event-ID` 恢复；服务端必须说明事件保留�
 - 适配器私有字段放入命名空间扩展区，不进入核心契约。
 
 核心对象语义见 [CORE_CONTRACTS.md](CORE_CONTRACTS.md)，内部适配器语义见 [ADAPTER_CONTRACT.md](ADAPTER_CONTRACT.md)，工具和沙箱边界见 [TOOL_AND_SANDBOX.md](TOOL_AND_SANDBOX.md)。机器可读 Draft 位于 `specs/v1/`，须在 HA-0001 评审、探针和契约测试后才能冻结；本文不是已实现 API。
+### Adaptive Chunk Retrieval（本地切片）
+
+`build_parent_child_chunks` 输出带 `parent_id` 的结构化子证据；`weighted_rrf` 只融合 keyword/temporal/graph 候选；`slot_progress` / `should_stop_minimal` 依据关键槽位和 blocking gap 判断是否已达到最小充分证据。该模块不提供语义检索、外部端点或模型调用。

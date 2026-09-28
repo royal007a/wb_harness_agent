@@ -4,6 +4,7 @@ cd "$(dirname "$0")/.."
 .venv/bin/python -m pytest -q
 .venv/bin/python -m pytest -q tests/test_retrieval_state.py
 .venv/bin/python -m pytest -q tests/test_agentic_rag_state.py
+.venv/bin/python -m pytest -q tests/test_adaptive_retrieval.py
 .venv/bin/python harness/memory_context_evaluation.py
 .venv/bin/python harness/memory_graph_evaluation.py
 .venv/bin/python harness/memory_entity_catalog_evaluation.py

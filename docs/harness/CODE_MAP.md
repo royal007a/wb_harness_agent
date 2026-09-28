@@ -120,3 +120,6 @@ observability / evals → contracts
 - 框架场景与准入顺序：先查 `FRAMEWORK_INTEGRATION.md`，再查对应 Adapter ADR 和探针 Evidence。
 - 工具副作用：查 `policy/`、`tool-runtime/` 和审批记录。
 - 结果质量：查 `evals/`、Evidence 和引用链。
+### Adaptive retrieval slice
+
+- `backend/adaptive_retrieval.py`：结构边界父子 Chunk、确定性 weighted RRF、Slot/Gap 最小充分停止；无模型、无网络。

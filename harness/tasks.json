@@ -3,6 +3,21 @@
   "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
+      "id": "HA-0050",
+      "title": "实现父子 Chunk 与 Slot 驱动动态检索切片",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": ["结构边界父子 Chunk", "确定性加权 RRF", "Slot/Gap 最小充分停止", "入库检索评估闭环"],
+      "non_goals": ["embedding/semantic/api", "外部网络与真实 Provider", "自动扩大预算", "生产 reranker/缓存"],
+      "acceptance": ["adaptive-chunk@1 Schema 与父子 lineage 校验", "weighted RRF 与 Slot/Gap 测试", "verify.sh 全量通过且证据如实记录"],
+      "depends_on": ["HA-0049"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0050-adaptive-chunk-retrieval.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0050/acceptance.md"]
+    },
+    {
       "id": "HA-0049",
       "title": "设计 Agentic RAG 最小目标与预算控制",
       "status": "completed",

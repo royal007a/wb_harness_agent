@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/schemas/adaptive-chunk@1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "parents", "children"],
+  "properties": {
+    "schema_version": {"const": "adaptive-chunk@1"},
+    "parents": {"type": "array", "items": {"$ref": "#/$defs/parent"}},
+    "children": {"type": "array", "items": {"$ref": "#/$defs/child"}}
+  },
+  "$defs": {
+    "parent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "heading", "text_sha256", "char_count", "structural_path"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^parent-[0-9]{4}-[0-9a-f]{12}$"},
+        "heading": {"type": "string"}, "text_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "char_count": {"type": "integer", "minimum": 1}, "structural_path": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+      }
+    },
+    "child": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "parent_id", "index", "heading", "structural_path", "char_count", "text_sha256", "strategy"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^child-[0-9]{4}-[0-9a-f]{12}$"},
+        "parent_id": {"type": "string", "pattern": "^parent-[0-9]{4}-[0-9a-f]{12}$"},
+        "index": {"type": "integer", "minimum": 0}, "heading": {"type": "string"},
+        "structural_path": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "char_count": {"type": "integer", "minimum": 1}, "text_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "strategy": {"enum": ["structural", "hard_limit"]}
+      }
+    }
+  }
+}
