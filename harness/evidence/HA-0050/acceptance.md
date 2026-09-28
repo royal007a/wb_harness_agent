@@ -1,7 +1,7 @@
 # HA-0050 Acceptance Evidence
 
 - 状态：implemented locally; awaiting independent review
-- `tests/test_adaptive_retrieval.py`: 3 passed
+- `tests/test_adaptive_retrieval.py`: 4 passed
 - `adaptive-chunk@1` Schema 校验父子 ID、哈希、结构路径和策略枚举。
-- weighted RRF 与 Slot/Gap 停止为纯函数，未调用模型、网络或未准入检索路由。
-- 待办：固定评测集的 Recall/coverage/first-useful-result 数字，以及与线上 Agentic RAG 的对照；本证据不宣称这些能力已实现。
+- weighted RRF 在函数内部拒绝未准入路由，限制每路 TopK，并记录权重快照；Slot/Gap 控制器在预算耗尽时硬停，并支持一次无进展策略切换。
+- `harness/adaptive_chunk_evaluation.py` 输出固定 fixture 的 fixed/adaptive Recall@4=1.0、父上下文完整率=1.0、model_calls=0、external_calls=0；这只是本地合成评测，不是线上 Agentic RAG 证据。
