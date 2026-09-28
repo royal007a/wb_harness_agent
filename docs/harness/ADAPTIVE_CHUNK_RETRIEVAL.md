@@ -18,4 +18,4 @@
 
 ## 评估闭环
 
-`harness/adaptive_chunk_evaluation.py` 提供固定的本地调参/留出 fixture，对比固定长度和自适应父子 Chunk，输出 Recall@4、父上下文完整率以及 model/external calls=0。生产闭环还应在同一留出集上比较单路/加权 RRF/父聚合和首个有用结果时间、p50/p95 与成本；每次改 Chunk、TopK、路权或停止规则都跑同一集，Bad Case 必须归因到入库、召回、融合、重排或停止阶段。
+`harness/adaptive_chunk_evaluation.py` 提供 2 个调参、2 个留出 fixture，对比固定窗口和自适应父子 Chunk 的 Recall@1，并真实计算父上下文完整率；留出集包含跨固定窗口边界的长条款，当前输出 fixed=0.0、adaptive=1.0、parent expansion=1.0，且 model/external calls=0。生产闭环还应在同一留出集上比较单路/加权 RRF/父聚合和首个有用结果时间、p50/p95 与成本；每次改 Chunk、TopK、路权或停止规则都跑同一集，Bad Case 必须归因到入库、召回、融合、重排或停止阶段。

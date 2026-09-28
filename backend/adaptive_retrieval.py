@@ -37,7 +37,7 @@ def _split_units(text: str, base: int) -> list[tuple[str, int, int, str]]:
             cursor += len(block) + 2; continue
         start = text.find(raw, cursor); cursor = start + len(raw)
         lines = [line.strip() for line in raw.splitlines() if line.strip()]
-        if len(lines) > 1 and all(line.startswith(("- ", "* ", "|")) or re.match(r"^\\d+[.)、]", line) for line in lines):
+        if len(lines) > 1 and all(line.startswith(("- ", "* ", "|")) or re.match(r"^\d+[.)、]", line) for line in lines):
             pieces, kind = lines, "list_or_table"
         else:
             pieces, kind = ([item.strip() for item in SENTENCE.split(raw) if item.strip()] or [raw]), "sentence"
@@ -46,10 +46,10 @@ def _split_units(text: str, base: int) -> list[tuple[str, int, int, str]]:
             pos = text.find(piece, local, start + len(raw)); out.append((piece, base + pos, base + pos + len(piece), kind)); local = pos + len(piece)
     return out
 
-def _append_child(out: list[AdaptiveChunk], parent_id: str, path: tuple[str, ...], units: list[tuple[str, int, int, str]], strategy: str) -> None:
-    value = "\\n".join(item[0] for item in units).strip()
-    if not value: return
+def _append_child(out: list[AdaptiveChunk], parent_id: str, path: tuple[str, ...], units: list[tuple[str, int, int, str]], strategy: str, source_text: str) -> None:
     start, end = units[0][1], units[-1][2]
+    value = source_text[start:end]
+    if not value.strip(): return
     child_id = f"child-{_sha(parent_id + chr(0) + value + chr(0) + str(start))[:16]}"
     out.append(AdaptiveChunk(child_id, parent_id, len(out), path[-1], path, value, start, end, strategy))
 
@@ -66,7 +66,7 @@ def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max
         while local < len(raw):
             end = min(local + parent_max_chars, len(raw))
             if end < len(raw):
-                boundary = max(raw.rfind("\\n\\n", local, end), raw.rfind("\\n", local, end))
+                boundary = max(raw.rfind("\n\n", local, end), raw.rfind("\n", local, end))
                 if boundary > local + parent_max_chars // 2: end = boundary
             fragment = raw[local:end].strip()
             fragments.append((fragment, section_start + local, _sha(raw[:local])))
@@ -77,15 +77,15 @@ def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max
             parents.append({"id": parent_id, "heading": parent_path[-1], "text": fragment, "start": frag_start, "end": frag_start + len(fragment), "text_sha256": _sha(fragment), "char_count": len(fragment), "structural_path": list(parent_path)})
             pending: list[tuple[str, int, int, str]] = []
             for unit in _split_units(fragment, frag_start):
-                if pending and len("\\n".join(x[0] for x in pending + [unit])) > max_child_chars:
-                    _append_child(children, parent_id, parent_path, pending, "structural"); pending = []
+                if pending and len("\n".join(x[0] for x in pending + [unit])) > max_child_chars:
+                    _append_child(children, parent_id, parent_path, pending, "structural", text); pending = []
                 if len(unit[0]) > max_child_chars:
-                    if pending: _append_child(children, parent_id, parent_path, pending, "structural"); pending = []
+                    if pending: _append_child(children, parent_id, parent_path, pending, "structural", text); pending = []
                     for begin in range(0, len(unit[0]), max_child_chars):
                         piece = unit[0][begin:begin + max_child_chars]
-                        _append_child(children, parent_id, parent_path, [(piece, unit[1] + begin, unit[1] + begin + len(piece), "hard_limit")], "hard_limit")
+                        _append_child(children, parent_id, parent_path, [(piece, unit[1] + begin, unit[1] + begin + len(piece), "hard_limit")], "hard_limit", text)
                 else: pending.append(unit)
-            if pending: _append_child(children, parent_id, parent_path, pending, "structural")
+            if pending: _append_child(children, parent_id, parent_path, pending, "structural", text)
         section = []
     for line in lines:
         stripped = line.strip(); match = HEADING.match(stripped)
@@ -97,7 +97,7 @@ def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max
         if not section: section_start = offset + len(line) - len(line.lstrip())
         section.append(line); offset += len(line)
     flush()
-    result = {"schema_version": "adaptive-chunk@1", "parents": parents, "children": [item.as_dict() for item in children], "parent_max_chars": parent_max_chars, "max_child_chars": max_child_chars}
+    result = {"schema_version": "adaptive-chunk@1", "source_text": text, "source_sha256": _sha(text), "parents": parents, "children": [item.as_dict() for item in children], "parent_max_chars": parent_max_chars, "max_child_chars": max_child_chars}
     validate_adaptive_chunks(result); return result
 
 def validate_adaptive_chunks(result: dict) -> None:
@@ -107,7 +107,9 @@ def validate_adaptive_chunks(result: dict) -> None:
     if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
     if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
     if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+    source = result.get("source_text")
     if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+    if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
     limit = int(result.get("parent_max_chars", 24000))
     if any(x.get("char_count", 0) > limit for x in parents): raise ValueError("parent hard limit exceeded")
 
@@ -124,11 +126,15 @@ def weighted_rrf(candidates: Iterable[dict], route_weights: dict[str, float] | N
         contribution = float(weights.get(route, 0.0)) / (rrf_k + rank); scores[cid] = scores.get(cid, 0.0) + contribution
         route_scores.setdefault(cid, {})[route] = route_scores.setdefault(cid, {}).get(route, 0.0) + contribution
         rows.setdefault(cid, {"child_id": cid, "parent_id": row["parent_id"]})
-    grouped = {}
-    for cid, score in scores.items(): grouped.setdefault(rows[cid]["parent_id"], []).append(score)
-    parent_scores = {parent: sum(sorted(values, reverse=True)[:3]) / min(3, len(values)) for parent, values in grouped.items()}
+    parent_scores = aggregate_parent_scores([{**rows[cid], "score": score} for cid, score in scores.items()])
     ranked = sorted(scores, key=lambda cid: (-scores[cid], -parent_scores[rows[cid]["parent_id"]], cid))[:top_k]
     return [{**rows[cid], "routes": sorted(route_scores[cid]), "route_scores": route_scores[cid], "score": round(scores[cid], 8), "parent_score": round(parent_scores[rows[cid]["parent_id"]], 8), "policy": {"route_weights": dict(weights), "per_route_top_k": dict(caps)}} for cid in ranked]
+
+def aggregate_parent_scores(children: Iterable[dict], max_children: int = 3) -> dict[str, float]:
+    grouped: dict[str, list[float]] = {}
+    for child in children:
+        grouped.setdefault(child["parent_id"], []).append(float(child["score"]))
+    return {parent: round(sum(sorted(values, reverse=True)[:max_children]), 8) for parent, values in grouped.items()}
 
 def expand_parent_context(index: dict, child_ids: Iterable[str]) -> list[dict]:
     """Expand only parents referenced by selected children, in stable order."""
@@ -141,7 +147,10 @@ def slot_progress(required_slots: Iterable[str], evidence: Iterable[dict]) -> di
     return {"required": required, "filled": sorted(filled), "missing": sorted(set(required) - filled), "complete": set(required) <= filled}
 
 def retrieval_control(required_slots: Iterable[str], evidence: Iterable[dict], blocking_gaps: Iterable[str] = (), rounds_without_progress: int = 0, retry_used: bool = False, budget: dict | None = None) -> dict:
-    budget = budget or {}; progress = slot_progress(required_slots, evidence)
+    required_budget = {"elapsed_ms", "token_count", "tool_calls", "cost_minor", "retrieved_docs", "rerank_calls"}
+    if budget is None or set(budget) != required_budget or any(not isinstance(value, (int, float)) or value < 0 for value in budget.values()):
+        raise ValueError("complete non-negative retrieval budget is required")
+    progress = slot_progress(required_slots, evidence)
     if any(value is not None and value <= 0 for value in budget.values()): return {"stop": True, "reason": "budget_exhausted", "retry": False, "progress": progress}
     if progress["complete"] and not set(blocking_gaps): return {"stop": True, "reason": "minimal_target_satisfied", "retry": False, "progress": progress}
     if rounds_without_progress >= 2: return {"stop": True, "reason": "no_progress", "retry": False, "progress": progress}
@@ -149,6 +158,7 @@ def retrieval_control(required_slots: Iterable[str], evidence: Iterable[dict], b
     return {"stop": False, "reason": "evidence_gap_open", "retry": False, "progress": progress}
 
 def should_stop_minimal(required_slots: Iterable[str], evidence: Iterable[dict], blocking_gaps: Iterable[str] = ()) -> bool:
-    return retrieval_control(required_slots, evidence, blocking_gaps)["reason"] == "minimal_target_satisfied"
+    budget = {key: 1 for key in ("elapsed_ms", "token_count", "tool_calls", "cost_minor", "retrieved_docs", "rerank_calls")}
+    return retrieval_control(required_slots, evidence, blocking_gaps, budget=budget)["reason"] == "minimal_target_satisfied"
 
-__all__ = ["AdaptiveChunk", "build_parent_child_chunks", "expand_parent_context", "retrieval_control", "slot_progress", "should_stop_minimal", "validate_adaptive_chunks", "weighted_rrf"]
+__all__ = ["AdaptiveChunk", "aggregate_parent_scores", "build_parent_child_chunks", "expand_parent_context", "retrieval_control", "slot_progress", "should_stop_minimal", "validate_adaptive_chunks", "weighted_rrf"]

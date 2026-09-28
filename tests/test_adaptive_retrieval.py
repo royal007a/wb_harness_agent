@@ -5,7 +5,7 @@ from jsonschema import Draft202012Validator
 
 import pytest
 
-from backend.adaptive_retrieval import build_parent_child_chunks, expand_parent_context, retrieval_control, should_stop_minimal, slot_progress, validate_adaptive_chunks, weighted_rrf
+from backend.adaptive_retrieval import aggregate_parent_scores, build_parent_child_chunks, expand_parent_context, retrieval_control, should_stop_minimal, slot_progress, validate_adaptive_chunks, weighted_rrf
 
 
 def test_parent_child_prefers_structure_and_preserves_lineage():
@@ -14,6 +14,7 @@ def test_parent_child_prefers_structure_and_preserves_lineage():
     parent_ids = {item["id"] for item in result["parents"]}
     assert all(item["parent_id"] in parent_ids for item in result["children"])
     validate_adaptive_chunks(result)
+    assert all(result["source_text"][item["start"]:item["end"]] == item["text"] for item in result["children"])
     assert {item["strategy"] for item in result["children"]} <= {"structural", "hard_limit"}
     assert expand_parent_context(result, [result["children"][0]["id"]])
     schema = json.loads(Path("specs/v1/adaptive-chunk.schema.json").read_text())
@@ -28,6 +29,7 @@ def test_weighted_rrf_and_parent_evidence_are_deterministic():
     ]
     fused = weighted_rrf(rows, {"keyword": 1.0, "graph": 0.5})
     assert fused[0]["child_id"] == "c1" and fused[0]["parent_score"] > fused[-1]["parent_score"]
+    assert aggregate_parent_scores([{"parent_id": "p", "score": 0.1}])["p"] <= aggregate_parent_scores([{"parent_id": "p", "score": 0.1}, {"parent_id": "p", "score": 0.05}])["p"]
     with pytest.raises(ValueError):
         weighted_rrf([{"child_id": "x", "parent_id": "p", "route": "semantic", "rank": 1}])
 
@@ -46,6 +48,9 @@ def test_slots_drive_minimal_stop_not_iteration_count():
     assert not should_stop_minimal(["A", "B", "C"], evidence)
     assert should_stop_minimal(["A", "B"], evidence)
     assert not should_stop_minimal(["A", "B"], evidence, ["conflict"])
-    assert retrieval_control(["A"], evidence, budget={"token_count": 0})["reason"] == "budget_exhausted"
-    assert retrieval_control(["A", "B", "C"], evidence, rounds_without_progress=1)["retry"] is True
-    assert retrieval_control(["A", "B", "C"], evidence, rounds_without_progress=2)["reason"] == "no_progress"
+    budget = {key: 10 for key in ("elapsed_ms", "token_count", "tool_calls", "cost_minor", "retrieved_docs", "rerank_calls")}
+    assert retrieval_control(["A"], evidence, budget={**budget, "token_count": 0})["reason"] == "budget_exhausted"
+    assert retrieval_control(["A", "B", "C"], evidence, rounds_without_progress=1, budget=budget)["retry"] is True
+    assert retrieval_control(["A", "B", "C"], evidence, rounds_without_progress=2, budget=budget)["reason"] == "no_progress"
+    with pytest.raises(ValueError):
+        retrieval_control(["A"], evidence, budget={"token_count": 1})

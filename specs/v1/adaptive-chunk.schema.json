@@ -3,9 +3,11 @@
   "$id": "https://harnessagent.local/schemas/adaptive-chunk@1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "parents", "children", "parent_max_chars", "max_child_chars"],
+  "required": ["schema_version", "source_text", "source_sha256", "parents", "children", "parent_max_chars", "max_child_chars"],
   "properties": {
     "schema_version": {"const": "adaptive-chunk@1"},
+    "source_text": {"type": "string", "minLength": 1},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "parents": {"type": "array", "items": {"$ref": "#/$defs/parent"}},
     "children": {"type": "array", "items": {"$ref": "#/$defs/child"}},
     "parent_max_chars": {"type": "integer", "minimum": 1000},
