@@ -49,6 +49,13 @@ def test_long_section_offsets_cover_every_non_whitespace_character():
     assert sum(not char.isspace() for char in text) <= sum(sum(not char.isspace() for char in item["text"]) for item in result["children"])
 
 
+def test_newline_normalization_is_part_of_the_offset_contract():
+    for raw in ("第1条 A\r\n甲方付款。\r\n乙方交付。", "第1条 A\r甲方付款。\r乙方交付。"):
+        result = build_parent_child_chunks(raw, max_child_chars=400, parent_max_chars=1000)
+        assert "\r" not in result["source_text"]
+        assert all(result["source_text"][item["start"]:item["end"]] == item["text"] for item in result["children"])
+
+
 def test_slots_drive_minimal_stop_not_iteration_count():
     evidence = [{"id": "e1", "slots": ["A"]}, {"id": "e2", "slots": ["B"]}]
     assert slot_progress(["A", "B", "C"], evidence)["missing"] == ["C"]

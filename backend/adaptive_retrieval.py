@@ -56,6 +56,8 @@ def _append_child(out: list[AdaptiveChunk], parent_id: str, path: tuple[str, ...
 def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max_chars: int = 9000) -> dict:
     if not isinstance(text, str) or not text.strip(): raise ValueError("text must be non-empty")
     if not 400 <= max_child_chars <= 8000 or not 1000 <= parent_max_chars <= 24000: raise ValueError("chunk limits out of range")
+    # Offsets and hashes are defined over this canonical newline form.
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
     lines, parents, children = text.replace("\r", "").splitlines(keepends=True), [], []
     section, section_start, offset, path, levels = [], 0, 0, [], []
     def flush() -> None:

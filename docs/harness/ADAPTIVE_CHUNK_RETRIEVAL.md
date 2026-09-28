@@ -6,7 +6,7 @@
 
 ## 入库：父子文档与结构边界
 
-`backend/adaptive_retrieval.py` 先按章/条/编号标题（含 Markdown、中文序号）划分父文档，再按段落、列表/表格行和句末边界形成子 Chunk；只有单个原子单元仍超限时才使用 `hard_limit`。父文档和子文档都受实际 hard limit 约束，ID 由内容和局部前缀寻址，不依赖全局序号。每个子 Chunk 带原文、offset、`parent_id`、结构路径、策略、长度和 SHA-256；`expand_parent_context` 只扩展命中的父文档，不能把整库父文档全部注入。
+`backend/adaptive_retrieval.py` 入口先把 CRLF 和单独 CR 归一为 LF；所有 offset、哈希和 `source_text` 都基于该规范化文本。随后按章/条/编号标题（含 Markdown、中文序号）划分父文档，再按段落、列表/表格行和句末边界形成子 Chunk；只有单个原子单元仍超限时才使用 `hard_limit`。父文档和子文档都受实际 hard limit 约束，ID 由内容和局部前缀寻址，不依赖全局序号。每个子 Chunk 带原文、offset、`parent_id`、结构路径、策略、长度和 SHA-256；`expand_parent_context` 只扩展命中的父文档，不能把整库父文档全部注入。
 
 ## 检索：动态多路与父文档提升
 
