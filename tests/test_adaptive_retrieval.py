@@ -3,7 +3,7 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
-from backend.adaptive_retrieval import build_parent_child_chunks, should_stop_minimal, slot_progress, weighted_rrf
+from backend.adaptive_retrieval import build_parent_child_chunks, should_stop_minimal, slot_progress, validate_adaptive_chunks, weighted_rrf
 
 
 def test_parent_child_prefers_structure_and_preserves_lineage():
@@ -11,6 +11,7 @@ def test_parent_child_prefers_structure_and_preserves_lineage():
     assert result["parents"] and result["children"]
     parent_ids = {item["id"] for item in result["parents"]}
     assert all(item["parent_id"] in parent_ids for item in result["children"])
+    validate_adaptive_chunks(result)
     assert {item["strategy"] for item in result["children"]} <= {"structural", "hard_limit"}
     schema = json.loads(Path("specs/v1/adaptive-chunk.schema.json").read_text())
     assert not list(Draft202012Validator(schema).iter_errors(result))
@@ -22,7 +23,8 @@ def test_weighted_rrf_and_parent_evidence_are_deterministic():
         {"child_id": "c1", "parent_id": "p1", "route": "graph", "rank": 2},
         {"child_id": "c2", "parent_id": "p2", "route": "keyword", "rank": 2},
     ]
-    assert weighted_rrf(rows, {"keyword": 1.0, "graph": 0.5})[0]["child_id"] == "c1"
+    fused = weighted_rrf(rows, {"keyword": 1.0, "graph": 0.5})
+    assert fused[0]["child_id"] == "c1" and fused[0]["parent_score"] > fused[-1]["parent_score"]
 
 
 def test_slots_drive_minimal_stop_not_iteration_count():

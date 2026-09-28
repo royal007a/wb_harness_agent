@@ -114,7 +114,9 @@ def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max
         if sum(len(item) + 1 for item in current) >= parent_max_chars:
             flush()
     flush()
-    return {"schema_version": "adaptive-chunk@1", "parents": parents, "children": [item.as_dict() for item in children]}
+    result = {"schema_version": "adaptive-chunk@1", "parents": parents, "children": [item.as_dict() for item in children]}
+    validate_adaptive_chunks(result)
+    return result
 
 
 def _append_children(out: list[AdaptiveChunk], parent_id: str, path: tuple[str, ...], parts: list[str], index: int, strategy: str) -> None:
@@ -135,8 +137,31 @@ def weighted_rrf(candidates: Iterable[dict], route_weights: dict[str, float] | N
         rank = int(row["rank"])
         scores[cid] = scores.get(cid, 0.0) + float(weights.get(route, 0.0)) / (rrf_k + rank)
         rows[cid] = dict(row)
-    ranked = sorted(scores, key=lambda cid: (-scores[cid], cid))[:top_k]
-    return [{**rows[cid], "score": round(scores[cid], 8)} for cid in ranked]
+    by_parent: dict[str, list[float]] = {}
+    for cid, score in scores.items():
+        by_parent.setdefault(rows[cid]["parent_id"], []).append(score)
+    parent_scores = {
+        parent: max(values) + 0.2 * sum(sorted(values, reverse=True)[1:3])
+        for parent, values in by_parent.items()
+    }
+    ranked = sorted(scores, key=lambda cid: (-scores[cid], -parent_scores[rows[cid]["parent_id"]], cid))[:top_k]
+    return [{**rows[cid], "score": round(scores[cid], 8), "parent_score": round(parent_scores[rows[cid]["parent_id"]], 8)} for cid in ranked]
+
+
+def validate_adaptive_chunks(result: dict) -> None:
+    """Validate cross-object invariants not expressible in JSON Schema."""
+    parents = result.get("parents", [])
+    children = result.get("children", [])
+    parent_ids = [item.get("id") for item in parents]
+    if len(parent_ids) != len(set(parent_ids)):
+        raise ValueError("duplicate parent id")
+    if len({item.get("id") for item in children}) != len(children):
+        raise ValueError("duplicate child id")
+    indexes = [item.get("index") for item in children]
+    if indexes != list(range(len(children))):
+        raise ValueError("child indexes must be contiguous")
+    if any(item.get("parent_id") not in parent_ids for item in children):
+        raise ValueError("child references unknown parent")
 
 
 def slot_progress(required_slots: Iterable[str], evidence: Iterable[dict]) -> dict:
@@ -150,4 +175,4 @@ def should_stop_minimal(required_slots: Iterable[str], evidence: Iterable[dict],
     return progress["complete"] and not set(blocking_gaps)
 
 
-__all__ = ["AdaptiveChunk", "build_parent_child_chunks", "slot_progress", "should_stop_minimal", "weighted_rrf"]
+__all__ = ["AdaptiveChunk", "build_parent_child_chunks", "slot_progress", "should_stop_minimal", "validate_adaptive_chunks", "weighted_rrf"]
