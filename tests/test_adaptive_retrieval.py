@@ -42,6 +42,13 @@ def test_parent_limit_is_real_and_ids_are_content_addressed():
     assert {item["text_sha256"]: item["id"] for item in result["parents"]}.keys() <= {item["text_sha256"] for item in second["parents"]}
 
 
+def test_long_section_offsets_cover_every_non_whitespace_character():
+    text = "第1条 长\n" + "".join(f"第{i}行 " + ("充" * 50) + "\n" for i in range(200))
+    result = build_parent_child_chunks(text, max_child_chars=400, parent_max_chars=1000)
+    assert all(result["source_text"][item["start"]:item["end"]] == item["text"] for item in result["parents"])
+    assert sum(not char.isspace() for char in text) <= sum(sum(not char.isspace() for char in item["text"]) for item in result["children"])
+
+
 def test_slots_drive_minimal_stop_not_iteration_count():
     evidence = [{"id": "e1", "slots": ["A"]}, {"id": "e2", "slots": ["B"]}]
     assert slot_progress(["A", "B", "C"], evidence)["missing"] == ["C"]

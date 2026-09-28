@@ -60,7 +60,11 @@ def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max
     section, section_start, offset, path, levels = [], 0, 0, [], []
     def flush() -> None:
         nonlocal section, section_start
-        raw = "".join(section).strip()
+        section_raw = "".join(section)
+        leading = len(section_raw) - len(section_raw.lstrip())
+        trailing = len(section_raw.rstrip())
+        raw = section_raw[leading:trailing]
+        raw_base = section_start + leading
         if not raw: section = []; return
         fragments, local = [], 0
         while local < len(raw):
@@ -68,8 +72,9 @@ def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max
             if end < len(raw):
                 boundary = max(raw.rfind("\n\n", local, end), raw.rfind("\n", local, end))
                 if boundary > local + parent_max_chars // 2: end = boundary
-            fragment = raw[local:end].strip()
-            fragments.append((fragment, section_start + local, _sha(raw[:local])))
+            fragment_start, fragment_end = raw_base + local, raw_base + end
+            fragment = text[fragment_start:fragment_end]
+            fragments.append((fragment, fragment_start, _sha(raw[:local])))
             local = end
         for fragment, frag_start, prefix_digest in fragments:
             if not fragment: continue
@@ -110,6 +115,13 @@ def validate_adaptive_chunks(result: dict) -> None:
     source = result.get("source_text")
     if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
     if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+    if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+    if source is not None:
+        covered = set()
+        for child in children:
+            covered.update(range(child["start"], child["end"]))
+        if any(not char.isspace() and index not in covered for index, char in enumerate(source)):
+            raise ValueError("child intervals do not cover source")
     limit = int(result.get("parent_max_chars", 24000))
     if any(x.get("char_count", 0) > limit for x in parents): raise ValueError("parent hard limit exceeded")
 
