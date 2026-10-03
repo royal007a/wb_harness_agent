@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-10-03T16:38:26.429924+00:00",
+  "commit": "18406399318734cb7b8ab05581c1e84e81138337",
+  "database": "/Users/weberzhao/code/ai/harnessagent/.local/harness.db",
+  "backup": ".local/backups/ha0055-20261003T163429Z",
+  "backup_integrity": "ok",
+  "automatic_activation": "failed: bootstrap exit 5",
+  "automatic_plist_rollback": "failed: bootstrap exit 5",
+  "recovery": "manual bootstrap succeeded; startup health retried; no database rollback",
+  "initial_browser_checks": "connection refused during outage; not passed",
+  "assets": {
+    "agent-runtime.js": "453b8b7975ec3adb563e0ab1d0512f24dd87d17f66cffe794cdb0eda295a80f2",
+    "agent-runtime.css": "fcaee44fa2fd409dc84309f6ba9e28224ba21e6abfbf00c84f84dd3f44be5c24"
+  },
+  "served_assets_match_worktree": true,
+  "health": {"status": "ok", "model_calls_enabled": false},
+  "agent_runtime": {"runtime_enabled": false, "tool_binding_count": 0},
+  "external_skills": {
+    "runtime_enabled": true,
+    "backend": "colima",
+    "image_id": "sha256:23f545310e16ca0b28f3f3a8eeb32b1afe6ede52a67371d31775788afe45e518",
+    "blockers": []
+  },
+  "known_deployment_gap": "fixed one-second launchd teardown wait and single bootstrap attempt need bounded recovery tests"
+}

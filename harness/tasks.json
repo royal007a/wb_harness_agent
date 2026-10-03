@@ -5,7 +5,7 @@
     {
       "id": "HA-0055",
       "title": "修复 Runtime 持久错误展示与会话选择竞态",
-      "status": "running",
+      "status": "waiting_approval",
       "risk": "medium",
       "scope": ["Exchange 持久状态与模型回答分开呈现", "SSE 结束回读和会话异步选择隔离", "稳定浏览器回归与双端部署"],
       "non_goals": ["启用真实 Provider 或工具", "修改后端生命周期/身份体系", "Product Run 桥接"],

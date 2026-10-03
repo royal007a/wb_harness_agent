@@ -1,0 +1,24 @@
+{
+  "browser": "151.0.7922.34",
+  "target": "http://127.0.0.1:58533/harness/",
+  "errors": [],
+  "checks": [
+    "stylesheet_applied",
+    "sample_upload",
+    "intent_preflight",
+    "create",
+    "artifacts",
+    "restore_hidden_on_success",
+    "events",
+    "policy",
+    "download",
+    "rerun",
+    "resources",
+    "engines",
+    "model_route_blocked",
+    "reload",
+    "mobile_layout",
+    "all_pages",
+    "mount_boundary"
+  ]
+}

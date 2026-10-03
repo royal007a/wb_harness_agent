@@ -22,7 +22,18 @@
   "real_external_model_calls": 0,
   "runtime_gate_changed": false,
   "product_run_bridge_implemented": false,
-  "deployment": "pending",
+  "deployment": {
+    "commit": "18406399318734cb7b8ab05581c1e84e81138337",
+    "local": "local-release.json",
+    "remote": "remote-deployment.json",
+    "remote_staging_passed": 320,
+    "remote_staging_skipped": 23,
+    "remote_runtime_regression_passed": 60,
+    "browser": ["local-release-runtime/browser-agent-runtime.json", "local-release-workbench/browser.json", "remote-runtime/browser-agent-runtime.json", "remote-workbench/browser.json"],
+    "public_unauthenticated_status": 401,
+    "authenticated_public_browser_tested": false,
+    "local_automatic_rollback_passed": false
+  },
   "independent_review": "pending",
   "whole_system_acceptance": false
 }

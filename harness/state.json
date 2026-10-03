@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0055",
   "active_plan": "exec-plans/active/HA-0055-runtime-status-ui.md",
-  "last_checkpoint": "HA-0055 持久状态及竞态修复后，真实截图发现手机内部裁切；旧 CSS 的双边界测试 2 failed，修复后 UI 14 passed、完整 verify 340 passed/16 skipped。工作区实页手机及桌面截图已检查，本机 e10ada8、132 912faca，仍待新提交双端发布及独立 review。",
-  "last_updated_at": "2026-10-03T16:13:37Z",
-  "next_action": "完成 HA-0055 本机→132 发布与 review 交接；继续 OpenAPI 同名 Schema 覆盖、Provider 上游 EOF、26 未观测接口及全部功能验收，纠正文档与指标口径。保留完整 12 小时目标和默认模型门禁，不把独立沙箱称为 Product Run 桥接。",
+  "last_checkpoint": "HA-0055 应用 1840639 双端发布，UI 14 passed、完整 verify 340 passed/16 skipped；132 staging 320 passed/23 skipped、运行依赖 60 passed。两端实页桌面/手机截图已检查，独立 review 待收。本机自动 reload/回退失败后手动恢复，记为 DEPLOY-01；公网 Basic 登录 E2E 未验证。",
+  "last_updated_at": "2026-10-03T16:43:00Z",
+  "next_action": "收 HA-0055 独立 review；修复 DEPLOY-01 的有界 launchd 恢复，再继续 OpenAPI 同名 Schema 覆盖、Provider 上游 EOF、26 未观测接口及全部功能验收，纠正文档与指标口径。保留完整 12 小时目标和默认模型门禁，不把独立沙箱称为 Product Run 桥接。",
   "release": "0.1.0-local"
 }

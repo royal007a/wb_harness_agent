@@ -38,6 +38,15 @@ UI-RUNTIME-01 的旧浏览器稳定断言已失败复现；Exchange 独立状态
 断言后的补充浏览器回归及双端部署记录以 HA-0055 Evidence 为准。独立 review
 未通过前不将本条标为最终验收。此处没有修复 Provider 上游 EOF 或 OpenAPI。
 
+HA-0055 手机视觉复核另外发现内部列裁切：document 宽度正常，但消息列
+超出视口。已补双边界反例，1840639 修复；14 项 UI、全量 340 passed / 16
+skipped，正式发布 Evidence 继续记录。
+
+**DEPLOY-01**：1840639 本机 reload 时，bootout 后固定 1 秒就 bootstrap
+返回 5；同样的自动 plist 回退也失败，后续手动 bootstrap 才恢复。数据库备份
+完整，health 和 gate 已复核；不能宣称自动恢复通过。需用有界 teardown/
+bootstrap 重试和失败注入测试修复发布助手（不擅自强杀其他服务或回滚 DB）。
+
 继续文档对照时需处理 `CURRENT_ARCHITECTURE.md` 重复的 Memory 段落，以及
 “尚未具备”列表与文首已实现离线 Adapter 的粒度冲突；用逐能力状态替代笼统
 未实现。部分评测的 `external_execution_calls=1.0` 是通过分数而非调用次数，

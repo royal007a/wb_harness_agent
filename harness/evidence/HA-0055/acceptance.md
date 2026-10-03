@@ -62,3 +62,24 @@ testcase 名中的原始夹具已机械替换为 SHA-256，避免保存超长输
 
 `verify-mobile-fixed.log`：补齐手机回归后的完整 verify.sh exit 0，pytest
 340 passed / 16 skipped；后续确定性评测、准入和 JS 语法检查通过。
+
+## 1840639 双端发布与限制
+
+- 本机 `local-release.json`：实际 SQLite 已备份且 integrity_check=ok。
+  自动 bootstrap 返回 5，自动 plist 回退也失败；手动重新 bootstrap 后恢复。
+  这不是自动回滚成功证据。恢复前两项浏览器尝试 connection refused；恢复后
+  `local-release-runtime/`、`local-release-workbench/` 重跑通过。
+- 132 `remote-deployment.json`：独立 staging 320 passed / 23 skipped，运行
+  环境定向 60 passed，实际 DB `/var/lib/harnessagent/harness.db` 备份后发布。
+  本次没有重建镜像、修改凭据或激活模型；nginx -t 通过，已有重复 MIME 警告。
+- `remote-runtime/`、`remote-workbench/`：SSH 隧道 + 本机 /harness 前缀代理，
+  实际远端 API 和页面的浏览器检查通过。手机与桌面 Runtime 截图人工查看，
+  状态完整、无裁切。测试代理在一次请求结束写回时出现 BrokenPipeError；
+  脚本 exit 0，浏览器 errors=[]，不把代理日志称为无错误。
+- 两端 JS/CSS SHA-256 与 manifest 一致。远端 Skill 仍为 linux-docker，镜像
+  `sha256:73cf1ab4d8a506384e429166faf2ba296ba17cddb9862c401854504cacdea33c`，
+  runtime enabled、blockers=[]；Agent Runtime disabled、tool bindings=0。
+- 公网 `http://118.196.123.132/harness/` 未认证请求 401。没有使用 Basic
+  密码登录公网浏览器；隧道验收不替代该认证 E2E，也不放宽 loopback-only Skill。
+- 已请求 mymacclaude 对 1840639 只读 review；尚未收到结论。HA-0055 进入
+  waiting_approval，不代表完整 12 小时目标或全部接口验收完成。
