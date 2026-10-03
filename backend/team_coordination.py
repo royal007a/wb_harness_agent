@@ -14,7 +14,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
-from .team_foundation import TeamFoundation, is_list_visibility_denial
+from .team_foundation import TeamFoundation, is_list_visibility_denial, assert_replay_binding
 from .team_attention import TeamAttention
 from .team_security import reject_sensitive
 
@@ -62,18 +62,16 @@ class TeamCoordination:
         if not isinstance(key, str) or not 1 <= len(key) <= 128:
             raise Problem('VALIDATION_ERROR', '必须提供 1–128 字符的 Idempotency-Key。', 422)
 
-    def _idempotent(self, scope, key, body, action):
-        self._idempotency_key(key)
-        request_digest = digest(dumps(body).encode())
-        with self.store.transaction() as db:
-            old = db.execute('SELECT digest,response FROM idempotency WHERE scope=? AND key=?', (scope, key)).fetchone()
-            if old:
-                if old['digest'] != request_digest:
-                    raise Problem('CONFLICT', '同一幂等键已用于不同请求。', 409)
-                return json.loads(old['response'])
-            result = action(db)
-            db.execute('INSERT INTO idempotency VALUES(?,?,?,?)', (scope, key, request_digest, dumps(result)))
-            return result
+    def _idempotent(self, scope, key, body, action, *, replay_authorize):
+        return self.foundation._idempotent(scope, key, body, action, replay_authorize=replay_authorize)
+
+    def _authorize_replay(self, db, receipt, actor_id, roles, task_id=None, *, reviewer=False):
+        historical = receipt.get('task', receipt)
+        task = self._row_task(db, task_id or historical['id'])
+        self.foundation.assert_task_access(db, task, actor_id, roles)
+        if reviewer and task['gate']['reviewer_id'] != actor_id:
+            raise Problem('TEAM_TASK_GATE_FORBIDDEN', '只有预设 Gate reviewer 可以读取该决策收据。', 403)
+        assert_replay_binding(task, historical, ('id', 'workspace_id', 'channel_id', 'created_by_id'))
 
     @staticmethod
     def _row_task(db, task_id):
@@ -155,7 +153,8 @@ class TeamCoordination:
             validate_contract('team_task', task)
             db.execute('INSERT INTO team_tasks VALUES(?,?,?)', (task['id'], task['parent_task_id'], dumps(task)))
             return task
-        return self._idempotent('team-task:create', key, body, create)
+        return self._idempotent('team-task:create', key, body, create,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['creator_id'], {'coordinator'}))
 
     def tasks(self, actor_id):
         with self.store.transaction() as db:
@@ -206,7 +205,8 @@ class TeamCoordination:
             self._touch(task)
             self._write_task(db, task)
             return task
-        return self._idempotent('team-task:' + task_id + ':claim', key, body, claim)
+        return self._idempotent('team-task:' + task_id + ':claim', key, body, claim,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], {'contributor', 'coordinator'}, task_id))
 
     def create_handoff(self, task_id, body, key):
         validate_contract('handoff_create_request', body)
@@ -231,7 +231,8 @@ class TeamCoordination:
             self._touch(task)
             self._write_task(db, task)
             return {'task': task, 'handoff': handoff}
-        return self._idempotent('team-task:' + task_id + ':handoff', key, body, create)
+        return self._idempotent('team-task:' + task_id + ':handoff', key, body, create,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], {'contributor', 'coordinator'}, task_id))
 
     def submit(self, task_id, body, key):
         validate_contract('submit_request', body)
@@ -251,7 +252,8 @@ class TeamCoordination:
             self._touch(task)
             self._write_task(db, task)
             return task
-        return self._idempotent('team-task:' + task_id + ':submit', key, body, submit)
+        return self._idempotent('team-task:' + task_id + ':submit', key, body, submit,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], {'contributor', 'coordinator'}, task_id))
 
     def close(self, task_id, body, key):
         """Stop tracking a Team Task without representing delivery.
@@ -280,7 +282,8 @@ class TeamCoordination:
             self._touch(task)
             self._write_task(db, task)
             return task
-        return self._idempotent('team-task:' + task_id + ':close', key, body, close)
+        return self._idempotent('team-task:' + task_id + ':close', key, body, close,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], {'contributor', 'coordinator', 'reviewer'}, task_id))
 
     def gate_decision(self, task_id, body, key):
         validate_contract('gate_decision_request', body)
@@ -317,4 +320,5 @@ class TeamCoordination:
             self._touch(task)
             self._write_task(db, task)
             return {'task': task, 'decision': decision}
-        return self._idempotent('team-task:' + task_id + ':gate-decision', key, body, decide)
+        return self._idempotent('team-task:' + task_id + ':gate-decision', key, body, decide,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['reviewer_id'], {'reviewer', 'coordinator'}, task_id, reviewer=True))

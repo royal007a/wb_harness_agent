@@ -7,6 +7,7 @@
 
 2026-10-04：1–3完成。最终测试放回7ac1498：旧18项行为反例失败；新增64项，
 相关182通过，全量748 passed/16 skipped，verify exit0，138项源哈希稳定。
-固定提交交独立review；实际发布仍等待本机兼容拓扑决定，因此任务blocked。
+固定116a164已独立Approved，2个Low登记于review.md与GAPS；实际发布仍等待
+本机兼容拓扑决定，因此任务blocked。
 审计另发现TEAM-REPLAY-01（旧Session幂等键绕过当前访问资格），已单独登记，
 不在本轮新key写入校验中冒报修复。证据harness/evidence/HA-0063/acceptance.md。

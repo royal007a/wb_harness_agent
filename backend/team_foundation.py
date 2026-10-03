@@ -50,6 +50,12 @@ def persisted_record(kind, raw, **bindings):
     raise Problem('TEAM_STATE_CORRUPT', 'Team 持久记录损坏，需人工核对。', 500)
 
 
+def assert_replay_binding(current, receipt, fields):
+    """Do not authorize historical data using a different current scope/owner."""
+    if any(current[field] != receipt[field] for field in fields):
+        raise Problem('TEAM_REPLAY_SCOPE_CHANGED', '历史收据的对象归属已变化，不能回放。', 409)
+
+
 def is_list_visibility_denial(error: Problem, *, allow_legacy_task=False):
     """Expected per-item invisibility, never a request-level identity check.
 
@@ -119,7 +125,7 @@ class TeamFoundation:
         if not isinstance(key, str) or not 1 <= len(key) <= 128:
             raise Problem('VALIDATION_ERROR', '必须提供 1–128 字符的 Idempotency-Key。', 422)
 
-    def _idempotent(self, scope, key, body, action):
+    def _idempotent(self, scope, key, body, action, *, replay_authorize):
         self._idempotency_key(key)
         request_digest = digest(dumps(body).encode())
         with self.store.transaction() as db:
@@ -127,7 +133,9 @@ class TeamFoundation:
             if old:
                 if old['digest'] != request_digest:
                     raise Problem('CONFLICT', '同一幂等键已用于不同请求。', 409)
-                return json.loads(old['response'])
+                receipt = json.loads(old['response'])
+                replay_authorize(db, receipt)
+                return receipt
             result = action(db)
             db.execute('INSERT INTO idempotency VALUES(?,?,?,?)', (scope, key, request_digest, dumps(result)))
             return result
@@ -248,7 +256,8 @@ class TeamFoundation:
             db.execute('INSERT INTO team_workspace_memberships VALUES(?,?,?)',
                        (workspace['id'], body['actor_id'], dumps(membership)))
             return workspace
-        return self._idempotent('team-foundation:workspace:create', key, body, create)
+        return self._idempotent('team-foundation:workspace:create', key, body, create,
+            replay_authorize=lambda db, receipt: self._assert_workspace_admin(db, body['id'], body['actor_id']))
 
     def create_agent(self, workspace_id, body, key):
         validate_contract('agent_create_request', body)
@@ -276,7 +285,12 @@ class TeamFoundation:
             db.execute('INSERT INTO team_workspace_memberships VALUES(?,?,?)',
                        (workspace_id, agent['id'], dumps(membership)))
             return {'agent': agent, 'membership': membership}
-        return self._idempotent('team-foundation:' + workspace_id + ':agent:create', key, body, create)
+        def replay(db, receipt):
+            self._assert_workspace_admin(db, workspace_id, body['actor_id'])
+            self._row(db, 'team_agent_identities', body['id'], 'TEAM_AGENT_NOT_FOUND', 'Agent Identity 不存在。')
+            assert_replay_binding(receipt['membership'], body, ('workspace_id',))
+        return self._idempotent('team-foundation:' + workspace_id + ':agent:create', key, body, create,
+                               replay_authorize=replay)
 
     def grant_workspace_membership(self, workspace_id, body, key):
         validate_contract('workspace_membership_grant_request', body)
@@ -298,7 +312,13 @@ class TeamFoundation:
             db.execute('INSERT INTO team_workspace_memberships VALUES(?,?,?)',
                        (workspace_id, body['agent_id'], dumps(membership)))
             return membership
-        return self._idempotent('team-foundation:' + workspace_id + ':membership:grant', key, body, grant)
+        def replay(db, receipt):
+            self._assert_workspace_admin(db, workspace_id, body['actor_id'])
+            self._row(db, 'team_agent_identities', body['agent_id'], 'TEAM_AGENT_NOT_FOUND', 'Agent Identity 不存在。')
+            assert_replay_binding(receipt, {'workspace_id': workspace_id, 'agent_id': body['agent_id']},
+                                  ('workspace_id', 'agent_id'))
+        return self._idempotent('team-foundation:' + workspace_id + ':membership:grant', key, body, grant,
+                               replay_authorize=replay)
 
     def create_channel(self, workspace_id, body, key):
         validate_contract('channel_create_request', body)
@@ -328,7 +348,12 @@ class TeamFoundation:
             db.execute('INSERT INTO team_channel_memberships VALUES(?,?,?)',
                        (channel['id'], body['actor_id'], dumps(membership)))
             return {'channel': channel, 'membership': membership}
-        return self._idempotent('team-foundation:' + workspace_id + ':channel:create', key, body, create)
+        def replay(db, receipt):
+            self._assert_workspace_admin(db, workspace_id, body['actor_id'])
+            _, channel, _, _ = self.assert_channel_access(db, body['id'], body['actor_id'])
+            assert_replay_binding(channel, receipt['channel'], ('id', 'workspace_id'))
+        return self._idempotent('team-foundation:' + workspace_id + ':channel:create', key, body, create,
+                               replay_authorize=replay)
 
     def grant_channel_membership(self, channel_id, body, key):
         validate_contract('channel_membership_grant_request', body)
@@ -353,7 +378,14 @@ class TeamFoundation:
             db.execute('INSERT INTO team_channel_memberships VALUES(?,?,?)',
                        (channel_id, body['agent_id'], dumps(membership)))
             return membership
-        return self._idempotent('team-foundation:' + channel_id + ':membership:grant', key, body, grant)
+        def replay(db, receipt):
+            channel = self._channel(db, channel_id)
+            self._assert_workspace_admin(db, channel['workspace_id'], body['actor_id'])
+            self._row(db, 'team_agent_identities', body['agent_id'], 'TEAM_AGENT_NOT_FOUND', 'Agent Identity 不存在。')
+            assert_replay_binding(receipt, {'channel_id': channel_id, 'agent_id': body['agent_id']},
+                                  ('channel_id', 'agent_id'))
+        return self._idempotent('team-foundation:' + channel_id + ':membership:grant', key, body, grant,
+                               replay_authorize=replay)
 
     def workspaces(self, actor_id):
         with self.store.transaction() as db:

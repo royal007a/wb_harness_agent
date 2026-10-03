@@ -14,7 +14,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
-from .team_foundation import TeamFoundation, is_list_visibility_denial
+from .team_foundation import TeamFoundation, is_list_visibility_denial, assert_replay_binding
 from .team_security import reject_sensitive
 
 
@@ -69,18 +69,20 @@ class TeamAttention:
         if not isinstance(key, str) or not 1 <= len(key) <= 128:
             raise Problem('VALIDATION_ERROR', '必须提供 1–128 字符的 Idempotency-Key。', 422)
 
-    def _idempotent(self, scope, key, body, action):
-        self._idempotency_key(key)
-        request_digest = digest(dumps(body).encode())
-        with self.store.transaction() as db:
-            old = db.execute('SELECT digest,response FROM idempotency WHERE scope=? AND key=?', (scope, key)).fetchone()
-            if old:
-                if old['digest'] != request_digest:
-                    raise Problem('CONFLICT', '同一幂等键已用于不同请求。', 409)
-                return json.loads(old['response'])
-            result = action(db)
-            db.execute('INSERT INTO idempotency VALUES(?,?,?,?)', (scope, key, request_digest, dumps(result)))
-            return result
+    def _idempotent(self, scope, key, body, action, *, replay_authorize):
+        return self.foundation._idempotent(scope, key, body, action, replay_authorize=replay_authorize)
+
+    def _authorize_replay(self, db, receipt, actor_id, item_id=None, *, author=False):
+        item = self._item(db, item_id or receipt['item']['id'])
+        if author:
+            workspace, _, _, _ = self.foundation.assert_channel_access(db, item['channel_id'], actor_id)
+            if workspace['id'] != item['workspace_id']:
+                raise Problem('TEAM_ATTENTION_SCOPE_INVALID', 'Attention item Workspace 与 Channel 不一致。', 409)
+            if item['author_id'] != actor_id:
+                raise Problem('TEAM_REPLAY_SCOPE_CHANGED', '历史收据的对象归属已变化，不能回放。', 409)
+        else:
+            self._assert_target_access(db, item, actor_id)
+        assert_replay_binding(item, receipt['item'], ('id', 'workspace_id', 'channel_id', 'author_id', 'target_agent_id'))
 
     @staticmethod
     def _row(db, table, where, params, code, message):
@@ -258,7 +260,8 @@ class TeamAttention:
             db.execute('INSERT INTO team_attention_work_marks(item_id,agent_id,doc) VALUES(?,?,?)',
                        (mark['item_id'], mark['agent_id'], dumps(mark)))
             return {'item': item, 'work_mark': mark, 'conversation': conversation}
-        return self._idempotent('team-attention:item:create', key, body, create)
+        return self._idempotent('team-attention:item:create', key, body, create,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], author=True))
 
     def inbox(self, actor_id):
         with self.store.transaction() as db:
@@ -305,7 +308,12 @@ class TeamAttention:
             }
             self._write_cursor(db, cursor)
             return {'cursor': cursor, 'conversation': conversation}
-        return self._idempotent('team-attention:' + channel_id + ':' + thread_id + ':read', key, request, update)
+        def replay(db, receipt):
+            workspace, _, _, _ = self.foundation.assert_channel_access(db, channel_id, body['actor_id'])
+            assert_replay_binding(receipt['cursor'], {'workspace_id': workspace['id'], 'channel_id': channel_id,
+                'thread_id': thread_id, 'agent_id': body['actor_id']}, ('workspace_id', 'channel_id', 'thread_id', 'agent_id'))
+        return self._idempotent('team-attention:' + channel_id + ':' + thread_id + ':read', key, request, update,
+                               replay_authorize=replay)
 
     def claim(self, item_id, body, key):
         validate_contract('attention_claim_request', body)
@@ -331,7 +339,8 @@ class TeamAttention:
                        (lease['id'], item_id, body['actor_id'], dumps(lease)))
             conversation = self._conversation(db, item['workspace_id'], item['channel_id'], item['thread_id'])
             return {'item': item, 'work_mark': mark, 'conversation': conversation}
-        return self._idempotent('team-attention:' + item_id + ':claim', key, body, claim)
+        return self._idempotent('team-attention:' + item_id + ':claim', key, body, claim,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], item_id))
 
     def release(self, item_id, body, key):
         validate_contract('attention_release_request', body)
@@ -350,7 +359,8 @@ class TeamAttention:
             self._write_mark(db, mark)
             conversation = self._conversation(db, item['workspace_id'], item['channel_id'], item['thread_id'])
             return {'item': item, 'work_mark': mark, 'conversation': conversation}
-        return self._idempotent('team-attention:' + item_id + ':release', key, body, release)
+        return self._idempotent('team-attention:' + item_id + ':release', key, body, release,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], item_id))
 
     def complete(self, item_id, body, key):
         validate_contract('attention_complete_request', body)
@@ -370,4 +380,5 @@ class TeamAttention:
             self._touch_mark(mark, 'cleared')
             self._write_mark(db, mark)
             return {'item': item, 'work_mark': mark, 'conversation': conversation}
-        return self._idempotent('team-attention:' + item_id + ':complete', key, body, complete)
+        return self._idempotent('team-attention:' + item_id + ':complete', key, body, complete,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], item_id))

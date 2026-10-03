@@ -18,7 +18,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from .analysis import Problem, digest
 from .store import dumps, now, uid
 from .team_coordination import TeamCoordination, iso_now, parse_time, reject_sensitive
-from .team_foundation import is_list_visibility_denial
+from .team_foundation import is_list_visibility_denial, assert_replay_binding
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,8 +75,16 @@ class RecoveryLoopGuard:
             'note': 'Try 只记录候选路径；Confirm 只重验绑定；Cancel 只审计。不会启动模型、工具、恢复或自动审批。',
         }
 
-    def _idempotent(self, scope, key, body, action):
-        return self.team._idempotent(scope, key, body, action)
+    def _idempotent(self, scope, key, body, action, *, replay_authorize):
+        return self.team._idempotent(scope, key, body, action, replay_authorize=replay_authorize)
+
+    def _authorize_replay(self, db, receipt, actor_id, case_id=None):
+        historical = receipt.get('case', receipt)
+        case = self._row_case(db, case_id or historical['id'])
+        self._assert_owner(case, actor_id)
+        task = self.team._row_task(db, case['team_task_id'])
+        self.team.foundation.assert_task_access(db, task, actor_id, {'contributor', 'coordinator'})
+        assert_replay_binding(case, historical, ('id', 'team_task_id', 'owner_id'))
 
     @staticmethod
     def _row_case(db, case_id):
@@ -256,7 +264,8 @@ class RecoveryLoopGuard:
             validate_contract('recovery_case', case)
             db.execute('INSERT INTO recovery_cases VALUES(?,?,?)', (case['id'], task['id'], dumps(case)))
             return case
-        return self._idempotent('recovery-case:create', key, body, create)
+        return self._idempotent('recovery-case:create', key, body, create,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id']))
 
     def cases(self, actor_id):
         with self.store.transaction() as db:
@@ -345,7 +354,8 @@ class RecoveryLoopGuard:
                 self._touch(case)
                 self._write_case(db, case)
             return {'case': case, 'observation': observation, 'reminder': reminder}
-        return self._idempotent('recovery-case:' + case_id + ':observe', key, body, observe)
+        return self._idempotent('recovery-case:' + case_id + ':observe', key, body, observe,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], case_id))
 
     def try_recovery(self, case_id, body, key):
         validate_contract('recovery_try_request', body)
@@ -383,7 +393,8 @@ class RecoveryLoopGuard:
             self._touch(case)
             self._write_case(db, case)
             return {'case': case, 'attempt': attempt, 'runtime': self.runtime_status()}
-        return self._idempotent('recovery-case:' + case_id + ':try', key, body, attempt_create)
+        return self._idempotent('recovery-case:' + case_id + ':try', key, body, attempt_create,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], case_id))
 
     def confirm(self, case_id, body, key):
         validate_contract('recovery_confirm_request', body)
@@ -411,7 +422,8 @@ class RecoveryLoopGuard:
             self._touch(case)
             self._write_case(db, case)
             return {'case': case, 'attempt': attempt, 'runtime': self.runtime_status()}
-        return self._idempotent('recovery-case:' + case_id + ':confirm', key, body, confirm_attempt)
+        return self._idempotent('recovery-case:' + case_id + ':confirm', key, body, confirm_attempt,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], case_id))
 
     def cancel(self, case_id, body, key):
         validate_contract('recovery_cancel_request', body)
@@ -438,7 +450,8 @@ class RecoveryLoopGuard:
             db.execute('INSERT INTO recovery_cancel_audits VALUES(?,?,?)', (audit['id'], case_id, dumps(audit)))
             self._trip_hard_stop(db, case, 'cancelled')
             return {'case': case, 'attempt': attempt, 'cancel_audit': audit, 'runtime': self.runtime_status()}
-        return self._idempotent('recovery-case:' + case_id + ':cancel', key, body, cancel_attempt)
+        return self._idempotent('recovery-case:' + case_id + ':cancel', key, body, cancel_attempt,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], case_id))
 
     def link_handoff(self, case_id, body, key):
         validate_contract('link_handoff_request', body)
@@ -466,7 +479,8 @@ class RecoveryLoopGuard:
             self._touch(case)
             self._write_case(db, case)
             return {'case': case, 'handoff': handoff, 'runtime': self.runtime_status()}
-        return self._idempotent('recovery-case:' + case_id + ':link-handoff', key, body, link)
+        return self._idempotent('recovery-case:' + case_id + ':link-handoff', key, body, link,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], case_id))
 
     def complete(self, case_id, body, key):
         validate_contract('complete_request', body)
@@ -492,4 +506,5 @@ class RecoveryLoopGuard:
             self._touch(case)
             self._write_case(db, case)
             return {'case': case, 'gate_decision': decision, 'runtime': self.runtime_status()}
-        return self._idempotent('recovery-case:' + case_id + ':complete', key, body, complete_case)
+        return self._idempotent('recovery-case:' + case_id + ':complete', key, body, complete_case,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], case_id))

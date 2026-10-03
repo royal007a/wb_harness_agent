@@ -150,13 +150,20 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - **TEAM-READ-03 / Low**：非法status枚举（None/ACTIVE/actve）被当作非active
   静默过滤；现有损坏字段测试未覆盖此形态。应区分合法非active和未知状态。
   Channel列表仍未改用共享(code,status)规则；其持久列/JSON workspace分歧也仍在。
-  HA-0063候选已修复这些读路径：五类Foundation行结构/枚举+SQL键校验、共享过滤，
-  尚待独立review与实际部署；不是全库扫描或自动修补。
+  HA-0063（116a164）已独立Approved：五类Foundation行结构/枚举+SQL键校验、共享
+  过滤；尚未实际部署，不是全库扫描或自动修补。
+- **TEAM-STATE-02 / Low**：合法归档可能先短路，关联membership未被读取，不能称
+  所有关联记录在任何访问决定之前都已校验。Channel列表的提前membership校验
+  缺“归档+坏membership”组合反例（该行删除突变存活）。Workspace同类短路仅
+  为reviewer读代码推断。SQL channel.workspace_id改走时，旧scope列表JOIN选不到
+  会静默漏行，详情才500；规格已明确该边界，回归缺口后续处理。
 - **TEAM-REPLAY-01**：HA-0063审查时用临时DB实测，Session创建首次201，Channel
   归档后detail与新key均409，原key却返回201且与首次缓存body相同。
   `_idempotent`在action当前资格检查之前返回缓存；应单独核对Team所有写路径
-  的重放授权，不把“没有重复写入”当作“允许返回旧数据”。未修复，非HA-0063
-  的新key写入拒绝证据范围；无正式DB变更或真实Provider验证。
+  的重放授权，不把“没有重复写入”当作“允许返回旧数据”。HA-0064候选已在25个
+  写入口增加事务内只读授权，287新增/526相关/1035全量通过，等待独立review与
+  实际部署；不是HA-0063的新key
+  写入拒绝证据，无正式DB变更或真实Provider验证。
 - **READ-SCHEMA-01**：health、resources列表与单项详情、Memory Bank列表、三种research列表的
   公开成功响应Schema缺失或为空占位。HA-0061字段断言只补行为验证，不冒充已经
   补齐公开机器契约。sample实际是text/csv，旧动态文档却声明application/json和

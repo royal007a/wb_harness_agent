@@ -16,7 +16,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
-from .team_foundation import TeamFoundation, is_list_visibility_denial
+from .team_foundation import TeamFoundation, is_list_visibility_denial, assert_replay_binding
 from .team_security import reject_sensitive
 
 
@@ -70,18 +70,13 @@ class TeamSessionContinuity:
         if not isinstance(key, str) or not 1 <= len(key) <= 128:
             raise Problem('VALIDATION_ERROR', '必须提供 1–128 字符的 Idempotency-Key。', 422)
 
-    def _idempotent(self, scope, key, body, action):
-        self._idempotency_key(key)
-        request_digest = digest(dumps(body).encode())
-        with self.store.transaction() as db:
-            old = db.execute('SELECT digest,response FROM idempotency WHERE scope=? AND key=?', (scope, key)).fetchone()
-            if old:
-                if old['digest'] != request_digest:
-                    raise Problem('CONFLICT', '同一幂等键已用于不同请求。', 409)
-                return json.loads(old['response'])
-            result = action(db)
-            db.execute('INSERT INTO idempotency VALUES(?,?,?,?)', (scope, key, request_digest, dumps(result)))
-            return result
+    def _idempotent(self, scope, key, body, action, *, replay_authorize):
+        return self.foundation._idempotent(scope, key, body, action, replay_authorize=replay_authorize)
+
+    def _authorize_replay(self, db, receipt, actor_id, session_id=None):
+        session = self._session(db, session_id or receipt['session']['id'])
+        self._assert_session_access(db, session, actor_id)
+        assert_replay_binding(session, receipt['session'], ('id', 'workspace_id', 'channel_id', 'agent_id'))
 
     @staticmethod
     def _row(db, table, where, params, code, message):
@@ -300,7 +295,8 @@ class TeamSessionContinuity:
             result = {'session': session, 'continuity': continuity, 'inherited_handoff': inherited}
             validate_contract('session_create_result', result)
             return result
-        return self._idempotent('team-session:create', key, body, create)
+        return self._idempotent('team-session:create', key, body, create,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id']))
 
     def detail(self, session_id, actor_id):
         with self.store.transaction() as db:
@@ -348,4 +344,5 @@ class TeamSessionContinuity:
             result = {'session': session, 'handoff': handoff_record, 'continuity': continuity}
             validate_contract('session_handoff_result', result)
             return result
-        return self._idempotent('team-session:' + session_id + ':handoff', key, body, handoff)
+        return self._idempotent('team-session:' + session_id + ':handoff', key, body, handoff,
+            replay_authorize=lambda db, receipt: self._authorize_replay(db, receipt, body['actor_id'], session_id))

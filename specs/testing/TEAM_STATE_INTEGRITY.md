@@ -24,8 +24,12 @@ Channel列表按code而非(code,status)过滤，列与JSON的scope也可分歧�
 不是认证体系或数据迁移，不扩大权限。只校验实际读取到的Foundation行，不是
 全库完整性扫描（JOIN未选到的孤立行不因此被发现），也不验证内容真实性或所有
 跨模块对象。日期format注解不在此检查器的语义范围；时间先后另由原业务检查。
-旧幂等键缓存命中会跳过action内的授权检查，另有已复现的TEAM-REPLAY-01；
-本轮的新写入拒绝测试使用新幂等键，不声称解决缓存重放授权或缓存内容完整性。
+例如只改Channel的SQL workspace_id而JSON仍属旧scope，旧scope列表选不到该行，
+可以返回空；详情实际读取后才报500。合法archived也可能先短路，后续membership
+未被读取，因此不承诺“所有关联行在任何访问决定之前均已校验”。Channel列表提前
+校验membership的组合状态回归尚缺，见HA-0063/review.md的L1。
+HA-0063没有解决旧幂等键绕过action授权的TEAM-REPLAY-01；后续HA-0064的实现与
+验收见TEAM_REPLAY_AUTHORIZATION.md，不把本轮新key测试当成缓存重放证据。
 现有合法输入与数据的HTTP行为不变；坏持久数据从403/409/空列表改成500是明确
 兼容性变化。Schema版本升级需先迁移并审查，不容忍未知版本静默继续。
 

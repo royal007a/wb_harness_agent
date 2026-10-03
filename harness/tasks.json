@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T21:18:00Z",
+  "generated_at": "2026-10-03T21:47:43Z",
   "tasks": [
+    {
+      "id": "HA-0064",
+      "title": "Team幂等缓存回放重新验证当前访问资格",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Foundation/Task/Attention/Session/Recovery共25写入口", "只读回放授权与scope绑定", "HTTP旧反例、零写入、状态推进和重启回归"],
+      "non_goals": ["新增认证或撤销API", "全系统幂等或缓存签名审计", "绕过本机发布132"],
+      "acceptance": ["各入口旧缓存失权反例失败", "当前资格拒绝且合法收据不重执行业务", "定向全量verify和固定提交独立review", "兼容本机拓扑后先本机再132发布"],
+      "depends_on": ["HA-0063"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0064-team-replay-authorization.md",
+      "blocked_reason": "旧25最终反例全部HTTP行为失败；新287/相关526通过，全量1035 passed/16 skipped，verify exit0及139项源哈希稳定；待固定提交独立review，双部署仍等待HA-0056兼容本机拓扑。",
+      "recovery_condition": "固定提交独立Approved；兼容本机拓扑明确并验收后，先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0064/acceptance.md"]
+    },
     {
       "id": "HA-0063",
       "title": "区分Team持久记录损坏与合法权限撤销",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0060"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0063-team-state-integrity.md",
-      "blocked_reason": "旧18最终测试行为反例失败，新64/相关182通过，全量748 passed/16 skipped及verify exit0；固定提交独立review待完成。实际双部署仍等待HA-0056兼容本机拓扑决定。",
-      "recovery_condition": "固定提交独立Approved；本机兼容拓扑明确并验收后，先本机再132发布。",
-      "evidence": ["harness/evidence/HA-0063/acceptance.md"]
+      "blocked_reason": "116a164已独立Approved，新64/相关182通过，旧18行为反例及15/16突变核实；2个Low已登记。实际双部署仍等待HA-0056兼容本机拓扑决定。",
+      "recovery_condition": "本机兼容拓扑明确并验收后，先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0063/acceptance.md", "harness/evidence/HA-0063/review.md"]
     },
     {
       "id": "HA-0062",

@@ -45,7 +45,9 @@ HA-0063 在读取Foundation行时增加结构/类型/枚举与SQL主键、关联
 迁移或改数据；合法suspended/archived/revoked保留原有拒绝和目录语义。Channel
 列表改用共享(code,status)白名单。检查不是全库扫描、时间真实性验证或新身份认证；
 详见 [持久记录完整性](../../specs/testing/TEAM_STATE_INTEGRITY.md)。
-旧幂等键命中缓存后不重检当前资格的问题已另行复现，尚未在本轮修复。
+HA-0064使25个Team/Recovery写入口在旧幂等键命中后重新检查当前资格；允许读取的
+仍是历史收据，不重做状态转换、租约、过期回收或预算消耗。见
+[回放授权](../../specs/testing/TEAM_REPLAY_AUTHORIZATION.md)。本机与132尚未发布此修复。
 
 ## Team Task v2 与历史记录
 

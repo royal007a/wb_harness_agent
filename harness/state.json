@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0063",
-  "active_plan": "exec-plans/blocked/HA-0063-team-state-integrity.md",
-  "last_checkpoint": "0062已独立Approved，4组Low及历史测试版本边界已登记。0063旧18最终测试行为反例失败，新64/相关182通过，全量748 passed/16 skipped及verify通过；138项源哈希稳定。",
-  "last_updated_at": "2026-10-03T21:18:00Z",
-  "next_action": "0063固定提交独立review；另任务修复已复现的TEAM-REPLAY-01幂等缓存跳过当前资格检查。发布仍待兼容本机拓扑，先本机后132。",
+  "active_task_id": "HA-0064",
+  "active_plan": "exec-plans/blocked/HA-0064-team-replay-authorization.md",
+  "last_checkpoint": "0063固定116a164独立Approved，2个Low已登记。0064修复25个写入口的幂等回放授权；旧25行为反例失败，新287/相关526通过，全量1035 passed/16 skipped，verify exit0及139项源哈希稳定。",
+  "last_updated_at": "2026-10-03T21:47:43Z",
+  "next_action": "0064固定提交交mymacclaude独立复审；随后处理已登记契约/测试缺口。发布仍待兼容本机拓扑，先本机后132，不开真实模型门禁。",
   "release": "0.1.0-local"
 }
