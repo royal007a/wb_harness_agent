@@ -4,6 +4,89 @@
   "title": "Memory Plane M1 contract",
   "type": "object",
   "$defs": {
+    "local_http_memory_semantic_status": {
+      "description": "Admission file projection, not execution admission or measured call counters.",
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "admission_enabled", "runtime_enabled", "model_calls", "external_calls", "blocker_count", "error"],
+      "properties": {
+        "status": {"enum": ["not_admitted", "admitted", "invalid_not_admitted"]},
+        "admission_enabled": {"type": "boolean"}, "runtime_enabled": {"const": false},
+        "model_calls": {"type": "integer", "minimum": 0},
+        "external_calls": {"type": "integer", "minimum": 0},
+        "blocker_count": {"type": "integer", "minimum": 0, "maximum": 16},
+        "error": {"type": ["string", "null"]}
+      },
+      "allOf": [
+        {"if": {"properties": {"status": {"const": "admitted"}}},
+         "then": {"properties": {"admission_enabled": {"const": true}, "error": {"const": null}}},
+         "else": {"properties": {"admission_enabled": {"const": false}, "model_calls": {"const": 0}, "external_calls": {"const": 0}}}},
+        {"if": {"properties": {"status": {"const": "invalid_not_admitted"}}},
+         "then": {"properties": {"blocker_count": {"const": 1}, "error": {"type": "string", "minLength": 1}}},
+         "else": {"properties": {"error": {"const": null}}}}
+      ]
+    },
+    "local_http_memory_keyword_status": {
+      "type": "object", "additionalProperties": false,
+      "required": ["engine", "ready", "rebuildable_from", "error"],
+      "properties": {
+        "engine": {"enum": ["sqlite-fts5@1", null]}, "ready": {"type": "boolean"},
+        "rebuildable_from": {"const": "canonical_active_facts"}, "error": {"type": ["string", "null"]}
+      },
+      "if": {"properties": {"ready": {"const": true}}},
+      "then": {"properties": {"engine": {"const": "sqlite-fts5@1"}, "error": {"const": null}}},
+      "else": {"properties": {"engine": {"const": null}, "error": {"type": "string"}}}
+    },
+    "local_http_memory_runtime": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "status", "write_mode", "recall_mode", "model_extraction", "reflect", "vector_index", "graph_index", "graph_recall", "entity_catalog", "product_task_run_integration", "keyword_index", "as_of_visibility", "semantic_retrieval", "summary_mode", "recent_turns", "note"],
+      "properties": {
+        "mode": {"const": "memory-plane-m3b@1"}, "status": {"const": "available_local_admin"},
+        "write_mode": {"const": "explicit_source_fact_entity_relation_only"},
+        "recall_mode": {"const": ["keyword", "temporal", "context_catalog", "detail_by_id", "explicit_graph_temporal"]},
+        "model_extraction": {"const": false}, "reflect": {"const": false},
+        "vector_index": {"const": false}, "graph_index": {"const": false},
+        "product_task_run_integration": {"const": false},
+        "graph_recall": {
+          "type": "object", "additionalProperties": false,
+          "required": ["engine", "max_hops", "automatic_entity_resolution"],
+          "properties": {"engine": {"const": "sqlite-explicit-relation-store@1"}, "max_hops": {"const": 2}, "automatic_entity_resolution": {"const": false}}
+        },
+        "entity_catalog": {
+          "type": "object", "additionalProperties": false,
+          "required": ["match_mode", "automatic_entity_resolution", "max_candidates"],
+          "properties": {"match_mode": {"const": "exact_canonical_or_alias_casefold"}, "automatic_entity_resolution": {"const": false}, "max_candidates": {"const": 16}}
+        },
+        "keyword_index": {"$ref": "#/$defs/local_http_memory_keyword_status"},
+        "as_of_visibility": {
+          "type": "object", "additionalProperties": false,
+          "required": ["source_occurred_at", "fact_occurred_at", "fact_validity_window"],
+          "properties": {"source_occurred_at": {"const": true}, "fact_occurred_at": {"const": true}, "fact_validity_window": {"const": true}}
+        },
+        "semantic_retrieval": {"$ref": "#/$defs/local_http_memory_semantic_status"},
+        "summary_mode": {"const": "fact_derived_not_model_generated"},
+        "recent_turns": {"const": "caller_provided_transient_not_persisted"},
+        "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "local_http_memory_bank_list": {
+      "type": "object", "additionalProperties": false, "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/memory_bank"}},
+        "runtime": {"$ref": "#/$defs/local_http_memory_runtime"}
+      }
+    },
+    "local_http_memory_bank_detail": {
+      "type": "object", "additionalProperties": false, "required": ["bank", "counts", "runtime"],
+      "properties": {
+        "bank": {"$ref": "#/$defs/memory_bank"},
+        "counts": {
+          "description": "Persisted source/fact rows, not active recall counts.",
+          "type": "object", "additionalProperties": false, "required": ["sources", "facts"],
+          "properties": {"sources": {"type": "integer", "minimum": 0}, "facts": {"type": "integer", "minimum": 0}}
+        },
+        "runtime": {"$ref": "#/$defs/local_http_memory_runtime"}
+      }
+    },
     "bank_create_request": {
       "type": "object",
       "additionalProperties": false,

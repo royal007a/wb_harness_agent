@@ -1,0 +1,92 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_memory_actual_reads_counts_no_content_and_replay _____________
+tests/test_memory_research_read_contracts.py:103: in test_memory_actual_reads_counts_no_content_and_replay
+    validate(client, OPERATIONS[3], result.json())
+tests/test_memory_research_read_contracts.py:66: in validate
+    check.validate(value)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: Additional properties are not allowed ('bank', 'counts', 'runtime' were unexpected)
+E
+E   Failed validating 'additionalProperties' in schema:
+E       {'type': 'object',
+E        'additionalProperties': False,
+E        'required': ['id',
+E                     'workspace_id',
+E                     'owner',
+E                     'name',
+E                     'scope',
+E                     'data_classification',
+E                     'retention_days',
+E                     'policy_version',
+E                     'created_at'],
+E        'properties': {'id': {'type': 'string',
+E                              'pattern': '^membank_[a-f0-9]{32}$'},
+E                       'workspace_id': {'const': 'ws_local'},
+E                       'owner': {'const': 'local_admin'},
+E                       'name': {'type': 'string'},
+E                       'scope': {'enum': ['user', 'project', 'agent']},
+E                       'data_classification': {'enum': ['Public', 'Internal']},
+E                       'retention_days': {'type': 'integer'},
+E                       'policy_version': {'const': 'memory-policy@1'},
+E                       'created_at': {'type': 'string',
+E                                      'format': 'date-time'}}}
+E
+E   On instance:
+E       {'bank': {'created_at': '2026-10-03T22:30:08.865917Z',
+E                 'data_classification': 'Internal',
+E                 'id': 'membank_7c10d928726648f3883a73eb4c88db31',
+E                 'name': 'read-contract-first',
+E                 'owner': 'local_admin',
+E                 'policy_version': 'memory-policy@1',
+E                 'retention_days': 90,
+E                 'scope': 'project',
+E                 'workspace_id': 'ws_local'},
+E        'counts': {'sources': 1, 'facts': 1},
+E        'runtime': {'mode': 'memory-plane-m3b@1',
+E                    'status': 'available_local_admin',
+E                    'write_mode': 'explicit_source_fact_entity_relation_only',
+E                    'recall_mode': ['keyword',
+E                                    'temporal',
+E                                    'context_catalog',
+E                                    'detail_by_id',
+E                                    'explicit_graph_temporal'],
+E                    'model_extraction': False,
+E                    'reflect': False,
+E                    'vector_index': False,
+E                    'graph_index': False,
+E                    'graph_recall': {'engine': 'sqlite-explicit-relation-store@1',
+E                                     'max_hops': 2,
+E                                     'automatic_entity_resolution': False},
+E                    'entity_catalog': {'match_mode': 'exact_canonical_or_alias_casefold',
+E                                       'automatic_entity_resolution': False,
+E                                       'max_candidates': 16},
+E                    'product_task_run_integration': False,
+E                    'keyword_index': {'engine': 'sqlite-fts5@1',
+E                                      'ready': True,
+E                                      'rebuildable_from': 'canonical_active_facts',
+E                                      'error': None},
+E                    'as_of_visibility': {'source_occurred_at': True,
+E                                         'fact_occurred_at': True,
+E                                         'fact_validity_window': True},
+E                    'semantic_retrieval': {'status': 'not_admitted',
+E                                           'admission_enabled': False,
+E                                           'runtime_enabled': False,
+E                                           'model_calls': 0,
+E                                           'external_calls': 0,
+E                                           'blocker_count': 3,
+E                                           'error': None},
+E                    'summary_mode': 'fact_derived_not_model_generated',
+E                    'recent_turns': 'caller_provided_transient_not_persisted',
+E                    'note': 'M3-A 只允许显式、可追溯 Fact 支撑的 Entity/Relation '
+E                            '两跳回读；M3-B 只提供精确名称目录。没有语义向量、自动实体抽取/消歧或模型调用。'}}
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_research_read_contracts.py::test_memory_actual_reads_counts_no_content_and_replay
+1 failed, 35 deselected, 1 warning in 0.70s

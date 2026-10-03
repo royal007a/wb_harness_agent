@@ -1,0 +1,50 @@
+F.F.F.F.F.                                                               [100%]
+=================================== FAILURES ===================================
+____ test_memory_runtime_degraded_fts_and_admission_are_valid[default-True] ____
+tests/test_memory_research_read_contracts.py:158: in test_memory_runtime_degraded_fts_and_admission_are_valid
+    assert not check.is_valid(bad), (section, field)
+E   AssertionError: ('keyword_index', 'engine')
+E   assert not True
+E    +  where True = is_valid({'mode': 'memory-plane-m3b@1', 'status': 'available_local_admin', 'write_mode': 'explicit_source_fact_entity_relation_only', 'recall_mode': ['keyword', 'temporal', 'context_catalog', 'detail_by_id', 'explicit_graph_temporal'], ...})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...emory_runtime', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+____ test_memory_runtime_degraded_fts_and_admission_are_valid[missing-True] ____
+tests/test_memory_research_read_contracts.py:158: in test_memory_runtime_degraded_fts_and_admission_are_valid
+    assert not check.is_valid(bad), (section, field)
+E   AssertionError: ('keyword_index', 'engine')
+E   assert not True
+E    +  where True = is_valid({'mode': 'memory-plane-m3b@1', 'status': 'available_local_admin', 'write_mode': 'explicit_source_fact_entity_relation_only', 'recall_mode': ['keyword', 'temporal', 'context_catalog', 'detail_by_id', 'explicit_graph_temporal'], ...})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...emory_runtime', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_json-True] __
+tests/test_memory_research_read_contracts.py:158: in test_memory_runtime_degraded_fts_and_admission_are_valid
+    assert not check.is_valid(bad), (section, field)
+E   AssertionError: ('keyword_index', 'engine')
+E   assert not True
+E    +  where True = is_valid({'mode': 'memory-plane-m3b@1', 'status': 'available_local_admin', 'write_mode': 'explicit_source_fact_entity_relation_only', 'recall_mode': ['keyword', 'temporal', 'context_catalog', 'detail_by_id', 'explicit_graph_temporal'], ...})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...emory_runtime', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_schema-True] _
+tests/test_memory_research_read_contracts.py:158: in test_memory_runtime_degraded_fts_and_admission_are_valid
+    assert not check.is_valid(bad), (section, field)
+E   AssertionError: ('keyword_index', 'engine')
+E   assert not True
+E    +  where True = is_valid({'mode': 'memory-plane-m3b@1', 'status': 'available_local_admin', 'write_mode': 'explicit_source_fact_entity_relation_only', 'recall_mode': ['keyword', 'temporal', 'context_catalog', 'detail_by_id', 'explicit_graph_temporal'], ...})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...emory_runtime', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+___ test_memory_runtime_degraded_fts_and_admission_are_valid[admitted-True] ____
+tests/test_memory_research_read_contracts.py:158: in test_memory_runtime_degraded_fts_and_admission_are_valid
+    assert not check.is_valid(bad), (section, field)
+E   AssertionError: ('keyword_index', 'engine')
+E   assert not True
+E    +  where True = is_valid({'mode': 'memory-plane-m3b@1', 'status': 'available_local_admin', 'write_mode': 'explicit_source_fact_entity_relation_only', 'recall_mode': ['keyword', 'temporal', 'context_catalog', 'detail_by_id', 'explicit_graph_temporal'], ...})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...emory_runtime', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_research_read_contracts.py::test_memory_runtime_degraded_fts_and_admission_are_valid[default-True]
+FAILED tests/test_memory_research_read_contracts.py::test_memory_runtime_degraded_fts_and_admission_are_valid[missing-True]
+FAILED tests/test_memory_research_read_contracts.py::test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_json-True]
+FAILED tests/test_memory_research_read_contracts.py::test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_schema-True]
+FAILED tests/test_memory_research_read_contracts.py::test_memory_runtime_degraded_fts_and_admission_are_valid[admitted-True]
+5 failed, 5 passed, 26 deselected, 1 warning in 2.03s

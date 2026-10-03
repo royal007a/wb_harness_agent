@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T22:13:29Z",
+  "generated_at": "2026-10-03T22:35:35Z",
   "tasks": [
+    {
+      "id": "HA-0066",
+      "title": "Memory与Research读取公开响应契约",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Memory runtime/Bank列表详情创建", "三类Research根Run列表", "源静态动态合同实例、反例和突变"],
+      "non_goals": ["模型准入或Memory认证", "全部研究写入详情合同", "越过本机部署132"],
+      "acceptance": ["旧版空声明反例按行为失败", "实际实例和坏实例在三份合同下一致", "退化状态历史读取及无副作用保护", "固定提交review及先本机再132发布证据"],
+      "depends_on": ["HA-0061", "HA-0062"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0066-memory-research-read-contracts.md",
+      "blocked_reason": "新增36/相关283通过，旧36公开合同反例及8/8突变核实，全量1131 passed/16 skipped，verify exit0；等待固定提交独立review与HA-0056兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交独立复审通过；兼容本机拓扑明确并验收后先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0066/acceptance.md", "harness/evidence/HA-0066/mutations.md", "harness/evidence/HA-0066/remaining-empty-responses.json"]
+    },
     {
       "id": "HA-0065",
       "title": "Product事件游标边界与契约负例保护",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0065-product-contract-boundaries.md",
-      "blocked_reason": "新增60/相关250通过，旧28行为反例和10定向突变核实，全量1095 passed/16 skipped，verify exit0；等待固定提交独立review及HA-0056兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交独立复审通过，兼容本机拓扑明确并验收后先本机再132发布。",
-      "evidence": ["harness/evidence/HA-0065/acceptance.md", "harness/evidence/HA-0065/mutations.md"]
+      "blocked_reason": "e6e1fb9独立Approved，112项及旧28行为反例核实，2 Low及2 Info已登记；双部署仍等待HA-0056兼容本机拓扑。",
+      "recovery_condition": "兼容本机拓扑明确并验收后先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0065/acceptance.md", "harness/evidence/HA-0065/mutations.md", "harness/evidence/HA-0065/review.md"]
     },
     {
       "id": "HA-0064",

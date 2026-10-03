@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.355" timestamp="2026-10-04T06:29:59.880111+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_actual_reads_counts_no_content_and_replay" time="0.163"><failure message="AssertionError: ('missing field', 'runtime')&#10;assert not True&#10; +  where True = is_valid({'items': []})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...ory_bank_list', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:81: in test_memory_actual_reads_counts_no_content_and_replay
+    validate(client, OPERATIONS[1], empty)
+tests/test_memory_research_read_contracts.py:69: in validate
+    assert not check.is_valid({k: v for k, v in value.items() if k != field}), ('missing field', field)
+E   AssertionError: ('missing field', 'runtime')
+E   assert not True
+E    +  where True = is_valid({'items': []})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...ory_bank_list', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase></testsuite></testsuites>

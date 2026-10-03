@@ -8,5 +8,5 @@
 
 检查点（2026-10-04）：新增60、相关250通过；最终测试回到0ee58a0产生28项行为
 失败；10个定向突变全部被杀死。全量1095 passed/16 skipped，verify exit 0。
-证据：harness/evidence/HA-0065/acceptance.md。实现和离线验证已完成，等待固定
-提交独立review；双部署另待兼容本机拓扑确认，尚未完成，不越过本机发布132。
+证据：harness/evidence/HA-0065/acceptance.md。固定e6e1fb9已独立Approved，2 Low
+及2 Info已登记；双部署另待兼容本机拓扑确认，尚未完成，不越过本机发布132。

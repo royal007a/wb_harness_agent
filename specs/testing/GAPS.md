@@ -193,6 +193,19 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   引用一致性或运行时逐响应校验，待独立review与实际部署。
 - **REQUEST-ID-01 / Low**：Problem/校验错误body request_id与X-Request-ID不一致，
   middleware直接拒绝又缺该头；未有统一承诺。需先定义追踪合同再覆盖所有错误路径。
+- **PRODUCT-CONTRACT-03 / Low**：HA-0065独立Approved（e6e1fb9）；复审核实旧28
+  行为反例及112项测试。后续补23:59:60向量；Product ID的`$`在Python校验器可
+  放过末尾换行，需跨语言正则边界审计，不能直接改Python专有锚破坏ECMA兼容。
+  以上0065历史“待review”由此取代，真实双部署仍未完成。
+- **READ-SCHEMA-01 后续HA-0066**：Memory runtime/Bank列表详情创建、三类Research
+  列表共7项候选已补实际响应合同。根Run可省略parent_run_id或为null；Memory
+  FTS退化与semantic档案异常仍是合法状态。其他研究写入/详情、Pi等空Schema未
+  纳入，不称全系统OpenAPI完整；待固定提交独立review与双部署证据。
+- **EVIDENCE-PATH-01**：HA-0063收口时全量任务引用检查发现历史HA-0027仍引用
+- **OPENAPI-EMPTY-03**：HA-0066后程序枚举仍有35个API成功响应的application/json
+  Schema恰为空对象，另有1个页面。明细见HA-0066/remaining-empty-responses.json，
+  包括Pi、研究创建/详情、Memory写入、Recovery等；不统计缺content或非空但不完整
+  的Schema，因此不是全部缺口计数。后续必须继续补实际实例/负例，不用148入口观测替代。
 - **EVIDENCE-PATH-01**：HA-0063收口时全量任务引用检查发现历史HA-0027仍引用
   不存在且未被Git跟踪的harness/evidence/HA-0027/l3-admission-gate.json。
   注册表Schema合法不等于所有历史证据可取回；未生成替代证据，待追查原记录。

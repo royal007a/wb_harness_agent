@@ -1,6 +1,6 @@
 # HA-0065 Product边界与契约负例
 
-2026-10-04，基线0ee58a0。候选修复及离线证据；未发布，不触碰正式DB/8765/132、
+2026-10-04，基线0ee58a0；固定e6e1fb9已独立Approved（review.md）。离线证据；未发布，不触碰正式DB/8765/132、
 Provider、凭据或部署拓扑。规格PRODUCT_CONTRACT_BOUNDARIES.md，决策ADR-0065。
 
 ## 变更
@@ -57,4 +57,4 @@ targeted/targeted-initial XML中31个Workbench参数名经safe_test_id改为SHA�
 - 10个定向突变不是全库mutation score；其他模块Schema、REQUEST-ID-01与字面
   $ref投影问题仍未完成。合法日期输出、Task/Run业务及执行门禁不扩展。
 - 基线/突变worktree均已清理；不碰mymacclaude的HA-0064 review worktree。
-  固定提交需独立review；实际发布需兼容本机拓扑后先本机再132。
+  固定提交已独立review；实际发布需兼容本机拓扑后先本机再132。

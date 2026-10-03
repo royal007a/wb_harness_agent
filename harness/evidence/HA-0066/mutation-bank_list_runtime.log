@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_memory_actual_reads_counts_no_content_and_replay _____________
+tests/test_memory_research_read_contracts.py:81: in test_memory_actual_reads_counts_no_content_and_replay
+    validate(client, OPERATIONS[1], empty)
+tests/test_memory_research_read_contracts.py:69: in validate
+    assert not check.is_valid({k: v for k, v in value.items() if k != field}), ('missing field', field)
+E   AssertionError: ('missing field', 'runtime')
+E   assert not True
+E    +  where True = is_valid({'items': []})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...ory_bank_list', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_research_read_contracts.py::test_memory_actual_reads_counts_no_content_and_replay
+1 failed, 35 deselected, 1 warning in 0.36s

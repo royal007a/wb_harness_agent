@@ -1,0 +1,18 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________ test_memory_nested_negative_instances[bad_counts] _______________
+tests/test_memory_research_read_contracts.py:181: in test_memory_nested_negative_instances
+    assert not check.is_valid(bad), mutation
+E   AssertionError: bad_counts
+E   assert not True
+E    +  where True = is_valid({'bank': {'created_at': '2026-10-03T22:30:08.124459Z', 'data_classification': 'Internal', 'id': 'membank_95bab409230e4...tion_only', 'recall_mode': ['keyword', 'temporal', 'context_catalog', 'detail_by_id', 'explicit_graph_temporal'], ...}})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...y_bank_detail', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_research_read_contracts.py::test_memory_nested_negative_instances[bad_counts]
+1 failed, 35 deselected, 1 warning in 0.35s

@@ -235,9 +235,12 @@ paths:
       description: Returns the local M1 Memory Plane capability boundary. It does not extract or write memory.
       responses:
         '200':
-          description: M1 runtime state.
+          description: Current M3-B capability and admission-file projection, not live counters or execution admission.
+          content:
+            application/json:
+              schema: {$ref: './memory-plane.schema.json#/$defs/local_http_memory_runtime'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/memory/banks:
     servers:
       - url: /api
@@ -245,9 +248,12 @@ paths:
       operationId: listMemoryBanks
       responses:
         '200':
-          description: Local-admin memory banks and M1 status.
+          description: Local-admin banks and current M3-B runtime projection.
+          content:
+            application/json:
+              schema: {$ref: './memory-plane.schema.json#/$defs/local_http_memory_bank_list'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
     post:
       operationId: createMemoryBank
       parameters:
@@ -266,7 +272,23 @@ paths:
               schema:
                 $ref: './memory-plane.schema.json#/$defs/memory_bank'
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
+  /local/memory/banks/{bankId}:
+    servers: [{url: /api}]
+    get:
+      operationId: getMemoryBank
+      parameters:
+        - name: bankId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200':
+          description: One local bank, persisted Source/Fact counts and runtime projection; no raw content.
+          content:
+            application/json:
+              schema: {$ref: './memory-plane.schema.json#/$defs/local_http_memory_bank_detail'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/memory/banks/{bankId}/retain:
     servers:
       - url: /api
@@ -2147,13 +2169,28 @@ paths:
             text/event-stream:
               schema: {$ref: './agent-runtime.schema.json#/$defs/runtime_stream_event'}
         default: {$ref: '#/components/responses/Error'}
+  /local/research:
+    servers: [{url: /api}]
+    get:
+      operationId: listResearchDemoRuns
+      responses:
+        '200':
+          description: Roots of the fixed-function research demo, newest first.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_research_demo_list'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/research-agents:
     servers: [{url: /api}]
     get:
       operationId: listResearchAgentSimulationRuns
       responses:
-        '200': {description: Root runs for the zero-external research-agent simulation only.}
-        default: {$ref: '#/components/responses/Error'}
+        '200':
+          description: Root runs for the zero-external research-agent simulation only.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_research_agents_list'}
+        default: {$ref: '#/components/responses/LocalProductError'}
     post:
       operationId: createResearchAgentSimulationRun
       parameters:
@@ -2226,8 +2263,12 @@ paths:
     get:
       operationId: listNativeClaudeResearchRuns
       responses:
-        '200': {description: Root runs for the configuration-gated native Claude research runtime.}
-        default: {$ref: '#/components/responses/Error'}
+        '200':
+          description: Persisted native research roots, readable even with execution gates closed.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_research_native_list'}
+        default: {$ref: '#/components/responses/LocalProductError'}
     post:
       operationId: createNativeClaudeResearchRun
       description: Creates no state unless model, external-data and source-policy gates are all satisfied.

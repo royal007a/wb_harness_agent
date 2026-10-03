@@ -70,6 +70,27 @@ def bind_chat_responses(document, domain, namespace):
         response('/providers/{provider_id}/readiness', 'get', '200', 'provider_readiness')
 
 
+def bind_memory_research_reads(document):
+    """Current local metadata reads; no runtime or admission side effects."""
+    for path, method, status, definition in (
+        ('/api/local/memory/runtime', 'get', '200', 'local_http_memory_runtime'),
+        ('/api/local/memory/banks', 'get', '200', 'local_http_memory_bank_list'),
+        ('/api/local/memory/banks', 'post', '201', 'memory_bank'),
+        ('/api/local/memory/banks/{bank_id}', 'get', '200', 'local_http_memory_bank_detail'),
+        ('/api/local/research', 'get', '200', 'local_http_research_demo_list'),
+        ('/api/local/research-agents', 'get', '200', 'local_http_research_agents_list'),
+        ('/api/local/research-native', 'get', '200', 'local_http_research_native_list'),
+    ):
+        operation = document['paths'][path][method]
+        operation['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/' + definition}}}
+        envelope = {'description': 'Current local error envelope.', 'content': {
+            'application/json': {'schema': {'$ref': '#/components/schemas/local_http_error'}}}}
+        operation['responses']['default'] = envelope
+        if '422' in operation['responses']:
+            operation['responses']['422'] = envelope
+
+
 def bind_product_responses(document):
     """Publish current local Product wire contracts, not future API sketches."""
     contracts = (

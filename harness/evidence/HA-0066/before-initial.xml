@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="7" time="1.255" timestamp="2026-10-04T06:21:37.072834+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_memory_runtime]" time="0.234"><failure message="AssertionError: ('empty payload accepted by published contract', '/api/local/memory/runtime', 'get', None)&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:73: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/runtime', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_memory_bank_list]" time="0.145"><failure message="AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks', 'get', None)&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:73: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[memory_bank]" time="0.106"><failure message="AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks', 'post', None)&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:73: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks', 'post', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_memory_bank_detail]" time="0.114"><failure message="AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks/{bank_id}', 'get', None)&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:73: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks/{bank_id}', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_research_demo_list]" time="0.117"><failure message="AssertionError: ('empty payload accepted by published contract', '/api/local/research', 'get', None)&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:73: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/research', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_research_agents_list]" time="0.119"><failure message="AssertionError: ('empty payload accepted by published contract', '/api/local/research-agents', 'get', None)&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:73: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/research-agents', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_research_native_list]" time="0.116"><failure message="AssertionError: ('empty payload accepted by published contract', '/api/local/research-native', 'get', None)&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tests/test_memory_research_read_contracts.py:73: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/research-native', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase></testsuite></testsuites>

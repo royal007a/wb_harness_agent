@@ -1,6 +1,6 @@
 # ADR-0065：Product的可取值范围必须匹配存储边界
 
-状态：实现与离线验证完成，待固定提交独立复审及双部署；基线0ee58a0。
+状态：e6e1fb9已独立Approved；双部署待完成；基线0ee58a0。
 
 after的旧声明只有minimum=0，但SQLite参数最多signed int64；合法声明值可导致
 OverflowError/500。采用明确的0..2^63-1范围，HTTP入口与Store双重检查，静态/动态/

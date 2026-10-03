@@ -201,31 +201,31 @@
 
 最多 9 Child Run，固定函数与 synthetic 输入
 
-必须验证：并发上限；父子权限/预算；部分失败、取消、整树重跑、重启；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
+必须验证：并发上限；父子权限/预算；部分失败、取消、整树重跑、重启；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；Memory/Research读取静态动态源合同、退化状态与历史实例负例。
 
-规格：`docs/harness/MULTI_AGENT.md`、`specs/testing/READ_SURFACES.md`
+规格：`docs/harness/MULTI_AGENT.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`
 
-测试入口：`tests/test_research.py`、`tests/test_read_surfaces.py`
+测试入口：`tests/test_research.py`、`tests/test_read_surfaces.py`、`tests/test_memory_research_read_contracts.py`
 
 ### research-agents：三角色投研契约模拟
 
 Agent/Skill/Tool 模拟；零模型、零网络
 
-必须验证：Skill 摘要与资源 scope；Action/Observation/Final；拒绝越权；父报告独立复算；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
+必须验证：Skill 摘要与资源 scope；Action/Observation/Final；拒绝越权；父报告独立复算；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；Memory/Research读取静态动态源合同、退化状态与历史实例负例。
 
-规格：`docs/harness/RESEARCH_AGENT_RUNTIME.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`
+规格：`docs/harness/RESEARCH_AGENT_RUNTIME.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`
 
-测试入口：`tests/test_research_agents.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`
+测试入口：`tests/test_research_agents.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`、`tests/test_memory_research_read_contracts.py`
 
 ### research-native：Claude 原生投研准入与资料控制
 
 代码/Mock/SDK 配置与拒绝路径；真实模型/资料外发未准入
 
-必须验证：Provider/预算/端点/PDF 全绑定；默认零 CLI/Keychain/网络；来源证据、SSRF/字节上限；取消/部分失败/事件映射；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致；Product游标int64边界及响应约束负例/突变保护。
+必须验证：Provider/预算/端点/PDF 全绑定；默认零 CLI/Keychain/网络；来源证据、SSRF/字节上限；取消/部分失败/事件映射；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致；Product游标int64边界及响应约束负例/突变保护；Memory/Research读取静态动态源合同、退化状态与历史实例负例。
 
-规格：`docs/harness/CLAUDE_RESEARCH_RUNTIME.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`、`specs/testing/PRODUCT_CONTRACT_BOUNDARIES.md`
+规格：`docs/harness/CLAUDE_RESEARCH_RUNTIME.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`、`specs/testing/PRODUCT_CONTRACT_BOUNDARIES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`
 
-测试入口：`tests/test_claude_config.py`、`tests/test_claude_research_admission.py`、`tests/test_claude_research_runtime.py`、`tests/test_product_http_contracts.py`、`tests/test_product_contract_boundaries.py`
+测试入口：`tests/test_claude_config.py`、`tests/test_claude_research_admission.py`、`tests/test_claude_research_runtime.py`、`tests/test_product_http_contracts.py`、`tests/test_product_contract_boundaries.py`、`tests/test_memory_research_read_contracts.py`
 
 ### external-skills：外部 Skill 沙箱
 
@@ -241,11 +241,11 @@ Agent/Skill/Tool 模拟；零模型、零网络
 
 显式事实、FTS5/时间/两跳/精确实体；无自动聊天抽取/语义/Reflect
 
-必须验证：Bank/time/source 过滤；supersede/retract/delete 传播；FTS 重建和详情；图/实体歧义与 lineage；语义 gate fail-closed；正文/跨 Bank 零泄漏；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
+必须验证：Bank/time/source 过滤；supersede/retract/delete 传播；FTS 重建和详情；图/实体歧义与 lineage；语义 gate fail-closed；正文/跨 Bank 零泄漏；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；Memory/Research读取静态动态源合同、退化状态与历史实例负例。
 
-规格：`docs/harness/MEMORY_PLANE_M1.md`、`docs/harness/MEMORY_CONTEXT_M2A.md`、`docs/harness/MEMORY_GRAPH_M3A.md`、`docs/harness/MEMORY_ENTITY_CATALOG_M3B.md`、`specs/testing/READ_SURFACES.md`
+规格：`docs/harness/MEMORY_PLANE_M1.md`、`docs/harness/MEMORY_CONTEXT_M2A.md`、`docs/harness/MEMORY_GRAPH_M3A.md`、`docs/harness/MEMORY_ENTITY_CATALOG_M3B.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`
 
-测试入口：`tests/test_memory_plane.py`、`tests/test_memory_context.py`、`tests/test_memory_context_evaluation.py`、`tests/test_memory_graph.py`、`tests/test_memory_graph_evaluation.py`、`tests/test_memory_entity_catalog.py`、`tests/test_memory_fact_lineage.py`、`tests/test_memory_temporal_read_safety.py`、`tests/test_semantic_retrieval_admission.py`、`tests/test_read_surfaces.py`
+测试入口：`tests/test_memory_plane.py`、`tests/test_memory_context.py`、`tests/test_memory_context_evaluation.py`、`tests/test_memory_graph.py`、`tests/test_memory_graph_evaluation.py`、`tests/test_memory_entity_catalog.py`、`tests/test_memory_fact_lineage.py`、`tests/test_memory_temporal_read_safety.py`、`tests/test_semantic_retrieval_admission.py`、`tests/test_read_surfaces.py`、`tests/test_memory_research_read_contracts.py`
 
 ### team：Team Foundation / Task Handoff Gate
 
@@ -331,11 +331,11 @@ OAuth 与本机 CLI 交接；网站接口没有通用分享下载
 
 本机根路径及反向代理 /harness/；无新增身份系统
 
-必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致；Product游标int64边界及响应约束负例/突变保护。
+必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致；Product游标int64边界及响应约束负例/突变保护；Memory/Research读取静态动态源合同、退化状态与历史实例负例。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`、`specs/testing/PRODUCT_CONTRACT_BOUNDARIES.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`、`specs/testing/PRODUCT_CONTRACT_BOUNDARIES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`
 
-测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`、`tests/test_product_http_contracts.py`、`tests/test_product_contract_boundaries.py`
+测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`、`tests/test_product_http_contracts.py`、`tests/test_product_contract_boundaries.py`、`tests/test_memory_research_read_contracts.py`
 
 ### retrieval：迭代检索/Agentic 契约/父子 Chunk
 

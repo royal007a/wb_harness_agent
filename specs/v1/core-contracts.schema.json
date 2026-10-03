@@ -3,6 +3,27 @@
   "$id": "https://harnessagent.local/specs/v1/core-contracts.schema.json",
   "title": "HarnessAgent Core Contract Bundle",
   "$defs": {
+    "local_http_research_demo_list": {
+      "type": "object", "additionalProperties": false, "required": ["items"],
+      "properties": {"items": {"type": "array", "items": {"allOf": [
+        {"$ref": "#/$defs/run"},
+        {"properties": {"selected_engine": {"const": "engine_local_research_demo"}, "parent_run_id": {"const": null}}}
+      ]}}}
+    },
+    "local_http_research_agents_list": {
+      "type": "object", "additionalProperties": false, "required": ["items"],
+      "properties": {"items": {"type": "array", "items": {"allOf": [
+        {"$ref": "#/$defs/run"},
+        {"properties": {"selected_engine": {"const": "engine_research_multi_agent_simulation"}, "parent_run_id": {"const": null}}}
+      ]}}}
+    },
+    "local_http_research_native_list": {
+      "type": "object", "additionalProperties": false, "required": ["items"],
+      "properties": {"items": {"type": "array", "items": {"allOf": [
+        {"$ref": "#/$defs/run"},
+        {"properties": {"selected_engine": {"const": "engine_claude_research_native"}, "parent_run_id": {"const": null}}}
+      ]}}}
+    },
     "local_http_health": {
       "description": "Static local liveness, not Provider health, release identity, or usage telemetry.",
       "type": "object", "additionalProperties": false,

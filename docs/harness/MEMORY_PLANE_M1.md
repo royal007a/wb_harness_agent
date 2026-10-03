@@ -18,11 +18,17 @@ Memory Bank (ws_local + local_admin + scope + classification + retention)
 
 - `GET /api/local/memory/runtime`：M1 能力边界；明确 model extraction、Reflect、vector/graph 和 Product Task/Run 集成都为 `false`。
 - `GET/POST /api/local/memory/banks`：创建/列出固定 `ws_local`、`local_admin` 的 Bank。请求不能指定所有者或工作空间。
+- `GET /api/local/memory/banks/{bank_id}`：Bank、已存Source/Fact计数及当前runtime；不返回正文。计数包含已撤回记录，不等于召回数量。
 - `POST /api/local/memory/banks/{bank_id}/retain`：显式写入 Source + Facts，需 `Idempotency-Key`。
 - `POST /api/local/memory/banks/{bank_id}:recall`：返回无原始 Source 正文的 `evidence-bundle@1`。
 - `POST /api/local/memory/sources/{source_id}:retract`：空 JSON + `Idempotency-Key` 撤回；`DELETE /api/local/memory/sources/{source_id}`：带 `Idempotency-Key` 删除正文/Fact 并建 tombstone。
 
 机器契约见 [`memory-plane.schema.json`](../../specs/v1/memory-plane.schema.json)，完整 API 说明见 [API](API.md)。
+
+HA-0066补runtime与Bank列表/详情/创建的静态、动态响应合同。runtime反映当前M3-B：
+FTS不可用时明确ready=false；semantic档案admitted仍不代表运行时启用，
+runtime_enabled恒false，其调用数字只是档案记录，不是实测遥测。验证与非目标见
+`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`。
 
 ## 读回规则与明确限制
 

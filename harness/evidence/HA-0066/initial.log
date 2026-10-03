@@ -1,0 +1,137 @@
+...............................FFF                                       [100%]
+=================================== FAILURES ===================================
+_ test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation0-engine_local_research_demo] _
+tests/test_memory_research_read_contracts.py:209: in test_research_lists_actual_lifecycle_and_reject_child_other_engine
+    checks = validate(client, operation, listed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_research_read_contracts.py:66: in validate
+    check.validate(value)
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property
+E
+E   Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:
+E       {'required': ['parent_run_id'],
+E        'properties': {'selected_engine': {'const': 'engine_local_research_demo'},
+E                       'parent_run_id': {'const': None}}}
+E
+E   On instance['items'][0]:
+E       {'attempt_number': 1,
+E        'based_on_run_id': None,
+E        'created_at': '2026-10-03T22:24:30.437902Z',
+E        'effective_limits': {'max_cost_minor': 0,
+E                             'max_input_tokens': 4,
+E                             'max_turns': 4,
+E                             'timeout_seconds': 60},
+E        'effective_permissions': {'allowed_tools': ['resource.inspect',
+E                                                    'artifact.publish',
+E                                                    'run.final_answer'],
+E                                  'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',
+E                                  'denied_capabilities': ['network',
+E                                                          'package_install',
+E                                                          'external_write',
+E                                                          'host_path',
+E                                                          'secret'],
+E                                  'profile_id': 'analysis_read_only',
+E                                  'profile_version': 1},
+E        'exit_reason': None,
+E        'id': 'run_41d8fb6728dc44d9969b38523f277868',
+E        'latest_sequence': 4,
+E        'selected_engine': 'engine_local_research_demo',
+E        'selected_models': {},
+E        'status': 'queued',
+E        'task_id': 'task_1a6e3ac665734e10895ce472884fdae7',
+E        'updated_at': '2026-10-03T22:24:30.438688Z'}
+_ test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation1-engine_research_multi_agent_simulation] _
+tests/test_memory_research_read_contracts.py:209: in test_research_lists_actual_lifecycle_and_reject_child_other_engine
+    checks = validate(client, operation, listed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_research_read_contracts.py:66: in validate
+    check.validate(value)
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property
+E
+E   Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:
+E       {'required': ['parent_run_id'],
+E        'properties': {'selected_engine': {'const': 'engine_research_multi_agent_simulation'},
+E                       'parent_run_id': {'const': None}}}
+E
+E   On instance['items'][0]:
+E       {'attempt_number': 1,
+E        'based_on_run_id': None,
+E        'created_at': '2026-10-03T22:24:30.634499Z',
+E        'effective_limits': {'max_cost_minor': 0,
+E                             'max_input_tokens': 4,
+E                             'max_turns': 7,
+E                             'timeout_seconds': 60},
+E        'effective_permissions': {'allowed_tools': ['resource.inspect',
+E                                                    'artifact.publish',
+E                                                    'run.final_answer'],
+E                                  'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',
+E                                  'denied_capabilities': ['network',
+E                                                          'package_install',
+E                                                          'external_write',
+E                                                          'host_path',
+E                                                          'secret'],
+E                                  'profile_id': 'analysis_read_only',
+E                                  'profile_version': 1},
+E        'exit_reason': None,
+E        'id': 'run_15b12598c98a4d5899134c7e5f1d4029',
+E        'latest_sequence': 4,
+E        'selected_engine': 'engine_research_multi_agent_simulation',
+E        'selected_models': {},
+E        'status': 'queued',
+E        'task_id': 'task_e8ec8eeb57ac46b9870aa8edc0a23105',
+E        'updated_at': '2026-10-03T22:24:30.635259Z'}
+_ test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation2-engine_claude_research_native] _
+tests/test_memory_research_read_contracts.py:209: in test_research_lists_actual_lifecycle_and_reject_child_other_engine
+    checks = validate(client, operation, listed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_research_read_contracts.py:66: in validate
+    check.validate(value)
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property
+E
+E   Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:
+E       {'required': ['parent_run_id'],
+E        'properties': {'selected_engine': {'const': 'engine_claude_research_native'},
+E                       'parent_run_id': {'const': None}}}
+E
+E   On instance['items'][0]:
+E       {'attempt_number': 1,
+E        'based_on_run_id': None,
+E        'created_at': '2026-10-03T22:24:30.827206Z',
+E        'effective_limits': {'max_cost_minor': 300,
+E                             'max_input_tokens': 12000,
+E                             'max_turns': 12,
+E                             'timeout_seconds': 60},
+E        'effective_permissions': {'allowed_tools': ['Agent'],
+E                                  'decision_digest': '68698fa8507585ac6a5932ddd60ec9580b1505efb0a73cc9f8b93c0ee31ac87e',
+E                                  'denied_capabilities': ['network',
+E                                                          'package_install',
+E                                                          'external_write',
+E                                                          'host_path',
+E                                                          'secret'],
+E                                  'profile_id': 'analysis_read_only',
+E                                  'profile_version': 1},
+E        'exit_reason': None,
+E        'id': 'run_c99a170456364a3ab747097341ae9559',
+E        'latest_sequence': 4,
+E        'selected_engine': 'engine_claude_research_native',
+E        'selected_models': {'text_and_code': 'claude-test-controlled'},
+E        'status': 'queued',
+E        'task_id': 'task_6419e6372ca445c49d451b04b3ed7ab5',
+E        'updated_at': '2026-10-03T22:24:30.827950Z'}
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_research_read_contracts.py::test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation0-engine_local_research_demo]
+FAILED tests/test_memory_research_read_contracts.py::test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation1-engine_research_multi_agent_simulation]
+FAILED tests/test_memory_research_read_contracts.py::test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation2-engine_claude_research_native]
+3 failed, 31 passed, 1 warning in 5.45s

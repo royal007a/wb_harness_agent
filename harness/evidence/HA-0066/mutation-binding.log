@@ -1,0 +1,80 @@
+FFFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+___ test_published_contract_rejects_empty_payload[local_http_memory_runtime] ___
+tests/test_memory_research_read_contracts.py:75: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/runtime', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+__ test_published_contract_rejects_empty_payload[local_http_memory_bank_list] __
+tests/test_memory_research_read_contracts.py:75: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+__________ test_published_contract_rejects_empty_payload[memory_bank] __________
+tests/test_memory_research_read_contracts.py:75: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks', 'post', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_published_contract_rejects_empty_payload[local_http_memory_bank_detail] _
+tests/test_memory_research_read_contracts.py:75: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/memory/banks/{bank_id}', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_published_contract_rejects_empty_payload[local_http_research_demo_list] _
+tests/test_memory_research_read_contracts.py:75: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/research', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_published_contract_rejects_empty_payload[local_http_research_agents_list] _
+tests/test_memory_research_read_contracts.py:75: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/research-agents', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_published_contract_rejects_empty_payload[local_http_research_native_list] _
+tests/test_memory_research_read_contracts.py:75: in test_published_contract_rejects_empty_payload
+    contracts(client, operation)
+tests/test_memory_research_read_contracts.py:53: in contracts
+    assert not validator.is_valid({}), ('empty payload accepted by published contract', p, method, status)
+E   AssertionError: ('empty payload accepted by published contract', '/api/local/research-native', 'get', None)
+E   assert not True
+E    +  where True = is_valid({})
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_research_read_contracts.py::test_published_contract_rejects_empty_payload[local_http_memory_runtime]
+FAILED tests/test_memory_research_read_contracts.py::test_published_contract_rejects_empty_payload[local_http_memory_bank_list]
+FAILED tests/test_memory_research_read_contracts.py::test_published_contract_rejects_empty_payload[memory_bank]
+FAILED tests/test_memory_research_read_contracts.py::test_published_contract_rejects_empty_payload[local_http_memory_bank_detail]
+FAILED tests/test_memory_research_read_contracts.py::test_published_contract_rejects_empty_payload[local_http_research_demo_list]
+FAILED tests/test_memory_research_read_contracts.py::test_published_contract_rejects_empty_payload[local_http_research_agents_list]
+FAILED tests/test_memory_research_read_contracts.py::test_published_contract_rejects_empty_payload[local_http_research_native_list]
+7 failed, 29 deselected, 1 warning in 1.24s

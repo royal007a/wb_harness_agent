@@ -19,7 +19,7 @@ from .store import Store, uid, MAX_EVENT_SEQUENCE
 from .readiness import readiness
 from .framework_catalog import catalog as framework_catalog
 from .frontend import frontend_page
-from .openapi_contracts import register_definitions, assert_local_references, bind_chat_responses, bind_product_responses
+from .openapi_contracts import register_definitions, assert_local_references, bind_chat_responses, bind_product_responses, bind_memory_research_reads
 
 
 def create_app(db_path=None, run_worker=True):
@@ -1206,6 +1206,7 @@ def create_app(db_path=None, run_worker=True):
     bind_chat_responses(generated, 'agent-lab', 'agent_lab_')
     bind_chat_responses(generated, 'agent-runtime', 'agent_runtime_')
     bind_product_responses(generated)
+    bind_memory_research_reads(generated)
     assert_local_references(generated)
     return app
 

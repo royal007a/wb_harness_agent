@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="34" time="5.412" timestamp="2026-10-04T06:24:25.495211+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_memory_runtime]" time="0.218" /><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_memory_bank_list]" time="0.115" /><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[memory_bank]" time="0.099" /><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_memory_bank_detail]" time="0.100" /><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_research_demo_list]" time="0.099" /><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_research_agents_list]" time="0.101" /><testcase classname="tests.test_memory_research_read_contracts" name="test_published_contract_rejects_empty_payload[local_http_research_native_list]" time="0.099" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_actual_reads_counts_no_content_and_replay" time="0.536" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[default-True]" time="0.172" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[default-False]" time="0.191" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[missing-True]" time="0.168" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[missing-False]" time="0.166" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_json-True]" time="0.164" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_json-False]" time="0.197" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_schema-True]" time="0.174" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[invalid_schema-False]" time="0.173" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[admitted-True]" time="0.170" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_runtime_degraded_fts_and_admission_are_valid[admitted-False]" time="0.195" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_nested_negative_instances[missing_runtime]" time="0.102" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_nested_negative_instances[unknown]" time="0.102" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_nested_negative_instances[wrong_owner]" time="0.103" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_nested_negative_instances[wrong_id]" time="0.101" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_nested_negative_instances[bad_counts]" time="0.104" /><testcase classname="tests.test_memory_research_read_contracts" name="test_memory_nested_negative_instances[raw_content]" time="0.100" /><testcase classname="tests.test_memory_research_read_contracts" name="test_current_error_envelope_for_reads_and_bank_create[operation0]" time="0.130" /><testcase classname="tests.test_memory_research_read_contracts" name="test_current_error_envelope_for_reads_and_bank_create[operation1]" time="0.101" /><testcase classname="tests.test_memory_research_read_contracts" name="test_current_error_envelope_for_reads_and_bank_create[operation2]" time="0.100" /><testcase classname="tests.test_memory_research_read_contracts" name="test_current_error_envelope_for_reads_and_bank_create[operation3]" time="0.163" /><testcase classname="tests.test_memory_research_read_contracts" name="test_current_error_envelope_for_reads_and_bank_create[operation4]" time="0.101" /><testcase classname="tests.test_memory_research_read_contracts" name="test_current_error_envelope_for_reads_and_bank_create[operation5]" time="0.139" /><testcase classname="tests.test_memory_research_read_contracts" name="test_current_error_envelope_for_reads_and_bank_create[operation6]" time="0.101" /><testcase classname="tests.test_memory_research_read_contracts" name="test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation0-engine_local_research_demo]" time="0.168"><failure message="jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property&#10;&#10;Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:&#10;    {'required': ['parent_run_id'],&#10;     'properties': {'selected_engine': {'const': 'engine_local_research_demo'},&#10;                    'parent_run_id': {'const': None}}}&#10;&#10;On instance['items'][0]:&#10;    {'attempt_number': 1,&#10;     'based_on_run_id': None,&#10;     'created_at': '2026-10-03T22:24:30.437902Z',&#10;     'effective_limits': {'max_cost_minor': 0,&#10;                          'max_input_tokens': 4,&#10;                          'max_turns': 4,&#10;                          'timeout_seconds': 60},&#10;     'effective_permissions': {'allowed_tools': ['resource.inspect',&#10;                                                 'artifact.publish',&#10;                                                 'run.final_answer'],&#10;                               'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',&#10;                               'denied_capabilities': ['network',&#10;                                                       'package_install',&#10;                                                       'external_write',&#10;                                                       'host_path',&#10;                                                       'secret'],&#10;                               'profile_id': 'analysis_read_only',&#10;                               'profile_version': 1},&#10;     'exit_reason': None,&#10;     'id': 'run_41d8fb6728dc44d9969b38523f277868',&#10;     'latest_sequence': 4,&#10;     'selected_engine': 'engine_local_research_demo',&#10;     'selected_models': {},&#10;     'status': 'queued',&#10;     'task_id': 'task_1a6e3ac665734e10895ce472884fdae7',&#10;     'updated_at': '2026-10-03T22:24:30.438688Z'}">tests/test_memory_research_read_contracts.py:209: in test_research_lists_actual_lifecycle_and_reject_child_other_engine
+    checks = validate(client, operation, listed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_research_read_contracts.py:66: in validate
+    check.validate(value)
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property
+E
+E   Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:
+E       {'required': ['parent_run_id'],
+E        'properties': {'selected_engine': {'const': 'engine_local_research_demo'},
+E                       'parent_run_id': {'const': None}}}
+E
+E   On instance['items'][0]:
+E       {'attempt_number': 1,
+E        'based_on_run_id': None,
+E        'created_at': '2026-10-03T22:24:30.437902Z',
+E        'effective_limits': {'max_cost_minor': 0,
+E                             'max_input_tokens': 4,
+E                             'max_turns': 4,
+E                             'timeout_seconds': 60},
+E        'effective_permissions': {'allowed_tools': ['resource.inspect',
+E                                                    'artifact.publish',
+E                                                    'run.final_answer'],
+E                                  'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',
+E                                  'denied_capabilities': ['network',
+E                                                          'package_install',
+E                                                          'external_write',
+E                                                          'host_path',
+E                                                          'secret'],
+E                                  'profile_id': 'analysis_read_only',
+E                                  'profile_version': 1},
+E        'exit_reason': None,
+E        'id': 'run_41d8fb6728dc44d9969b38523f277868',
+E        'latest_sequence': 4,
+E        'selected_engine': 'engine_local_research_demo',
+E        'selected_models': {},
+E        'status': 'queued',
+E        'task_id': 'task_1a6e3ac665734e10895ce472884fdae7',
+E        'updated_at': '2026-10-03T22:24:30.438688Z'}</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation1-engine_research_multi_agent_simulation]" time="0.172"><failure message="jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property&#10;&#10;Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:&#10;    {'required': ['parent_run_id'],&#10;     'properties': {'selected_engine': {'const': 'engine_research_multi_agent_simulation'},&#10;                    'parent_run_id': {'const': None}}}&#10;&#10;On instance['items'][0]:&#10;    {'attempt_number': 1,&#10;     'based_on_run_id': None,&#10;     'created_at': '2026-10-03T22:24:30.634499Z',&#10;     'effective_limits': {'max_cost_minor': 0,&#10;                          'max_input_tokens': 4,&#10;                          'max_turns': 7,&#10;                          'timeout_seconds': 60},&#10;     'effective_permissions': {'allowed_tools': ['resource.inspect',&#10;                                                 'artifact.publish',&#10;                                                 'run.final_answer'],&#10;                               'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',&#10;                               'denied_capabilities': ['network',&#10;                                                       'package_install',&#10;                                                       'external_write',&#10;                                                       'host_path',&#10;                                                       'secret'],&#10;                               'profile_id': 'analysis_read_only',&#10;                               'profile_version': 1},&#10;     'exit_reason': None,&#10;     'id': 'run_15b12598c98a4d5899134c7e5f1d4029',&#10;     'latest_sequence': 4,&#10;     'selected_engine': 'engine_research_multi_agent_simulation',&#10;     'selected_models': {},&#10;     'status': 'queued',&#10;     'task_id': 'task_e8ec8eeb57ac46b9870aa8edc0a23105',&#10;     'updated_at': '2026-10-03T22:24:30.635259Z'}">tests/test_memory_research_read_contracts.py:209: in test_research_lists_actual_lifecycle_and_reject_child_other_engine
+    checks = validate(client, operation, listed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_research_read_contracts.py:66: in validate
+    check.validate(value)
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property
+E
+E   Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:
+E       {'required': ['parent_run_id'],
+E        'properties': {'selected_engine': {'const': 'engine_research_multi_agent_simulation'},
+E                       'parent_run_id': {'const': None}}}
+E
+E   On instance['items'][0]:
+E       {'attempt_number': 1,
+E        'based_on_run_id': None,
+E        'created_at': '2026-10-03T22:24:30.634499Z',
+E        'effective_limits': {'max_cost_minor': 0,
+E                             'max_input_tokens': 4,
+E                             'max_turns': 7,
+E                             'timeout_seconds': 60},
+E        'effective_permissions': {'allowed_tools': ['resource.inspect',
+E                                                    'artifact.publish',
+E                                                    'run.final_answer'],
+E                                  'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',
+E                                  'denied_capabilities': ['network',
+E                                                          'package_install',
+E                                                          'external_write',
+E                                                          'host_path',
+E                                                          'secret'],
+E                                  'profile_id': 'analysis_read_only',
+E                                  'profile_version': 1},
+E        'exit_reason': None,
+E        'id': 'run_15b12598c98a4d5899134c7e5f1d4029',
+E        'latest_sequence': 4,
+E        'selected_engine': 'engine_research_multi_agent_simulation',
+E        'selected_models': {},
+E        'status': 'queued',
+E        'task_id': 'task_e8ec8eeb57ac46b9870aa8edc0a23105',
+E        'updated_at': '2026-10-03T22:24:30.635259Z'}</failure></testcase><testcase classname="tests.test_memory_research_read_contracts" name="test_research_lists_actual_lifecycle_and_reject_child_other_engine[operation2-engine_claude_research_native]" time="0.185"><failure message="jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property&#10;&#10;Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:&#10;    {'required': ['parent_run_id'],&#10;     'properties': {'selected_engine': {'const': 'engine_claude_research_native'},&#10;                    'parent_run_id': {'const': None}}}&#10;&#10;On instance['items'][0]:&#10;    {'attempt_number': 1,&#10;     'based_on_run_id': None,&#10;     'created_at': '2026-10-03T22:24:30.827206Z',&#10;     'effective_limits': {'max_cost_minor': 300,&#10;                          'max_input_tokens': 12000,&#10;                          'max_turns': 12,&#10;                          'timeout_seconds': 60},&#10;     'effective_permissions': {'allowed_tools': ['Agent'],&#10;                               'decision_digest': '68698fa8507585ac6a5932ddd60ec9580b1505efb0a73cc9f8b93c0ee31ac87e',&#10;                               'denied_capabilities': ['network',&#10;                                                       'package_install',&#10;                                                       'external_write',&#10;                                                       'host_path',&#10;                                                       'secret'],&#10;                               'profile_id': 'analysis_read_only',&#10;                               'profile_version': 1},&#10;     'exit_reason': None,&#10;     'id': 'run_c99a170456364a3ab747097341ae9559',&#10;     'latest_sequence': 4,&#10;     'selected_engine': 'engine_claude_research_native',&#10;     'selected_models': {'text_and_code': 'claude-test-controlled'},&#10;     'status': 'queued',&#10;     'task_id': 'task_6419e6372ca445c49d451b04b3ed7ab5',&#10;     'updated_at': '2026-10-03T22:24:30.827950Z'}">tests/test_memory_research_read_contracts.py:209: in test_research_lists_actual_lifecycle_and_reject_child_other_engine
+    checks = validate(client, operation, listed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_research_read_contracts.py:66: in validate
+    check.validate(value)
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'parent_run_id' is a required property
+E
+E   Failed validating 'required' in schema['properties']['items']['items']['allOf'][1]:
+E       {'required': ['parent_run_id'],
+E        'properties': {'selected_engine': {'const': 'engine_claude_research_native'},
+E                       'parent_run_id': {'const': None}}}
+E
+E   On instance['items'][0]:
+E       {'attempt_number': 1,
+E        'based_on_run_id': None,
+E        'created_at': '2026-10-03T22:24:30.827206Z',
+E        'effective_limits': {'max_cost_minor': 300,
+E                             'max_input_tokens': 12000,
+E                             'max_turns': 12,
+E                             'timeout_seconds': 60},
+E        'effective_permissions': {'allowed_tools': ['Agent'],
+E                                  'decision_digest': '68698fa8507585ac6a5932ddd60ec9580b1505efb0a73cc9f8b93c0ee31ac87e',
+E                                  'denied_capabilities': ['network',
+E                                                          'package_install',
+E                                                          'external_write',
+E                                                          'host_path',
+E                                                          'secret'],
+E                                  'profile_id': 'analysis_read_only',
+E                                  'profile_version': 1},
+E        'exit_reason': None,
+E        'id': 'run_c99a170456364a3ab747097341ae9559',
+E        'latest_sequence': 4,
+E        'selected_engine': 'engine_claude_research_native',
+E        'selected_models': {'text_and_code': 'claude-test-controlled'},
+E        'status': 'queued',
+E        'task_id': 'task_6419e6372ca445c49d451b04b3ed7ab5',
+E        'updated_at': '2026-10-03T22:24:30.827950Z'}</failure></testcase></testsuite></testsuites>
