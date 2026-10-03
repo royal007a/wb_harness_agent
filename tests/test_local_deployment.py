@@ -13,13 +13,17 @@ from deploy import activate_local_skills as activation
 COMMIT = 'a' * 40
 PREVIOUS = 'b' * 40
 IMAGE = 'sha256:' + 'c' * 64
-SETTINGS = {'EnvironmentVariables': {'HARNESS_SANDBOX_BACKEND': 'colima', 'HARNESS_EXTERNAL_SKILLS': 'enabled'}}
+def settings(root):
+    return {'Label': activation.SERVICE, 'WorkingDirectory': str(root),
+            'ProgramArguments': [str(root / '.venv/bin/python'), '-m', 'uvicorn', 'backend.app:app',
+                                 '--host', '127.0.0.1', '--port', '8765', '--workers', '1', '--no-access-log'],
+            'EnvironmentVariables': {'HARNESS_SANDBOX_BACKEND': 'colima', 'HARNESS_EXTERNAL_SKILLS': 'enabled'}}
 
 
 @pytest.fixture
 def deployment(tmp_path, monkeypatch):
     (tmp_path / 'deploy').mkdir()
-    (tmp_path / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(SETTINGS))
+    (tmp_path / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(settings(tmp_path)))
     (tmp_path / '.local').mkdir()
     with sqlite3.connect(tmp_path / '.local/harness.db') as db:
         db.execute('CREATE TABLE sample(value)')
@@ -28,19 +32,34 @@ def deployment(tmp_path, monkeypatch):
     monkeypatch.setattr(activation.sys, 'argv', ['activate', PREVIOUS, 'ha0055'])
     monkeypatch.setattr(activation.time, 'sleep', lambda _: None)
     calls, answers = [], []
+    process = {'pid': 100, 'generation': 0}
 
     def command(*args, **kwargs):
         calls.append(args)
         if args[:3] == ('git', 'rev-parse', 'HEAD'):
             return COMMIT
         if args[:2] == ('git', 'show'):
-            return plistlib.dumps(SETTINGS).decode()
+            return plistlib.dumps(settings(tmp_path)).decode()
         if 'image' in args:
             return IMAGE
-        if args[:2] == ('launchctl', 'bootstrap') and answers:
-            response = answers.pop(0)
+        if args == ('launchctl', 'managername'):
+            return 'Aqua'
+        if args == ('launchctl', 'print', activation.LABEL):
+            if process['pid'] is None:
+                raise subprocess.CalledProcessError(113, args, output='', stderr='')
+            return f"pid = {process['pid']}\n"
+        if args[0] == '/usr/sbin/lsof':
+            return f"p{process['pid']}\n" if process['pid'] else ''
+        if args[0] == '/bin/ps':
+            return f"synthetic-start-{process['generation']}"
+        if args[:2] == ('launchctl', 'bootout'):
+            process['pid'] = None
+        if args[:2] == ('launchctl', 'bootstrap'):
+            response = answers.pop(0) if answers else 0
             if response:
-                raise subprocess.CalledProcessError(response, args)
+                raise subprocess.CalledProcessError(response, args, output='synthetic-secret', stderr='synthetic-secret')
+            process['generation'] += 1
+            process['pid'] = 100 + process['generation']
         return ''
 
     class Response:
@@ -67,15 +86,16 @@ def deployment(tmp_path, monkeypatch):
     return tmp_path, calls, answers
 
 
-def test_transient_bootstrap_failure_retries_same_config_without_rollback(deployment):
+def test_success_binds_new_process_and_release_without_rollback(deployment):
     root, calls, answers = deployment
-    answers.extend([5, 5, 0])
     activation.main()
     starts = [c for c in calls if c[:2] == ('launchctl', 'bootstrap')]
-    assert len(starts) == 3
+    assert len(starts) == 1
     assert {c[-1] for c in starts} == {str(root / 'deploy/local.macos.plist')}
     receipts = list(root.glob('.local/backups/*/deployment.json'))
     assert len(receipts) == 1 and json.loads(receipts[0].read_text())['commit'] == COMMIT
+    assert json.loads(receipts[0].read_text())['process']['pid'] == 101
+    assert json.loads(receipts[0].read_text())['bootstrap_attempts'] == 1
     assert not list(root.glob('.local/backups/*/activation-failure.json'))
 
 
@@ -97,7 +117,7 @@ def test_failed_activation_records_verified_plist_recovery(deployment):
         assert db.execute('SELECT value FROM sample').fetchone()[0] == 'retained'
 
 
-def test_bootstrap_permanent_five_shares_deadline_with_command_time(monkeypatch):
+def test_bootstrap_five_is_reported_without_blind_retries(monkeypatch):
     clock, calls = [0.0], []
     monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
     monkeypatch.setattr(activation.time, 'sleep', lambda seconds: clock.__setitem__(0, clock[0] + seconds))
@@ -108,9 +128,10 @@ def test_bootstrap_permanent_five_shares_deadline_with_command_time(monkeypatch)
         raise subprocess.CalledProcessError(5, args)
 
     monkeypatch.setattr(activation, 'run', command)
-    with pytest.raises(RuntimeError, match='retry deadline exhausted'):
+    with pytest.raises(activation.ActivationError) as failure:
         activation.bootstrap('/synthetic.plist', timeout_seconds=3)
-    assert calls == [3] and clock[0] == 3
+    assert calls == [3] and clock[0] == 2
+    assert failure.value.exit_code == 5 and failure.value.attempts == 1
 
 
 @pytest.mark.parametrize('exit_code', [1, 78])
@@ -122,9 +143,9 @@ def test_bootstrap_does_not_retry_other_errors(monkeypatch, exit_code):
         raise subprocess.CalledProcessError(exit_code, args)
 
     monkeypatch.setattr(activation, 'run', command)
-    with pytest.raises(subprocess.CalledProcessError) as failure:
+    with pytest.raises(activation.ActivationError) as failure:
         activation.bootstrap('/synthetic.plist')
-    assert failure.value.returncode == exit_code and len(calls) == 1
+    assert failure.value.exit_code == exit_code and len(calls) == 1
 
 
 def test_bootstrap_command_timeout_is_not_blindly_retried(monkeypatch):
@@ -135,7 +156,7 @@ def test_bootstrap_command_timeout_is_not_blindly_retried(monkeypatch):
         raise subprocess.TimeoutExpired(args, timeout)
 
     monkeypatch.setattr(activation, 'run', command)
-    with pytest.raises(subprocess.TimeoutExpired):
+    with pytest.raises(activation.ActivationError, match='command_timeout'):
         activation.bootstrap('/synthetic.plist')
     assert len(calls) == 1 and 0 < calls[0] <= 5
 
@@ -165,7 +186,8 @@ def test_recovery_bootstrap_failure_is_recorded(deployment):
     with pytest.raises(RuntimeError, match='recovery healthy=False'):
         activation.main()
     receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
-    assert receipt['recovery']['error_type'] == 'CalledProcessError'
+    assert receipt['recovery']['error_type'] == 'ActivationError'
+    assert receipt['recovery']['exit_code'] == 78
     assert receipt['recovery']['healthy'] is False
 
 
@@ -188,13 +210,15 @@ def test_health_rejects_gate_and_image_drift(deployment, monkeypatch, kind):
 
     monkeypatch.setattr(activation.urllib.request, 'urlopen', altered)
     with pytest.raises(RuntimeError, match='unexpected'):
-        activation.healthy(IMAGE)
+        activation.healthy(IMAGE, COMMIT)
 
 
 def test_health_wait_is_bounded(monkeypatch):
     clock, calls = [0.0], []
     monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
     monkeypatch.setattr(activation.time, 'sleep', lambda seconds: clock.__setitem__(0, clock[0] + seconds))
+    monkeypatch.setattr(activation, 'assert_release', lambda *a: None)
+    monkeypatch.setattr(activation, 'process_identity', lambda *a: {'pid': 101})
 
     def unavailable(url, timeout):
         calls.append(timeout)
@@ -203,7 +227,7 @@ def test_health_wait_is_bounded(monkeypatch):
 
     monkeypatch.setattr(activation.urllib.request, 'urlopen', unavailable)
     with pytest.raises(RuntimeError, match='health deadline exhausted'):
-        activation.healthy(IMAGE, timeout_seconds=2)
+        activation.healthy(IMAGE, COMMIT, timeout_seconds=2)
     assert clock[0] == 2 and calls == [2]
 
 
@@ -221,7 +245,7 @@ def test_temporary_sandbox_unavailability_retries_before_image_check(deployment,
         return io.BytesIO(json.dumps(value).encode())
 
     monkeypatch.setattr(activation.urllib.request, 'urlopen', starting)
-    assert activation.healthy(IMAGE)['skills']['image_id'] == IMAGE
+    assert activation.healthy(IMAGE, COMMIT)['skills']['image_id'] == IMAGE
     assert len(skill_checks) == 2
 
 
@@ -241,7 +265,7 @@ def test_dirty_worktree_stops_before_service_or_backup_mutation(deployment, monk
     assert not (root / '.local/backups').exists()
 
 
-def test_bootout_timeout_records_uncertain_stop_and_checks_recovery(deployment, monkeypatch):
+def test_recovery_bootout_timeout_is_not_ignored(deployment, monkeypatch):
     root, _, _ = deployment
     original = activation.run
 
@@ -251,10 +275,124 @@ def test_bootout_timeout_records_uncertain_stop_and_checks_recovery(deployment, 
         return original(*args, **kwargs)
 
     monkeypatch.setattr(activation, 'run', command)
-    with pytest.raises(RuntimeError, match='recovery healthy=True'):
+    with pytest.raises(RuntimeError, match='recovery healthy=False'):
         activation.main()
     receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
     assert receipt['phase'] == 'bootout'
-    assert receipt['error_type'] == 'TimeoutExpired'
-    assert receipt['recovery']['phase'] == 'verified'
+    assert receipt['error_type'] == 'ActivationError'
+    assert receipt['code'] == 'command_timeout'
+    assert receipt['recovery']['phase'] == 'bootout'
+    assert receipt['recovery']['code'] == 'command_timeout'
     assert not list(root.glob('.local/backups/*/deployment.json'))
+
+
+@pytest.mark.parametrize('kind', ['background', 'domain', 'session_type', 'foreign_port'])
+def test_preflight_failure_never_stops_or_starts_service(deployment, monkeypatch, kind):
+    root, calls, _ = deployment
+    original = activation.run
+    def command(*args, **kwargs):
+        if kind == 'background' and args == ('launchctl', 'managername'):
+            return 'Background'
+        if kind == 'domain' and args == ('launchctl', 'print', activation.DOMAIN):
+            raise subprocess.CalledProcessError(125, args)
+        if kind == 'foreign_port' and args[0] == '/usr/sbin/lsof':
+            return 'p999\n'
+        return original(*args, **kwargs)
+    monkeypatch.setattr(activation, 'run', command)
+    if kind == 'session_type':
+        config = settings(root)
+        config['LimitLoadToSessionType'] = ['Background']
+        (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+    with pytest.raises(activation.ActivationError):
+        activation.main()
+    assert not any(c[:2] in [('launchctl', 'bootout'), ('launchctl', 'bootstrap')] for c in calls)
+    assert not (root / '.local/backups').exists()
+
+
+def test_port_must_be_free_before_bootstrap(deployment, monkeypatch):
+    _, calls, _ = deployment
+    original = activation.listener_pids
+    checks = []
+    def listeners(*args):
+        if any(c[:2] == ('launchctl', 'bootout') for c in calls) and not any(c[:2] == ('launchctl', 'bootstrap') for c in calls):
+            checks.append(1)
+            if len(checks) < 3:
+                return {100}
+        return original(*args)
+    monkeypatch.setattr(activation, 'listener_pids', listeners)
+    activation.main()
+    assert len(checks) == 3
+
+
+def test_teardown_deadline_does_not_kill_foreign_listener(monkeypatch):
+    clock = [0.0]
+    monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
+    monkeypatch.setattr(activation.time, 'sleep', lambda n: clock.__setitem__(0, clock[0] + n))
+    monkeypatch.setattr(activation, 'job_pid', lambda *a: None)
+    monkeypatch.setattr(activation, 'listener_pids', lambda *a: {999})
+    with pytest.raises(activation.ActivationError, match='teardown_deadline'):
+        activation.stop_and_wait(.7)
+    assert clock[0] == .7
+
+
+@pytest.mark.parametrize('kind', ['pid', 'start_time', 'commit', 'dirty'])
+def test_health_rejects_identity_or_release_drift(deployment, monkeypatch, kind):
+    original = activation.process_identity
+    checks = []
+    def identity(*args):
+        result = original(*args)
+        checks.append(1)
+        if len(checks) > 1:
+            if kind == 'pid':
+                result['pid'] += 1
+            if kind == 'start_time':
+                result['started_at'] = 'changed'
+        return result
+    monkeypatch.setattr(activation, 'process_identity', identity)
+    original_run = activation.run
+    def command(*args, **kwargs):
+        if checks and kind == 'commit' and args == ('git', 'rev-parse', 'HEAD'):
+            return 'd' * 40
+        if checks and kind == 'dirty' and args == ('git', 'status', '--porcelain'):
+            return ' M source.py'
+        return original_run(*args, **kwargs)
+    monkeypatch.setattr(activation, 'run', command)
+    with pytest.raises(activation.ActivationError):
+        activation.healthy(IMAGE, COMMIT)
+
+
+def test_old_listener_is_not_accepted_as_new_launchd_pid(deployment, monkeypatch):
+    monkeypatch.setattr(activation, 'job_pid', lambda *a: 101)
+    monkeypatch.setattr(activation, 'listener_pids', lambda *a: {100})
+    with pytest.raises(OSError, match='new process has not acquired listener'):
+        activation.process_identity()
+
+
+def test_interrupt_after_bootout_writes_failure_without_more_activation(deployment, monkeypatch):
+    root, calls, _ = deployment
+    monkeypatch.setattr(activation, 'bootstrap', lambda *a: (_ for _ in ()).throw(KeyboardInterrupt()))
+    with pytest.raises(KeyboardInterrupt):
+        activation.main()
+    receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+    assert receipt['error_type'] == 'KeyboardInterrupt'
+    assert receipt['recovery']['phase'] == 'not_attempted'
+    assert not receipt['recovery']['healthy']
+    assert len([c for c in calls if c[:2] == ('launchctl', 'bootout')]) == 1
+    assert not list(root.glob('.local/backups/*/deployment.json'))
+
+
+def test_five_and_recovery_receipt_preserve_cause_without_secrets(deployment):
+    root, calls, answers = deployment
+    answers.extend([5, 0])
+    with pytest.raises(RuntimeError):
+        activation.main()
+    raw = next(root.glob('.local/backups/*/activation-failure.json')).read_text()
+    receipt = json.loads(raw)
+    assert receipt['exit_code'] == 5 and receipt['attempts'] == 1
+    assert receipt['recovery']['healthy'] is True
+    assert receipt['recovery']['code_commit'] == COMMIT
+    assert receipt['recovery']['config_source_commit'] == PREVIOUS
+    assert receipt['recovery']['code_rollback'] is False
+    assert receipt['recovery']['database_rollback'] is False
+    assert 'synthetic-secret' not in raw
+    assert len([c for c in calls if c[:2] == ('launchctl', 'bootstrap')]) == 2

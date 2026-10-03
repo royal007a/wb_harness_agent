@@ -1,4 +1,33 @@
-# HA-0056 验证（代码通过，双端发布待本机 GUI 恢复）
+# HA-0056 验证（返工验证中，未重新发布）
+
+## 2026-10-04 复审返工
+
+- 不再把 exit 5 归为可自动重试；单次 bootstrap 最多 5 秒，保留 exit_code、
+  action、attempts。调用方必须是 Aqua，目标 gui 域可查询，当前与恢复 plist
+  均符合批准的 label/命令/目录/门禁/会话类型，才允许 bootout。
+- 停机后最多 15 秒等待 label 消失及 8765 释放；不杀未知进程。新进程必须满足
+  launchd PID=唯一监听 PID，记录启动时间，HTTP 检查前后核对身份及干净提交。
+  这是“先释放端口→新启动→核对进程和提交”的本机发布证据，不是新增了带
+  release ID 的 health API，也不是不可变发布目录或代码/DB 自动回滚。
+- 回退也预检，bootout 错误不忽略。KeyboardInterrupt 写失败回执后停止；
+  不因中断自动继续启动。恢复回执明确 code_commit 仍为本次提交，
+  config_source_commit 仅表示 plist 来源，code/database_rollback 均 false。
+- `review-before.xml`：在 392e103 的归档脚本上运行 5 个新增反例，均因行为失败：
+  Background、域不可访问、plist 会话类型错误、未知端口占用仍被旧脚本启动；
+  KeyboardInterrupt 后缺失败回执。只为测试名称兼容补了常量和异常别名，未改旧行为。
+- `review-targeted.xml`：29 passed，fake launchctl/HTTP + 临时 SQLite，包含
+  端口延迟释放、身份/提交漂移、命令超时、恢复错误、门禁/镜像漂移。
+- `review-verify-first.log`：首次全量 373 passed / 16 skipped（47.40 秒）；
+  `review-verify-final.log`：最后补充旧 PID 拒绝后重跑 exit 0，374 passed /
+  16 skipped（46.42 秒），后续定向、确定性评测、JS 与 diff 检查通过。
+- 测试入口先误用 `.venv/bin/pytest`，没有将根目录放进 sys.path，收集时
+  ModuleNotFoundError: deploy；改用仓库统一的 `.venv/bin/python -m pytest`
+  后通过，没有改应用或放宽断言来绕过这次命令错误。
+- `review-preflight.json`：在本机只读运行新 preflight，第一条 managername
+  检查即因 Background 拒绝，attempts=0；8765 unreachable。没有执行 bootout、
+  bootstrap、系统域迁移、模型调用或公网发布。仍需独立复审及兼容调用环境。
+
+以下为历史证据，旧“代码通过”和“登录 GUI 即可恢复”均已被后续复核更正。
 
 基线 e603c58，应用双端 1840639。规格为 LOCAL_DEPLOYMENT_RECOVERY.md。
 

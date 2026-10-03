@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="5" time="0.085" timestamp="2026-10-04T02:07:25.455071+08:00" hostname="192.168.31.117"><testcase classname="test_old_deployment" name="test_preflight_failure_never_stops_or_starts_service[background]" time="0.006"><failure message="Failed: DID NOT RAISE RuntimeError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-722/test_preflight_fai...bbbbbbbbbbbbbbb:deploy/local.macos.plist'), ('launchctl', 'bootout', 'gui/501/local.harnessagent.workbench'), ...], [])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106e91cd0&gt;
+kind = 'background'
+
+    @pytest.mark.parametrize('kind', ['background', 'domain', 'session_type', 'foreign_port'])
+    def test_preflight_failure_never_stops_or_starts_service(deployment, monkeypatch, kind):
+        root, calls, _ = deployment
+        original = activation.run
+        def command(*args, **kwargs):
+            if kind == 'background' and args == ('launchctl', 'managername'):
+                return 'Background'
+            if kind == 'domain' and args == ('launchctl', 'print', activation.DOMAIN):
+                raise subprocess.CalledProcessError(125, args)
+            if kind == 'foreign_port' and args[0] == '/usr/sbin/lsof':
+                return 'p999\n'
+            return original(*args, **kwargs)
+        monkeypatch.setattr(activation, 'run', command)
+        if kind == 'session_type':
+            config = settings(root)
+            config['LimitLoadToSessionType'] = ['Background']
+            (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+/tmp/ha0056-regression.3FInDW/test_old_deployment.py:313: Failed</failure></testcase><testcase classname="test_old_deployment" name="test_preflight_failure_never_stops_or_starts_service[domain]" time="0.002"><failure message="Failed: DID NOT RAISE RuntimeError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-722/test_preflight_fai...bbbbbbbbbbbbbbb:deploy/local.macos.plist'), ('launchctl', 'bootout', 'gui/501/local.harnessagent.workbench'), ...], [])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106e916e0&gt;
+kind = 'domain'
+
+    @pytest.mark.parametrize('kind', ['background', 'domain', 'session_type', 'foreign_port'])
+    def test_preflight_failure_never_stops_or_starts_service(deployment, monkeypatch, kind):
+        root, calls, _ = deployment
+        original = activation.run
+        def command(*args, **kwargs):
+            if kind == 'background' and args == ('launchctl', 'managername'):
+                return 'Background'
+            if kind == 'domain' and args == ('launchctl', 'print', activation.DOMAIN):
+                raise subprocess.CalledProcessError(125, args)
+            if kind == 'foreign_port' and args[0] == '/usr/sbin/lsof':
+                return 'p999\n'
+            return original(*args, **kwargs)
+        monkeypatch.setattr(activation, 'run', command)
+        if kind == 'session_type':
+            config = settings(root)
+            config['LimitLoadToSessionType'] = ['Background']
+            (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+/tmp/ha0056-regression.3FInDW/test_old_deployment.py:313: Failed</failure></testcase><testcase classname="test_old_deployment" name="test_preflight_failure_never_stops_or_starts_service[session_type]" time="0.002"><failure message="Failed: DID NOT RAISE RuntimeError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-722/test_preflight_fai...bbbbbbbbbbbbbbb:deploy/local.macos.plist'), ('launchctl', 'bootout', 'gui/501/local.harnessagent.workbench'), ...], [])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1068845f0&gt;
+kind = 'session_type'
+
+    @pytest.mark.parametrize('kind', ['background', 'domain', 'session_type', 'foreign_port'])
+    def test_preflight_failure_never_stops_or_starts_service(deployment, monkeypatch, kind):
+        root, calls, _ = deployment
+        original = activation.run
+        def command(*args, **kwargs):
+            if kind == 'background' and args == ('launchctl', 'managername'):
+                return 'Background'
+            if kind == 'domain' and args == ('launchctl', 'print', activation.DOMAIN):
+                raise subprocess.CalledProcessError(125, args)
+            if kind == 'foreign_port' and args[0] == '/usr/sbin/lsof':
+                return 'p999\n'
+            return original(*args, **kwargs)
+        monkeypatch.setattr(activation, 'run', command)
+        if kind == 'session_type':
+            config = settings(root)
+            config['LimitLoadToSessionType'] = ['Background']
+            (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+/tmp/ha0056-regression.3FInDW/test_old_deployment.py:313: Failed</failure></testcase><testcase classname="test_old_deployment" name="test_preflight_failure_never_stops_or_starts_service[foreign_port]" time="0.002"><failure message="Failed: DID NOT RAISE RuntimeError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-722/test_preflight_fai...bbbbbbbbbbbbbbb:deploy/local.macos.plist'), ('launchctl', 'bootout', 'gui/501/local.harnessagent.workbench'), ...], [])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106851260&gt;
+kind = 'foreign_port'
+
+    @pytest.mark.parametrize('kind', ['background', 'domain', 'session_type', 'foreign_port'])
+    def test_preflight_failure_never_stops_or_starts_service(deployment, monkeypatch, kind):
+        root, calls, _ = deployment
+        original = activation.run
+        def command(*args, **kwargs):
+            if kind == 'background' and args == ('launchctl', 'managername'):
+                return 'Background'
+            if kind == 'domain' and args == ('launchctl', 'print', activation.DOMAIN):
+                raise subprocess.CalledProcessError(125, args)
+            if kind == 'foreign_port' and args[0] == '/usr/sbin/lsof':
+                return 'p999\n'
+            return original(*args, **kwargs)
+        monkeypatch.setattr(activation, 'run', command)
+        if kind == 'session_type':
+            config = settings(root)
+            config['LimitLoadToSessionType'] = ['Background']
+            (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+/tmp/ha0056-regression.3FInDW/test_old_deployment.py:313: Failed</failure></testcase><testcase classname="test_old_deployment" name="test_interrupt_after_bootout_writes_failure_without_more_activation" time="0.002"><failure message="StopIteration">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-722/test_interrupt_aft...bbbbbbbbbbbbbbbbbbbb:deploy/local.macos.plist'), ('launchctl', 'bootout', 'gui/501/local.harnessagent.workbench')], [])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1068519d0&gt;
+
+    def test_interrupt_after_bootout_writes_failure_without_more_activation(deployment, monkeypatch):
+        root, calls, _ = deployment
+        monkeypatch.setattr(activation, 'bootstrap', lambda *a: (_ for _ in ()).throw(KeyboardInterrupt()))
+        with pytest.raises(KeyboardInterrupt):
+            activation.main()
+&gt;       receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       StopIteration
+
+/tmp/ha0056-regression.3FInDW/test_old_deployment.py:376: StopIteration</failure></testcase></testsuite></testsuites>

@@ -1,5 +1,10 @@
 # HA-0056 有界 launchd 发布恢复
 
+复审返工完成待复核：预检、身份绑定和结构化错误，29项纯故障注入通过，
+全量374 passed/16 skipped。新preflight在本机第一步就安全拒绝Background，
+没有停服务或激活。实际发布仍需兼容调用会话，user域备选不在本次自动实施范围。
+代码验证不等于部署恢复。
+
 来源：HA-0055 本机 bootstrap/自动回退 exit 5，需要手动恢复。
 规格：specs/testing/LOCAL_DEPLOYMENT_RECOVERY.md。
 

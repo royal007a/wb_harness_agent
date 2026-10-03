@@ -1,0 +1,15 @@
+{
+  "observed_on": "2026-10-04",
+  "timezone": "Asia/Shanghai",
+  "read_only": true,
+  "activation_attempted": false,
+  "preflight_error": {
+    "error_type": "ActivationError",
+    "code": "gui_requires_aqua_caller",
+    "action": "preflight",
+    "attempts": 0
+  },
+  "local_health_status": "unreachable",
+  "commands": [["launchctl", "managername"]],
+  "not_evidence": ["No successful deployment or launchd recovery was performed."]
+}

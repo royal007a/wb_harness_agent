@@ -4,17 +4,17 @@
   "tasks": [
     {
       "id": "HA-0056",
-      "title": "修复 launchd 发布的有界重试和恢复证据",
+      "title": "修复 launchd 发布预检、身份绑定和恢复证据",
       "status": "blocked",
       "risk": "medium",
-      "scope": ["暂态 bootstrap 重试及绝对超时", "正向/回退健康验证和失败回执", "故障注入、双端发布与独立 review"],
+      "scope": ["bootout前会话域预检及命令绝对超时", "端口释放、进程/提交身份绑定和失败回执", "故障注入、双端发布与独立 review"],
       "non_goals": ["自动回滚数据库或应用代码", "强杀其他服务", "开启模型或改变沙箱权限"],
-      "acceptance": ["暂态 5 可恢复，永久错误和超时有界退出", "回退未经健康验证不得称成功，失败发布不得写成功回执", "旧缺陷反例、新回归、双端固定版本 Evidence 可复核"],
+      "acceptance": ["不兼容会话在停服务前拒绝；exit5不盲重试，错误和超时有界退出", "端口释放和新进程/提交身份可核对，回退未经健康验证不得称成功", "旧缺陷反例、新回归、双端固定版本 Evidence 可复核"],
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0056-local-deployment-recovery.md",
-      "blocked_reason": "独立复核 Changes Requested：exit 5 不必然暂态；bootout 前缺会话域预检，健康未绑定进程/发布身份。调用方 Background 是 gui/501 exit125 的候选原因，重新登录 GUI 不保证解决。尚未执行新发布。",
-      "recovery_condition": "先修预检、发布身份和错误回执；验证调用会话与目标域兼容。user/501 + Aqua/Background 为待明确批准的备选，不自动升级 system/root；之后先本机再132发布。",
+      "blocked_reason": "复审返工29项定向及全量374 passed/16 skipped通过，待固定提交独立复核。当前Background调用方被新预检安全拒绝，8765离线，实际双部署仍未执行。",
+      "recovery_condition": "固定代码独立复核；取得兼容Aqua调用环境，或由用户明确批准同uid user/501 + Aqua/Background备选并补规格实现验证后，先本机再132部署。",
       "evidence": ["harness/evidence/HA-0056/acceptance.md"]
     },
     {
@@ -28,8 +28,8 @@
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0055-runtime-status-ui.md",
-      "blocked_reason": "复核返工已提交2f8a30c，19项UI与全量361 passed/16 skipped通过；尚待独立复审及HA-0056本机部署恢复，未发布到8765/132。",
-      "recovery_condition": "固定代码复审通过；HA-0056修复并明确本机拓扑后，按先本机再132发布并完成实页验收。",
+      "blocked_reason": "2f8a30c已获独立Approved，19项UI通过，Low已登记；尚待HA-0056本机部署恢复，未发布到8765/132。",
+      "recovery_condition": "HA-0056固定代码复核通过并明确本机拓扑后，按先本机再132发布并完成实页验收。",
       "evidence": ["harness/evidence/HA-0055/acceptance.md"]
     },
     {
