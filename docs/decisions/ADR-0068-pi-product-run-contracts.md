@@ -1,6 +1,6 @@
 # ADR-0068：Pi Product Run的原子Gate与连续事件读取
 
-状态：实现与离线验证完成；38新增/185相关/1225全量通过，16跳过；待独立review/双部署。
+状态：固定697ef73独立Approved；2 Low测试缺口与3 Info已登记；双部署待验收。
 日期：2026-10-04
 
 Pi离线纵切已有Product Run/Handoff/Gate，但五个公开响应仍为空声明。

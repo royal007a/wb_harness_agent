@@ -252,3 +252,7 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   仍调用_index_fact，可能500；不损坏事务，不等于M1写入可用。本轮未修。
 - **OPENAPI-EMPTY-06**：HA-0069候选补Memory三类写回执后，剩22个API和1个页面
   成功JSON声明恰为空；缺content及非空但宽松声明另计，见该项remaining清单。
+- **PI-RUN-02 / Low**：HA-0068固定697ef73独立Approved；Child根列表过滤及
+  Gate先成功再cancel的终态保护删除突变仍存活，需补行为反例，生产代码目前正确。
+  相关185测试要求pi-adapter/node_modules已安装，否则179通过/6跳过。
+  waiting_approval超过timeout仍可人工Gate属当前未禁止行为；不是模型执行延长授权。

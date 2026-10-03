@@ -28,9 +28,9 @@
       "depends_on": ["HA-0062", "HA-0067"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0068-pi-product-run-contracts.md",
-      "blocked_reason": "38新增/185相关、旧30行为反例及9/9突变；全量1225 passed/16 skipped，verify退出0。待固定提交独立review及HA-0056兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交独立Approved；兼容本机拓扑明确后先本机再132部署验收。",
-      "evidence": ["harness/evidence/HA-0068/acceptance.md", "harness/evidence/HA-0068/mutations.md", "harness/evidence/HA-0068/remaining-empty-responses.json"]
+      "blocked_reason": "697ef73独立Approved，38新/185相关及旧30反例核实；2 Low测试缺口与3 Info登记。双部署仍待HA-0056兼容本机拓扑。",
+      "recovery_condition": "兼容本机拓扑明确后先本机再132部署验收。",
+      "evidence": ["harness/evidence/HA-0068/acceptance.md", "harness/evidence/HA-0068/mutations.md", "harness/evidence/HA-0068/remaining-empty-responses.json", "harness/evidence/HA-0068/review.md"]
     },
     {
       "id": "HA-0067",

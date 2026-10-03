@@ -10,5 +10,6 @@
 不启动真实Provider、Keychain或正式服务。真实sidecar测试与合成Adapter证据分开。
 
 收口：38新增/185相关，旧30行为失败/8通过/errors0，9/9定向突变；全量1225
-passed/16 skipped，verify退出0。143份源码哈希稳定。待固定提交独立review与
-兼容本机拓扑明确后的先本机后132发布，证据HA-0068/acceptance.md。
+passed/16 skipped，verify退出0。143份源码哈希稳定。697ef73已独立Approved，
+2 Low测试缺口/3 Info已登记；仍待兼容本机拓扑后先本机再132发布。
+证据HA-0068/acceptance.md及review.md。

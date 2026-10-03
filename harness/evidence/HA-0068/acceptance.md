@@ -1,6 +1,6 @@
 # HA-0068 Pi Product Run 合同与生命周期
 
-2026-10-04，基线868f4b3。候选实现已验证；独立review/真实双部署尚未完成。
+2026-10-04，基线868f4b3。固定697ef73已独立Approved，见review.md；真实双部署未完成。
 规格：PI_PRODUCT_HTTP_CONTRACTS.md；ADR-0068；新测试test_pi_product_http_contracts.py。
 
 ## 已实现
@@ -43,6 +43,8 @@ passing-test 2xx。143份源码/契约/测试/功能映射哈希运行前后稳�
   Store，注入时序另外覆盖取消/Gate竞争。不是多进程分布式锁或真实socket证据。
 - 新增模拟结果验证控制面发布/Gate，不证明PDF风险判断；既有Faux sidecar测试
   单独纳入targeted，不等于真实模型、费用、法律质量或sidecar即时中止验收。
+  该185相关口径依赖本机已安装pi-adapter/node_modules（npm ci）；干净worktree
+  没有依赖时为179 passed/6 skipped。新38测试本身无Node依赖。
 - Gate回放是历史收据，不是新的执行/授权；当前仍可信本机入口，没有新增principal。
   创建收据JSON逐值一致，不承诺键顺序；Gate字节回放另有断言。
 - 最新Gate倒序扫描内存有界，最坏可能扫描整个Run历史；没有宣称索引化JSON查询
@@ -60,5 +62,5 @@ passing-test 2xx。143份源码/契约/测试/功能映射哈希运行前后稳�
 adaptive6，确定性评测、准入检查、JS语法和diff检查通过，见verify.log。
 测试输出写完后统一清理日志/XML行尾空白、将参数化testcase名称改为摘要，
 HTTP观察JSON仅机械压成单行；不修改执行结果、原始nodeid哈希或源码哈希。
-两个测试worktree已移除；没有改正式运行配置或数据。固定提交交独立review，
-Work Item保留blocked（review及部署待验收），不代表12小时整体目标完成。
+两个测试worktree已移除；没有改正式运行配置或数据。697ef73已独立Approved，
+Work Item保留blocked（部署待验收），不代表12小时整体目标完成。
