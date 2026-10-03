@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0054",
   "active_plan": "exec-plans/active/HA-0054-runtime-lifecycle.md",
-  "last_checkpoint": "HA-0054 生命周期旧实现 13 failed/2 passed，修复后定向 76 passed，完整 verify exit 0（325 passed/16 skipped）。真实沙箱首次 15/2，诊断并分开超时与安全规则专项预算后 17 passed；生产沙箱限制未变。等待固定提交双端部署与 review。HA-0053 清点阶段已提交并交审。",
-  "last_updated_at": "2026-10-03T15:12:00Z",
-  "next_action": "先部署 HA-0054 到本机及 132、验证并交独立 review；随后修 OpenAPI 命名冲突及其余接口覆盖。148 路由/22 功能全部验收尚未完成，不启用真实模型，不将独立 Skill 沙箱称为 Product Run 桥接。",
+  "last_checkpoint": "HA-0054 已双端发布 912faca，保留两次首次验证失败及修复证据。远端 staging 320 passed/22 skipped，live 60 passed，发布后 Runtime+真实沙箱 37 passed。模型仍 disabled；HA-0053/54 等独立 review。视觉检查发现 UI-RUNTIME-01：刷新消息后错误消失，已登记，不能用浏览器瞬时绿灯替代验收。",
+  "last_updated_at": "2026-10-03T15:23:37Z",
+  "next_action": "继续 12 小时完整目标：下一原子任务修复 UI-RUNTIME-01（持久 Exchange 状态展示及稳定浏览器断言），再修 OpenAPI 同名 Schema 覆盖、26 未观测接口及全部功能验收。保持双端发布、独立 review 与真实模型门禁；不把独立 Skill 沙箱称为 Product Run 桥接。",
   "release": "0.1.0-local"
 }

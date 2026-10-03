@@ -1,0 +1,1 @@
+{"mode":"provider_agent_chat_runtime@1","runtime_enabled":false,"credential_resolution":"deferred_to_keychain_at_transport_boundary","model_calls":0,"provider_calls":0,"network_calls":0,"tool_binding_count":0,"note":"默认关闭外部模型调用；配置不等于已获运行授权。"}

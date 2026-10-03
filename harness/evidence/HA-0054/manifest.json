@@ -13,7 +13,10 @@
   "real_model_calls": 0,
   "default_model_gate_changed": false,
   "product_run_bridge_implemented": false,
-  "deployment": "pending",
+  "deployment": "both local and 118.196.123.132 at 912faca19bc9561561e889f5ac377e35b7716d90",
+  "deployment_evidence": ["local-deployment.json", "remote-deployment.json", "remote-health.json", "remote-runtime.json", "remote-sandbox.json", "remote-postdeploy-tests.xml"],
+  "remote_tests": {"stage_passed":320,"stage_skipped":22,"live_dependency_passed":60,"postdeploy_runtime_and_real_sandbox_passed":37},
+  "browser": {"local":"script passed","remote_prefix":"script passed via SSH tunnel and local prefix proxy","public_password_login":"not_verified","visual_finding":"UI-RUNTIME-01: persisted exchange error is not rendered after history refresh; script assertion only covers transient error"},
   "independent_review": "pending",
   "whole_system_acceptance": false
 }

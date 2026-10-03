@@ -14,6 +14,23 @@
 以上 Runtime 探针为临时 SQLite + 合成 transport，外部网络调用 0；不是生产
 事故或真实模型测试。修复不能只隐藏问题/修改声明，必须补行为回归。
 
+### HA-0054 跟进（2026-10-03）
+
+RUNTIME-01/02 已在 b639b8b 修复，912faca 双端发布；旧用例 13 failed，修复后
+定向 76 passed；132 运行依赖 + 实际容器共 37 passed。独立 review 待收。
+OPENAPI-01 仍未修复，26 未观测接口的全量验收仍未完成。
+
+新发现 **UI-RUNTIME-01**：`frontend/agent-runtime.js` 的 `sendMessage` 先显示
+SSE error，再由 `chooseSession → renderMessages(detail.messages)` 清掉错误；
+没有 assistant 是正确的，但 Exchange 失败状态也没有被呈现。实际远端截图
+只有 user 消息，源码确认 detail.exchanges 被忽略。浏览器测试只在瞬间断言
+error，reload 后只验证 Session 存在，所以脚本绿灯漏掉了持久错误展示。
+后续必须单独显示 Exchange 状态（不能伪造 assistant），并在发送完成、重新
+选择会话及刷新后验证错误仍可见，不能只等到瞬时文本出现就通过。
+
+待补探针：OpenAI-compatible Adapter 对无 `[DONE]` 的断流是否错误当作成功
+（当前仅源码风险，尚未作协议层反例验证）；真实 Provider 继续不准入。
+
 ## 接口基线
 
 148 个方法/路径组合（包含 HEAD、页面、静态 mount），22 类功能。

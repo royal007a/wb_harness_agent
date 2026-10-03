@@ -1,0 +1,16 @@
+{
+  "commit": "912faca19bc9561561e889f5ac377e35b7716d90",
+  "previous_commit": "87934de73ab314963509dfe3feff5a2fef8fde85",
+  "deployed_at": "20261003T152011Z",
+  "database": "/var/lib/harnessagent/harness.db",
+  "backup": "/var/backups/harnessagent/ha0054-20261003T152011Z",
+  "health": {
+    "status": "ok",
+    "version": "0.1.0",
+    "mode": "local_single_user",
+    "model_calls_enabled": false
+  },
+  "runtime_environment_preserved": true,
+  "credentials_unchanged": true,
+  "public_url": "http://118.196.123.132/harness/"
+}

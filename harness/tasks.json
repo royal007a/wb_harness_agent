@@ -5,7 +5,7 @@
     {
       "id": "HA-0054",
       "title": "修复 Agent Runtime 唯一执行权和取消终态",
-      "status": "running",
+      "status": "waiting_approval",
       "risk": "high",
       "scope": ["Exchange 原子认领、终态不变与 Session 活动请求隔离", "取消关闭上游、输出/等待上限、重启失败收敛", "回归、双端部署及独立审查"],
       "non_goals": ["启用真实 Provider 或工具", "Product Run/Skill 桥接", "身份体系与通用自动恢复"],

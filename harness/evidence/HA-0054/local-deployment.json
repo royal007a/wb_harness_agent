@@ -1,0 +1,21 @@
+{
+  "commit": "912faca19bc9561561e889f5ac377e35b7716d90",
+  "backup": "/Users/weberzhao/code/ai/harnessagent/.local/backups/ha0054-20261003T151756Z",
+  "database": "/Users/weberzhao/code/ai/harnessagent/.local/harness.db",
+  "runtime": {
+    "mode": "external-skill-runtime@1",
+    "runtime_enabled": true,
+    "backend": "colima",
+    "access_scope": "direct_loopback_or_ssh_tunnel",
+    "max_concurrency": 1,
+    "isolation_profile": "external-skill-stdlib-v1",
+    "image_id": "sha256:23f545310e16ca0b28f3f3a8eeb32b1afe6ede52a67371d31775788afe45e518",
+    "package_sources": [
+      "local_zip_upload_only"
+    ],
+    "network": "denied",
+    "host_paths": "denied_except_immutable_package_and_request_mounts",
+    "credentials": "not_injected",
+    "blockers": []
+  }
+}
