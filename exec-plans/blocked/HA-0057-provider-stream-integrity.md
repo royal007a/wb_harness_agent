@@ -3,7 +3,7 @@
 代码验证完成：旧版本4反例失败；协议56项，相关合计132 passed；完整 verify
 446 passed/16 skipped。85fc7d3 已获独立 Approved；当前追加修复复审 Low（读取前
 拒绝内容编码、原始字节流）：11个旧版行为反例失败；相关143项、全量457 passed/
-16 skipped通过，追加补丁待独立复核。实际发布被HA-0056本机调用拓扑
+16 skipped通过，追加补丁986ed1d也已独立Approved。实际发布被HA-0056本机调用拓扑
 决定阻塞，仍须先本机后132。Evidence位于 harness/evidence/HA-0057/。
 
 目标：修复 PROVIDER-01，协议失败不可持久化成功回答。范围限 Adapter、相关契约、

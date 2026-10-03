@@ -1,4 +1,4 @@
-# HA-0057 验证（85fc7d3 代码 Approved，追加 Low 修复待复核，未部署）
+# HA-0057 验证（986ed1d 含追加修复已独立 Approved，未部署）
 
 基线 ce490c5。规格 PROVIDER_STREAM.md，决策 ADR-0057。
 MockTransport 和临时 SQLite 验证 Provider 到 Exchange 的失败语义；不使用真实
@@ -30,7 +30,7 @@ MockTransport 和临时 SQLite 验证 Provider 到 Exchange 的失败语义；�
 
 ## 边界与待办
 
-85fc7d3 独立 review 已收，追加补丁待复核；真实模型/第三方兼容性未验证、双端未发布。协议 `supported`
+85fc7d3 与 986ed1d 独立 review 均 Approved；真实模型/第三方兼容性未验证、双端未发布。协议 `supported`
 不等于真实服务 available；usage 不构成费用硬上限；内存/CPU 限额不是 OS 沙箱。
 没有增加工具执行、重试、fallback、Product Run 桥接或放宽准入。
 HA-0056 ce490c5 代码已独立 Approved，但真实本机调用拓扑与双部署仍待完成。
@@ -61,3 +61,11 @@ HA-0056 ce490c5 代码已独立 Approved，但真实本机调用拓扑与双部�
 
 不声称整个 HTTP 栈/OS 缓冲具备 2 MiB 内存硬限额。没有实际模型/真实端点、
 Keychain、8765 或132操作，部署阻塞不变。
+
+## 编码修复独立复审（986ed1d）
+
+2026-10-04 mymacclaude Approved，重跑 67 项全部通过。另以本机合成 HTTP
+server + 真实 h11 socket 验证：约 61 KB gzip（展开 60 MiB）读取前拒绝，
+报告 tracemalloc 峰值 4.2 MB；未压缩约 5 MB 输入报 RESPONSE_LIMIT、峰值
+5.9 MB；两次各一个请求。以上内存数字来自独立 reviewer，不是本代理重测。
+没有真实第三方 Provider、8765、132 或双端发布证据；强制压缩网关仍 fail-closed。
