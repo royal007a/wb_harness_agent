@@ -1,5 +1,19 @@
 # HA-0056 验证（返工验证中，未重新发布）
 
+## 独立复审结论（ce490c5）
+
+mymacclaude 已给 **Approved（代码部分）**；真实发布不在批准范围。
+其只读复跑 45 passed，新测试对 0f5d6a7 为 14 failed / 31 passed，并用模拟时钟
+补测 40 余场景：1/20/44 秒退出发布；44.9/46/89 秒进入恢复；91/100 秒耗尽
+两个窗口无 bootstrap；PID 复用/多监听拒绝；恢复 18 个调用位置中断均有回执并重抛。
+这些是独立 mock 证据，未操作 launchctl/8765；不是实际 OS 行为验收。
+
+非阻塞 Low 留存：停机前 ps=1 仍可产生未分类 OSError；health 的命令超时与
+operation_deadline 可缺少 health 动作归因；同步 bootout 超时后不继续利用剩余
+15 秒而进入恢复。ps lstart 秒级精度不能排除同秒 PID 复用，launchd 真机等待行为
+尚未核对。上述 Low 未在本提交后擅自修改批准代码，后续单独处理。
+HA-0056 仍因真实本机拓扑/双部署验收保持 blocked，不标 completed。
+
 ## 2026-10-04 慢退出复审返工（基线 0f5d6a7）
 
 - 来源：mymacclaude 对 0f5d6a7 的 Changes Requested。确认旧脚本在 label 已消失、
