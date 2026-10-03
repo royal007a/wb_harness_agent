@@ -452,7 +452,9 @@ def test_checkpoint_restore_rejects_every_binding_without_creating_run(client, a
 
 def test_checkpoint_restore_rejects_arguments_and_survives_restart(tmp_path, monkeypatch):
     target = tmp_path / 'checkpoint-restart.db'
-    with TestClient(create_app(target), base_url='http://127.0.0.1') as client:
+    # Fault injection owns execution here. A background worker could claim the
+    # source between submit() and execute(), escaping the intended fault.
+    with TestClient(create_app(target, run_worker=False), base_url='http://127.0.0.1') as client:
         data, source, checkpoint = fail_after_checkpoint(client, client.app, monkeypatch)
         rejected = client.post(f'/api/local/runs/{source["id"]}:restore', json={'plan': 'forbidden'},
                                headers={'Idempotency-Key': 'restore-arguments'})
@@ -469,8 +471,14 @@ def test_checkpoint_restore_rejects_arguments_and_survives_restart(tmp_path, mon
         restored = client.post(f'/api/local/runs/{source["id"]}:restore', json={},
                                headers={'Idempotency-Key': 'restore-after-restart'})
         assert restored.status_code == 202
-        client.app.state.service.execute(restored.json()['run_id'])
-        assert client.get('/api/v1/runs/' + restored.json()['run_id']).json()['status'] == 'succeeded'
+        # On restart use the actual worker, not a competing manual executor.
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            final = client.get('/api/v1/runs/' + restored.json()['run_id']).json()
+            if final['status'] in {'succeeded', 'failed', 'cancelled', 'expired'}:
+                break
+            time.sleep(.02)
+        assert final['status'] == 'succeeded', final
 
 
 def test_idempotency_rerun_and_conflict(client, app):

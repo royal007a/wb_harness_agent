@@ -1,0 +1,1485 @@
+{
+  "version": "interface-inventory@1",
+  "routes": [
+    {
+      "id": "DELETE /api/local/memory/sources/{source_id}",
+      "method": "DELETE",
+      "path": "/api/local/memory/sources/{source_id}",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_source_delete",
+      "source": "backend/app.py:232",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /",
+      "method": "GET",
+      "path": "/",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "index",
+      "source": "backend/app.py:839",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /agent-lab",
+      "method": "GET",
+      "path": "/agent-lab",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "agent_lab_page",
+      "source": "backend/app.py:711",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /agent-runtime",
+      "method": "GET",
+      "path": "/agent-runtime",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "agent_runtime_page",
+      "source": "backend/app.py:715",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /api/local/agent-lab/agents",
+      "method": "GET",
+      "path": "/api/local/agent-lab/agents",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_agents",
+      "source": "backend/app.py:509",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-lab/models",
+      "method": "GET",
+      "path": "/api/local/agent-lab/models",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_models",
+      "source": "backend/app.py:501",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-lab/providers",
+      "method": "GET",
+      "path": "/api/local/agent-lab/providers",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_providers",
+      "source": "backend/app.py:493",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-lab/runtime",
+      "method": "GET",
+      "path": "/api/local/agent-lab/runtime",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_runtime",
+      "source": "backend/app.py:418",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-lab/sessions",
+      "method": "GET",
+      "path": "/api/local/agent-lab/sessions",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_sessions",
+      "source": "backend/app.py:517",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-lab/sessions/{session_id}",
+      "method": "GET",
+      "path": "/api/local/agent-lab/sessions/{session_id}",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_session_detail",
+      "source": "backend/app.py:525",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-runtime/agents",
+      "method": "GET",
+      "path": "/api/local/agent-runtime/agents",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_agents",
+      "source": "backend/app.py:446",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-runtime/models",
+      "method": "GET",
+      "path": "/api/local/agent-runtime/models",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_models",
+      "source": "backend/app.py:438",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-runtime/providers",
+      "method": "GET",
+      "path": "/api/local/agent-runtime/providers",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_providers",
+      "source": "backend/app.py:426",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-runtime/providers/{provider_id}/readiness",
+      "method": "GET",
+      "path": "/api/local/agent-runtime/providers/{provider_id}/readiness",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_provider_readiness",
+      "source": "backend/app.py:434",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-runtime/runtime",
+      "method": "GET",
+      "path": "/api/local/agent-runtime/runtime",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_status",
+      "source": "backend/app.py:422",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-runtime/sessions",
+      "method": "GET",
+      "path": "/api/local/agent-runtime/sessions",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_sessions",
+      "source": "backend/app.py:454",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/agent-runtime/sessions/{session_id}",
+      "method": "GET",
+      "path": "/api/local/agent-runtime/sessions/{session_id}",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_session_detail",
+      "source": "backend/app.py:462",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/connectors/baidu-netdisk",
+      "method": "GET",
+      "path": "/api/local/connectors/baidu-netdisk",
+      "kind": "api",
+      "feature": "baidu",
+      "handler": "baidu_netdisk_status",
+      "source": "backend/app.py:561",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/connectors/baidu-netdisk/callback",
+      "method": "GET",
+      "path": "/api/local/connectors/baidu-netdisk/callback",
+      "kind": "api",
+      "feature": "baidu",
+      "handler": "baidu_netdisk_callback",
+      "source": "backend/app.py:573",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /api/local/external-skills/packages",
+      "method": "GET",
+      "path": "/api/local/external-skills/packages",
+      "kind": "api",
+      "feature": "external-skills",
+      "handler": "external_skill_packages",
+      "source": "backend/app.py:155",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/external-skills/runtime",
+      "method": "GET",
+      "path": "/api/local/external-skills/runtime",
+      "kind": "api",
+      "feature": "external-skills",
+      "handler": "external_skill_runtime",
+      "source": "backend/app.py:151",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/memory/banks",
+      "method": "GET",
+      "path": "/api/local/memory/banks",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_banks",
+      "source": "backend/app.py:178",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/memory/banks/{bank_id}",
+      "method": "GET",
+      "path": "/api/local/memory/banks/{bank_id}",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_bank_detail",
+      "source": "backend/app.py:186",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/memory/runtime",
+      "method": "GET",
+      "path": "/api/local/memory/runtime",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_runtime",
+      "source": "backend/app.py:174",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/pi-contract-review",
+      "method": "GET",
+      "path": "/api/local/pi-contract-review",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_review_list",
+      "source": "backend/app.py:660",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/pi-contract-review/{run_id}",
+      "method": "GET",
+      "path": "/api/local/pi-contract-review/{run_id}",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_review_detail",
+      "source": "backend/app.py:664",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/pi-contract-review/{run_id}/events",
+      "method": "GET",
+      "path": "/api/local/pi-contract-review/{run_id}/events",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_review_events",
+      "source": "backend/app.py:668",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/pi/runtime",
+      "method": "GET",
+      "path": "/api/local/pi/runtime",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_runtime",
+      "source": "backend/app.py:632",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/recovery/cases",
+      "method": "GET",
+      "path": "/api/local/recovery/cases",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_cases",
+      "source": "backend/app.py:382",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/recovery/cases/{case_id}",
+      "method": "GET",
+      "path": "/api/local/recovery/cases/{case_id}",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_case_detail",
+      "source": "backend/app.py:390",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/recovery/runtime",
+      "method": "GET",
+      "path": "/api/local/recovery/runtime",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_runtime",
+      "source": "backend/app.py:378",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/research",
+      "method": "GET",
+      "path": "/api/local/research",
+      "kind": "api",
+      "feature": "research",
+      "handler": "research_list",
+      "source": "backend/app.py:599",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/research-agents",
+      "method": "GET",
+      "path": "/api/local/research-agents",
+      "kind": "api",
+      "feature": "research-agents",
+      "handler": "research_agents_list",
+      "source": "backend/app.py:617",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/research-agents/{run_id}",
+      "method": "GET",
+      "path": "/api/local/research-agents/{run_id}",
+      "kind": "api",
+      "feature": "research-agents",
+      "handler": "research_agents_detail",
+      "source": "backend/app.py:623",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/research-native",
+      "method": "GET",
+      "path": "/api/local/research-native",
+      "kind": "api",
+      "feature": "research-native",
+      "handler": "research_native_list",
+      "source": "backend/app.py:647",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/research-native/runtime",
+      "method": "GET",
+      "path": "/api/local/research-native/runtime",
+      "kind": "api",
+      "feature": "research-native",
+      "handler": "research_native_runtime",
+      "source": "backend/app.py:627",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/research-native/{run_id}",
+      "method": "GET",
+      "path": "/api/local/research-native/{run_id}",
+      "kind": "api",
+      "feature": "research-native",
+      "handler": "research_native_detail",
+      "source": "backend/app.py:652",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/research/{run_id}",
+      "method": "GET",
+      "path": "/api/local/research/{run_id}",
+      "kind": "api",
+      "feature": "research",
+      "handler": "research_detail",
+      "source": "backend/app.py:605",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/runs/{run_id}/restore",
+      "method": "GET",
+      "path": "/api/local/runs/{run_id}/restore",
+      "kind": "api",
+      "feature": "replan",
+      "handler": "restore_status",
+      "source": "backend/app.py:809",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/sample",
+      "method": "GET",
+      "path": "/api/local/sample",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "sample",
+      "source": "backend/app.py:731",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/attention/runtime",
+      "method": "GET",
+      "path": "/api/local/team/attention/runtime",
+      "kind": "api",
+      "feature": "attention",
+      "handler": "team_attention_runtime",
+      "source": "backend/app.py:246",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/channels/{channel_id}",
+      "method": "GET",
+      "path": "/api/local/team/channels/{channel_id}",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_channel_detail",
+      "source": "backend/app.py:337",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/foundation/runtime",
+      "method": "GET",
+      "path": "/api/local/team/foundation/runtime",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_foundation_runtime",
+      "source": "backend/app.py:242",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/inbox",
+      "method": "GET",
+      "path": "/api/local/team/inbox",
+      "kind": "api",
+      "feature": "attention",
+      "handler": "team_inbox",
+      "source": "backend/app.py:272",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/runtime",
+      "method": "GET",
+      "path": "/api/local/team/runtime",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_runtime",
+      "source": "backend/app.py:238",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/sessions",
+      "method": "GET",
+      "path": "/api/local/team/sessions",
+      "kind": "api",
+      "feature": "continuity",
+      "handler": "team_sessions",
+      "source": "backend/app.py:254",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/sessions/runtime",
+      "method": "GET",
+      "path": "/api/local/team/sessions/runtime",
+      "kind": "api",
+      "feature": "continuity",
+      "handler": "team_session_runtime",
+      "source": "backend/app.py:250",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/sessions/{session_id}",
+      "method": "GET",
+      "path": "/api/local/team/sessions/{session_id}",
+      "kind": "api",
+      "feature": "continuity",
+      "handler": "team_session_detail",
+      "source": "backend/app.py:263",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/tasks",
+      "method": "GET",
+      "path": "/api/local/team/tasks",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_tasks",
+      "source": "backend/app.py:346",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/tasks/{task_id}",
+      "method": "GET",
+      "path": "/api/local/team/tasks/{task_id}",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_task_detail",
+      "source": "backend/app.py:354",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/workspaces",
+      "method": "GET",
+      "path": "/api/local/team/workspaces",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_workspaces",
+      "source": "backend/app.py:301",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/workspaces/{workspace_id}",
+      "method": "GET",
+      "path": "/api/local/team/workspaces/{workspace_id}",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_workspace_detail",
+      "source": "backend/app.py:310",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/workspaces/{workspace_id}/agents",
+      "method": "GET",
+      "path": "/api/local/team/workspaces/{workspace_id}/agents",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_workspace_agents",
+      "source": "backend/app.py:314",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/team/workspaces/{workspace_id}/channels",
+      "method": "GET",
+      "path": "/api/local/team/workspaces/{workspace_id}/channels",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_workspace_channels",
+      "source": "backend/app.py:328",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/artifacts/{artifact_id}/content",
+      "method": "GET",
+      "path": "/api/v1/artifacts/{artifact_id}/content",
+      "kind": "api",
+      "feature": "product",
+      "handler": "content",
+      "source": "backend/app.py:831",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/engines",
+      "method": "GET",
+      "path": "/api/v1/engines",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "engines",
+      "source": "backend/app.py:125",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/frameworks",
+      "method": "GET",
+      "path": "/api/v1/frameworks",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "frameworks",
+      "source": "backend/app.py:138",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/health",
+      "method": "GET",
+      "path": "/api/v1/health",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "health",
+      "source": "backend/app.py:121",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/readiness",
+      "method": "GET",
+      "path": "/api/v1/readiness",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "engine_readiness",
+      "source": "backend/app.py:143",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/replans/{replan_id}",
+      "method": "GET",
+      "path": "/api/v1/replans/{replan_id}",
+      "kind": "api",
+      "feature": "replan",
+      "handler": "replan_detail",
+      "source": "backend/app.py:785",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/resources",
+      "method": "GET",
+      "path": "/api/v1/resources",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "resources",
+      "source": "backend/app.py:147",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/resources/{resource_id}",
+      "method": "GET",
+      "path": "/api/v1/resources/{resource_id}",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "resource",
+      "source": "backend/app.py:727",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}",
+      "method": "GET",
+      "path": "/api/v1/runs/{run_id}",
+      "kind": "api",
+      "feature": "product",
+      "handler": "run",
+      "source": "backend/app.py:773",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}/artifacts",
+      "method": "GET",
+      "path": "/api/v1/runs/{run_id}/artifacts",
+      "kind": "api",
+      "feature": "product",
+      "handler": "artifact_list",
+      "source": "backend/app.py:820",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}/events",
+      "method": "GET",
+      "path": "/api/v1/runs/{run_id}/events",
+      "kind": "api",
+      "feature": "product",
+      "handler": "events",
+      "source": "backend/app.py:813",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}/replans",
+      "method": "GET",
+      "path": "/api/v1/runs/{run_id}/replans",
+      "kind": "api",
+      "feature": "product",
+      "handler": "replan_list",
+      "source": "backend/app.py:781",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/tasks",
+      "method": "GET",
+      "path": "/api/v1/tasks",
+      "kind": "api",
+      "feature": "product",
+      "handler": "tasks",
+      "source": "backend/app.py:758",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/tasks/{task_id}",
+      "method": "GET",
+      "path": "/api/v1/tasks/{task_id}",
+      "kind": "api",
+      "feature": "product",
+      "handler": "task_detail",
+      "source": "backend/app.py:764",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/v1/tasks/{task_id}/artifacts",
+      "method": "GET",
+      "path": "/api/v1/tasks/{task_id}/artifacts",
+      "kind": "api",
+      "feature": "product",
+      "handler": "task_artifacts",
+      "source": "backend/app.py:824",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /connectors/baidu-netdisk",
+      "method": "GET",
+      "path": "/connectors/baidu-netdisk",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "baidu_netdisk_page",
+      "source": "backend/app.py:719",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /docs",
+      "method": "GET",
+      "path": "/docs",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "api_docs",
+      "source": "backend/app.py:843",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /openapi.json",
+      "method": "GET",
+      "path": "/openapi.json",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "openapi",
+      "source": ".venv/lib/python3.14/site-packages/fastapi/applications.py:1108",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /research",
+      "method": "GET",
+      "path": "/research",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "research_page",
+      "source": "backend/app.py:609",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /research-agents",
+      "method": "GET",
+      "path": "/research-agents",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "research_agents_page",
+      "source": "backend/app.py:707",
+      "in_openapi": false
+    },
+    {
+      "id": "GET /static/{path:path}",
+      "method": "GET",
+      "path": "/static/{path:path}",
+      "kind": "static_mount",
+      "feature": "web",
+      "handler": "static",
+      "source": "frontend/",
+      "in_openapi": false
+    },
+    {
+      "id": "HEAD /openapi.json",
+      "method": "HEAD",
+      "path": "/openapi.json",
+      "kind": "page_or_schema",
+      "feature": "web",
+      "handler": "openapi",
+      "source": ".venv/lib/python3.14/site-packages/fastapi/applications.py:1108",
+      "in_openapi": false
+    },
+    {
+      "id": "HEAD /static/{path:path}",
+      "method": "HEAD",
+      "path": "/static/{path:path}",
+      "kind": "static_mount",
+      "feature": "web",
+      "handler": "static",
+      "source": "frontend/",
+      "in_openapi": false
+    },
+    {
+      "id": "POST /api/local/agent-lab/agents",
+      "method": "POST",
+      "path": "/api/local/agent-lab/agents",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_agent_create",
+      "source": "backend/app.py:513",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-lab/models",
+      "method": "POST",
+      "path": "/api/local/agent-lab/models",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_model_create",
+      "source": "backend/app.py:505",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-lab/providers",
+      "method": "POST",
+      "path": "/api/local/agent-lab/providers",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_provider_create",
+      "source": "backend/app.py:497",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-lab/sessions",
+      "method": "POST",
+      "path": "/api/local/agent-lab/sessions",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_session_create",
+      "source": "backend/app.py:521",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-lab/sessions/{session_id}/messages",
+      "method": "POST",
+      "path": "/api/local/agent-lab/sessions/{session_id}/messages",
+      "kind": "api",
+      "feature": "agent-lab",
+      "handler": "agent_lab_message_create",
+      "source": "backend/app.py:529",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-runtime/agents",
+      "method": "POST",
+      "path": "/api/local/agent-runtime/agents",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_agent_create",
+      "source": "backend/app.py:450",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-runtime/models",
+      "method": "POST",
+      "path": "/api/local/agent-runtime/models",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_model_create",
+      "source": "backend/app.py:442",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-runtime/providers",
+      "method": "POST",
+      "path": "/api/local/agent-runtime/providers",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_provider_create",
+      "source": "backend/app.py:430",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-runtime/sessions",
+      "method": "POST",
+      "path": "/api/local/agent-runtime/sessions",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_session_create",
+      "source": "backend/app.py:458",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/agent-runtime/sessions/{session_id}/messages",
+      "method": "POST",
+      "path": "/api/local/agent-runtime/sessions/{session_id}/messages",
+      "kind": "api",
+      "feature": "agent-runtime",
+      "handler": "agent_runtime_message_create",
+      "source": "backend/app.py:466",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/connectors/baidu-netdisk/authorization",
+      "method": "POST",
+      "path": "/api/local/connectors/baidu-netdisk/authorization",
+      "kind": "api",
+      "feature": "baidu",
+      "handler": "baidu_netdisk_authorization",
+      "source": "backend/app.py:565",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/connectors/baidu-netdisk:disconnect",
+      "method": "POST",
+      "path": "/api/local/connectors/baidu-netdisk:disconnect",
+      "kind": "api",
+      "feature": "baidu",
+      "handler": "baidu_netdisk_disconnect",
+      "source": "backend/app.py:581",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/external-skills/packages",
+      "method": "POST",
+      "path": "/api/local/external-skills/packages",
+      "kind": "api",
+      "feature": "external-skills",
+      "handler": "external_skill_package_register",
+      "source": "backend/app.py:159",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/external-skills/packages/{package_id}:execute",
+      "method": "POST",
+      "path": "/api/local/external-skills/packages/{package_id}:execute",
+      "kind": "api",
+      "feature": "external-skills",
+      "handler": "external_skill_execute",
+      "source": "backend/app.py:168",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/intents:interpret",
+      "method": "POST",
+      "path": "/api/local/intents:interpret",
+      "kind": "api",
+      "feature": "intent",
+      "handler": "interpret_intent",
+      "source": "backend/app.py:735",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks",
+      "method": "POST",
+      "path": "/api/local/memory/banks",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_bank_create",
+      "source": "backend/app.py:182",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}/entities",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}/entities",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_entity_create",
+      "source": "backend/app.py:194",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}/relations",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}/relations",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_relation_create",
+      "source": "backend/app.py:198",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}/retain",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}/retain",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_retain",
+      "source": "backend/app.py:190",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:context",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}:context",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_context",
+      "source": "backend/app.py:206",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:fact-lineage",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}:fact-lineage",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_fact_lineage",
+      "source": "backend/app.py:222",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:graph-recall",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}:graph-recall",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_graph_recall",
+      "source": "backend/app.py:214",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:recall",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}:recall",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_recall",
+      "source": "backend/app.py:202",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:recall-details",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}:recall-details",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_recall_details",
+      "source": "backend/app.py:210",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:resolve-entity",
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}:resolve-entity",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_entity_resolve",
+      "source": "backend/app.py:218",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/memory/sources/{source_id}:retract",
+      "method": "POST",
+      "path": "/api/local/memory/sources/{source_id}:retract",
+      "kind": "api",
+      "feature": "memory",
+      "handler": "memory_source_retract",
+      "source": "backend/app.py:226",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/preview",
+      "method": "POST",
+      "path": "/api/local/pi-contract-pipeline/preview",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_pipeline_preview",
+      "source": "backend/app.py:676",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/review",
+      "method": "POST",
+      "path": "/api/local/pi-contract-pipeline/review",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_pipeline_review",
+      "source": "backend/app.py:680",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/review-stream",
+      "method": "POST",
+      "path": "/api/local/pi-contract-pipeline/review-stream",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_pipeline_review_stream",
+      "source": "backend/app.py:688",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/security-check",
+      "method": "POST",
+      "path": "/api/local/pi-contract-pipeline/security-check",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_pipeline_security_check",
+      "source": "backend/app.py:684",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/pi-contract-review",
+      "method": "POST",
+      "path": "/api/local/pi-contract-review",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_review_create",
+      "source": "backend/app.py:656",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/pi-contract-review/{run_id}:gate",
+      "method": "POST",
+      "path": "/api/local/pi-contract-review/{run_id}:gate",
+      "kind": "api",
+      "feature": "pi",
+      "handler": "pi_contract_review_gate",
+      "source": "backend/app.py:672",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/recovery/cases",
+      "method": "POST",
+      "path": "/api/local/recovery/cases",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_case_create",
+      "source": "backend/app.py:386",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}/observations",
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}/observations",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_observation_create",
+      "source": "backend/app.py:394",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:cancel",
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:cancel",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_cancel",
+      "source": "backend/app.py:406",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:complete",
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:complete",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_complete",
+      "source": "backend/app.py:414",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:confirm",
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:confirm",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_confirm",
+      "source": "backend/app.py:402",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:link-handoff",
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:link-handoff",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_link_handoff",
+      "source": "backend/app.py:410",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:try",
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:try",
+      "kind": "api",
+      "feature": "recovery",
+      "handler": "recovery_try",
+      "source": "backend/app.py:398",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/research",
+      "method": "POST",
+      "path": "/api/local/research",
+      "kind": "api",
+      "feature": "research",
+      "handler": "research_create",
+      "source": "backend/app.py:595",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/research-agents",
+      "method": "POST",
+      "path": "/api/local/research-agents",
+      "kind": "api",
+      "feature": "research-agents",
+      "handler": "research_agents_create",
+      "source": "backend/app.py:613",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/research-native",
+      "method": "POST",
+      "path": "/api/local/research-native",
+      "kind": "api",
+      "feature": "research-native",
+      "handler": "research_native_create",
+      "source": "backend/app.py:643",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/research-native/documents",
+      "method": "POST",
+      "path": "/api/local/research-native/documents",
+      "kind": "api",
+      "feature": "research-native",
+      "handler": "research_native_document",
+      "source": "backend/app.py:637",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/runs/{run_id}:restore",
+      "method": "POST",
+      "path": "/api/local/runs/{run_id}:restore",
+      "kind": "api",
+      "feature": "replan",
+      "handler": "restore",
+      "source": "backend/app.py:805",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/tasks",
+      "method": "POST",
+      "path": "/api/local/tasks",
+      "kind": "api",
+      "feature": "product",
+      "handler": "quick_task",
+      "source": "backend/app.py:742",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/attention/items",
+      "method": "POST",
+      "path": "/api/local/team/attention/items",
+      "kind": "api",
+      "feature": "attention",
+      "handler": "team_attention_item_create",
+      "source": "backend/app.py:276",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/attention/items/{item_id}:claim",
+      "method": "POST",
+      "path": "/api/local/team/attention/items/{item_id}:claim",
+      "kind": "api",
+      "feature": "attention",
+      "handler": "team_attention_item_claim",
+      "source": "backend/app.py:281",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/attention/items/{item_id}:complete",
+      "method": "POST",
+      "path": "/api/local/team/attention/items/{item_id}:complete",
+      "kind": "api",
+      "feature": "attention",
+      "handler": "team_attention_item_complete",
+      "source": "backend/app.py:291",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/attention/items/{item_id}:release",
+      "method": "POST",
+      "path": "/api/local/team/attention/items/{item_id}:release",
+      "kind": "api",
+      "feature": "attention",
+      "handler": "team_attention_item_release",
+      "source": "backend/app.py:286",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/channels/{channel_id}/memberships",
+      "method": "POST",
+      "path": "/api/local/team/channels/{channel_id}/memberships",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_channel_membership_grant",
+      "source": "backend/app.py:341",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/channels/{channel_id}/threads/{thread_id}:read",
+      "method": "POST",
+      "path": "/api/local/team/channels/{channel_id}/threads/{thread_id}:read",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_attention_read",
+      "source": "backend/app.py:296",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/sessions",
+      "method": "POST",
+      "path": "/api/local/team/sessions",
+      "kind": "api",
+      "feature": "continuity",
+      "handler": "team_session_create",
+      "source": "backend/app.py:258",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/sessions/{session_id}:handoff",
+      "method": "POST",
+      "path": "/api/local/team/sessions/{session_id}:handoff",
+      "kind": "api",
+      "feature": "continuity",
+      "handler": "team_session_handoff",
+      "source": "backend/app.py:267",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/tasks",
+      "method": "POST",
+      "path": "/api/local/team/tasks",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_task_create",
+      "source": "backend/app.py:350",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}/gate-decisions",
+      "method": "POST",
+      "path": "/api/local/team/tasks/{task_id}/gate-decisions",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_task_gate_decision",
+      "source": "backend/app.py:374",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}/handoffs",
+      "method": "POST",
+      "path": "/api/local/team/tasks/{task_id}/handoffs",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_task_handoff",
+      "source": "backend/app.py:362",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}:claim",
+      "method": "POST",
+      "path": "/api/local/team/tasks/{task_id}:claim",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_task_claim",
+      "source": "backend/app.py:358",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}:close",
+      "method": "POST",
+      "path": "/api/local/team/tasks/{task_id}:close",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_task_close",
+      "source": "backend/app.py:370",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}:submit",
+      "method": "POST",
+      "path": "/api/local/team/tasks/{task_id}:submit",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_task_submit",
+      "source": "backend/app.py:366",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/workspaces",
+      "method": "POST",
+      "path": "/api/local/team/workspaces",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_workspace_create",
+      "source": "backend/app.py:305",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/workspaces/{workspace_id}/agents",
+      "method": "POST",
+      "path": "/api/local/team/workspaces/{workspace_id}/agents",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_agent_create",
+      "source": "backend/app.py:318",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/workspaces/{workspace_id}/channels",
+      "method": "POST",
+      "path": "/api/local/team/workspaces/{workspace_id}/channels",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_channel_create",
+      "source": "backend/app.py:332",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/team/workspaces/{workspace_id}/memberships",
+      "method": "POST",
+      "path": "/api/local/team/workspaces/{workspace_id}/memberships",
+      "kind": "api",
+      "feature": "team",
+      "handler": "team_workspace_membership_grant",
+      "source": "backend/app.py:323",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/replans/{replan_id}:cancel",
+      "method": "POST",
+      "path": "/api/v1/replans/{replan_id}:cancel",
+      "kind": "api",
+      "feature": "replan",
+      "handler": "replan_cancel",
+      "source": "backend/app.py:797",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/replans/{replan_id}:confirm",
+      "method": "POST",
+      "path": "/api/v1/replans/{replan_id}:confirm",
+      "kind": "api",
+      "feature": "replan",
+      "handler": "replan_confirm",
+      "source": "backend/app.py:793",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/replans/{replan_id}:try",
+      "method": "POST",
+      "path": "/api/v1/replans/{replan_id}:try",
+      "kind": "api",
+      "feature": "replan",
+      "handler": "replan_try",
+      "source": "backend/app.py:789",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/resources",
+      "method": "POST",
+      "path": "/api/v1/resources",
+      "kind": "api",
+      "feature": "platform",
+      "handler": "upload",
+      "source": "backend/app.py:723",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/runs/{run_id}/replans",
+      "method": "POST",
+      "path": "/api/v1/runs/{run_id}/replans",
+      "kind": "api",
+      "feature": "product",
+      "handler": "replan_create",
+      "source": "backend/app.py:777",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/runs/{run_id}:cancel",
+      "method": "POST",
+      "path": "/api/v1/runs/{run_id}:cancel",
+      "kind": "api",
+      "feature": "product",
+      "handler": "cancel",
+      "source": "backend/app.py:801",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/tasks",
+      "method": "POST",
+      "path": "/api/v1/tasks",
+      "kind": "api",
+      "feature": "product",
+      "handler": "task_create",
+      "source": "backend/app.py:754",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/v1/tasks/{task_id}/runs",
+      "method": "POST",
+      "path": "/api/v1/tasks/{task_id}/runs",
+      "kind": "api",
+      "feature": "product",
+      "handler": "rerun",
+      "source": "backend/app.py:769",
+      "in_openapi": true
+    }
+  ]
+}

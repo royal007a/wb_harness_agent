@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "external_skill_dual_deployment_acceptance",
+  "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0052",
-  "active_plan": "exec-plans/active/HA-0052-external-skill-deployment.md",
-  "last_checkpoint": "HA-0052 应用 87934de 已部署本机与 132；外部 Skill 明确启用且 blockers 为空。两端各 17 项 Skill 测试及真实 API smoke 通过，公网包/执行接口 403，状态保留 Basic 认证。Linux 镜像经过 amd64 子摘要、7 层 diff_id 和 SSH 传输校验。模型/Claude/语义检索门禁未改变。",
-  "last_updated_at": "2026-10-03T12:06:02Z",
-  "next_action": "等待用户验收 HA-0052 的受限管理员沙箱。尚未接入真实模型、Product Run、公众执行、多租户或崩溃后自动回收；不得因此扩大权限。HA-0027 原生投研准入条件仍不满足，不沿用本次沙箱授权打开 Provider/数据外发。",
+  "active_task_id": "HA-0053",
+  "active_plan": "exec-plans/active/HA-0053-system-verification.md",
+  "last_checkpoint": "HA-0053 新增 specs/testing 全量登记：148 个方法/路径、22 类功能；观测基线 307 passed/16 skipped，122 observed/26 not_observed（不是验收）。Checkpoint 测试竞争已修。复现 Runtime 取消终态覆写/重复执行及 Lab OpenAPI 同名 Schema 覆盖，进入下一修复批次。两端应用仍 87934de，模型门禁未改变。",
+  "last_updated_at": "2026-10-03T14:40:12Z",
+  "next_action": "按用户 12 小时目标推进全系统接口/功能规格与验证。HA-0053 先完成完整路由和功能清单、请求观测与基线；已发现 Checkpoint 重启用例 Worker 竞争，之后逐项运行时修复、双端部署与 mymacclaude 独立 review。真实模型和外发门禁不变。",
   "release": "0.1.0-local"
 }

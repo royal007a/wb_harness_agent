@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0053",
+      "title": "全功能接口审查：建立可复核测试规格与基线",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": ["枚举全部 HTTP/页面/静态入口与非 HTTP 功能，写入 specs/testing", "记录逐接口测试观测及功能验收缺口，不将路由访问当作行为验收", "重跑基线、修复测试确定性并登记运行时缺陷，由 mymacclaude 独立审查"],
+      "non_goals": ["将默认关闭的真实模型或数据外发自动启用", "把契约/Mock 测试当作真实模型证据", "将本阶段通过当作 12 小时完整目标已完成"],
+      "acceptance": ["代码中的所有注册路由与版本化接口清单一致，新增/删除遗漏会失败", "功能矩阵明确实现边界、规格、命令及尚缺验证", "逐接口观测包含测试 ID/结果/状态码且不保存请求正文或凭证", "基线失败有复现、处理和重跑证据；独立 review 有据可查"],
+      "depends_on": ["HA-0052"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0053-system-verification.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0053/acceptance.md"]
+    },
+    {
       "id": "HA-0052",
       "title": "补齐并受限启用双环境外部 Skill 沙箱",
       "status": "waiting_approval",

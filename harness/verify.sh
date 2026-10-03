@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 cd "$(dirname "$0")/.."
+.venv/bin/python -m harness.interface_inventory --check
 .venv/bin/python -m pytest -q
 .venv/bin/python -m pytest -q tests/test_retrieval_state.py
 .venv/bin/python -m pytest -q tests/test_agentic_rag_state.py

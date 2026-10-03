@@ -1,0 +1,23 @@
+{
+  "version": "verification-evidence@1",
+  "work_item": "HA-0053",
+  "scope": "system inventory and baseline, not full-system acceptance",
+  "initial_head": "b51dce6",
+  "commands": [
+    {"command":"bash harness/verify.sh","attempt":"initial","result":"failed","pytest":{"passed":302,"skipped":16,"failed":1},"reason":"Checkpoint test races manual execution against background worker; later commands not run"},
+    {"command":".venv/bin/python -m pytest -q -p harness.pytest_interface_evidence --interface-evidence=harness/evidence/HA-0053/http-observations.json --junitxml=harness/evidence/HA-0053/baseline-tests.xml","result":"passed","pytest":{"passed":307,"skipped":16,"failed":0},"evidence":["http-observations.json","baseline-tests.xml"]},
+    {"command":".venv/bin/python -m pytest -q tests/test_interface_inventory.py","result":"passed","pytest":{"passed":5,"skipped":0,"failed":0},"note":"Includes added parameter-ID redaction regression after baseline collection"}
+  ],
+  "evidence_processing": "Generated baseline test parameter IDs mechanically replaced with SHA-256 after capture; original counts, outcomes, timestamps and source hashes preserved. Current observer redacts on capture.",
+  "gates": {
+    "L0": "inventory/spec cross-check and diff validation",
+    "L1": "observer and inventory tests",
+    "L2": "existing in-process API baseline; observed routes are not behavioral acceptance",
+    "L3": "not completed in this baseline phase; deployment/browser/real-container and independent review remain"
+  },
+  "open_findings": ["RUNTIME-01","RUNTIME-02","OPENAPI-01","26 unobserved method/path combinations"],
+  "real_model_calls": 0,
+  "deployed_application": "87934de, unchanged on local and 132",
+  "review": "requested from mymacclaude; not yet approved",
+  "goal_complete": false
+}
