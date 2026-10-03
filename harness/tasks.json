@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0061",
+      "title": "补齐剩余只读入口的HTTP行为验证",
+      "status": "waiting_approval",
+      "risk": "low",
+      "scope": ["11个未观测读取入口", "列表内容/生命周期/详情一致/重启与HEAD", "Schema缺口、全量证据和独立review"],
+      "non_goals": ["真实Provider/CLI或权限拓扑变更", "把入口观测等同功能完成", "替代后续公开机器响应契约"],
+      "acceptance": ["逐入口有真实HTTP正反例与明确字段断言", "native列表测试不执行SDK且关闭门禁后历史仍可读", "相关/全量/观察器通过且缺口如实列出", "固定提交独立review"],
+      "depends_on": ["HA-0053"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0061-read-surfaces.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0061/acceptance.md"]
+    },
+    {
       "id": "HA-0060",
       "title": "统一 Team 列表与 Snapshot 的可见性拒绝和故障语义",
       "status": "blocked",
@@ -13,7 +28,7 @@
       "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0060-team-list-errors.md",
-      "blocked_reason": "代码和离线验证完成：旧5反例失败，新增74、相关174、全量575 passed/16 skipped；待独立review。双部署仍等待HA-0056本机拓扑决定。",
+      "blocked_reason": "fff8d75已获独立Approved：新增74、相关174通过，旧5反例按行为失败；非法status枚举静默隐藏的Low另行登记。双部署仍等待HA-0056本机拓扑决定。",
       "recovery_condition": "固定提交独立复核；兼容本机调用拓扑明确并验证后，先本机再132部署。",
       "evidence": ["harness/evidence/HA-0060/acceptance.md"]
     },
@@ -43,7 +58,7 @@
       "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0058-openapi-contracts.md",
-      "blocked_reason": "代码与离线实例验证完成：旧7反例失败、相关101项、全量483 passed/16 skipped；待独立review。真实发布仍需HA-0056兼容本机拓扑选择，未部署。",
+      "blocked_reason": "2bd4af8已获独立Approved：26项通过、旧7行为反例失败；const数据内的ref投影与runtime零计数字段的Low已登记。真实发布仍需HA-0056兼容本机拓扑选择，未部署。",
       "recovery_condition": "固定提交独立复审通过；HA-0056本机拓扑确认并验证后先本机再132发布，核验实部署OpenAPI。",
       "evidence": ["harness/evidence/HA-0058/acceptance.md"]
     },

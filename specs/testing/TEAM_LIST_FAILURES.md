@@ -34,3 +34,10 @@
 
 非目标：修复历史数据列/JSON scope分歧、改变Snapshot业务选取范围、JWT认证、
 真实模型/工具、缓存、所有HTTP契约和12小时整体目标完成。
+
+## 已知未满足边界（fff8d75独立review）
+
+第3条是目标约束，不代表已验证全部损坏形态。非法status枚举None/ACTIVE/actve
+仍被既有非active检查按不可见项过滤；只有缺字段、非法JSON/clearance等已列明
+形态会返回故障。后续应校验合法枚举再判定可见性，不能把该Low说成已经修复。
+Channel列表不在本规格的四列表范围中，仍使用旧code-only规则，另有统一待办。

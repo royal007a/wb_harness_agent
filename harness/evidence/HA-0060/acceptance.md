@@ -1,6 +1,6 @@
 # HA-0060：Team 列表与 Snapshot 不吞故障
 
-2026-10-04（北京时间）；基线8a7e840，固定提交后交mymacclaude独立review。
+2026-10-04（北京时间）；基线8a7e840，fff8d75已获mymacclaude独立Approved。
 这是离线代码验证，不是8765/132发布或真实身份/Provider验收。
 
 ## 问题与范围
@@ -68,5 +68,14 @@ before.xml是在生产代码仍为8a7e840时直接运行所得；首次编写夹
 - 真实发布等待HA-0056兼容本机调用拓扑决定，必须本机先于132；未擅自切换到
   user/system/root launchd域，也未因代码通过宣称发布完成。
 
-复审重点：白名单是否误吞其他状态；Task例外是否串到Session/Inbox；故障是否
-留下部分列表/持久过期/交接记录；旧反例是否真能失败。请求只读独立复核。
+## 独立复审（fff8d75）
+
+mymacclaude报告74项、相关174项通过；旧版选定5条全部因200而非503失败。
+另外注入DB锁错误、缺data_class、非法clearance及损坏JSON，返回500且无items；
+Task历史例外未扩散到Session/Inbox，事务失败无残留，空表仍验证主体。
+这是审查者独立报告，未代替本轮缺失的双部署、并发锁竞争或真实Provider证据。
+
+Low保留：channel/workspace及其membership的status若被绕过Schema写成None、
+ACTIVE或actve，既有status != active会按不可见过滤，并未报STATE_CORRUPT。
+因此“损坏字段不转成空列表”只验证了已列出的故障形态，不能推广到所有非法枚举。
+Channel列表仍用code-only判定，未在本轮统一；后续问题见GAPS.md。

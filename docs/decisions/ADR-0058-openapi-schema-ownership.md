@@ -1,6 +1,6 @@
 # ADR-0058：OpenAPI 定义必须保留契约归属
 
-状态：代码与离线验证完成，待独立 review；双端发布仍阻塞于 HA-0056 本机拓扑。
+状态：2bd4af8代码已获mymacclaude独立Approved；双端发布仍阻塞于HA-0056本机拓扑。
 HA-0058，基线 cd9b113；证据见 `harness/evidence/HA-0058/acceptance.md`。
 
 ## 问题

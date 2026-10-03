@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 import yaml
 from fastapi.testclient import TestClient
+from jsonschema import Draft202012Validator, FormatChecker
 
 from backend.analysis import Problem, analyze, digest, parse_csv
 from backend.app import create_app
@@ -65,6 +66,70 @@ def local_replan(client, source_id, key='replan-propose'):
     response = client.post(f'/api/v1/runs/{source_id}/replans', json={}, headers={'Idempotency-Key': key})
     assert response.status_code == 201, response.text
     return response.json()
+
+
+def test_replan_list_tracks_tcc_state_without_materializing_work(client, app, monkeypatch):
+    """HA-0061: GET exposes current summaries, not an execution or a cached POST reply."""
+    _data, source, _checkpoint = fail_after_checkpoint(client, app, monkeypatch)
+    foreign, _ = submit(client, 'replan-list-foreign')
+    endpoint = '/api/v1/runs/' + source['id'] + '/replans'
+    foreign_endpoint = '/api/v1/runs/' + foreign['initial_run']['id'] + '/replans'
+    document = app.openapi()
+    validator = Draft202012Validator({
+        '$ref': '#/components/schemas/ReplanList', 'components': document['components'],
+    }, format_checker=FormatChecker())
+    store = app.state.service.store
+
+    def read(expected):
+        before = store.db.total_changes
+        response = client.get(endpoint)
+        assert response.status_code == 200, response.text
+        assert response.json() == {'items': expected}
+        validator.validate(response.json())
+        assert not validator.is_valid({**response.json(), 'unexpected': True})
+        if expected:
+            assert not validator.is_valid({'items': [{**expected[0], 'unexpected': True}]})
+        other = client.get(foreign_endpoint)
+        assert other.status_code == 200 and other.json() == {'items': []}
+        for item in expected:
+            detail = client.get('/api/v1/replans/' + item['replan_id'])
+            assert detail.status_code == 200
+            attempt = detail.json()['attempt']
+            assert item['origin_run_id'] == attempt['origin_run_id'] == source['id']
+            assert item['status'] == attempt['status']
+            assert item['candidate_plan_digest'] == attempt['candidate_plan_digest']
+        assert store.db.total_changes == before
+
+    read([])
+    missing = client.get('/api/v1/runs/run_missing61/replans')
+    assert missing.status_code == 404 and missing.json()['error']['code'] == 'NOT_FOUND'
+    before_runs = len(store.listing('runs'))
+    first = local_replan(client, source['id'], 'list-propose-first')
+    assert local_replan(client, source['id'], 'list-propose-repeat') == first
+    read([first])
+    tried = client.post('/api/v1/replans/' + first['replan_id'] + ':try', json={},
+                        headers={'Idempotency-Key': 'list-try-first'})
+    assert tried.status_code == 200 and tried.json()['status'] == 'awaiting_confirmation'
+    read([{**first, 'status': 'awaiting_confirmation'}])
+    cancelled = client.post('/api/v1/replans/' + first['replan_id'] + ':cancel', json={},
+                            headers={'Idempotency-Key': 'list-cancel-first'})
+    assert cancelled.status_code == 200 and cancelled.json()['status'] == 'cancelled'
+    cancelled_summary = {**first, 'status': 'cancelled'}
+    read([cancelled_summary])
+    second = local_replan(client, source['id'], 'list-propose-second')
+    assert second['replan_id'] != first['replan_id']
+    read([second, cancelled_summary])
+    assert len(store.listing('runs')) == before_runs
+    tried = client.post('/api/v1/replans/' + second['replan_id'] + ':try', json={},
+                        headers={'Idempotency-Key': 'list-try-second'})
+    assert tried.status_code == 200
+    confirmed = client.post('/api/v1/replans/' + second['replan_id'] + ':confirm', json={},
+                            headers={'Idempotency-Key': 'list-confirm-second'})
+    assert confirmed.status_code == 202 and confirmed.json()['status'] == 'confirmed'
+    read([{**second, 'status': 'confirmed'}, cancelled_summary])
+    assert len(store.listing('runs')) == before_runs + 1
+    assert store.get('runs', confirmed.json()['run_id'])['status'] == 'queued'
+    assert store.get('runs', source['id'])['status'] == 'failed'
 
 
 def test_static_openapi_includes_the_runtime_replan_tcc_contract(app):

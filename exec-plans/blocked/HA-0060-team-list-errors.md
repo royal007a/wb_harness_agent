@@ -7,5 +7,6 @@
 5. 本机兼容拓扑未获确认，真实双部署保持阻塞；不改8765/132/Provider。
 
 代码检查点：旧5条行为反例失败；新增74项、相关174项、全量575 passed/16
-skipped及verify通过；观察137/148，不是业务验收率。固定提交后交独立review。
+skipped及verify通过；观察137/148，不是业务验收率。fff8d75已获独立Approved。
+复审另发现非法status枚举被静默隐藏的Low，仍需后续规格与修复，不冒充已处理。
 Evidence：harness/evidence/HA-0060/acceptance.md。

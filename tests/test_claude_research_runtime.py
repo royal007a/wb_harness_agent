@@ -15,6 +15,7 @@ from adapters.claude_research import (
 )
 from backend.analysis import Problem
 from backend.app import create_app
+from backend.service import validate
 from backend.research_sources import ResearchSourceGateway, SourcePolicy, policy_from_env
 
 
@@ -113,12 +114,84 @@ def test_default_gate_is_truthful_and_native_request_has_no_product_side_effect(
     assert status['admission']['status'] == 'not_admitted'
     assert 'admission_not_approved' in status['blockers']
     with TestClient(create_app(tmp_path / 'native.db', False), base_url='http://127.0.0.1') as client:
+        assert client.get('/api/local/research-native').json() == {'items': []}
         response = client.post('/api/local/research-native', json=REQUEST, headers={'Idempotency-Key': 'native-gate'})
         assert response.status_code == 409
         assert response.json()['error']['code'] == 'CLAUDE_RESEARCH_RUNTIME_BLOCKED'
         assert not client.app.state.service.store.listing('tasks')
+        assert client.get('/api/local/research-native').json() == {'items': []}
         runtime = client.get('/api/local/research-native/runtime').json()
         assert runtime['mode'] == 'claude_native_research@1' and not runtime['runtime_enabled']
+
+
+def test_native_list_metadata_is_scoped_and_survives_gate_close_and_restart(tmp_path, monkeypatch):
+    """HA-0061: metadata only; test admission must never start the SDK."""
+    enabled_env(monkeypatch, tmp_path)
+    calls = []
+
+    def forbidden(*args, **kwargs):
+        calls.append('native')
+        pytest.fail('Listing metadata must not enter native execution')
+
+    monkeypatch.setattr('backend.research_native.stream_native_research', forbidden)
+    database = tmp_path / 'native-list.db'
+    with TestClient(create_app(database, False), base_url='http://127.0.0.1') as client:
+        client.app.state.service.agent_runtime.credentials.resolve = forbidden
+        client.app.state.service.agent_runtime.adapters.require = forbidden
+        upload = client.post('/api/local/research-native/documents?name=report.pdf', content=PUBLIC_PDF,
+                             headers={'content-type': 'application/pdf'})
+        assert upload.status_code == 201
+        body = {**REQUEST, 'report_resource_id': upload.json()['id']}
+        roots = []
+        for key in ('native-list-first', 'native-list-second'):
+            response = client.post('/api/local/research-native', json=body,
+                                   headers={'Idempotency-Key': key})
+            assert response.status_code == 202, response.text
+            roots.append(response.json()['initial_run']['id'])
+            replay = client.post('/api/local/research-native', json=body,
+                                 headers={'Idempotency-Key': key})
+            assert replay.status_code == 202 and replay.json() == response.json()
+        foreign = client.post('/api/local/research', json={
+            'companies': ['demo_a'], 'roles': ['financial', 'industry', 'risk'],
+            'concurrency': 3, 'failure_policy': 'continue_with_warning', 'scenario': 'complete',
+            'timeout_seconds': 60, 'max_steps': 4,
+        }, headers={'Idempotency-Key': 'native-list-foreign'})
+        assert foreign.status_code == 202, foreign.text
+        before = client.app.state.service.store.db.total_changes
+        listing = client.get('/api/local/research-native')
+        assert listing.status_code == 200 and set(listing.json()) == {'items'}
+        assert [r['id'] for r in listing.json()['items']] == list(reversed(roots))
+        assert foreign.json()['initial_run']['id'] not in listing.text
+        children = []
+        for run in listing.json()['items']:
+            validate('run', run)
+            assert run['selected_engine'] == 'engine_claude_research_native'
+            assert run.get('parent_run_id') is None and run['status'] == 'queued'
+            detail = client.get('/api/local/research-native/' + run['id'])
+            assert detail.status_code == 200 and detail.json()['run'] == run
+            children.extend(child['run']['id'] for child in detail.json()['children'])
+        assert len(children) == 6 and all(child not in listing.text for child in children)
+        assert client.app.state.service.store.db.total_changes == before
+        # Child cancellation escalates to its root; both trees become terminal before restart.
+        for child in (children[0], children[3]):
+            response = client.post('/api/v1/runs/' + child + ':cancel')
+            assert response.status_code == 200 and response.json()['status'] == 'cancelled'
+        saved = client.get('/api/local/research-native').json()
+        assert [r['status'] for r in saved['items']] == ['cancelled', 'cancelled']
+        for run in saved['items']:
+            assert client.get('/api/local/research-native/' + run['id']).json()['run'] == run
+        monkeypatch.delenv('HARNESS_CLAUDE_RESEARCH_RUNTIME')
+        rejected = client.post('/api/local/research-native', json=body,
+                               headers={'Idempotency-Key': 'native-list-gate-closed'})
+        assert rejected.status_code == 409
+        assert rejected.json()['error']['code'] == 'CLAUDE_RESEARCH_RUNTIME_BLOCKED'
+        assert client.get('/api/local/research-native').json() == saved
+    with TestClient(create_app(database, False), base_url='http://127.0.0.1') as restarted:
+        before = restarted.app.state.service.store.db.total_changes
+        response = restarted.get('/api/local/research-native')
+        assert response.status_code == 200 and response.json() == saved
+        assert restarted.app.state.service.store.db.total_changes == before
+    assert calls == []
 
 
 def test_native_research_openapi_matches_the_static_contract(tmp_path):

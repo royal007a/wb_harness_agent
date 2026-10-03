@@ -34,3 +34,8 @@
 
 兼容性：只修文档的 component ID 与补缺失响应，不改变请求 JSON、持久 ID、
 业务响应或状态机。依赖旧错误 component 名的 SDK 需重新生成；不保留有歧义的别名。
+
+独立review已知Low：第1条对字面数据的保证尚不完整。递归投影会改写嵌在
+const/enum/default/examples中的同形$ref；当前已加载spec没有此实例，后续仍需
+跳过这些数据关键字并补回归。Runtime status固定0计数字段是静态声明而非用量
+遥测；本规格通过不证明真实模型请求次数为0。

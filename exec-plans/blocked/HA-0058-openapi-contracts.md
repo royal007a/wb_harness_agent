@@ -9,7 +9,7 @@
 4. 实例正反例、相关及全量验证，生成接口清单，固定提交交 mymacclaude review。
 5. 实际发布依赖 HA-0056 本机拓扑决定，遵守本机后132，不伪报上线。
 
-2026-10-04 检查点：1–4 的实现和测试已完成，固定提交待 mymacclaude 只读复审。
+2026-10-04 检查点：1–4 的实现和测试已完成，2bd4af8已获mymacclaude独立Approved。
 26 个新增用例，相关 101 passed；全量 483 passed/16 skipped，verify.sh exit 0。
 148 个入口中观测到 131 个、17 个未观测；这不是业务断言覆盖率。
 Evidence：`harness/evidence/HA-0058/acceptance.md`。

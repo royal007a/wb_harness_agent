@@ -1,6 +1,6 @@
 # HA-0058 OpenAPI 归属与 HTTP 实例验证
 
-2026-10-04（北京时间）。状态：代码/离线验证完成，待固定提交独立 review；
+2026-10-04（北京时间）。状态：2bd4af8代码已获mymacclaude独立Approved；
 真实双环境部署阻塞，不能称全部接口或系统已经验收。
 
 ## 发现与修复
@@ -57,5 +57,10 @@ working_tree_dirty=true，source_sha256 绑定本次候选代码且前后不变�
 - not_evidence：真实模型兼容、真实容器隔离、生产业务质量、所有接口功能验收、
   原生SubAgent/外部Skill→Product Run桥接均不由本轮证明。
 
-下一步：固定提交给mymacclaude只读复审，重点挑战命名归属、拒绝空过、静态动态
-实例一致性与注册原子性；保留未验证部署与剩余接口队列。
+独立复审报告：26项通过，旧版7行为反例失败；539个引用均解析，未发现跨域引用。
+对错误命名空间、空Schema、非原子注册做突变后测试均失败。没有复跑全量或验证
+客户端生成器、真实部署，不把局部独立复核扩张成全系统结论。
+
+两项Low仍保留：投影会改写const/enum/default/examples数据中的同形$ref（当前
+spec无触发实例）；Runtime status的model_calls/provider_calls/network_calls
+固定0是静态声明，不是运行计数，不能充当零调用证据。后续见GAPS.md。

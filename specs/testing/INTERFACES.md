@@ -161,19 +161,19 @@
 
 固定资源与能力元数据；readiness 不代表真实模型准入
 
-必须验证：能力与 gate 一致；CSV/资源边界、摘要、恶意内容；无外部请求。
+必须验证：能力与 gate 一致；CSV/资源边界、摘要、恶意内容；无外部请求；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/FRAMEWORK_INTEGRATION.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/FRAMEWORK_INTEGRATION.md`、`specs/testing/READ_SURFACES.md`
 
-测试入口：`tests/test_workbench.py`、`tests/test_framework_catalog.py`
+测试入口：`tests/test_workbench.py`、`tests/test_framework_catalog.py`、`tests/test_read_surfaces.py`
 
 ### product：Product Task/Run/Event/Artifact
 
 固定 CSV Product 路径；完整模型 CodeAct 仍未准入
 
-必须验证：不可变 Task/终态；权限预算快照；取消、超时、重启、事件序号；数值回算与产物下载；并发/幂等/队列。
+必须验证：不可变 Task/终态；权限预算快照；取消、超时、重启、事件序号；数值回算与产物下载；并发/幂等/队列；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/CORE_CONTRACTS.md`、`docs/harness/P0_DATA_ANALYSIS.md`
+规格：`docs/harness/CORE_CONTRACTS.md`、`docs/harness/P0_DATA_ANALYSIS.md`、`specs/testing/READ_SURFACES.md`
 
 测试入口：`tests/test_workbench.py`
 
@@ -181,9 +181,9 @@
 
 只有固定统计 checkpoint 和白名单产物发布恢复，不是开放式 Replan
 
-必须验证：版本/输入/权限/预算绑定；Try/Cancel 无执行；Confirm 去重；Gap 仅绑定恢复成功后解决。
+必须验证：版本/输入/权限/预算绑定；Try/Cancel 无执行；Confirm 去重；Gap 仅绑定恢复成功后解决；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/PLAN_REPLAN_CONTROL.md`
+规格：`docs/harness/PLAN_REPLAN_CONTROL.md`、`specs/testing/READ_SURFACES.md`
 
 测试入口：`tests/test_workbench.py`、`tests/test_execution_control.py`
 
@@ -201,29 +201,29 @@
 
 最多 9 Child Run，固定函数与 synthetic 输入
 
-必须验证：并发上限；父子权限/预算；部分失败、取消、整树重跑、重启。
+必须验证：并发上限；父子权限/预算；部分失败、取消、整树重跑、重启；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/MULTI_AGENT.md`
+规格：`docs/harness/MULTI_AGENT.md`、`specs/testing/READ_SURFACES.md`
 
-测试入口：`tests/test_research.py`
+测试入口：`tests/test_research.py`、`tests/test_read_surfaces.py`
 
 ### research-agents：三角色投研契约模拟
 
 Agent/Skill/Tool 模拟；零模型、零网络
 
-必须验证：Skill 摘要与资源 scope；Action/Observation/Final；拒绝越权；父报告独立复算；已发布Schema归属、无覆盖、HTTP实例正反例。
+必须验证：Skill 摘要与资源 scope；Action/Observation/Final；拒绝越权；父报告独立复算；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/RESEARCH_AGENT_RUNTIME.md`、`specs/testing/OPENAPI_CONTRACTS.md`
+规格：`docs/harness/RESEARCH_AGENT_RUNTIME.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`
 
-测试入口：`tests/test_research_agents.py`、`tests/test_openapi_contracts.py`
+测试入口：`tests/test_research_agents.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`
 
 ### research-native：Claude 原生投研准入与资料控制
 
 代码/Mock/SDK 配置与拒绝路径；真实模型/资料外发未准入
 
-必须验证：Provider/预算/端点/PDF 全绑定；默认零 CLI/Keychain/网络；来源证据、SSRF/字节上限；取消/部分失败/事件映射。
+必须验证：Provider/预算/端点/PDF 全绑定；默认零 CLI/Keychain/网络；来源证据、SSRF/字节上限；取消/部分失败/事件映射；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/CLAUDE_RESEARCH_RUNTIME.md`
+规格：`docs/harness/CLAUDE_RESEARCH_RUNTIME.md`、`specs/testing/READ_SURFACES.md`
 
 测试入口：`tests/test_claude_config.py`、`tests/test_claude_research_admission.py`、`tests/test_claude_research_runtime.py`
 
@@ -241,11 +241,11 @@ Agent/Skill/Tool 模拟；零模型、零网络
 
 显式事实、FTS5/时间/两跳/精确实体；无自动聊天抽取/语义/Reflect
 
-必须验证：Bank/time/source 过滤；supersede/retract/delete 传播；FTS 重建和详情；图/实体歧义与 lineage；语义 gate fail-closed；正文/跨 Bank 零泄漏。
+必须验证：Bank/time/source 过滤；supersede/retract/delete 传播；FTS 重建和详情；图/实体歧义与 lineage；语义 gate fail-closed；正文/跨 Bank 零泄漏；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/MEMORY_PLANE_M1.md`、`docs/harness/MEMORY_CONTEXT_M2A.md`、`docs/harness/MEMORY_GRAPH_M3A.md`、`docs/harness/MEMORY_ENTITY_CATALOG_M3B.md`
+规格：`docs/harness/MEMORY_PLANE_M1.md`、`docs/harness/MEMORY_CONTEXT_M2A.md`、`docs/harness/MEMORY_GRAPH_M3A.md`、`docs/harness/MEMORY_ENTITY_CATALOG_M3B.md`、`specs/testing/READ_SURFACES.md`
 
-测试入口：`tests/test_memory_plane.py`、`tests/test_memory_context.py`、`tests/test_memory_context_evaluation.py`、`tests/test_memory_graph.py`、`tests/test_memory_graph_evaluation.py`、`tests/test_memory_entity_catalog.py`、`tests/test_memory_fact_lineage.py`、`tests/test_memory_temporal_read_safety.py`、`tests/test_semantic_retrieval_admission.py`
+测试入口：`tests/test_memory_plane.py`、`tests/test_memory_context.py`、`tests/test_memory_context_evaluation.py`、`tests/test_memory_graph.py`、`tests/test_memory_graph_evaluation.py`、`tests/test_memory_entity_catalog.py`、`tests/test_memory_fact_lineage.py`、`tests/test_memory_temporal_read_safety.py`、`tests/test_semantic_retrieval_admission.py`、`tests/test_read_surfaces.py`
 
 ### team：Team Foundation / Task Handoff Gate
 
@@ -331,11 +331,11 @@ OAuth 与本机 CLI 交接；网站接口没有通用分享下载
 
 本机根路径及反向代理 /harness/；无新增身份系统
 
-必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例。
+必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`
 
-测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`
+测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`
 
 ### retrieval：迭代检索/Agentic 契约/父子 Chunk
 

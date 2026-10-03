@@ -131,6 +131,32 @@ OpenAPI/静态HEAD。Channel持久列/JSON Workspace不一致的Low另待处理�
 
 ## 尚未完成的端到端验证
 
+### HA-0061检查点（2026-10-04）
+
+新增57个参数化测试项，相关123 passed，全量632 passed/16 skipped，verify exit0。
+full-http-observations.json记录148/148 observed，148都有passing-test 2xx；未观测
+入口从11归零。只补TestClient行为/临时DB验证，公开响应Schema仍有缺口，全部分支、
+浏览器/容器/真实模型/双部署均不能由该数字证明。固定提交待独立review。
+
+### 2026-10-04 独立review追加及HA-0061范围
+
+- HA-0058（2bd4af8）与HA-0060（fff8d75）代码均已独立Approved，历史“待review”
+  已被本检查点取代；两端发布状态并未改变。
+- **OPENAPI-02 / Low**：投影递归会修改const/enum/default/examples里作为字面数据
+  的$ref；当前spec没有触发，不代表helper对未来契约安全。后续跳过数据关键字并
+  补嵌套实例回归。
+- **RUNTIME-STATUS-01 / Low**：Runtime status中model_calls/provider_calls/
+  network_calls固定0，是静态声明而非计数；不能用作无外发证据。
+- **TEAM-READ-03 / Low**：非法status枚举（None/ACTIVE/actve）被当作非active
+  静默过滤；现有损坏字段测试未覆盖此形态。应区分合法非active和未知状态。
+  Channel列表仍未改用共享(code,status)规则；其持久列/JSON workspace分歧也仍在。
+- **READ-SCHEMA-01**：health/resources、Memory Bank列表、三种research列表的
+  公开成功响应Schema缺失或为空占位。HA-0061字段断言只补行为验证，不冒充已经
+  补齐公开机器契约。资源本地登记元数据不等同未来平台Resource对象。
+- HA-0061限定剩余11个读取入口的内容、状态、拒绝与持久性测试，不改业务实现。
+  原生研究非空列表来自临时测试准入元数据，stream哨兵禁止执行SDK。PDF登记样本
+  只有测试头部，不是完整PDF解析/真实研报证据；health是静态响应，不是release验证。
+
 - 所有公开请求/响应与实际 OpenAPI/静态 OpenAPI/JSON Schema 一致性。
 - 列表/详情的正反例、跨 scope、错误码、幂等、预算和状态变更后的读行为。
 - 各浏览器入口与前缀、两端真实容器、修复后的重启/回滚与双端部署。
