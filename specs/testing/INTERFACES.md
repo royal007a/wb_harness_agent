@@ -251,11 +251,11 @@ Agent/Skill/Tool 模拟；零模型、零网络
 
 metadata-only protocol actor，不是 HTTP 身份或自动委派
 
-必须验证：Workspace/Channel/clearance/role；claim lease/版本；父子依赖；Handoff 与 Gate digest；pass/reject/needs_human。
+必须验证：Workspace/Channel/clearance/role；claim lease/版本；父子依赖；Handoff 与 Gate digest；pass/reject/needs_human；HTTP创建/授予幂等与拒绝不变；Channel列表当前授权及重启后撤销。
 
-规格：`docs/harness/TEAM_FOUNDATION.md`、`docs/harness/TEAM_COORDINATION.md`
+规格：`docs/harness/TEAM_FOUNDATION.md`、`docs/harness/TEAM_COORDINATION.md`、`specs/testing/TEAM_READ_VISIBILITY.md`
 
-测试入口：`tests/test_team_foundation.py`、`tests/test_team_coordination.py`
+测试入口：`tests/test_team_foundation.py`、`tests/test_team_coordination.py`、`tests/test_team_read_visibility.py`
 
 ### attention：Inbox / freshness / work mark
 
@@ -271,11 +271,11 @@ metadata-only protocol actor，不是 HTTP 身份或自动委派
 
 有界状态摘要；不是 Provider Session resume 或自动换代
 
-必须验证：scope/owner；单 active session；一次性继承/CAS；不复制正文、不改 Task/Attention。
+必须验证：scope/owner；单 active session；一次性继承/CAS；不复制正文、不改 Task/Attention；列表按主体/Channel/当前权限过滤且保留有权历史。
 
-规格：`docs/harness/TEAM_SESSION_CONTINUITY.md`
+规格：`docs/harness/TEAM_SESSION_CONTINUITY.md`、`specs/testing/TEAM_READ_VISIBILITY.md`
 
-测试入口：`tests/test_team_session_continuity.py`
+测试入口：`tests/test_team_session_continuity.py`、`tests/test_team_read_visibility.py`
 
 ### recovery：Error Contract / Recovery Loop Guard
 

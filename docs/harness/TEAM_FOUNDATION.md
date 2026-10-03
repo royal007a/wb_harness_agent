@@ -35,6 +35,11 @@ message_delivery                 = not_implemented
 
 Workspace owner/admin 才能创建 Agent、成员或 Channel，以及授予 Channel roles。创建 Channel 的管理者自动获得 coordinator。
 
+HA-0059 明确列表与详情共享当前 Channel 可见边界：归档、membership撤销或
+clearance不足的Channel不得继续通过列表泄露ID/标题。身份目录仍是Workspace
+管理元数据，不承诺目标身份可调度；本项不增加认证或在线撤销API。
+HTTP验收见 [Team读可见性](../../specs/testing/TEAM_READ_VISIBILITY.md)。
+
 ## Team Task v2 与历史记录
 
 新建 Task 固化 `workspace_id`、`channel_id`、`created_by_id`。`team-task@2` 的授权检查发生在 create、read、claim、handoff、submit、close 和 Gate 前；Recovery Guard 通过既有 Task claim 检查一并受约束。

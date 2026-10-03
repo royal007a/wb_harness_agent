@@ -102,6 +102,20 @@ Team runtime / sessions / workspace agents、health、resources 列表与详情�
 Run replans、OpenAPI/静态 HEAD，以及 Workspace 创建/成员授予。
 0057 编码修复986ed1d已独立 Approved，但0055–0058均没有本轮双端发布证据。
 
+### HA-0059 检查点（2026-10-04）
+
+新增 **TEAM-READ-01**：Channel撤销成员、归档或降低clearance后，详情拒绝但
+列表仍返回ID/标题；2bd4af8旧3反例均失败。列表现复用详情的当前授权检查，
+过滤明确不可见项、意外错误继续上抛；新增18个HTTP用例，相关44项、全量501
+passed/16 skipped。包含Workspace创建/成员授予幂等、跨Workspace读取、
+Session owner/channel过滤、历史与撤销重启，不新增身份认证或在线撤销API。
+代码待review，真实双部署未验收。
+
+最新 `harness/evidence/HA-0059/full-http-observations.json`：136/148 observed，
+且136个都有passing-test的2xx；仍然不是业务验收率。12个未观测入口是：Memory
+Bank/Recovery/三类Research列表、sample、health、resources列表/详情、Run
+replans、OpenAPI/静态HEAD。它们继续待做，完整功能/错误路径也仍需逐项核对。
+
 ## 尚未完成的端到端验证
 
 - 所有公开请求/响应与实际 OpenAPI/静态 OpenAPI/JSON Schema 一致性。

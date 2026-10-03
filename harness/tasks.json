@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0059",
+      "title": "补 Team HTTP 读写验证并修复 Channel 列表可见性",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Workspace创建和成员授予HTTP验证", "Agent/Channel/Session列表当前协议可见性", "撤销/归档/clearance故障回归与独立review"],
+      "non_goals": ["新增认证/撤销管理API", "真实Agent调度或模型调用", "绕过本机先部署132"],
+      "acceptance": ["旧版三组列表与详情矛盾确实失败", "当前不可访问Channel不出现在列表", "HTTP正反例和拒绝不变/幂等通过", "相关全量验证、固定提交review、双部署证据"],
+      "depends_on": ["HA-0053"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0059-team-read-visibility.md",
+      "blocked_reason": "旧3反例失败；新增18项、相关44项、全量501 passed/16 skipped通过，待独立review。实际双部署仍等待HA-0056本机拓扑决定。",
+      "recovery_condition": "固定提交独立复审通过；本机兼容拓扑明确后先本机再132发布并核对实际HTTP行为。",
+      "evidence": ["harness/evidence/HA-0059/acceptance.md"]
+    },
+    {
       "id": "HA-0058",
       "title": "修复 OpenAPI Schema 归属并补 Lab/Runtime 实例验证",
       "status": "blocked",

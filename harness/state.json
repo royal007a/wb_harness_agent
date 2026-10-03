@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0058",
-  "active_plan": "exec-plans/blocked/HA-0058-openapi-contracts.md",
-  "last_checkpoint": "0057压缩补丁986ed1d独立Approved。0058修复OpenAPI同名覆盖及两域响应合同；旧7反例失败，新26项、相关101项、全量483 passed/16 skipped。观测131/148非业务验收；未真实激活或双部署。",
-  "last_updated_at": "2026-10-03T19:22:13Z",
-  "next_action": "0058固定提交交mymacclaude只读复审；继续17个未观测入口和功能声明审查。发布仍等待兼容本机拓扑选择，先本机再132，不调用真实模型、不实现未准入Product Run桥接。",
+  "active_task_id": "HA-0059",
+  "active_plan": "exec-plans/blocked/HA-0059-team-read-visibility.md",
+  "last_checkpoint": "0058 2bd4af8待独立复审。0059修复撤销/归档/clearance后的Channel列表泄露，旧3反例失败，新18项、相关44项、全量501 passed/16 skipped。观测136/148非业务验收；未真实激活或双部署。",
+  "last_updated_at": "2026-10-03T19:40:00Z",
+  "next_action": "0059固定提交交mymacclaude只读复审；继续12个非Team未观测入口与架构声明审查。发布仍等待兼容本机拓扑选择，先本机再132，不调用真实模型。",
   "release": "0.1.0-local"
 }

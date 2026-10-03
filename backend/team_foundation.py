@@ -352,7 +352,20 @@ class TeamFoundation:
             rows = db.execute('SELECT c.doc FROM team_channels c JOIN team_channel_memberships m '
                               'ON c.id=m.channel_id WHERE c.workspace_id=? AND m.agent_id=? ORDER BY c.rowid DESC',
                               (workspace_id, actor_id)).fetchall()
-            return {'items': [json.loads(row['doc']) for row in rows], 'runtime': self.runtime_status()}
+            items = []
+            for row in rows:
+                channel = json.loads(row['doc'])
+                try:
+                    self.assert_channel_access(db, channel['id'], actor_id)
+                except Problem as exc:
+                    # A SQL membership join is not current authorization. Keep
+                    # expected invisibility separate from unexpected failures.
+                    if exc.code not in {'TEAM_CHANNEL_ACCESS_DENIED', 'TEAM_DATA_CLEARANCE_DENIED',
+                                        'TEAM_CHANNEL_ARCHIVED'}:
+                        raise
+                    continue
+                items.append(channel)
+            return {'items': items, 'runtime': self.runtime_status()}
 
     def channel_detail(self, channel_id, actor_id):
         with self.store.transaction() as db:
