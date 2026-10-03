@@ -1,0 +1,60 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+_______ test_malformed_admission_is_closed_without_breaking_reads[utf8] ________
+
+client = <starlette.testclient.TestClient object at 0x1098fe900>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1134/test_malformed_admission_is_cl0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1095a4050>
+kind = 'utf8'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_a10d14ea87d6473f9a0c81c378c10b7f"}}
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_write_contracts.py:96: AssertionError
+______ test_malformed_admission_is_closed_without_breaking_reads[integer] ______
+
+client = <starlette.testclient.TestClient object at 0x10b857390>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1134/test_malformed_admission_is_cl2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10a5ec170>
+kind = 'integer'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_8f31298aae534c95927667b5ba1ad9ce"}}
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_write_contracts.py:96: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_malformed_admission_is_closed_without_breaking_reads[utf8]
+FAILED tests/test_memory_write_contracts.py::test_malformed_admission_is_closed_without_breaking_reads[integer]
+2 failed, 1 passed, 37 deselected, 1 warning in 0.78s

@@ -30,6 +30,13 @@ FTS不可用时明确ready=false；semantic档案admitted仍不代表运行时�
 runtime_enabled恒false，其调用数字只是档案记录，不是实测遥测。验证与非目标见
 `specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`。
 
+HA-0069补Retain/撤回/删除三类实际写回执，见
+`specs/testing/MEMORY_WRITE_CONTRACTS.md`。同key回放是历史收据，不是当前状态；
+删除后的旧Retain回执仍可能包含Fact statement，Entity等历史收据也没有统一清理。
+因此当前delete只保证canonical与相关图/FTS删除，不是全库派生内容抹除或磁盘擦除。
+DELETE对分块非空body同样返回422；损坏semantic档案返回invalid_not_admitted，
+不启动任何检索/模型，也不把真正DB故障吞成空结果。
+
 ## 读回规则与明确限制
 
 M1 的 Recall 是**确定性的 read-back**，不是 M2 搜索系统：它只在指定 Bank 内过滤 active、未过保留期、有效时间命中的 Fact，再按关键词与查询时间排序。返回 Evidence Bundle 的每条 evidence 都包含 Fact、时间、状态、匹配解释和 Source 的 ID / 来源引用 / SHA-256，但不含原始 Source 正文。

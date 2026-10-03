@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T23:41:00Z",
+  "generated_at": "2026-10-03T23:56:00Z",
   "tasks": [
+    {
+      "id": "HA-0069",
+      "title": "Memory写入生命周期HTTP契约与失败边界",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Retain/撤回/删除三类公开响应", "损坏准入档案降级和删除请求体拒绝", "生命周期、回放、事务失败及三套Schema负例"],
+      "non_goals": ["启用semantic或模型", "身份认证和全库删除清理改造", "绕过本机部署132"],
+      "acceptance": ["基线行为反例可重跑", "源静态动态合同与实际HTTP一致", "失败不提交业务状态、重放不执行", "定向全量verify、固定提交review及双部署证据"],
+      "depends_on": ["HA-0066"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0069-memory-write-contracts.md",
+      "blocked_reason": "40新增/192相关，旧35行为失败和10/10有效突变；全量1265 passed/16 skipped及verify通过。待独立review和兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交独立Approved；先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0069/acceptance.md", "harness/evidence/HA-0069/mutation-plan.json", "harness/evidence/HA-0069/mutation-results.json", "harness/evidence/HA-0069/remaining-empty-responses.json"]
+    },
     {
       "id": "HA-0068",
       "title": "Pi Product Run终态、Gate回放与分页合同",

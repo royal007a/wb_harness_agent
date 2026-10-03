@@ -1,0 +1,1885 @@
+FFFF.FFFFFFFFFFFFFFFFFFFFFFFFFFF.F..FFF.                                 [100%]
+=================================== FAILURES ===================================
+________ test_write_contracts_are_not_empty[local_http_memory_retained] ________
+
+client = <starlette.testclient.TestClient object at 0x109a3e660>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[-1])
+    def test_write_contracts_are_not_empty(client, operation):
+>       contracts(client, operation)
+
+tests/test_memory_write_contracts.py:82:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x109a3e660>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_______ test_write_contracts_are_not_empty[local_http_memory_retracted] ________
+
+client = <starlette.testclient.TestClient object at 0x10b482210>
+operation = ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'memory-plane', 'local_http_memory_retracted')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[-1])
+    def test_write_contracts_are_not_empty(client, operation):
+>       contracts(client, operation)
+
+tests/test_memory_write_contracts.py:82:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b482210>
+operation = ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'memory-plane', 'local_http_memory_retracted')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}:retract', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+________ test_write_contracts_are_not_empty[local_http_memory_deleted] _________
+
+client = <starlette.testclient.TestClient object at 0x10baefed0>
+operation = ('/api/local/memory/sources/{source_id}', 'delete', '200', 'memory-plane', 'local_http_memory_deleted')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[-1])
+    def test_write_contracts_are_not_empty(client, operation):
+>       contracts(client, operation)
+
+tests/test_memory_write_contracts.py:82:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10baefed0>
+operation = ('/api/local/memory/sources/{source_id}', 'delete', '200', 'memory-plane', 'local_http_memory_deleted')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}', 'delete', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_______ test_malformed_admission_is_closed_without_breaking_reads[utf8] ________
+
+client = <starlette.testclient.TestClient object at 0x10b970510>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1130/test_malformed_admission_is_cl0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10bb806b0>
+kind = 'utf8'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_65e86cf3abed41cdb19db754a23fdb7f"}}
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_write_contracts.py:96: AssertionError
+______ test_malformed_admission_is_closed_without_breaking_reads[integer] ______
+
+client = <starlette.testclient.TestClient object at 0x10b4b96d0>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1130/test_malformed_admission_is_cl2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10a5da950>
+kind = 'integer'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_c80c92d542e9425fb803f0fc061f16b4"}}
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_write_contracts.py:96: AssertionError
+_______________ test_actual_write_lifecycle_receipts_and_replay ________________
+
+client = <starlette.testclient.TestClient object at 0x10c344050>
+
+    def test_actual_write_lifecycle_receipts_and_replay(client):
+        bank, retained, request, path = seed(client)
+>       check(client, OPERATIONS[0], retained)
+
+tests/test_memory_write_contracts.py:112:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c344050>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_ test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retain] __
+
+client = <starlette.testclient.TestClient object at 0x10c007460>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c1c88c0>
+stage = 'retain'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+        bank, retained, _, path = seed(client)
+        plane = client.app.state.service.memory
+        original_audit = plane._audit
+        target = {'retain': 'memory.source.retained', 'retract': 'memory.source.retracted', 'delete': 'memory.source.deleted'}[stage]
+        def fail_after_writes(db, bank_id, kind, target_id, metadata):
+            if kind == target:
+                raise RuntimeError('fixture-failure')
+            return original_audit(db, bank_id, kind, target_id, metadata)
+        monkeypatch.setattr(plane, '_audit', fail_after_writes)
+        client._transport.raise_server_exceptions = False
+        request = body('replacement69')
+        request['facts'][0]['supersedes_fact_id'] = retained['facts'][0]['id']
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        call = {
+            'retain': lambda: client.post(path, json=request, headers={'Idempotency-Key': 'failure69'}),
+            'retract': lambda: client.post(source_path + ':retract', json={}, headers={'Idempotency-Key': 'failure69'}),
+            'delete': lambda: client.delete(source_path, headers={'Idempotency-Key': 'failure69'}),
+        }[stage]
+        before = snapshot(client)[1]
+        failed = call()
+        assert failed.status_code == 500 and failed.json()['error']['code'] == 'INTERNAL_ERROR'
+        assert snapshot(client)[1] == before
+        assert 'fixture-failure' not in failed.text
+        monkeypatch.setattr(plane, '_audit', original_audit)
+        success = call()
+        assert success.status_code == (201 if stage == 'retain' else 200)
+>       check(client, OPERATIONS[['retain', 'retract', 'delete'].index(stage)], success.json())
+
+tests/test_memory_write_contracts.py:183:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c007460>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_ test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retract] _
+
+client = <starlette.testclient.TestClient object at 0x10bb83ce0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10bc74d70>
+stage = 'retract'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+        bank, retained, _, path = seed(client)
+        plane = client.app.state.service.memory
+        original_audit = plane._audit
+        target = {'retain': 'memory.source.retained', 'retract': 'memory.source.retracted', 'delete': 'memory.source.deleted'}[stage]
+        def fail_after_writes(db, bank_id, kind, target_id, metadata):
+            if kind == target:
+                raise RuntimeError('fixture-failure')
+            return original_audit(db, bank_id, kind, target_id, metadata)
+        monkeypatch.setattr(plane, '_audit', fail_after_writes)
+        client._transport.raise_server_exceptions = False
+        request = body('replacement69')
+        request['facts'][0]['supersedes_fact_id'] = retained['facts'][0]['id']
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        call = {
+            'retain': lambda: client.post(path, json=request, headers={'Idempotency-Key': 'failure69'}),
+            'retract': lambda: client.post(source_path + ':retract', json={}, headers={'Idempotency-Key': 'failure69'}),
+            'delete': lambda: client.delete(source_path, headers={'Idempotency-Key': 'failure69'}),
+        }[stage]
+        before = snapshot(client)[1]
+        failed = call()
+        assert failed.status_code == 500 and failed.json()['error']['code'] == 'INTERNAL_ERROR'
+        assert snapshot(client)[1] == before
+        assert 'fixture-failure' not in failed.text
+        monkeypatch.setattr(plane, '_audit', original_audit)
+        success = call()
+        assert success.status_code == (201 if stage == 'retain' else 200)
+>       check(client, OPERATIONS[['retain', 'retract', 'delete'].index(stage)], success.json())
+
+tests/test_memory_write_contracts.py:183:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10bb83ce0>
+operation = ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'memory-plane', 'local_http_memory_retracted')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}:retract', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_ test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[delete] __
+
+client = <starlette.testclient.TestClient object at 0x109947680>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10bdccd70>
+stage = 'delete'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+        bank, retained, _, path = seed(client)
+        plane = client.app.state.service.memory
+        original_audit = plane._audit
+        target = {'retain': 'memory.source.retained', 'retract': 'memory.source.retracted', 'delete': 'memory.source.deleted'}[stage]
+        def fail_after_writes(db, bank_id, kind, target_id, metadata):
+            if kind == target:
+                raise RuntimeError('fixture-failure')
+            return original_audit(db, bank_id, kind, target_id, metadata)
+        monkeypatch.setattr(plane, '_audit', fail_after_writes)
+        client._transport.raise_server_exceptions = False
+        request = body('replacement69')
+        request['facts'][0]['supersedes_fact_id'] = retained['facts'][0]['id']
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        call = {
+            'retain': lambda: client.post(path, json=request, headers={'Idempotency-Key': 'failure69'}),
+            'retract': lambda: client.post(source_path + ':retract', json={}, headers={'Idempotency-Key': 'failure69'}),
+            'delete': lambda: client.delete(source_path, headers={'Idempotency-Key': 'failure69'}),
+        }[stage]
+        before = snapshot(client)[1]
+        failed = call()
+        assert failed.status_code == 500 and failed.json()['error']['code'] == 'INTERNAL_ERROR'
+        assert snapshot(client)[1] == before
+        assert 'fixture-failure' not in failed.text
+        monkeypatch.setattr(plane, '_audit', original_audit)
+        success = call()
+        assert success.status_code == (201 if stage == 'retain' else 200)
+>       check(client, OPERATIONS[['retain', 'retract', 'delete'].index(stage)], success.json())
+
+tests/test_memory_write_contracts.py:183:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x109947680>
+operation = ('/api/local/memory/sources/{source_id}', 'delete', '200', 'memory-plane', 'local_http_memory_deleted')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}', 'delete', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+___________ test_write_key_boundaries_reject_without_writes[None-0] ____________
+
+client = <starlette.testclient.TestClient object at 0x10b900160>, operation = 0
+key = None
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b900160>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+___________ test_write_key_boundaries_reject_without_writes[None-1] ____________
+
+client = <starlette.testclient.TestClient object at 0x10baa2580>, operation = 1
+key = None
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10baa2580>
+operation = ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'memory-plane', 'local_http_memory_retracted')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}:retract', 'post', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+___________ test_write_key_boundaries_reject_without_writes[None-2] ____________
+
+client = <starlette.testclient.TestClient object at 0x10ca98c00>, operation = 2
+key = None
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ca98c00>
+operation = ('/api/local/memory/sources/{source_id}', 'delete', '200', 'memory-plane', 'local_http_memory_deleted')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}', 'delete', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_____________ test_write_key_boundaries_reject_without_writes[-0] ______________
+
+client = <starlette.testclient.TestClient object at 0x10b903bd0>, operation = 0
+key = ''
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b903bd0>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_____________ test_write_key_boundaries_reject_without_writes[-1] ______________
+
+client = <starlette.testclient.TestClient object at 0x109947130>, operation = 1
+key = ''
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x109947130>
+operation = ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'memory-plane', 'local_http_memory_retracted')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}:retract', 'post', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_____________ test_write_key_boundaries_reject_without_writes[-2] ______________
+
+client = <starlette.testclient.TestClient object at 0x10b96aad0>, operation = 2
+key = ''
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b96aad0>
+operation = ('/api/local/memory/sources/{source_id}', 'delete', '200', 'memory-plane', 'local_http_memory_deleted')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}', 'delete', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_ test_write_key_boundaries_reject_without_writes[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-0] _
+
+client = <starlette.testclient.TestClient object at 0x10c263790>, operation = 0
+key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c263790>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_ test_write_key_boundaries_reject_without_writes[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-1] _
+
+client = <starlette.testclient.TestClient object at 0x10c344c00>, operation = 1
+key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c344c00>
+operation = ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'memory-plane', 'local_http_memory_retracted')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}:retract', 'post', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_ test_write_key_boundaries_reject_without_writes[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-2] _
+
+client = <starlette.testclient.TestClient object at 0x10ca9b570>, operation = 2
+key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+    @pytest.mark.parametrize('operation', range(3))
+    @pytest.mark.parametrize('key', [None, '', 'x' * 129])
+    def test_write_key_boundaries_reject_without_writes(client, operation, key):
+        _, retained, request, path = seed(client)
+        headers = {} if key is None else {'Idempotency-Key': key}
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        before = snapshot(client)
+        response = [lambda: client.post(path, json=request, headers=headers),
+                    lambda: client.post(source_path + ':retract', json={}, headers=headers),
+                    lambda: client.delete(source_path, headers=headers)][operation]()
+        assert response.status_code == 422, response.text
+>       check(client, OPERATIONS[operation], response.json(), '422')
+
+tests/test_memory_write_contracts.py:202:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ca9b570>
+operation = ('/api/local/memory/sources/{source_id}', 'delete', '200', 'memory-plane', 'local_http_memory_deleted')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}', 'delete', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_____________________ test_request_shapes_and_maximum_key ______________________
+
+client = <starlette.testclient.TestClient object at 0x10c262360>
+
+    def test_request_shapes_and_maximum_key(client):
+        _, retained, request, path = seed(client, 'k' * 128)
+        before = snapshot(client)
+        for bad in [[], {}, {**request, 'unexpected': True}, {**request, 'facts': []},
+                    {**request, 'source': {**request['source'], 'unexpected': True}}]:
+            response = client.post(path, json=bad, headers={'Idempotency-Key': 'shape69'})
+            assert response.status_code == 422
+>           check(client, OPERATIONS[0], response.json(), '422')
+
+tests/test_memory_write_contracts.py:213:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c262360>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = '422'
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_______________ test_retained_negative_instances[source_content] _______________
+
+client = <starlette.testclient.TestClient object at 0x10b96af10>
+variant = 'source_content'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b96af10>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+___________________ test_retained_negative_instances[detail] ___________________
+
+client = <starlette.testclient.TestClient object at 0x10b78cf30>
+variant = 'detail'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b78cf30>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+___________________ test_retained_negative_instances[digest] ___________________
+
+client = <starlette.testclient.TestClient object at 0x10bb80050>
+variant = 'digest'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10bb80050>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+__________________ test_retained_negative_instances[wrong_id] __________________
+
+client = <starlette.testclient.TestClient object at 0x10b8e0c00>
+variant = 'wrong_id'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b8e0c00>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+____________________ test_retained_negative_instances[time] ____________________
+
+client = <starlette.testclient.TestClient object at 0x10ca37130>
+variant = 'time'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ca37130>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_________________ test_retained_negative_instances[confidence] _________________
+
+client = <starlette.testclient.TestClient object at 0x109946cf0>
+variant = 'confidence'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x109946cf0>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+________________ test_retained_negative_instances[empty_facts] _________________
+
+client = <starlette.testclient.TestClient object at 0x10b78f9b0>
+variant = 'empty_facts'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b78f9b0>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+________________ test_retained_negative_instances[dedup_facts] _________________
+
+client = <starlette.testclient.TestClient object at 0x10b968c00>
+variant = 'dedup_facts'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b968c00>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_______________ test_retained_negative_instances[missing_audit] ________________
+
+client = <starlette.testclient.TestClient object at 0x10c347680>
+variant = 'missing_audit'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c347680>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+___________________ test_retained_negative_instances[status] ___________________
+
+client = <starlette.testclient.TestClient object at 0x10c262360>
+variant = 'status'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+>       for validator in check(client, OPERATIONS[0], retained):
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:242:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c262360>
+operation = ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'memory-plane', 'local_http_memory_retained')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/banks/{bank_id}/retain', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_________________ test_lifecycle_receipt_negative_instances[1] _________________
+
+client = <starlette.testclient.TestClient object at 0x10be7af10>, operation = 1
+
+    @pytest.mark.parametrize('operation', [1, 2])
+    def test_lifecycle_receipt_negative_instances(client, operation):
+        _, retained, _, _ = seed(client)
+        path = '/api/local/memory/sources/' + retained['source']['id']
+        result = (client.post(path + ':retract', json={}, headers={'Idempotency-Key': 'neg69'}) if operation == 1
+                  else client.delete(path, headers={'Idempotency-Key': 'neg69'})).json()
+>       checks = check(client, OPERATIONS[operation], result)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:252:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10be7af10>
+operation = ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'memory-plane', 'local_http_memory_retracted')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}:retract', 'post', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_________________ test_lifecycle_receipt_negative_instances[2] _________________
+
+client = <starlette.testclient.TestClient object at 0x10c347680>, operation = 2
+
+    @pytest.mark.parametrize('operation', [1, 2])
+    def test_lifecycle_receipt_negative_instances(client, operation):
+        _, retained, _, _ = seed(client)
+        path = '/api/local/memory/sources/' + retained['source']['id']
+        result = (client.post(path + ':retract', json={}, headers={'Idempotency-Key': 'neg69'}) if operation == 1
+                  else client.delete(path, headers={'Idempotency-Key': 'neg69'})).json()
+>       checks = check(client, OPERATIONS[operation], result)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:252:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:42: in check
+    validators = contracts(c, operation, status)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c347680>
+operation = ('/api/local/memory/sources/{source_id}', 'delete', '200', 'memory-plane', 'local_http_memory_deleted')
+status = None
+
+    def contracts(c, operation, status=None):
+        path, method, success, bundle, name = operation
+        sources, resources = {}, []
+        for stem in ['memory-plane', 'core-contracts']:
+            filename = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(filename.read_text())
+            sources[stem] = source
+            resources.extend([(filename.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        static_path = path.removeprefix('/api').replace('{bank_id}', '{bankId}').replace('{source_id}', '{sourceId}')
+        checks = []
+        for doc, p, base in [(c.get('/openapi.json').json(), path, {}),
+                             (yaml.safe_load(static_file.read_text()), static_path, {'$id': static_file.as_uri()})]:
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            validator = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not validator.is_valid({}), ('empty response contract', p, method, status)
+E           AssertionError: ('empty response contract', '/api/local/memory/sources/{source_id}', 'delete', None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:71: AssertionError
+_____ test_admission_decoder_recursion_and_unexpected_failure_are_distinct _____
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1130/test_admission_decoder_recursi0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10be68520>
+
+    def test_admission_decoder_recursion_and_unexpected_failure_are_distinct(tmp_path, monkeypatch):
+        path = tmp_path / 'gate.json'
+        path.write_text('{}')
+        def recursion(*args, **kwargs):
+            raise RecursionError('secret path must not escape')
+        with monkeypatch.context() as patch:
+            patch.setattr(memory.json, 'loads', recursion)
+>           state = memory.semantic_admission_status(path)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:294:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend/memory.py:61: in semantic_admission_status
+    value = json.loads(Path(path).read_text())
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = ('{}',), kwargs = {}
+
+    def recursion(*args, **kwargs):
+>       raise RecursionError('secret path must not escape')
+E       RecursionError: secret path must not escape
+
+tests/test_memory_write_contracts.py:291: RecursionError
+________________ test_delete_stops_on_first_nonempty_asgi_chunk ________________
+
+client = <starlette.testclient.TestClient object at 0x10b3b4c00>
+
+    def test_delete_stops_on_first_nonempty_asgi_chunk(client):
+        import asyncio
+        from starlette.requests import Request
+        _, retained, _, _ = seed(client)
+        route = next(route for route in client.app.routes
+                     if getattr(route, 'path', '') == '/api/local/memory/sources/{source_id}' and 'DELETE' in route.methods)
+        reads = []
+        async def receive():
+            reads.append(True)
+            if len(reads) > 1:
+                raise AssertionError('Must not drain or buffer the body after rejection')
+            return {'type': 'http.request', 'body': b'x', 'more_body': True}
+        request = Request({'type': 'http', 'method': 'DELETE', 'headers': []}, receive)
+        before = snapshot(client)
+        from backend.analysis import Problem
+        with pytest.raises(Problem) as caught:
+            asyncio.run(route.endpoint(retained['source']['id'], request))
+>       assert caught.value.status == 422 and len(reads) == 1
+E       AssertionError: assert (422 == 422 and 0 == 1)
+E        +  where 422 = Problem('必须提供 1–128 字符的 Idempotency-Key。').status
+E        +    where Problem('必须提供 1–128 字符的 Idempotency-Key。') = <ExceptionInfo Problem('必须提供 1–128 字符的 Idempotency-Key。') tblen=8>.value
+E        +  and   0 = len([])
+
+tests/test_memory_write_contracts.py:360: AssertionError
+______________ test_delete_body_rejected_before_mutation[chunked] ______________
+
+client = <starlette.testclient.TestClient object at 0x10babf350>
+framing = 'chunked'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_d6c237e1db104e73b91878859ad74fd3","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_4aff22e75b3c417798b48d552e7f9864","audit_id":"memaudit_cd0953f009a54514be5a24796c63e0d7"}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_write_contracts.py:374: AssertionError
+____________ test_delete_body_rejected_before_mutation[false_zero] _____________
+
+client = <starlette.testclient.TestClient object at 0x10c4716a0>
+framing = 'false_zero'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_567fdc55ad984c0eb0c58b66cf8a0d24","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_57a49eec56a641f3be0a747b955d9292","audit_id":"memaudit_8ea9af8d57af496a832e2f76f92c6d37"}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_write_contracts.py:374: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_write_contracts_are_not_empty[local_http_memory_retained]
+FAILED tests/test_memory_write_contracts.py::test_write_contracts_are_not_empty[local_http_memory_retracted]
+FAILED tests/test_memory_write_contracts.py::test_write_contracts_are_not_empty[local_http_memory_deleted]
+FAILED tests/test_memory_write_contracts.py::test_malformed_admission_is_closed_without_breaking_reads[utf8]
+FAILED tests/test_memory_write_contracts.py::test_malformed_admission_is_closed_without_breaking_reads[integer]
+FAILED tests/test_memory_write_contracts.py::test_actual_write_lifecycle_receipts_and_replay
+FAILED tests/test_memory_write_contracts.py::test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retain]
+FAILED tests/test_memory_write_contracts.py::test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retract]
+FAILED tests/test_memory_write_contracts.py::test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[delete]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[None-0]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[None-1]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[None-2]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[-0]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[-1]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[-2]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-0]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-1]
+FAILED tests/test_memory_write_contracts.py::test_write_key_boundaries_reject_without_writes[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-2]
+FAILED tests/test_memory_write_contracts.py::test_request_shapes_and_maximum_key
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[source_content]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[detail]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[digest]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[wrong_id]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[time]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[confidence]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[empty_facts]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[dedup_facts]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[missing_audit]
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[status]
+FAILED tests/test_memory_write_contracts.py::test_lifecycle_receipt_negative_instances[1]
+FAILED tests/test_memory_write_contracts.py::test_lifecycle_receipt_negative_instances[2]
+FAILED tests/test_memory_write_contracts.py::test_admission_decoder_recursion_and_unexpected_failure_are_distinct
+FAILED tests/test_memory_write_contracts.py::test_delete_stops_on_first_nonempty_asgi_chunk
+FAILED tests/test_memory_write_contracts.py::test_delete_body_rejected_before_mutation[chunked]
+FAILED tests/test_memory_write_contracts.py::test_delete_body_rejected_before_mutation[false_zero]
+35 failed, 5 passed, 1 warning in 5.15s

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="10" time="1.426" timestamp="2026-10-04T07:50:55.219099+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:e95be23d585fe636]" time="0.171" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:42ae86627af01a13]" time="0.132" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:33e7d46e5f345684]" time="0.110" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:e98e74a22059d4af]" time="0.114" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:9ac3645575c77892]" time="0.107" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:e4b4dffd43f607cf]" time="0.105" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:fd7e1ea2936390d5]" time="0.107" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:228a30c9f518b25a]" time="0.154"><failure message="AssertionError: dedup_facts&#10;assert not True&#10; +  where True = is_valid({'source': {'id': 'memsrc_43851930b92c4d38813d7d1808008428', 'bank_id': 'membank_f454376b21374f889a192b400d10d754', 's... 'memsrc_43851930b92c4d38813d7d1808008428', 'statement': 'Fact 69', ...}], 'deduplicated': True, 'audit_id': None, ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...mory_retained', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10aa8e360&gt;
+variant = 'dedup_facts'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+        for validator in check(client, OPERATIONS[0], retained):
+&gt;           assert not validator.is_valid(bad), variant
+E           AssertionError: dedup_facts
+E           assert not True
+E            +  where True = is_valid({'source': {'id': 'memsrc_43851930b92c4d38813d7d1808008428', 'bank_id': 'membank_f454376b21374f889a192b400d10d754', 's... 'memsrc_43851930b92c4d38813d7d1808008428', 'statement': 'Fact 69', ...}], 'deduplicated': True, 'audit_id': None, ...})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...mory_retained', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_write_contracts.py:243: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:6c2d974a3b47d3d8]" time="0.109" /><testcase classname="tests.test_memory_write_contracts" name="test_retained_negative_instances[sha256:6db93b077917e293]" time="0.111" /></testsuite></testsuites>

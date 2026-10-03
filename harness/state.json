@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0068",
-  "active_plan": "exec-plans/blocked/HA-0068-pi-product-run-contracts.md",
-  "last_checkpoint": "0067固定868f4b3独立Approved已登记。0068修Pi Gate/迟到发布/事件分页并补五合同；38新增/185相关，旧30行为反例，9/9突变；全量1225 passed/16 skipped，verify退出0，143项源码哈希稳定。",
-  "last_updated_at": "2026-10-03T23:41:00Z",
-  "next_action": "0068固定提交交独立review；继续25个空JSON响应及已登记可用性/测试缺口。真实双部署仍待兼容本机拓扑，先本机后132，不开真实模型门禁。",
+  "active_task_id": "HA-0069",
+  "active_plan": "exec-plans/blocked/HA-0069-memory-write-contracts.md",
+  "last_checkpoint": "0068固定697ef73独立复审中。0069补Memory三写合同、档案容错及DELETE流body；40新增/192相关，旧35行为失败/10突变；全量1265 passed/16 skipped，verify退出0，144项源码哈希稳定。",
+  "last_updated_at": "2026-10-03T23:56:00Z",
+  "next_action": "0069固定提交交独立review；优先Memory删除历史收据/FTS退化缺口，再补22个空JSON接口。兼容本机拓扑后先本机再132，不开模型门禁。",
   "release": "0.1.0-local"
 }

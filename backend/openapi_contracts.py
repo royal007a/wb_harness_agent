@@ -117,6 +117,26 @@ def bind_pi_product_responses(document):
                 'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
 
 
+def bind_memory_write_responses(document):
+    """Current M1 historical receipts; no change to execution or deletion scope."""
+    for path, method, status, definition in (
+        ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'local_http_memory_retained'),
+        ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'local_http_memory_retracted'),
+        ('/api/local/memory/sources/{source_id}', 'delete', '200', 'local_http_memory_deleted'),
+    ):
+        operation = document['paths'][path][method]
+        operation['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/' + definition}}}
+        envelope = {'description': 'Current local error envelope.', 'content': {
+            'application/json': {'schema': {'$ref': '#/components/schemas/local_http_error'}}}}
+        operation['responses']['default'] = envelope
+        if '422' in operation['responses']:
+            operation['responses']['422'] = envelope
+    document['paths']['/api/local/memory/sources/{source_id}:retract']['post']['requestBody'] = {
+        'required': True, 'content': {'application/json': {'schema': {
+            'type': 'object', 'additionalProperties': False}}}}
+
+
 def bind_pi_pipeline_responses(document):
     """Offline pipeline data, including one JSON envelope per SSE data frame."""
     prefix = '/api/local/pi-contract-pipeline/'

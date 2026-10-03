@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="0.497" timestamp="2026-10-04T07:50:54.383603+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_write_contracts" name="test_delete_stops_on_first_nonempty_asgi_chunk" time="0.117"><failure message="AssertionError: assert (422 == 422 and 0 == 1)&#10; +  where 422 = Problem('必须提供 1–128 字符的 Idempotency-Key。').status&#10; +    where Problem('必须提供 1–128 字符的 Idempotency-Key。') = &lt;ExceptionInfo Problem('必须提供 1–128 字符的 Idempotency-Key。') tblen=8&gt;.value&#10; +  and   0 = len([])">client = &lt;starlette.testclient.TestClient object at 0x10b3aa660&gt;
+
+    def test_delete_stops_on_first_nonempty_asgi_chunk(client):
+        import asyncio
+        from starlette.requests import Request
+        _, retained, _, _ = seed(client)
+        route = next(route for route in client.app.routes
+                     if getattr(route, 'path', '') == '/api/local/memory/sources/{source_id}' and 'DELETE' in route.methods)
+        reads = []
+        async def receive():
+            reads.append(True)
+            if len(reads) &gt; 1:
+                raise AssertionError('Must not drain or buffer the body after rejection')
+            return {'type': 'http.request', 'body': b'x', 'more_body': True}
+        request = Request({'type': 'http', 'method': 'DELETE', 'headers': []}, receive)
+        before = snapshot(client)
+        from backend.analysis import Problem
+        with pytest.raises(Problem) as caught:
+            asyncio.run(route.endpoint(retained['source']['id'], request))
+&gt;       assert caught.value.status == 422 and len(reads) == 1
+E       AssertionError: assert (422 == 422 and 0 == 1)
+E        +  where 422 = Problem('必须提供 1–128 字符的 Idempotency-Key。').status
+E        +    where Problem('必须提供 1–128 字符的 Idempotency-Key。') = &lt;ExceptionInfo Problem('必须提供 1–128 字符的 Idempotency-Key。') tblen=8&gt;.value
+E        +  and   0 = len([])
+
+tests/test_memory_write_contracts.py:360: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_delete_body_rejected_before_mutation[sha256:010c58e7db459e84]" time="0.042"><failure message="AssertionError: {&quot;source_id&quot;:&quot;memsrc_282038c3be1848edb4a7aaa0af4d96ec&quot;,&quot;status&quot;:&quot;deleted&quot;,&quot;deleted_fact_count&quot;:1,&quot;deleted_entity_count&quot;:0,&quot;deleted_relation_count&quot;:0,&quot;tombstone_id&quot;:&quot;memtomb_3718b3a07daf427a91e3c44fd237903a&quot;,&quot;audit_id&quot;:&quot;memaudit_4f0a051cabf4492ba923da64e3187f17&quot;}&#10;assert 200 == 422&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10cd88f50&gt;
+framing = 'chunked'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_282038c3be1848edb4a7aaa0af4d96ec","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_3718b3a07daf427a91e3c44fd237903a","audit_id":"memaudit_4f0a051cabf4492ba923da64e3187f17"}
+E       assert 200 == 422
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_memory_write_contracts.py:374: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_delete_body_rejected_before_mutation[sha256:46a4ee0dbf763991]" time="0.064"><failure message="AssertionError: {&quot;source_id&quot;:&quot;memsrc_ce7ea96464094115bfb5c4901f72a954&quot;,&quot;status&quot;:&quot;deleted&quot;,&quot;deleted_fact_count&quot;:1,&quot;deleted_entity_count&quot;:0,&quot;deleted_relation_count&quot;:0,&quot;tombstone_id&quot;:&quot;memtomb_2bd275ebd332410098f1776f6634c496&quot;,&quot;audit_id&quot;:&quot;memaudit_6259941763cb48e99fb8e7739250c4a1&quot;}&#10;assert 200 == 422&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10bf76990&gt;
+framing = 'false_zero'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_ce7ea96464094115bfb5c4901f72a954","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_2bd275ebd332410098f1776f6634c496","audit_id":"memaudit_6259941763cb48e99fb8e7739250c4a1"}
+E       assert 200 == 422
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_memory_write_contracts.py:374: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_delete_body_rejected_before_mutation[sha256:0dec57038c0dd454]" time="0.041" /></testsuite></testsuites>

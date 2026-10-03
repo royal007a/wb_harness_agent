@@ -58,9 +58,9 @@ def validate_lineage_contract(name, value):
 def semantic_admission_status(path=SEMANTIC_ADMISSION_STATE):
     """Fail closed: an invalid Gate can never enable semantic retrieval."""
     try:
-        value = json.loads(Path(path).read_text())
+        value = json.loads(Path(path).read_text(encoding='utf-8'))
         errors = list(Draft202012Validator(SEMANTIC_ADMISSION_CONTRACT).iter_errors(value))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError, RecursionError) as exc:
         return {'status': 'invalid_not_admitted', 'admission_enabled': False, 'runtime_enabled': False,
                 'model_calls': 0, 'external_calls': 0, 'blocker_count': 1, 'error': type(exc).__name__}
     if errors:

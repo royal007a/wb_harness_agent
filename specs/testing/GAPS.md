@@ -221,7 +221,7 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 
 - **MEMORY-READ-02 / Low**：HA-0066固定5429c62独立Approved。后续补sources负计数、
   semantic external_calls负数、keyword不可用/error=null三条专门反例，生产约束
-  已有但删除突变存活。非UTF-8准入档案仍会500（既有问题，需另项修复）；
+  已有但删除突变存活。HA-0069候选补三条负例并修复非UTF-8/超长整数档案500；
   静态POST /local/research和GET /local/research/{runId}仍缺。上述0066待review已解除，
   真实双部署未完成，不把已有信封校验说成档案故障已恢复。
 - **OPENAPI-EMPTY-04**：HA-0067补Pi runtime与四个离线管线响应，剩余明确空
@@ -243,3 +243,12 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - **OPENAPI-EMPTY-05**：HA-0068后仍有25个API及1个页面的成功JSON Schema恰为
   空对象，见HA-0068/remaining-empty-responses.json。不包含缺content/非空但过宽
   合同，仍须继续逐功能验证；不是“全部接口已完成”的依据。
+
+- **MEMORY-DELETE-01 / Medium**：delete只清canonical/FTS/图，幂等Retain收据仍
+  保留Fact statement，旧key可回放。Entity/Relation等收据也需统一生命周期清理。
+  HA-0069测试如实记录此边界，不把补HTTP合同称为全库删除或隐私抹除完成。
+  后续应设计不复活写入的失效收据/摘要墓碑，覆盖重放、跨来源派生、备份/WAL边界。
+- **MEMORY-FTS-01 / Medium**：FTS初始化失败时状态readiness已降级，但Retain
+  仍调用_index_fact，可能500；不损坏事务，不等于M1写入可用。本轮未修。
+- **OPENAPI-EMPTY-06**：HA-0069候选补Memory三类写回执后，剩22个API和1个页面
+  成功JSON声明恰为空；缺content及非空但宽松声明另计，见该项remaining清单。

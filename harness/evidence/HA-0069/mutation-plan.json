@@ -1,0 +1,76 @@
+{
+  "baseline": "697ef73",
+  "scope": "Isolated candidate worktree; mutations restored with reverse patch and cmp.",
+  "mutants": [
+    {
+      "id": "admission-value-error",
+      "file": "backend/memory.py",
+      "old": "except (OSError, ValueError, RecursionError) as exc:",
+      "replacement": "except (OSError, json.JSONDecodeError) as exc:",
+      "select": "test_malformed_admission_is_closed_without_breaking_reads"
+    },
+    {
+      "id": "delete-chunk-body",
+      "file": "backend/app.py",
+      "old": "        async for chunk in request.stream():\n            if chunk:\n                raise Problem('VALIDATION_ERROR', '删除请求不接受请求体。', 422)\n",
+      "replacement": "",
+      "select": "test_delete_body_rejected_before_mutation or test_delete_stops_on_first_nonempty_asgi_chunk"
+    },
+    {
+      "id": "dedup-empty-facts",
+      "file": "specs/v1/memory-plane.schema.json",
+      "old": "\"then\": {\"properties\": {\"facts\": {\"maxItems\": 0}, \"audit_id\": {\"const\": null}}}",
+      "replacement": "\"then\": {\"properties\": {\"facts\": {\"maxItems\": 16}, \"audit_id\": {\"const\": null}}}",
+      "select": "test_retained_negative_instances"
+    },
+    {
+      "id": "delete-required-tombstone",
+      "file": "specs/v1/memory-plane.schema.json",
+      "old": "\"required\": [\"source_id\", \"status\", \"deleted_fact_count\", \"deleted_entity_count\", \"deleted_relation_count\", \"tombstone_id\", \"audit_id\"]",
+      "replacement": "\"required\": [\"source_id\", \"status\", \"deleted_fact_count\", \"deleted_entity_count\", \"deleted_relation_count\", \"audit_id\"]",
+      "select": "test_lifecycle_receipt_negative_instances"
+    },
+    {
+      "id": "source-count-minimum",
+      "file": "specs/v1/memory-plane.schema.json",
+      "old": "\"sources\": {\"type\": \"integer\", \"minimum\": 0}",
+      "replacement": "\"sources\": {\"type\": \"integer\"}",
+      "select": "test_previous_review_schema_negative_gaps"
+    },
+    {
+      "id": "external-count-minimum",
+      "file": "specs/v1/memory-plane.schema.json",
+      "old": "\"external_calls\": {\"type\": \"integer\", \"minimum\": 0}",
+      "replacement": "\"external_calls\": {\"type\": \"integer\"}",
+      "select": "test_previous_review_schema_negative_gaps"
+    },
+    {
+      "id": "unavailable-index-error",
+      "file": "specs/v1/memory-plane.schema.json",
+      "old": "\"else\": {\"properties\": {\"engine\": {\"const\": null}, \"error\": {\"type\": \"string\"}}}",
+      "replacement": "\"else\": {\"properties\": {\"engine\": {\"const\": null}}}",
+      "select": "test_previous_review_schema_negative_gaps"
+    },
+    {
+      "id": "replay-reexecutes",
+      "file": "backend/memory.py",
+      "old": "                return json.loads(previous['response'])",
+      "replacement": "                return action(db)",
+      "select": "test_actual_write_lifecycle_receipts_and_replay"
+    },
+    {
+      "id": "write-response-binding",
+      "file": "backend/openapi_contracts.py",
+      "old": "def bind_memory_write_responses(document):",
+      "replacement": "def bind_memory_write_responses(document):\n    return",
+      "select": "test_write_contracts_are_not_empty"
+    },
+    {
+      "id": "late-audit-commit",
+      "file": "backend/memory.py",
+      "old": "            db.execute('DELETE FROM memory_sources WHERE id=?', (source_id,))",
+      "replacement": "            db.execute('DELETE FROM memory_sources WHERE id=?', (source_id,))\n            db.commit()",
+      "select": "test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller and delete"
+    }
+  ]
+}

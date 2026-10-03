@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="0.728" timestamp="2026-10-04T07:46:01.834731+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_write_contracts" name="test_malformed_admission_is_closed_without_breaking_reads[sha256:4c2e13fbcaa74a68]" time="0.177"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_28e6cebb08be4c238a024f9c91afdd49&quot;}}&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10da9e660&gt;
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1101/test_malformed_admission_is_cl0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d5456e0&gt;
+kind = 'utf8'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_28e6cebb08be4c238a024f9c91afdd49"}}
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_memory_write_contracts.py:56: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_malformed_admission_is_closed_without_breaking_reads[sha256:d828bfd19cb8448e]" time="0.069"><failure message="AssertionError: assert {'status': 'i...alls': 0, ...} == {'status': 'i...alls': 0, ...}&#10;  &#10;  Omitting 6 identical items, use -vv to show&#10;  Differing items:&#10;  {'error': 'schema_validation'} != {'error': 'RecursionError'}&#10;  Use -v to get more diff">client = &lt;starlette.testclient.TestClient object at 0x10f47c410&gt;
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1101/test_malformed_admission_is_cl1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d959940&gt;
+kind = 'deep'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+        assert response.status_code == 200, response.text
+        state = response.json()['semantic_retrieval']
+&gt;       assert state == {'status': 'invalid_not_admitted', 'admission_enabled': False,
+                         'runtime_enabled': False, 'model_calls': 0, 'external_calls': 0,
+                         'blocker_count': 1,
+                         'error': {'utf8': 'UnicodeDecodeError', 'deep': 'RecursionError', 'integer': 'ValueError'}[kind]}
+E       AssertionError: assert {'status': 'i...alls': 0, ...} == {'status': 'i...alls': 0, ...}
+E
+E         Omitting 6 identical items, use -vv to show
+E         Differing items:
+E         {'error': 'schema_validation'} != {'error': 'RecursionError'}
+E         Use -v to get more diff
+
+tests/test_memory_write_contracts.py:58: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_malformed_admission_is_closed_without_breaking_reads[sha256:69dbd8707ca88933]" time="0.038"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_22ea45d7486f485baa09583891d33644&quot;}}&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10f7f65d0&gt;
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1101/test_malformed_admission_is_cl2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10e603650&gt;
+kind = 'integer'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_22ea45d7486f485baa09583891d33644"}}
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_memory_write_contracts.py:56: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_delete_body_rejected_before_mutation[sha256:010c58e7db459e84]" time="0.070"><failure message="AssertionError: {&quot;source_id&quot;:&quot;memsrc_f720bf9354104f0bbd0813b782d7864b&quot;,&quot;status&quot;:&quot;deleted&quot;,&quot;deleted_fact_count&quot;:1,&quot;deleted_entity_count&quot;:0,&quot;deleted_relation_count&quot;:0,&quot;tombstone_id&quot;:&quot;memtomb_0fbc8e5dbd4a42b2a659fc9553d3378e&quot;,&quot;audit_id&quot;:&quot;memaudit_8401ab086d5141e8bbef5660bf9c980b&quot;}&#10;assert 200 == 422&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b5036f0&gt;
+framing = 'chunked'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_f720bf9354104f0bbd0813b782d7864b","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_0fbc8e5dbd4a42b2a659fc9553d3378e","audit_id":"memaudit_8401ab086d5141e8bbef5660bf9c980b"}
+E       assert 200 == 422
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_memory_write_contracts.py:77: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_delete_body_rejected_before_mutation[sha256:46a4ee0dbf763991]" time="0.038"><failure message="AssertionError: {&quot;source_id&quot;:&quot;memsrc_d30b6a12b1864f59aa498d25d3a1c738&quot;,&quot;status&quot;:&quot;deleted&quot;,&quot;deleted_fact_count&quot;:1,&quot;deleted_entity_count&quot;:0,&quot;deleted_relation_count&quot;:0,&quot;tombstone_id&quot;:&quot;memtomb_4ef528ea9d874e4fa101a0cb76643ce6&quot;,&quot;audit_id&quot;:&quot;memaudit_43a49fbe14d64cecacbe3d1266abaf35&quot;}&#10;assert 200 == 422&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d959810&gt;
+framing = 'false_zero'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_d30b6a12b1864f59aa498d25d3a1c738","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_4ef528ea9d874e4fa101a0cb76643ce6","audit_id":"memaudit_43a49fbe14d64cecacbe3d1266abaf35"}
+E       assert 200 == 422
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_memory_write_contracts.py:77: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_delete_body_rejected_before_mutation[sha256:0dec57038c0dd454]" time="0.041" /></testsuite></testsuites>

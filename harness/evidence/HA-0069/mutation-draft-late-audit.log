@@ -1,0 +1,103 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retain] __
+
+client = <starlette.testclient.TestClient object at 0x10d07a510>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c832060>
+stage = 'retain'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+>       bank, retained, _, path = seed(client)
+                                  ^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:157:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:33: in seed
+    bank = post_bank(c, 'bank69', 'bank69')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x10d07a510>
+name = 'bank69', key = 'bank69'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_dbec9a5d41e243ba87e7b18258db6589"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_read_surfaces.py:55: AssertionError
+_ test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retract] _
+
+client = <starlette.testclient.TestClient object at 0x10dded090>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cee2c40>
+stage = 'retract'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+>       bank, retained, _, path = seed(client)
+                                  ^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:157:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:33: in seed
+    bank = post_bank(c, 'bank69', 'bank69')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x10dded090>
+name = 'bank69', key = 'bank69'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_8cae3bf5bf2e412584602272543efced"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_read_surfaces.py:55: AssertionError
+_ test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[delete] __
+
+client = <starlette.testclient.TestClient object at 0x10dc3e5d0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10eb90710>
+stage = 'delete'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+>       bank, retained, _, path = seed(client)
+                                  ^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:157:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:33: in seed
+    bank = post_bank(c, 'bank69', 'bank69')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x10dc3e5d0>
+name = 'bank69', key = 'bank69'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_67060bb346d440b79f307e1dda3b7690"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_read_surfaces.py:55: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retain]
+FAILED tests/test_memory_write_contracts.py::test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[retract]
+FAILED tests/test_memory_write_contracts.py::test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[delete]
+3 failed, 37 deselected, 1 warning in 0.54s

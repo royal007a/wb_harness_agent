@@ -4,6 +4,88 @@
   "title": "Memory Plane M1 contract",
   "type": "object",
   "$defs": {
+    "local_http_memory_source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "bank_id", "source_ref", "content_sha256", "data_classification", "occurred_at", "recorded_at", "expires_at", "status", "retracted_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "source_ref": {"$ref": "#/$defs/source_input/properties/source_ref"},
+        "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "data_classification": {"enum": ["Public", "Internal"]},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "recorded_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "status": {"enum": ["active", "retracted"]},
+        "retracted_at": {"type": ["string", "null"], "format": "date-time"}
+      },
+      "if": {"properties": {"status": {"const": "active"}}},
+      "then": {"properties": {"retracted_at": {"const": null}}},
+      "else": {"properties": {"retracted_at": {"type": "string"}}}
+    },
+    "local_http_memory_fact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "bank_id", "source_id", "statement", "kind", "confidence", "occurred_at", "valid_from", "valid_to", "status", "supersedes_fact_id", "superseded_by_fact_id", "recorded_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^memfact_[a-f0-9]{32}$"},
+        "bank_id": {"type": "string", "pattern": "^membank_[a-f0-9]{32}$"},
+        "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+        "statement": {"$ref": "#/$defs/fact_input/properties/statement"},
+        "kind": {"$ref": "#/$defs/fact_input/properties/kind"},
+        "confidence": {"$ref": "#/$defs/fact_input/properties/confidence"},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "recorded_at": {"type": "string", "format": "date-time"},
+        "valid_from": {"type": ["string", "null"], "format": "date-time"},
+        "valid_to": {"type": ["string", "null"], "format": "date-time"},
+        "status": {"const": "active"},
+        "supersedes_fact_id": {"type": ["string", "null"], "pattern": "^memfact_[a-f0-9]{32}$"},
+        "superseded_by_fact_id": {"const": null}
+      }
+    },
+    "local_http_memory_retained": {
+      "description": "Historical receipt, not current source/fact state. Never contains source content or fact detail.",
+      "type": "object", "additionalProperties": false,
+      "required": ["source", "facts", "deduplicated", "audit_id", "note"],
+      "properties": {
+        "source": {"$ref": "#/$defs/local_http_memory_source"},
+        "facts": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/local_http_memory_fact"}},
+        "deduplicated": {"type": "boolean"},
+        "audit_id": {"type": ["string", "null"], "pattern": "^memaudit_[a-f0-9]{32}$"},
+        "note": {"type": "string", "minLength": 1}
+      },
+      "if": {"properties": {"deduplicated": {"const": true}}},
+      "then": {"properties": {"facts": {"maxItems": 0}, "audit_id": {"const": null}}},
+      "else": {"properties": {"facts": {"minItems": 1}, "audit_id": {"type": "string"}, "source": {"properties": {"status": {"const": "active"}}}}}
+    },
+    "local_http_memory_retracted": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "status", "retracted_fact_count", "already_retracted"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+        "status": {"const": "retracted"},
+        "retracted_fact_count": {"type": "integer", "minimum": 0, "maximum": 16},
+        "already_retracted": {"type": "boolean"},
+        "retracted_entity_count": {"type": "integer", "minimum": 0},
+        "retracted_relation_count": {"type": "integer", "minimum": 0},
+        "audit_id": {"type": "string", "pattern": "^memaudit_[a-f0-9]{32}$"}
+      },
+      "if": {"properties": {"already_retracted": {"const": true}}},
+      "then": {"properties": {"retracted_fact_count": {"const": 0}, "audit_id": false, "retracted_entity_count": false, "retracted_relation_count": false}},
+      "else": {"required": ["audit_id", "retracted_entity_count", "retracted_relation_count"]}
+    },
+    "local_http_memory_deleted": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "status", "deleted_fact_count", "deleted_entity_count", "deleted_relation_count", "tombstone_id", "audit_id"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^memsrc_[a-f0-9]{32}$"},
+        "status": {"const": "deleted"},
+        "deleted_fact_count": {"type": "integer", "minimum": 0, "maximum": 16},
+        "deleted_entity_count": {"type": "integer", "minimum": 0},
+        "deleted_relation_count": {"type": "integer", "minimum": 0},
+        "tombstone_id": {"type": "string", "pattern": "^memtomb_[a-f0-9]{32}$"},
+        "audit_id": {"type": "string", "pattern": "^memaudit_[a-f0-9]{32}$"}
+      }
+    },
     "local_http_memory_semantic_status": {
       "description": "Admission file projection, not execution admission or measured call counters.",
       "type": "object", "additionalProperties": false,

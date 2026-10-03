@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.537" timestamp="2026-10-04T07:51:02.240083+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_write_contracts" name="test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[sha256:ef71db611810e2de]" time="0.144"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_dbec9a5d41e243ba87e7b18258db6589&quot;}}&#10;assert 500 == 201&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d07a510&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c832060&gt;
+stage = 'retain'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+&gt;       bank, retained, _, path = seed(client)
+                                  ^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:157:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:33: in seed
+    bank = post_bank(c, 'bank69', 'bank69')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = &lt;starlette.testclient.TestClient object at 0x10d07a510&gt;
+name = 'bank69', key = 'bank69'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+&gt;       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_dbec9a5d41e243ba87e7b18258db6589"}}
+E       assert 500 == 201
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_read_surfaces.py:55: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[sha256:2f5b2b6133f72c7d]" time="0.046"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_8cae3bf5bf2e412584602272543efced&quot;}}&#10;assert 500 == 201&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10dded090&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cee2c40&gt;
+stage = 'retract'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+&gt;       bank, retained, _, path = seed(client)
+                                  ^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:157:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:33: in seed
+    bank = post_bank(c, 'bank69', 'bank69')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = &lt;starlette.testclient.TestClient object at 0x10dded090&gt;
+name = 'bank69', key = 'bank69'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+&gt;       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_8cae3bf5bf2e412584602272543efced"}}
+E       assert 500 == 201
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_read_surfaces.py:55: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[sha256:eb0756ec70e7feef]" time="0.069"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_67060bb346d440b79f307e1dda3b7690&quot;}}&#10;assert 500 == 201&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10dc3e5d0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10eb90710&gt;
+stage = 'delete'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+&gt;       bank, retained, _, path = seed(client)
+                                  ^^^^^^^^^^^^
+
+tests/test_memory_write_contracts.py:157:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_write_contracts.py:33: in seed
+    bank = post_bank(c, 'bank69', 'bank69')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = &lt;starlette.testclient.TestClient object at 0x10dc3e5d0&gt;
+name = 'bank69', key = 'bank69'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+&gt;       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_67060bb346d440b79f307e1dda3b7690"}}
+E       assert 500 == 201
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_read_surfaces.py:55: AssertionError</failure></testcase></testsuite></testsuites>

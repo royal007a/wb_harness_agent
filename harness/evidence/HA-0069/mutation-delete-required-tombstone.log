@@ -1,0 +1,30 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+_________________ test_lifecycle_receipt_negative_instances[2] _________________
+
+client = <starlette.testclient.TestClient object at 0x10e38a5d0>, operation = 2
+
+    @pytest.mark.parametrize('operation', [1, 2])
+    def test_lifecycle_receipt_negative_instances(client, operation):
+        _, retained, _, _ = seed(client)
+        path = '/api/local/memory/sources/' + retained['source']['id']
+        result = (client.post(path + ':retract', json={}, headers={'Idempotency-Key': 'neg69'}) if operation == 1
+                  else client.delete(path, headers={'Idempotency-Key': 'neg69'})).json()
+        checks = check(client, OPERATIONS[operation], result)
+        for field in result:
+            bad = {k: v for k, v in result.items() if k != field}
+>           assert all(not v.is_valid(bad) for v in checks), field
+E           AssertionError: tombstone_id
+E           assert False
+E            +  where False = all(<generator object test_lifecycle_receipt_negative_instances.<locals>.<genexpr> at 0x10c99c4a0>)
+
+tests/test_memory_write_contracts.py:255: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_lifecycle_receipt_negative_instances[2]
+1 failed, 1 passed, 38 deselected, 1 warning in 0.51s

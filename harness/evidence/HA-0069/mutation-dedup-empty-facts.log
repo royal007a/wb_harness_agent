@@ -1,0 +1,39 @@
+.......F..                                                               [100%]
+=================================== FAILURES ===================================
+________________ test_retained_negative_instances[dedup_facts] _________________
+
+client = <starlette.testclient.TestClient object at 0x10aa8e360>
+variant = 'dedup_facts'
+
+    @pytest.mark.parametrize('variant', ['source_content', 'detail', 'digest', 'wrong_id', 'time',
+                                       'confidence', 'empty_facts', 'dedup_facts', 'missing_audit', 'status'])
+    def test_retained_negative_instances(client, variant):
+        _, retained, _, _ = seed(client)
+        bad = copy.deepcopy(retained)
+        if variant == 'source_content': bad['source']['content'] = 'raw'
+        elif variant == 'detail': bad['facts'][0]['detail'] = 'private'
+        elif variant == 'digest': bad['source']['content_sha256'] = 'F' * 64
+        elif variant == 'wrong_id': bad['facts'][0]['source_id'] = 'run_wrong'
+        elif variant == 'time': bad['source']['expires_at'] = 'not-a-date'
+        elif variant == 'confidence': bad['facts'][0]['confidence'] = -1
+        elif variant == 'empty_facts': bad['facts'] = []
+        elif variant == 'dedup_facts': bad.update(deduplicated=True, audit_id=None)
+        elif variant == 'missing_audit': del bad['audit_id']
+        elif variant == 'status': bad['source']['status'] = 'deleted'
+        for validator in check(client, OPERATIONS[0], retained):
+>           assert not validator.is_valid(bad), variant
+E           AssertionError: dedup_facts
+E           assert not True
+E            +  where True = is_valid({'source': {'id': 'memsrc_43851930b92c4d38813d7d1808008428', 'bank_id': 'membank_f454376b21374f889a192b400d10d754', 's... 'memsrc_43851930b92c4d38813d7d1808008428', 'statement': 'Fact 69', ...}], 'deduplicated': True, 'audit_id': None, ...})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...mory_retained', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:243: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_retained_negative_instances[dedup_facts]
+1 failed, 9 passed, 30 deselected, 1 warning in 1.43s

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.063" timestamp="2026-10-04T07:45:56.954208+08:00" hostname="192.168.31.117"><testcase classname="" name="tests.test_memory_write_contracts" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/weberzhao/code/ai/harnessagent/tests/test_memory_write_contracts.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_write_contracts.py:7: in &lt;module&gt;
+    from backend import memory
+E   ModuleNotFoundError: No module named 'backend'</error></testcase></testsuite></testsuites>

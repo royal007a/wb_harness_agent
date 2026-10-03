@@ -1,0 +1,83 @@
+FFF.                                                                     [100%]
+=================================== FAILURES ===================================
+________________ test_delete_stops_on_first_nonempty_asgi_chunk ________________
+
+client = <starlette.testclient.TestClient object at 0x10b3aa660>
+
+    def test_delete_stops_on_first_nonempty_asgi_chunk(client):
+        import asyncio
+        from starlette.requests import Request
+        _, retained, _, _ = seed(client)
+        route = next(route for route in client.app.routes
+                     if getattr(route, 'path', '') == '/api/local/memory/sources/{source_id}' and 'DELETE' in route.methods)
+        reads = []
+        async def receive():
+            reads.append(True)
+            if len(reads) > 1:
+                raise AssertionError('Must not drain or buffer the body after rejection')
+            return {'type': 'http.request', 'body': b'x', 'more_body': True}
+        request = Request({'type': 'http', 'method': 'DELETE', 'headers': []}, receive)
+        before = snapshot(client)
+        from backend.analysis import Problem
+        with pytest.raises(Problem) as caught:
+            asyncio.run(route.endpoint(retained['source']['id'], request))
+>       assert caught.value.status == 422 and len(reads) == 1
+E       AssertionError: assert (422 == 422 and 0 == 1)
+E        +  where 422 = Problem('必须提供 1–128 字符的 Idempotency-Key。').status
+E        +    where Problem('必须提供 1–128 字符的 Idempotency-Key。') = <ExceptionInfo Problem('必须提供 1–128 字符的 Idempotency-Key。') tblen=8>.value
+E        +  and   0 = len([])
+
+tests/test_memory_write_contracts.py:360: AssertionError
+______________ test_delete_body_rejected_before_mutation[chunked] ______________
+
+client = <starlette.testclient.TestClient object at 0x10cd88f50>
+framing = 'chunked'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_282038c3be1848edb4a7aaa0af4d96ec","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_3718b3a07daf427a91e3c44fd237903a","audit_id":"memaudit_4f0a051cabf4492ba923da64e3187f17"}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_write_contracts.py:374: AssertionError
+____________ test_delete_body_rejected_before_mutation[false_zero] _____________
+
+client = <starlette.testclient.TestClient object at 0x10bf76990>
+framing = 'false_zero'
+
+    @pytest.mark.parametrize('framing', ['chunked', 'false_zero', 'length'])
+    def test_delete_body_rejected_before_mutation(client, framing):
+        _, retained, _, _ = seed(client)
+        headers = {'Idempotency-Key': 'delete-body69'}
+        if framing == 'false_zero':
+            headers['Content-Length'] = '0'
+        content = iter([b'{', b'}']) if framing != 'length' else b'{}'
+        before = snapshot(client)
+        response = client.request('DELETE', '/api/local/memory/sources/' + retained['source']['id'],
+                                  content=content, headers=headers)
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"source_id":"memsrc_ce7ea96464094115bfb5c4901f72a954","status":"deleted","deleted_fact_count":1,"deleted_entity_count":0,"deleted_relation_count":0,"tombstone_id":"memtomb_2bd275ebd332410098f1776f6634c496","audit_id":"memaudit_6259941763cb48e99fb8e7739250c4a1"}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_write_contracts.py:374: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_delete_stops_on_first_nonempty_asgi_chunk
+FAILED tests/test_memory_write_contracts.py::test_delete_body_rejected_before_mutation[chunked]
+FAILED tests/test_memory_write_contracts.py::test_delete_body_rejected_before_mutation[false_zero]
+3 failed, 1 passed, 36 deselected, 1 warning in 0.50s

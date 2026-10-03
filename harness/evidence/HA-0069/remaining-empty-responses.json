@@ -1,0 +1,121 @@
+{
+  "criterion": "successful application/json schema exactly {}, not all missing/weak contracts",
+  "count": 23,
+  "items": [
+    {
+      "path": "/api/v1/engines",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/v1/frameworks",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/v1/readiness",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/external-skills/runtime",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/external-skills/packages",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/external-skills/packages",
+      "method": "post",
+      "status": "201"
+    },
+    {
+      "path": "/api/local/team/workspaces/{workspace_id}/agents",
+      "method": "post",
+      "status": "201"
+    },
+    {
+      "path": "/api/local/team/workspaces/{workspace_id}/channels",
+      "method": "post",
+      "status": "201"
+    },
+    {
+      "path": "/api/local/team/tasks/{task_id}:close",
+      "method": "post",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}/observations",
+      "method": "post",
+      "status": "201"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:try",
+      "method": "post",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:confirm",
+      "method": "post",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:cancel",
+      "method": "post",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:link-handoff",
+      "method": "post",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:complete",
+      "method": "post",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/research",
+      "method": "post",
+      "status": "202"
+    },
+    {
+      "path": "/api/local/research/{run_id}",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/research-agents",
+      "method": "post",
+      "status": "202"
+    },
+    {
+      "path": "/api/local/research-agents/{run_id}",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/research-native/runtime",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/api/local/research-native",
+      "method": "post",
+      "status": "202"
+    },
+    {
+      "path": "/api/local/research-native/{run_id}",
+      "method": "get",
+      "status": "200"
+    },
+    {
+      "path": "/",
+      "method": "get",
+      "status": "200"
+    }
+  ]
+}

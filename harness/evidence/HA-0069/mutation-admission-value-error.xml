@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="0.713" timestamp="2026-10-04T07:50:53.293069+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_write_contracts" name="test_malformed_admission_is_closed_without_breaking_reads[sha256:4c2e13fbcaa74a68]" time="0.201"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_a10d14ea87d6473f9a0c81c378c10b7f&quot;}}&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x1098fe900&gt;
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1134/test_malformed_admission_is_cl0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1095a4050&gt;
+kind = 'utf8'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_a10d14ea87d6473f9a0c81c378c10b7f"}}
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_memory_write_contracts.py:96: AssertionError</failure></testcase><testcase classname="tests.test_memory_write_contracts" name="test_malformed_admission_is_closed_without_breaking_reads[sha256:d828bfd19cb8448e]" time="0.127" /><testcase classname="tests.test_memory_write_contracts" name="test_malformed_admission_is_closed_without_breaking_reads[sha256:69dbd8707ca88933]" time="0.037"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_8f31298aae534c95927667b5ba1ad9ce&quot;}}&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b857390&gt;
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1134/test_malformed_admission_is_cl2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a5ec170&gt;
+kind = 'integer'
+
+    @pytest.mark.parametrize('kind', ['utf8', 'deep', 'integer'])
+    def test_malformed_admission_is_closed_without_breaking_reads(client, tmp_path, monkeypatch, kind):
+        path = tmp_path / 'malformed-gate.json'
+        raw = {'utf8': b'\xff\xfe{PRIVATE_MARKER', 'deep': b'[' * 10000 + b']' * 10000,
+               'integer': b'1' * 10000}[kind]
+        path.write_bytes(raw)
+        real = memory.semantic_admission_status
+        monkeypatch.setattr(memory, 'semantic_admission_status', lambda: real(path))
+        client._transport.raise_server_exceptions = False
+        before = snapshot(client)
+        response = client.get('/api/local/memory/runtime')
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_8f31298aae534c95927667b5ba1ad9ce"}}
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_memory_write_contracts.py:96: AssertionError</failure></testcase></testsuite></testsuites>

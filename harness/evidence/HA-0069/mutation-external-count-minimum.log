@@ -1,0 +1,42 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________ test_previous_review_schema_negative_gaps ___________________
+
+client = <starlette.testclient.TestClient object at 0x10972a7b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108ef1a70>
+
+    def test_previous_review_schema_negative_gaps(client, monkeypatch):
+        bank = post_bank(client, 'negative69', 'negative69')
+        detail = client.get('/api/local/memory/banks/' + bank['id']).json()
+        for validator in check(client, READS[3], detail):
+            bad = copy.deepcopy(detail)
+            bad['counts']['sources'] = -1
+            assert not validator.is_valid(bad)
+        plane = client.app.state.service.memory
+        monkeypatch.setattr(plane, '_fts_ready', False)
+        monkeypatch.setattr(plane, '_fts_error', 'fixture-unavailable')
+        runtime = plane.runtime_status()
+        for validator in check(client, READS[0], runtime):
+            bad = copy.deepcopy(runtime)
+            bad['keyword_index']['error'] = None
+            assert not validator.is_valid(bad)
+            # admitted path isolates external_calls minimum from not_admitted const:0.
+            admitted = copy.deepcopy(runtime)
+            admitted['semantic_retrieval'].update(status='admitted', admission_enabled=True, error=None, external_calls=0)
+            validator.validate(admitted)
+            admitted['semantic_retrieval']['external_calls'] = -1
+>           assert not validator.is_valid(admitted)
+E           AssertionError: assert not True
+E            +  where True = is_valid({'mode': 'memory-plane-m3b@1', 'status': 'available_local_admin', 'write_mode': 'explicit_source_fact_entity_relation_only', 'recall_mode': ['keyword', 'temporal', 'context_catalog', 'detail_by_id', 'explicit_graph_temporal'], ...})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...emory_runtime', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_write_contracts.py:284: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_previous_review_schema_negative_gaps
+1 failed, 39 deselected, 1 warning in 0.57s

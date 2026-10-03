@@ -311,8 +311,11 @@ paths:
       responses:
         '201':
           description: Source/Facts retained or an existing source deduplicated.
+          content:
+            application/json:
+              schema: {$ref: './memory-plane.schema.json#/$defs/local_http_memory_retained'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/memory/banks/{bankId}/entities:
     servers:
       - url: /api
@@ -553,13 +556,17 @@ paths:
       responses:
         '200':
           description: Source and active dependent Facts retracted.
+          content:
+            application/json:
+              schema: {$ref: './memory-plane.schema.json#/$defs/local_http_memory_retracted'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/memory/sources/{sourceId}:
     servers:
       - url: /api
     delete:
       operationId: deleteMemorySource
+      description: No request body is accepted, including chunked bodies. Same-key replay is a historical receipt, not a fresh deletion. Historical retain/entity receipts are not erased.
       parameters:
         - name: sourceId
           in: path
@@ -570,8 +577,11 @@ paths:
       responses:
         '200':
           description: Deletes Source/Facts from the canonical local store and leaves a no-content tombstone/audit record.
+          content:
+            application/json:
+              schema: {$ref: './memory-plane.schema.json#/$defs/local_http_memory_deleted'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/team/runtime:
     servers:
       - url: /api

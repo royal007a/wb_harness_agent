@@ -1,0 +1,52 @@
+[
+  {
+    "id": "admission-value-error",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "delete-chunk-body",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "dedup-empty-facts",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "delete-required-tombstone",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "source-count-minimum",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "external-count-minimum",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "unavailable-index-error",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "replay-reexecutes",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "write-response-binding",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "late-audit-commit",
+    "exit_code": 1,
+    "restored": true
+  }
+]

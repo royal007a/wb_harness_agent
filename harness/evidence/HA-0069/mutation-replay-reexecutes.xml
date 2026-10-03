@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.412" timestamp="2026-10-04T07:51:00.410878+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_write_contracts" name="test_actual_write_lifecycle_receipts_and_replay" time="0.199"><failure message="AssertionError: assert ({'source': {'...d': None, ...} == {'source': {'...e6cb9a4', ...}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'audit_id': None} != {'audit_id': 'memaudit_f615992799864f3ca4d4b081de6cb9a4'}&#10;  {'facts': []} != {'facts': [{'id': 'memfact_01b5cf001e4f4fbfa63b173fd85db73a', 'bank_id': 'membank_2a301d8011ad440b8ae129132980535d', 'source_id': 'memsrc_5c59fd1cb0c642a196ec9aa282ba674b', 'statement': 'Fact 69', ...}]}&#10;  {'deduplicated': True} != {'deduplicated': False}&#10;  {'note': '相同来源内容已存在；没有再次写入 Fact。'} != {'note': '来源和显式 Fact 已写入；未进行模型抽取或 Reflect。'}&#10;  Use -v to get more diff)">client = &lt;starlette.testclient.TestClient object at 0x10b54e7b0&gt;
+
+    def test_actual_write_lifecycle_receipts_and_replay(client):
+        bank, retained, request, path = seed(client)
+        check(client, OPERATIONS[0], retained)
+        assert retained['source']['bank_id'] == bank['id'] and not retained['deduplicated']
+        assert 'RAW_SOURCE_' not in json.dumps(retained) and 'Derived detail' not in json.dumps(retained)
+        assert len(retained['facts']) == 1 and retained['facts'][0]['statement'] == request['facts'][0]['statement']
+        assert retained['facts'][0]['source_id'] == retained['source']['id']
+        before = snapshot(client)
+        replay = client.post(path, json=request, headers={'Idempotency-Key': 'retain69'})
+&gt;       assert replay.json() == retained and snapshot(client) == before
+E       AssertionError: assert ({'source': {'...d': None, ...} == {'source': {'...e6cb9a4', ...}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'audit_id': None} != {'audit_id': 'memaudit_f615992799864f3ca4d4b081de6cb9a4'}
+E         {'facts': []} != {'facts': [{'id': 'memfact_01b5cf001e4f4fbfa63b173fd85db73a', 'bank_id': 'membank_2a301d8011ad440b8ae129132980535d', 'source_id': 'memsrc_5c59fd1cb0c642a196ec9aa282ba674b', 'statement': 'Fact 69', ...}]}
+E         {'deduplicated': True} != {'deduplicated': False}
+E         {'note': '相同来源内容已存在；没有再次写入 Fact。'} != {'note': '来源和显式 Fact 已写入；未进行模型抽取或 Reflect。'}
+E         Use -v to get more diff)
+
+tests/test_memory_write_contracts.py:119: AssertionError</failure></testcase></testsuite></testsuites>

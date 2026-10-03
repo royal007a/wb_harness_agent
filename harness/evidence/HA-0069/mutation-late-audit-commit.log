@@ -1,0 +1,52 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[delete] __
+
+client = <starlette.testclient.TestClient object at 0x109142660>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108e00180>
+stage = 'delete'
+
+    @pytest.mark.parametrize('stage', ['retain', 'retract', 'delete'])
+    def test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller(client, monkeypatch, stage):
+        bank, retained, _, path = seed(client)
+        plane = client.app.state.service.memory
+        original_audit = plane._audit
+        target = {'retain': 'memory.source.retained', 'retract': 'memory.source.retracted', 'delete': 'memory.source.deleted'}[stage]
+        def fail_after_writes(db, bank_id, kind, target_id, metadata):
+            if kind == target:
+                raise RuntimeError('fixture-failure')
+            return original_audit(db, bank_id, kind, target_id, metadata)
+        monkeypatch.setattr(plane, '_audit', fail_after_writes)
+        client._transport.raise_server_exceptions = False
+        request = body('replacement69')
+        request['facts'][0]['supersedes_fact_id'] = retained['facts'][0]['id']
+        source_path = '/api/local/memory/sources/' + retained['source']['id']
+        call = {
+            'retain': lambda: client.post(path, json=request, headers={'Idempotency-Key': 'failure69'}),
+            'retract': lambda: client.post(source_path + ':retract', json={}, headers={'Idempotency-Key': 'failure69'}),
+            'delete': lambda: client.delete(source_path, headers={'Idempotency-Key': 'failure69'}),
+        }[stage]
+        before = snapshot(client)[1]
+        failed = call()
+        assert failed.status_code == 500 and failed.json()['error']['code'] == 'INTERNAL_ERROR'
+>       assert snapshot(client)[1] == before
+E       assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}
+E
+E         Omitting 51 identical items, use -vv to show
+E         Differing items:
+E         {'memory_tombstones': [('memtomb_86978decea534718a75a7f3e38a9f7bb', 'membank_3ff19cb8d517432aabdef7f0213c5c5f', '{"ban...reason": "local_admin_delete", "source_sha256": "178b21b2f8add022631089f5b9bc4710750d3691ab78e6f1cb10adbc23e17e77"}')]} != {'memory_tombstones': []}
+E         {'memory_fact_fts': []} != {'memory_fact_fts': [('memfact_695a2e4d9d704d2e941f3374c460f48a', 'membank_3ff19cb8d517432aabdef7f0213c5c5f', 'fact 69')]}
+E         {'memory_fact_fts_data': [(1, b'\x00\x00\x00\x00'), (10, b'\x00\x00\x00\x00\x01\x02\x02\x00\x02\x0...
+E
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/test_memory_write_contracts.py:178: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_write_contracts.py::test_write_failure_rolls_back_all_tables_and_is_retryable_by_caller[delete]
+1 failed, 39 deselected, 1 warning in 0.58s

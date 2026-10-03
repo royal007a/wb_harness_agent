@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="0.504" timestamp="2026-10-04T07:50:56.995473+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_write_contracts" name="test_lifecycle_receipt_negative_instances[sha256:512a18c8b25bdf39]" time="0.179" /><testcase classname="tests.test_memory_write_contracts" name="test_lifecycle_receipt_negative_instances[sha256:a8f06e8f4c663943]" time="0.127"><failure message="AssertionError: tombstone_id&#10;assert False&#10; +  where False = all(&lt;generator object test_lifecycle_receipt_negative_instances.&lt;locals&gt;.&lt;genexpr&gt; at 0x10c99c4a0&gt;)">client = &lt;starlette.testclient.TestClient object at 0x10e38a5d0&gt;, operation = 2
+
+    @pytest.mark.parametrize('operation', [1, 2])
+    def test_lifecycle_receipt_negative_instances(client, operation):
+        _, retained, _, _ = seed(client)
+        path = '/api/local/memory/sources/' + retained['source']['id']
+        result = (client.post(path + ':retract', json={}, headers={'Idempotency-Key': 'neg69'}) if operation == 1
+                  else client.delete(path, headers={'Idempotency-Key': 'neg69'})).json()
+        checks = check(client, OPERATIONS[operation], result)
+        for field in result:
+            bad = {k: v for k, v in result.items() if k != field}
+&gt;           assert all(not v.is_valid(bad) for v in checks), field
+E           AssertionError: tombstone_id
+E           assert False
+E            +  where False = all(&lt;generator object test_lifecycle_receipt_negative_instances.&lt;locals&gt;.&lt;genexpr&gt; at 0x10c99c4a0&gt;)
+
+tests/test_memory_write_contracts.py:255: AssertionError</failure></testcase></testsuite></testsuites>

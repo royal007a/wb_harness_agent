@@ -444,3 +444,11 @@ next_seq按返回页而非全Run最新序号推进，空页保留after_seq，范
 首次Gate在事务内核对waiting_approval并提交审计/终态；同key/body只读回放原收据，
 不是新的执行许可。取消/超时后的迟到Adapter结果不再发布。仍是Faux-only、本机
 可信用户纵切，非真实Provider/法律评测；详细验证见PI_PRODUCT_HTTP_CONTRACTS.md。
+# Memory写回执（HA-0069）
+
+Retain（201）、Source retract（200）和DELETE（200）现按memory-plane源Schema
+公开local_http_memory_*响应，静态与动态都使用当前local_http_error信封。
+Retain去重与首次写入、重复撤回与首次撤回的字段分支以Schema为准。
+DELETE拒绝非空请求体（含分块），幂等键均1–128字符。
+回放是历史收据；删除canonical不抹掉旧Retain/Entity幂等回执，不宣称隐私擦除。
+详见specs/testing/MEMORY_WRITE_CONTRACTS.md。
