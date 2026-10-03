@@ -60,6 +60,8 @@ with sync_playwright() as playwright:
     page.set_viewport_size({'width': 390, 'height': 844})
     expect(page.locator('#new-session')).to_be_visible()
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Mobile horizontal overflow'
+    assert page.locator('#messages').evaluate('(node) => { const r = node.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; }'), 'Mobile message column clipped'
+    assert page.locator('#messages').evaluate('(node) => node.scrollWidth <= node.clientWidth'), 'Mobile message content overflow'
     page.screenshot(path=str(OUTPUT / 'agent-runtime-mobile.png'), full_page=True)
     page.locator('#messages').screenshot(path=str(OUTPUT / 'agent-runtime-messages-mobile.png'))
     assert not errors, errors

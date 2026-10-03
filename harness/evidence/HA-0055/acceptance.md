@@ -39,3 +39,26 @@ testcase 名中的原始夹具已机械替换为 SHA-256，避免保存超长输
   释放后才出现唯一持久 assistant 和 succeeded 卡。
 - 接口清单 148 方法/路径、22 功能分组仍一致。
 - 当前待办：本机→132 发布及真实部署浏览器截图；mymacclaude 独立 review。
+
+## 视觉复核发现的手机裁切
+
+本机先发布 e10ada8，备份见 `local-deployment.json`；最初浏览器报告在
+`local-runtime/` 和 `local-workbench/`。它们通过，但不能作为手机布局验收：
+实际截图中 390px 视口的聊天列为 639px，被 panel 的 overflow:hidden 裁切。
+四个会话按钮的 intrinsic width 撑大了移动端 1fr 的自动最小轨道。
+
+`mobile-before.xml`、`mobile-four-sessions-before.xml` 和
+`mobile-long-titles-before.xml` 保留了三次未捕获缺陷的测试。前两者分别通过
+1 项，第三次通过 2 项；只检查 document 或消息列 right 是不够的。点击末尾
+会话时，浏览器还可能滚动隐藏的外层容器，使列的 left 变负而 right 在视口内。
+改为同时检查 left/right 后，`mobile-both-edges-before.xml` 两个多会话用例
+都在旧 CSS 上失败。
+
+修复让窄屏 grid 使用 minmax(0,1fr)，aside 可收缩；横向滚动只留在会话列表，
+按钮固定 150px 并允许长词折行。`ui-mobile-fixed.xml` 为 14 passed；
+`local-mobile-fixed/` 与 `local-mobile-workbench/` 为固定提交前本机实页验证。
+消息列手机截图为 356px，状态、错误码及用户文本完整可见；桌面截图亦检查。
+这些不是新提交的部署回执，正式双端发布仍需后续证据。
+
+`verify-mobile-fixed.log`：补齐手机回归后的完整 verify.sh exit 0，pytest
+340 passed / 16 skipped；后续确定性评测、准入和 JS 语法检查通过。

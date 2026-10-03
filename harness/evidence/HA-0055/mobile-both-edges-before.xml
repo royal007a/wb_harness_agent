@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="8.428" timestamp="2026-10-04T00:30:00.739862+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_ui" name="test_multiple_sessions_do_not_clip_mobile_history[Mobile session]" time="5.232"><failure message="AssertionError: four-session history is clipped despite no document overflow&#10;assert False&#10; +  where False = evaluate('(node) =&gt; { const r = node.getBoundingClientRect(); return r.left &gt;= 0 &amp;&amp; r.right &lt;= innerWidth; }')&#10; +    where evaluate = &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52401/agent-runtime'&gt; selector='#messages'&gt;.evaluate&#10; +      where &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52401/agent-runtime'&gt; selector='#messages'&gt; = locator('#messages')&#10; +        where locator = &lt;Page url='http://127.0.0.1:52401/agent-runtime'&gt;.locator">ui = (&lt;Page url='http://127.0.0.1:52401/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10e67f8c0&gt;, {'id':...b5be3e151c51facd', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:52401')
+title = 'Mobile session'
+
+    @pytest.mark.parametrize('title', ['Mobile session', '与 Runtime Agent 1791044226328 的会话'])
+    def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
+        page, runtime, agent, base = ui
+        sessions = [session(runtime, agent, f'{title} {i}', f'Message {i}') for i in range(4)]
+        for _created, exchange in sessions:
+            runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        page.set_viewport_size({'width': 390, 'height': 844})
+        page.goto(base + '/agent-runtime')
+        pw.expect(page.locator('#session-list button')).to_have_count(4)
+        select(page, sessions[0][0]['id'])
+        pw.expect(page.locator('#messages')).to_contain_text('MODEL_RUNTIME_DISABLED')
+        assert page.evaluate('document.documentElement.scrollWidth &lt;= innerWidth')
+&gt;       assert page.locator('#messages').evaluate('(node) =&gt; { const r = node.getBoundingClientRect(); return r.left &gt;= 0 &amp;&amp; r.right &lt;= innerWidth; }'), 'four-session history is clipped despite no document overflow'
+E       AssertionError: four-session history is clipped despite no document overflow
+E       assert False
+E        +  where False = evaluate('(node) =&gt; { const r = node.getBoundingClientRect(); return r.left &gt;= 0 &amp;&amp; r.right &lt;= innerWidth; }')
+E        +    where evaluate = &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52401/agent-runtime'&gt; selector='#messages'&gt;.evaluate
+E        +      where &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52401/agent-runtime'&gt; selector='#messages'&gt; = locator('#messages')
+E        +        where locator = &lt;Page url='http://127.0.0.1:52401/agent-runtime'&gt;.locator
+
+tests/test_agent_runtime_ui.py:309: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd]" time="1.694"><failure message="AssertionError: four-session history is clipped despite no document overflow&#10;assert False&#10; +  where False = evaluate('(node) =&gt; { const r = node.getBoundingClientRect(); return r.left &gt;= 0 &amp;&amp; r.right &lt;= innerWidth; }')&#10; +    where evaluate = &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52422/agent-runtime'&gt; selector='#messages'&gt;.evaluate&#10; +      where &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52422/agent-runtime'&gt; selector='#messages'&gt; = locator('#messages')&#10; +        where locator = &lt;Page url='http://127.0.0.1:52422/agent-runtime'&gt;.locator">ui = (&lt;Page url='http://127.0.0.1:52422/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10f626850&gt;, {'id':...b8c4c5db4abd4436', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:52422')
+title = '与 Runtime Agent 1791044226328 的会话'
+
+    @pytest.mark.parametrize('title', ['Mobile session', '与 Runtime Agent 1791044226328 的会话'])
+    def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
+        page, runtime, agent, base = ui
+        sessions = [session(runtime, agent, f'{title} {i}', f'Message {i}') for i in range(4)]
+        for _created, exchange in sessions:
+            runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        page.set_viewport_size({'width': 390, 'height': 844})
+        page.goto(base + '/agent-runtime')
+        pw.expect(page.locator('#session-list button')).to_have_count(4)
+        select(page, sessions[0][0]['id'])
+        pw.expect(page.locator('#messages')).to_contain_text('MODEL_RUNTIME_DISABLED')
+        assert page.evaluate('document.documentElement.scrollWidth &lt;= innerWidth')
+&gt;       assert page.locator('#messages').evaluate('(node) =&gt; { const r = node.getBoundingClientRect(); return r.left &gt;= 0 &amp;&amp; r.right &lt;= innerWidth; }'), 'four-session history is clipped despite no document overflow'
+E       AssertionError: four-session history is clipped despite no document overflow
+E       assert False
+E        +  where False = evaluate('(node) =&gt; { const r = node.getBoundingClientRect(); return r.left &gt;= 0 &amp;&amp; r.right &lt;= innerWidth; }')
+E        +    where evaluate = &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52422/agent-runtime'&gt; selector='#messages'&gt;.evaluate
+E        +      where &lt;Locator frame=&lt;Frame name= url='http://127.0.0.1:52422/agent-runtime'&gt; selector='#messages'&gt; = locator('#messages')
+E        +        where locator = &lt;Page url='http://127.0.0.1:52422/agent-runtime'&gt;.locator
+
+tests/test_agent_runtime_ui.py:309: AssertionError</failure></testcase></testsuite></testsuites>

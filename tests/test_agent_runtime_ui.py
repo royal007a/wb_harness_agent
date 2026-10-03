@@ -95,6 +95,8 @@ def test_failed_send_remains_visible_after_completion_reselection_and_reload(ui)
     assert detail['exchanges'][0]['model_calls'] == 0
     page.set_viewport_size({'width': 390, 'height': 844})
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+    assert page.locator('#messages').evaluate('(node) => { const r = node.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; }'), 'message column is clipped outside the viewport'
+    assert page.locator('#messages').evaluate('(node) => node.scrollWidth <= node.clientWidth'), 'message content overflows its column'
 
 
 @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
@@ -290,3 +292,19 @@ def test_live_synthetic_stream_is_only_preview_until_persisted(ui):
     finally:
         release.set()
         runtime._runtime_enabled = False
+
+
+@pytest.mark.parametrize('title', ['Mobile session', '与 Runtime Agent 1791044226328 的会话'])
+def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
+    page, runtime, agent, base = ui
+    sessions = [session(runtime, agent, f'{title} {i}', f'Message {i}') for i in range(4)]
+    for _created, exchange in sessions:
+        runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+    page.set_viewport_size({'width': 390, 'height': 844})
+    page.goto(base + '/agent-runtime')
+    pw.expect(page.locator('#session-list button')).to_have_count(4)
+    select(page, sessions[0][0]['id'])
+    pw.expect(page.locator('#messages')).to_contain_text('MODEL_RUNTIME_DISABLED')
+    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+    assert page.locator('#messages').evaluate('(node) => { const r = node.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; }'), 'four-session history is clipped despite no document overflow'
+    assert page.locator('#messages').evaluate('(node) => node.scrollWidth <= node.clientWidth')

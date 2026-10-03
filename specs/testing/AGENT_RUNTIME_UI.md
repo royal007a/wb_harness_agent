@@ -15,6 +15,9 @@
 5. 异步详情按选择代次接纳。慢返回的 A 不能覆盖后来选择的 B；发送绑定开始
    时的 Session ID，结束时不能把用户从 B 强制切回 A。
 6. 所有字段用 textContent 渲染；状态内容不能注入 HTML。390px 无横向溢出。
+   必须检查消息列实际 left/right 均在视口内，scrollWidth 不超过 clientWidth；
+   只检查 document.scrollWidth 会漏掉 overflow:hidden 隐藏的内部列裁切。
+   多会话横向列表选择可能滚动外层容器，所以只检查 right 也不够。
 
 ## 验证
 

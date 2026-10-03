@@ -8,13 +8,16 @@
     {"evidence": "ui-first-fix.xml", "passed": 10, "failed": 1, "note": "synthetic success fixture nested an event loop; fixed to use HTTP"},
     {"evidence": "backend-regression.xml", "passed": 80, "failed": 0, "note": "parameterized names mechanically SHA-256 redacted"},
     {"evidence": "verify.log", "exit_code": 0, "passed": 337, "skipped": 16, "note": "full suite with first 11 UI cases; evaluations and static checks passed"},
-    {"evidence": "ui-after.xml", "passed": 12, "failed": 0, "note": "final UI test file including live synthetic HTTP SSE intermediate state"}
+    {"evidence": "ui-after.xml", "passed": 12, "failed": 0, "note": "intermediate UI test file including live synthetic HTTP SSE intermediate state"},
+    {"evidence": "mobile-both-edges-before.xml", "passed": 0, "failed": 2, "note": "old CSS; short/long session titles; both viewport edges checked"},
+    {"evidence": "ui-mobile-fixed.xml", "passed": 14, "failed": 0, "note": "fixed mobile grid and persistent exchange UI"},
+    {"evidence": "verify-mobile-fixed.log", "exit_code": 0, "passed": 340, "skipped": 16, "note": "full suite, evaluations and static checks after mobile fix"}
   ],
   "source_sha256": {
     "frontend/agent-runtime.js": "453b8b7975ec3adb563e0ab1d0512f24dd87d17f66cffe794cdb0eda295a80f2",
-    "frontend/agent-runtime.css": "be028e12b56a5a1e51abbb6f3a24c12a237119a7be920a63d58c6ae5faa65514",
-    "tests/test_agent_runtime_ui.py": "5cb33ad86f9732a688dd4eddc8459e50b23ea539ee7fa822349fbaccc468918c",
-    "tests/browser_agent_runtime.py": "3c696140cb068cc452f8b673f5af09b578e75154bc07ad5fd51a5514d68c3832"
+    "frontend/agent-runtime.css": "fcaee44fa2fd409dc84309f6ba9e28224ba21e6abfbf00c84f84dd3f44be5c24",
+    "tests/test_agent_runtime_ui.py": "75f7c5e4293d45928228d4489ea14b2451c2cc435c18a5a09c17b0674bfbc7c7",
+    "tests/browser_agent_runtime.py": "3ce44420ac98817a44422554241e3311e0eb26a725a57494998aa181e520027d"
   },
   "real_external_model_calls": 0,
   "runtime_gate_changed": false,
