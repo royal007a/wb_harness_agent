@@ -114,7 +114,3 @@ def bind_product_responses(document):
                         ('/api/local/research-native/documents', 'application/pdf')):
         document['paths'][path]['post']['requestBody'] = {
             'required': True, 'content': {media: {'schema': {'type': 'string', 'format': 'binary'}}}}
-    cursor = document['paths']['/api/v1/runs/{run_id}/events']['get']
-    for parameter in cursor['parameters']:
-        if parameter['name'] == 'after':
-            parameter['schema']['minimum'] = 0

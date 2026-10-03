@@ -1,6 +1,6 @@
 # ADR-0062：公开合同必须描述实际Product链路
 
-状态：代码验证完成，独立review与双部署待完成；HA-0062，基线d46f406。
+状态：7ac1498已独立Approved，双部署待完成；HA-0062，基线d46f406。
 
 HA-0061之后审查发现四种明确漂移：CreateTaskResponse要求未返回的links，
 TaskView把详情的runs写成latest_run，cancel声明202但实际200，events声明SSE

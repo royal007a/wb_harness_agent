@@ -161,9 +161,13 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   归档后detail与新key均409，原key却返回201且与首次缓存body相同。
   `_idempotent`在action当前资格检查之前返回缓存；应单独核对Team所有写路径
   的重放授权，不把“没有重复写入”当作“允许返回旧数据”。HA-0064候选已在25个
-  写入口增加事务内只读授权，287新增/526相关/1035全量通过，等待独立review与
-  实际部署；不是HA-0063的新key
+  写入口增加事务内只读授权，287新增/526相关/1035全量通过，0ee58a0已独立
+  Approved，等待实际部署；不是HA-0063的新key
   写入拒绝证据，无正式DB变更或真实Provider验证。
+- **TEAM-REPLAY-02 / Low**：HA-0064复审发现两处存活突变：channel_grant归档后
+  重放的专用负例缺失；读取收据与授权必须同一事务的条款也没被回归锁定。
+  当前代码行为正确，未发现生产缺陷；不以串行DB不变证明并发撤销线性化。
+  部分grant/agent binding只比较原body/path，缺历史上游快照的限制继续保留。
 - **READ-SCHEMA-01**：health、resources列表与单项详情、Memory Bank列表、三种research列表的
   公开成功响应Schema缺失或为空占位。HA-0061字段断言只补行为验证，不冒充已经
   补齐公开机器契约。sample实际是text/csv，旧动态文档却声明application/json和
@@ -174,15 +178,19 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - **SCHEMA-FORMAT-01**：当前venv通用FormatChecker未安装可选date-time检查依赖。
   HA-0062显式校验本地服务实际UTC输出格式及非法日期；其他测试不能据仅传入
   FormatChecker就宣称已验证日期语义。未将本测试用UTC子集当通用RFC3339校验器。
-  HA-0062独立review另发现检查器自身缺naive/非UTC负例，仍待补回归。
+  HA-0062独立review另发现检查器自身缺naive/非UTC负例。HA-0065已补Schema层
+  正反例并修复24:00:00被解析器归一化后误放行；候选待独立review与部署。
 - **PRODUCT-CONTRACT-02 / Low**：HA-0062（7ac1498）已独立Approved，21突变杀死17个；
   动态422信封绑定删除、Task详情required去掉runs、retryable放宽为boolean仍未
-  被测试杀死，应补精确负例。before.xml来自未单独保存源码的早期19项测试，不是
+  被测试杀死；HA-0065已补精确负例且3个对应突变均被杀死，候选待review。
+  before.xml来自未单独保存源码的早期19项测试，不是
   当前52项可原样复现的基线报告；acceptance/review已明确限制。
 - **PRODUCT-CURSOR-01 / Low**：事件after声明minimum=0却无SQLite整数上限；
-  after>=2^63会500，合法声明值和运行时不一致，待明确上限并回归边界/+1。
+  after>=2^63会500，合法声明值和运行时不一致。HA-0065候选已统一0..2^63-1，
+  HTTP入口及Store双重拒绝越界，静态/动态/源Schema一致，边界/+1已通过，待review。
 - **PRODUCT-REF-01 / Low**：Event.run_id/task_id、Artifact.run_id缺格式约束；
-  可接受错误ID前缀。补格式仍不等于核对跨对象引用一致性。
+  可接受错误ID前缀。HA-0065候选已补Product格式及12个反例；仍不等于核对跨对象
+  引用一致性或运行时逐响应校验，待独立review与实际部署。
 - **REQUEST-ID-01 / Low**：Problem/校验错误body request_id与X-Request-ID不一致，
   middleware直接拒绝又缺该头；未有统一承诺。需先定义追踪合同再覆盖所有错误路径。
 - **EVIDENCE-PATH-01**：HA-0063收口时全量任务引用检查发现历史HA-0027仍引用

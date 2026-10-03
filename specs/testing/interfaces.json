@@ -18,7 +18,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "index",
-      "source": "backend/app.py:833",
+      "source": "backend/app.py:831",
       "in_openapi": true
     },
     {
@@ -548,7 +548,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "content",
-      "source": "backend/app.py:825",
+      "source": "backend/app.py:823",
       "in_openapi": true
     },
     {
@@ -638,7 +638,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "artifact_list",
-      "source": "backend/app.py:814",
+      "source": "backend/app.py:812",
       "in_openapi": true
     },
     {
@@ -688,7 +688,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "task_artifacts",
-      "source": "backend/app.py:818",
+      "source": "backend/app.py:816",
       "in_openapi": true
     },
     {
@@ -708,7 +708,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "api_docs",
-      "source": "backend/app.py:837",
+      "source": "backend/app.py:835",
       "in_openapi": false
     },
     {

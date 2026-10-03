@@ -1,0 +1,42 @@
+FF..FF..                                                                 [100%]
+=================================== FAILURES ===================================
+_ test_http_cursor_invalid_rejected_before_store_without_writes[True-9223372036854775808] _
+tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_1bbdc...4775808), {})] == []
+E
+E     Left contains one more item: (('run_1bbdc16d617748ce8298f94273750cf8', 9223372036854775808), {})
+E     Use -v to get more diff
+_ test_http_cursor_invalid_rejected_before_store_without_writes[True-340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_65c4c...8211456), {})] == []
+E
+E     Left contains one more item: (('run_65c4cb7bc8fd493e954562c73938a3c9', 340282366920938463463374607431768211456), {})
+E     Use -v to get more diff
+_ test_http_cursor_invalid_rejected_before_store_without_writes[False-9223372036854775808] _
+tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_missi...4775808), {})] == []
+E
+E     Left contains one more item: (('run_missing', 9223372036854775808), {})
+E     Use -v to get more diff
+_ test_http_cursor_invalid_rejected_before_store_without_writes[False-340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_missi...8211456), {})] == []
+E
+E     Left contains one more item: (('run_missing', 340282366920938463463374607431768211456), {})
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[True-9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[True-340282366920938463463374607431768211456]
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[False-9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[False-340282366920938463463374607431768211456]
+4 failed, 4 passed, 52 deselected, 1 warning in 1.21s

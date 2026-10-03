@@ -1,0 +1,26 @@
+.FF....                                                                  [100%]
+=================================== FAILURES ===================================
+__ test_cursor_parameter_contract_rejects_invalid_values[9223372036854775808] __
+tests/test_product_contract_boundaries.py:75: in test_cursor_parameter_contract_rejects_invalid_values
+    assert not check.is_valid(cursor), cursor
+E   AssertionError: 9223372036854775808
+E   assert not True
+E    +  where True = is_valid(9223372036854775808)
+E    +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', 'components': {'parameters': {'AcceptEventStream':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_cursor_parameter_contract_rejects_invalid_values[340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:75: in test_cursor_parameter_contract_rejects_invalid_values
+    assert not check.is_valid(cursor), cursor
+E   AssertionError: 340282366920938463463374607431768211456
+E   assert not True
+E    +  where True = is_valid(340282366920938463463374607431768211456)
+E    +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', 'components': {'parameters': {'AcceptEventStream':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_cursor_parameter_contract_rejects_invalid_values[9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_cursor_parameter_contract_rejects_invalid_values[340282366920938463463374607431768211456]
+2 failed, 5 passed, 53 deselected, 1 warning in 1.00s

@@ -1,0 +1,18 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________ test_maximum_persistable_event_sequence_remains_readable ___________
+tests/test_product_contract_boundaries.py:113: in test_maximum_persistable_event_sequence_remains_readable
+    assert not check.is_valid(bad), field
+E   AssertionError: next_cursor
+E   assert not True
+E    +  where True = is_valid({'items': [{'data': {'ordinal': 1}, 'event_id': 'evt_bf4f7a072141485f8ecb3deb44236123', 'event_type': 'test.boundary',...2404743a7695b40f2b51758', 'event_type': 'test.boundary', 'event_version': 1, ...}], 'next_cursor': 9223372036854775808})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...tp_event_page', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_maximum_persistable_event_sequence_remains_readable
+1 failed, 59 deselected, 1 warning in 0.38s

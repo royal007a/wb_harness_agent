@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T21:47:43Z",
+  "generated_at": "2026-10-03T22:13:29Z",
   "tasks": [
+    {
+      "id": "HA-0065",
+      "title": "Product事件游标边界与契约负例保护",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["int64游标和Event/Artifact引用格式", "422/required/const/UTC负例及突变", "实际HTTP实例、旧反例和完整验证"],
+      "non_goals": ["统一全系统request_id或认证", "全库引用完整性或序列耗尽写入恢复", "越过本机部署132"],
+      "acceptance": ["旧边界和引用反例按行为失败", "静态动态源Schema与HTTP一致且拒绝坏实例", "关键约束删除突变被回归抓住", "定向全量verify、固定提交review及双部署证据"],
+      "depends_on": ["HA-0062"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0065-product-contract-boundaries.md",
+      "blocked_reason": "新增60/相关250通过，旧28行为反例和10定向突变核实，全量1095 passed/16 skipped，verify exit0；等待固定提交独立review及HA-0056兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交独立复审通过，兼容本机拓扑明确并验收后先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0065/acceptance.md", "harness/evidence/HA-0065/mutations.md"]
+    },
     {
       "id": "HA-0064",
       "title": "Team幂等缓存回放重新验证当前访问资格",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0063"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0064-team-replay-authorization.md",
-      "blocked_reason": "旧25最终反例全部HTTP行为失败；新287/相关526通过，全量1035 passed/16 skipped，verify exit0及139项源哈希稳定；待固定提交独立review，双部署仍等待HA-0056兼容本机拓扑。",
-      "recovery_condition": "固定提交独立Approved；兼容本机拓扑明确并验收后，先本机再132发布。",
-      "evidence": ["harness/evidence/HA-0064/acceptance.md"]
+      "blocked_reason": "0ee58a0已独立Approved；287新增及25旧行为反例核实，128项额外探针通过；2 Low和1 Info已登记。双部署仍等待HA-0056兼容本机拓扑。",
+      "recovery_condition": "兼容本机拓扑明确并验收后，先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0064/acceptance.md", "harness/evidence/HA-0064/review.md"]
     },
     {
       "id": "HA-0063",

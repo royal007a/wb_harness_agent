@@ -1,0 +1,62 @@
+FFFFFFFF                                                                 [100%]
+=================================== FAILURES ===================================
+______________ test_store_cursor_guard_is_independent_of_http[-1] ______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____ test_store_cursor_guard_is_independent_of_http[9223372036854775808] ______
+tests/test_product_contract_boundaries.py:84: in test_store_cursor_guard_is_independent_of_http
+    store.events(created.json()['initial_run']['id'], cursor)
+backend/store.py:268: in events
+    return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM events WHERE run_id=? AND sequence>? ORDER BY sequence LIMIT 500', (run_id, after))]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_store_cursor_guard_is_independent_of_http[340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:84: in test_store_cursor_guard_is_independent_of_http
+    store.events(created.json()['initial_run']['id'], cursor)
+backend/store.py:268: in events
+    return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM events WHERE run_id=? AND sequence>? ORDER BY sequence LIMIT 500', (run_id, after))]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: Python int too large to convert to SQLite INTEGER
+_____________ test_store_cursor_guard_is_independent_of_http[True] _____________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____________ test_store_cursor_guard_is_independent_of_http[1.0] ______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____________ test_store_cursor_guard_is_independent_of_http[1.5] ______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____________ test_store_cursor_guard_is_independent_of_http[None] _____________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+______________ test_store_cursor_guard_is_independent_of_http[1] _______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[-1]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[340282366920938463463374607431768211456]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[True]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[1.0]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[1.5]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[None]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[1]
+8 failed, 52 deselected, 1 warning in 0.64s

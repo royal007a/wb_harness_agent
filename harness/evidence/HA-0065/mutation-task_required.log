@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________ test_task_detail_requires_runs_even_if_other_fields_valid ___________
+tests/test_product_contract_boundaries.py:169: in test_task_detail_requires_runs_even_if_other_fields_valid
+    assert any(e.validator == 'required' and "'runs'" in e.message for e in check.iter_errors(bad))
+E   assert False
+E    +  where False = any(<generator object test_task_detail_requires_runs_even_if_other_fields_valid.<locals>.<genexpr> at 0x10c4ac2b0>)
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_task_detail_requires_runs_even_if_other_fields_valid
+1 failed, 59 deselected, 1 warning in 0.40s

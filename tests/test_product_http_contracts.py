@@ -26,7 +26,7 @@ def service_timestamp(value):
     # Test the service's emitted UTC profile explicitly; not a general RFC3339 validator.
     if not isinstance(value, str):
         return True
-    return bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|\+00:00)', value)) and datetime.fromisoformat(value).tzinfo is not None
+    return bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|\+00:00)', value)) and datetime.fromisoformat(value).tzinfo is not None
 JSON_OPERATIONS = [
     ('/api/v1/health', 'get', 200),
     ('/api/v1/resources', 'get', 200), ('/api/v1/resources', 'post', 201),

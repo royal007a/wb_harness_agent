@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.362" timestamp="2026-10-04T06:01:42.371071+08:00" hostname="192.168.31.117"><testcase classname="tests.test_product_contract_boundaries" name="test_error_retryable_must_be_literal_false[True]" time="0.173"><failure message="assert False&#10; +  where False = any(&lt;generator object test_error_retryable_must_be_literal_false.&lt;locals&gt;.&lt;genexpr&gt; at 0x10b809fc0&gt;)">tests/test_product_contract_boundaries.py:180: in test_error_retryable_must_be_literal_false
+    assert any(e.validator == 'const' and list(e.absolute_path) == ['error', 'retryable'] for e in check.iter_errors(bad))
+E   assert False
+E    +  where False = any(&lt;generator object test_error_retryable_must_be_literal_false.&lt;locals&gt;.&lt;genexpr&gt; at 0x10b809fc0&gt;)</failure></testcase></testsuite></testsuites>

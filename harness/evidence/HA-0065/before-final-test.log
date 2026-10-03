@@ -1,0 +1,205 @@
+FF..FF.......FF....FFFFFFFFFFFFFFFFFFFFF.................F..             [100%]
+=================================== FAILURES ===================================
+_ test_http_cursor_invalid_rejected_before_store_without_writes[True-9223372036854775808] _
+tests/test_product_contract_boundaries.py:42: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert result.status_code == 422, result.text
+E   AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_5a82697ab20748dfbb9059c080090c96"}}
+E   assert 500 == 422
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+_ test_http_cursor_invalid_rejected_before_store_without_writes[True-340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:42: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert result.status_code == 422, result.text
+E   AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_4770ac68d4634e529b473459db580df7"}}
+E   assert 500 == 422
+E    +  where 500 = <Response [500 Internal Server Error]>.status_code
+_ test_http_cursor_invalid_rejected_before_store_without_writes[False-9223372036854775808] _
+tests/test_product_contract_boundaries.py:42: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert result.status_code == 422, result.text
+E   AssertionError: {"error":{"code":"NOT_FOUND","message":"对象不存在。","retryable":false,"request_id":"req_de8c080bcb7a4794bae9766edeb56e1a"}}
+E   assert 404 == 422
+E    +  where 404 = <Response [404 Not Found]>.status_code
+_ test_http_cursor_invalid_rejected_before_store_without_writes[False-340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:42: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert result.status_code == 422, result.text
+E   AssertionError: {"error":{"code":"NOT_FOUND","message":"对象不存在。","retryable":false,"request_id":"req_7ac8cc56399f4dc19f9284dc42030292"}}
+E   assert 404 == 422
+E    +  where 404 = <Response [404 Not Found]>.status_code
+__ test_cursor_parameter_contract_rejects_invalid_values[9223372036854775808] __
+tests/test_product_contract_boundaries.py:75: in test_cursor_parameter_contract_rejects_invalid_values
+    assert not check.is_valid(cursor), cursor
+E   AssertionError: 9223372036854775808
+E   assert not True
+E    +  where True = is_valid(9223372036854775808)
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_cursor_parameter_contract_rejects_invalid_values[340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:75: in test_cursor_parameter_contract_rejects_invalid_values
+    assert not check.is_valid(cursor), cursor
+E   AssertionError: 340282366920938463463374607431768211456
+E   assert not True
+E    +  where True = is_valid(340282366920938463463374607431768211456)
+E    +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+______________ test_store_cursor_guard_is_independent_of_http[-1] ______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____ test_store_cursor_guard_is_independent_of_http[9223372036854775808] ______
+tests/test_product_contract_boundaries.py:84: in test_store_cursor_guard_is_independent_of_http
+    store.events(created.json()['initial_run']['id'], cursor)
+backend/store.py:264: in events
+    return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM events WHERE run_id=? AND sequence>? ORDER BY sequence LIMIT 500', (run_id, after))]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_store_cursor_guard_is_independent_of_http[340282366920938463463374607431768211456] _
+tests/test_product_contract_boundaries.py:84: in test_store_cursor_guard_is_independent_of_http
+    store.events(created.json()['initial_run']['id'], cursor)
+backend/store.py:264: in events
+    return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM events WHERE run_id=? AND sequence>? ORDER BY sequence LIMIT 500', (run_id, after))]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: Python int too large to convert to SQLite INTEGER
+_____________ test_store_cursor_guard_is_independent_of_http[True] _____________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____________ test_store_cursor_guard_is_independent_of_http[1.0] ______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____________ test_store_cursor_guard_is_independent_of_http[1.5] ______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+_____________ test_store_cursor_guard_is_independent_of_http[None] _____________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+______________ test_store_cursor_guard_is_independent_of_http[1] _______________
+tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem
+___________ test_maximum_persistable_event_sequence_remains_readable ___________
+tests/test_product_contract_boundaries.py:113: in test_maximum_persistable_event_sequence_remains_readable
+    assert not check.is_valid(bad), field
+E   AssertionError: next_cursor
+E   assert not True
+E    +  where True = is_valid({'items': [{'data': {'ordinal': 1}, 'event_id': 'evt_ede96cfe8dc6459e816ff1bb0e0ac940', 'event_type': 'test.boundary',...d444222a095e0de0409905f', 'event_type': 'test.boundary', 'event_version': 1, ...}], 'next_cursor': 9223372036854775808})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...tp_event_page', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+_ test_product_reference_format_not_other_domains[rts_other-/api/v1/runs/{run_id}/events-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: rts_other
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10f17e980>)
+_ test_product_reference_format_not_other_domains[rts_other-/api/v1/runs/{run_id}/events-task_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: rts_other
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ffa07c0>)
+_ test_product_reference_format_not_other_domains[rts_other-/api/v1/runs/{run_id}/artifacts-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: rts_other
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ffa0c70>)
+_ test_product_reference_format_not_other_domains[teamtask_other-/api/v1/runs/{run_id}/events-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: teamtask_other
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ee5b970>)
+_ test_product_reference_format_not_other_domains[teamtask_other-/api/v1/runs/{run_id}/events-task_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: teamtask_other
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ee595d0>)
+_ test_product_reference_format_not_other_domains[teamtask_other-/api/v1/runs/{run_id}/artifacts-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: teamtask_other
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ffa3100>)
+_ test_product_reference_format_not_other_domains[-/api/v1/runs/{run_id}/events-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError:
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ffa3880>)
+_ test_product_reference_format_not_other_domains[-/api/v1/runs/{run_id}/events-task_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError:
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10f17df30>)
+_ test_product_reference_format_not_other_domains[-/api/v1/runs/{run_id}/artifacts-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError:
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10f17d210>)
+_ test_product_reference_format_not_other_domains[run_-/api/v1/runs/{run_id}/events-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: run_
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ee5b790>)
+_ test_product_reference_format_not_other_domains[run_-/api/v1/runs/{run_id}/events-task_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: run_
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10ee5b1f0>)
+_ test_product_reference_format_not_other_domains[run_-/api/v1/runs/{run_id}/artifacts-run_id] _
+tests/test_product_contract_boundaries.py:136: in test_product_reference_format_not_other_domains
+    assert any(e.validator == 'pattern' and list(e.absolute_path) == ['items', 0, field] for e in errors), wrong
+E   AssertionError: run_
+E   assert False
+E    +  where False = any(<generator object test_product_reference_format_not_other_domains.<locals>.<genexpr> at 0x10f17d7b0>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T24:00:00Z-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04T24:00:00Z
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x11030ec00>)
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[True-9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[True-340282366920938463463374607431768211456]
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[False-9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_http_cursor_invalid_rejected_before_store_without_writes[False-340282366920938463463374607431768211456]
+FAILED tests/test_product_contract_boundaries.py::test_cursor_parameter_contract_rejects_invalid_values[9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_cursor_parameter_contract_rejects_invalid_values[340282366920938463463374607431768211456]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[-1]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[9223372036854775808]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[340282366920938463463374607431768211456]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[True]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[1.0]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[1.5]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[None]
+FAILED tests/test_product_contract_boundaries.py::test_store_cursor_guard_is_independent_of_http[1]
+FAILED tests/test_product_contract_boundaries.py::test_maximum_persistable_event_sequence_remains_readable
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[rts_other-/api/v1/runs/{run_id}/events-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[rts_other-/api/v1/runs/{run_id}/events-task_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[rts_other-/api/v1/runs/{run_id}/artifacts-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[teamtask_other-/api/v1/runs/{run_id}/events-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[teamtask_other-/api/v1/runs/{run_id}/events-task_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[teamtask_other-/api/v1/runs/{run_id}/artifacts-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[-/api/v1/runs/{run_id}/events-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[-/api/v1/runs/{run_id}/events-task_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[-/api/v1/runs/{run_id}/artifacts-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[run_-/api/v1/runs/{run_id}/events-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[run_-/api/v1/runs/{run_id}/events-task_id]
+FAILED tests/test_product_contract_boundaries.py::test_product_reference_format_not_other_domains[run_-/api/v1/runs/{run_id}/artifacts-run_id]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T24:00:00Z-False]
+28 failed, 32 passed, 1 warning in 7.28s

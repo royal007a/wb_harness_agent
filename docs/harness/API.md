@@ -17,7 +17,7 @@ HA-0058 修复动态 OpenAPI 的契约归属：Lab、Runtime、研究模拟使�
 | GET tasks / tasks/{id} | 列表 `{items:[{task,latest_run}]}`；详情 `{task,runs}` |
 | POST tasks/{id}/runs | 202，新 Run；reason 可省略，不限定 retry/rerun 枚举 |
 | POST runs/{id}:cancel | 200，Run；不要求幂等键，已终态保持不变 |
-| GET runs/{id}/events | JSON `{items,next_cursor}`，after≥0，每页最多500；非 SSE |
+| GET runs/{id}/events | JSON `{items,next_cursor}`，0≤after≤9223372036854775807，越界422，每页最多500；非 SSE |
 | GET/POST resources、GET resources/{id}、POST native/documents | 本地 CSV/合成 JSON/Public PDF 登记元数据，不是未来 ResourceHandle |
 | GET Run/Task artifacts、下载 / sample | 列表 metadata；下载实际 media_type，sample 为 text/csv，不是 JSON |
 | 上述入口错误 | `{error:{code,message,retryable:false,request_id}}`，不是 FastAPI detail 默认体 |

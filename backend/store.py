@@ -11,6 +11,9 @@ from pathlib import Path
 from .analysis import Problem
 
 
+MAX_EVENT_SEQUENCE = (1 << 63) - 1  # SQLite INTEGER and bound parameter range.
+
+
 def now():
     return datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
 
@@ -259,6 +262,8 @@ class Store:
         return event
 
     def events(self, run_id, after=0):
+        if type(after) is not int or not 0 <= after <= MAX_EVENT_SEQUENCE:
+            raise Problem('VALIDATION_ERROR', '游标必须是有效范围内的非负整数。', 422)
         self.get('runs', run_id)
         with self.lock:
             return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM events WHERE run_id=? AND sequence>? ORDER BY sequence LIMIT 500', (run_id, after))]

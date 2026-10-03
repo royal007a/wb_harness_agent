@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="8" time="0.643" timestamp="2026-10-04T06:01:46.938857+08:00" hostname="192.168.31.117"><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[-1]" time="0.108"><failure message="Failed: DID NOT RAISE Problem">tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[9223372036854775808]" time="0.041"><failure message="OverflowError: Python int too large to convert to SQLite INTEGER">tests/test_product_contract_boundaries.py:84: in test_store_cursor_guard_is_independent_of_http
+    store.events(created.json()['initial_run']['id'], cursor)
+backend/store.py:268: in events
+    return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM events WHERE run_id=? AND sequence&gt;? ORDER BY sequence LIMIT 500', (run_id, after))]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: Python int too large to convert to SQLite INTEGER</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[340282366920938463463374607431768211456]" time="0.040"><failure message="OverflowError: Python int too large to convert to SQLite INTEGER">tests/test_product_contract_boundaries.py:84: in test_store_cursor_guard_is_independent_of_http
+    store.events(created.json()['initial_run']['id'], cursor)
+backend/store.py:268: in events
+    return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM events WHERE run_id=? AND sequence&gt;? ORDER BY sequence LIMIT 500', (run_id, after))]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: Python int too large to convert to SQLite INTEGER</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[True]" time="0.038"><failure message="Failed: DID NOT RAISE Problem">tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[1.0]" time="0.040"><failure message="Failed: DID NOT RAISE Problem">tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[1.5]" time="0.040"><failure message="Failed: DID NOT RAISE Problem">tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[None]" time="0.040"><failure message="Failed: DID NOT RAISE Problem">tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_store_cursor_guard_is_independent_of_http[1]" time="0.040"><failure message="Failed: DID NOT RAISE Problem">tests/test_product_contract_boundaries.py:83: in test_store_cursor_guard_is_independent_of_http
+    with pytest.raises(Problem) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase></testsuite></testsuites>

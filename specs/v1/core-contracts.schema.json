@@ -58,7 +58,7 @@
       "type": "object", "additionalProperties": false, "required": ["items", "next_cursor"],
       "properties": {
         "items": {"type": "array", "maxItems": 500, "items": {"$ref": "#/$defs/event"}},
-        "next_cursor": {"type": "integer", "minimum": 0}
+        "next_cursor": {"type": "integer", "minimum": 0, "maximum": 9223372036854775807}
       }
     },
     "local_http_artifact_list": {
@@ -248,7 +248,7 @@
         "effective_limits": {"$ref": "#/$defs/limits"},
         "attempt_number": {"type": "integer", "minimum": 1},
         "consumed_turns": {"type": "integer", "minimum": 0, "default": 0},
-        "latest_sequence": {"type": "integer", "minimum": 0, "default": 0},
+        "latest_sequence": {"type": "integer", "minimum": 0, "maximum": 9223372036854775807, "default": 0},
         "exit_reason": {"type": ["string", "null"]},
         "created_at": {"type": "string", "format": "date-time"},
         "updated_at": {"type": "string", "format": "date-time"}
@@ -267,10 +267,10 @@
         "event_version": {"type": "integer", "minimum": 1},
         "workspace_id": {"type": "string"},
         "project_id": {"type": "string"},
-        "task_id": {"type": "string"},
-        "run_id": {"type": "string"},
+        "task_id": {"type": "string", "pattern": "^task_[A-Za-z0-9]+$"},
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
         "step_id": {"type": ["string", "null"]},
-        "sequence": {"type": "integer", "minimum": 1},
+        "sequence": {"type": "integer", "minimum": 1, "maximum": 9223372036854775807},
         "occurred_at": {"type": "string", "format": "date-time"},
         "trace_id": {"type": "string", "minLength": 1},
         "data": {"type": "object"}
@@ -315,7 +315,7 @@
       "required": ["id", "run_id", "step_id", "name", "media_type", "size_bytes", "sha256", "data_class", "validation_status", "created_at"],
       "properties": {
         "id": {"type": "string", "pattern": "^art_[A-Za-z0-9]+$"},
-        "run_id": {"type": "string"},
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
         "step_id": {"type": "string"},
         "name": {"type": "string", "minLength": 1},
         "media_type": {"type": "string", "minLength": 3},

@@ -92,7 +92,7 @@ plist 中路径为本机绝对路径，移动仓库需修改。当前注册属�
 
 `POST /api/local/intents:interpret` 是无状态预检入口，接受 `objective` 和可选 `resource_id`，返回版本化槽位、约束、固定路由、缺槽澄清或拒识；响应仅保留目标长度和摘要。它不创建 Task/Run。简化入口会在创建前重做相同预检，因此不支持目标无法绕过规则直接创建本地分析 Task。详见 [本地意图契约与规则路由](INTENT_ROUTING.md)。Agent Lab 的独立端点为 `/api/local/agent-lab/*`，其机器契约位于 `specs/v1/local-agent-lab.schema.json`；它不影响此处的分析意图路由。
 
-事件采用 `GET /api/v1/runs/{id}/events?after=<sequence>` JSON 游标，最多 500 条/页。列表当前不分页，仅适合本地小规模使用。`/api/v1/tasks/{id}` 返回 `{task,runs}`，列表返回 `{items:[{task,latest_run}]}`；这是当前本地合同，完整目标接口仍见 [API.md](API.md)。`GET /api/local/runs/{id}/restore` 只显示固定 Checkpoint 是否可恢复；`POST /api/local/runs/{id}:restore` 需空 JSON 和幂等键，且只允许 failed/expired 的同 Task 固定统计恢复。另有 ADR-0019 的 Replan 控件：它只对真实 `ARTIFACT_PUBLICATION_FAILED` 显示固定候选，先 Try，再 Confirm 或 Cancel；调用方不能编辑计划。本 Product 事件入口未实现 SSE（Lab/Runtime 聊天 SSE 是独立接口）、产品审批、可恢复模型 checkpoint、开放式动态 Replan 或多租户服务。
+事件采用 `GET /api/v1/runs/{id}/events?after=<sequence>` JSON 游标，after为0至9223372036854775807的整数，越界返回422，最多500条/页。列表当前不分页，仅适合本地小规模使用。`/api/v1/tasks/{id}` 返回 `{task,runs}`，列表返回 `{items:[{task,latest_run}]}`；这是当前本地合同，完整目标接口仍见 [API.md](API.md)。`GET /api/local/runs/{id}/restore` 只显示固定 Checkpoint 是否可恢复；`POST /api/local/runs/{id}:restore` 需空 JSON 和幂等键，且只允许 failed/expired 的同 Task 固定统计恢复。另有 ADR-0019 的 Replan 控件：它只对真实 `ARTIFACT_PUBLICATION_FAILED` 显示固定候选，先 Try，再 Confirm 或 Cancel；调用方不能编辑计划。本 Product 事件入口未实现 SSE（Lab/Runtime 聊天 SSE 是独立接口）、产品审批、可恢复模型 checkpoint、开放式动态 Replan 或多租户服务。
 
 三个工具权限必须完整匹配：`resource.inspect`、`artifact.publish`、`run.final_answer`。有效权限始终拒绝 network/package_install/external_write/host_path/secret。预算 max_turns 限制三个固定工具步骤；无模型调用，因此 token/cost 实际消耗为 0。timeout 包含排队时间。队列最多 32 个活动 Run。
 

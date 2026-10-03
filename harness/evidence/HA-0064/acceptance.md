@@ -1,7 +1,8 @@
 # HA-0064 历史收据回放重新核对当前资格
 
 2026-10-04北京时间，基线116a164。25个Team/Recovery写入口候选修复，
-尚待固定提交独立review与真实双部署；未操作8765、132、正式DB或Provider。
+固定0ee58a0已获mymacclaude独立Approved（2 Low / 1 Info，见review.md）；
+真实双部署未完成，未操作8765、132、正式DB或Provider。
 
 ## 改动与合同
 

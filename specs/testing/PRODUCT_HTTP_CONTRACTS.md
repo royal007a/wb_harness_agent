@@ -13,7 +13,8 @@
   `{task,runs}`，包含该Task的所有Run，不混淆这两种响应。
 - POST task/runs返回新Run；reason可省略或为不超过2000字符的文本，不限定retry/rerun。
 - GET run与POST cancel返回Run，取消HTTP200且不要求幂等键，终态保持不变。
-- events为JSON游标`{items,next_cursor}`，after非负、默认0、每页最多500。
+- events为JSON游标`{items,next_cursor}`，after为0..9223372036854775807的整数、
+  默认0、每页最多500（HA-0065）。越界422而不是SQLite溢出500；next_cursor同上界。
   不支持Last-Event-ID/SSE；不能把聊天Runtime的SSE写到此Product接口上。
 - Run/Task的artifact列表返回metadata；下载按实际media_type返回原始字节，支持
   download布尔参数。sample为CSV，不能在OpenAPI声明application/json。
@@ -35,6 +36,9 @@ Team响应空占位分开计数，不能称“全OpenAPI已完整”。
 日期验证显式覆盖服务实际输出的UTC时间格式、无效日期和任意字符串；当前venv
 的通用FormatChecker缺少可选date-time依赖，不能只传入它就算验证了时间。
 本测试检查器不是任意RFC3339（例如闰秒或非UTC时区）的通用实现。
+HA-0065补充naive/非UTC/24小时等Schema层反例，及422信封、runs必填、retryable
+固定false的突变保护；Event/Artifact的Product引用格式也不再接受其他域的ID。
+具体契约、兼容性与验证见PRODUCT_CONTRACT_BOUNDARIES.md。
 
 兼容性：HTTP请求响应不变，仅文档修正；基于旧错误定义生成的客户端需重新生成。
 当前未实现的approval等Draft必须标注未实现，不因出现在静态文件就算可调用。

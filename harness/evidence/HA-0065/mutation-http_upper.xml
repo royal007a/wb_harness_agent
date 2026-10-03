@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="8" time="1.213" timestamp="2026-10-04T06:01:45.336689+08:00" hostname="192.168.31.117"><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[True-9223372036854775808]" time="0.185"><failure message="AssertionError: assert [(('run_1bbdc...4775808), {})] == []&#10;  &#10;  Left contains one more item: (('run_1bbdc16d617748ce8298f94273750cf8', 9223372036854775808), {})&#10;  Use -v to get more diff">tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_1bbdc...4775808), {})] == []
+E
+E     Left contains one more item: (('run_1bbdc16d617748ce8298f94273750cf8', 9223372036854775808), {})
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[True-340282366920938463463374607431768211456]" time="0.114"><failure message="AssertionError: assert [(('run_65c4c...8211456), {})] == []&#10;  &#10;  Left contains one more item: (('run_65c4cb7bc8fd493e954562c73938a3c9', 340282366920938463463374607431768211456), {})&#10;  Use -v to get more diff">tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_65c4c...8211456), {})] == []
+E
+E     Left contains one more item: (('run_65c4cb7bc8fd493e954562c73938a3c9', 340282366920938463463374607431768211456), {})
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[True--1]" time="0.103" /><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[True-not-an-integer]" time="0.104" /><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[False-9223372036854775808]" time="0.105"><failure message="AssertionError: assert [(('run_missi...4775808), {})] == []&#10;  &#10;  Left contains one more item: (('run_missing', 9223372036854775808), {})&#10;  Use -v to get more diff">tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_missi...4775808), {})] == []
+E
+E     Left contains one more item: (('run_missing', 9223372036854775808), {})
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[False-340282366920938463463374607431768211456]" time="0.104"><failure message="AssertionError: assert [(('run_missi...8211456), {})] == []&#10;  &#10;  Left contains one more item: (('run_missing', 340282366920938463463374607431768211456), {})&#10;  Use -v to get more diff">tests/test_product_contract_boundaries.py:46: in test_http_cursor_invalid_rejected_before_store_without_writes
+    assert calls == []
+E   AssertionError: assert [(('run_missi...8211456), {})] == []
+E
+E     Left contains one more item: (('run_missing', 340282366920938463463374607431768211456), {})
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[False--1]" time="0.107" /><testcase classname="tests.test_product_contract_boundaries" name="test_http_cursor_invalid_rejected_before_store_without_writes[False-not-an-integer]" time="0.142" /></testsuite></testsuites>

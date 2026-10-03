@@ -8,5 +8,6 @@
 
 2026-10-04：1–4完成。最终测试放回116a164，25项全部HTTP行为失败；新增287项，
 相关526通过，全量1035 passed/16 skipped，verify exit0，139项源哈希稳定。
-证据：harness/evidence/HA-0064/acceptance.md。代码待固定提交独立review；
+证据：harness/evidence/HA-0064/acceptance.md。固定0ee58a0已独立Approved；
+2个Low与1个Info登记于review.md，不冒称所有合同条款都有突变保护。
 实际发布仍等待HA-0056兼容本机拓扑决定，因此任务blocked，不称完成或已部署。

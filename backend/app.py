@@ -7,7 +7,7 @@ import os
 from contextlib import aclosing, asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -15,7 +15,7 @@ from starlette.concurrency import run_in_threadpool
 
 from .analysis import MAX_BYTES, Problem
 from .service import BUNDLE, CONTROL, ROOT, Service, local_task
-from .store import Store, uid
+from .store import Store, uid, MAX_EVENT_SEQUENCE
 from .readiness import readiness
 from .framework_catalog import catalog as framework_catalog
 from .frontend import frontend_page
@@ -805,9 +805,7 @@ def create_app(db_path=None, run_worker=True):
         return app.state.service.restore_status(run_id)
 
     @app.get('/api/v1/runs/{run_id}/events')
-    def events(run_id: str, after: int = 0):
-        if after < 0:
-            raise Problem('VALIDATION_ERROR', '游标必须非负。', 422)
+    def events(run_id: str, after: int = Query(0, ge=0, le=MAX_EVENT_SEQUENCE)):
         items = app.state.service.store.events(run_id, after)
         return {'items': items, 'next_cursor': items[-1]['sequence'] if items else after}
 

@@ -1,0 +1,81 @@
+....FFFFFFFFFF                                                           [100%]
+=================================== FAILURES ===================================
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04T01:02:03
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10b134ac0>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03+08:00-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04T01:02:03+08:00
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10b4ef300>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03-05:00-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04T01:02:03-05:00
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10b61e960>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03-00:00-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04T01:02:03-00:00
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10b61dd20>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x108cf6500>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04 01:02:03Z-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04 01:02:03Z
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x108cb3220>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-02-29T00:00:00Z-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-02-29T00:00:00Z
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10b0ba420>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T24:00:00Z-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04T24:00:00Z
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10b6f2ea0>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03Z\n-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: 2026-10-04T01:02:03Z
+E
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10aef2880>)
+_ test_utc_checker_has_schema_level_positive_and_negative_vectors[not-a-time-False] _
+tests/test_product_contract_boundaries.py:202: in test_utc_checker_has_schema_level_positive_and_negative_vectors
+    assert any(e.validator == 'format' and list(e.absolute_path) == ['created_at'] for e in errors), timestamp
+E   AssertionError: not-a-time
+E   assert False
+E    +  where False = any(<generator object test_utc_checker_has_schema_level_positive_and_negative_vectors.<locals>.<genexpr> at 0x10aef20a0>)
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03+08:00-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03-05:00-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03-00:00-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04 01:02:03Z-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-02-29T00:00:00Z-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T24:00:00Z-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[2026-10-04T01:02:03Z\n-False]
+FAILED tests/test_product_contract_boundaries.py::test_utc_checker_has_schema_level_positive_and_negative_vectors[not-a-time-False]
+10 failed, 4 passed, 46 deselected, 1 warning in 1.87s

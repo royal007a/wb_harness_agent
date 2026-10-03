@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0064",
-  "active_plan": "exec-plans/blocked/HA-0064-team-replay-authorization.md",
-  "last_checkpoint": "0063固定116a164独立Approved，2个Low已登记。0064修复25个写入口的幂等回放授权；旧25行为反例失败，新287/相关526通过，全量1035 passed/16 skipped，verify exit0及139项源哈希稳定。",
-  "last_updated_at": "2026-10-03T21:47:43Z",
-  "next_action": "0064固定提交交mymacclaude独立复审；随后处理已登记契约/测试缺口。发布仍待兼容本机拓扑，先本机后132，不开真实模型门禁。",
+  "active_task_id": "HA-0065",
+  "active_plan": "exec-plans/blocked/HA-0065-product-contract-boundaries.md",
+  "last_checkpoint": "0064固定0ee58a0独立Approved，2 Low和1 Info已登记。0065修复Product游标/引用契约并补负例；新60/相关250通过，旧28行为反例、10/10定向突变，全量1095 passed/16 skipped，verify exit0及140项源哈希稳定。",
+  "last_updated_at": "2026-10-03T22:13:29Z",
+  "next_action": "0065固定提交交mymacclaude独立复审；继续按剩余规格缺口拆原子任务。发布仍待兼容本机拓扑，先本机后132，不开真实模型门禁。",
   "release": "0.1.0-local"
 }

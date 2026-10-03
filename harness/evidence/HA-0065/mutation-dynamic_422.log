@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________ test_dynamic_422_binding_is_strict_error_envelope_everywhere _________
+tests/test_product_contract_boundaries.py:151: in test_dynamic_422_binding_is_strict_error_envelope_everywhere
+    assert schema == {'$ref': '#/components/schemas/local_http_error'}, (path, method)
+E   AssertionError: ('/api/v1/resources', 'post')
+E   assert {'$ref': '#/c...idationError'} == {'$ref': '#/c...l_http_error'}
+E
+E     Differing items:
+E     {'$ref': '#/components/schemas/HTTPValidationError'} != {'$ref': '#/components/schemas/local_http_error'}
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_product_contract_boundaries.py::test_dynamic_422_binding_is_strict_error_envelope_everywhere
+1 failed, 59 deselected, 1 warning in 0.55s
