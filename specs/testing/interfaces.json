@@ -718,7 +718,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "openapi",
-      "source": ".venv/lib/python3.14/site-packages/fastapi/applications.py:1108",
+      "source": "framework",
       "in_openapi": false
     },
     {
@@ -758,7 +758,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "openapi",
-      "source": ".venv/lib/python3.14/site-packages/fastapi/applications.py:1108",
+      "source": "framework",
       "in_openapi": false
     },
     {

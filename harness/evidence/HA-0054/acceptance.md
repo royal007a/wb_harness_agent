@@ -27,3 +27,12 @@ EXECUTION_FAILED；详见 sandbox-deadline-diagnosis.json。
 精确错误码与容器/输入目录清理。未修改生产沙箱预算或接受任意失败充当通过。
 修正后 `local-sandbox-after.xml`：17 passed，真实本机 Colima 容器。
 全量 verify 的容器专项按原设计 skip；单独这次 opt-in 运行才是容器证据。
+
+## 首次发布与跨环境修正
+
+本机 b639b8b 已备份后重载，health=ok，模型 gate 仍关闭；桌面/手机浏览器
+通过（local-browser/）。132 staging 为 318 passed、22 skipped、1 failed，
+未 promotion。差异仅在 GET/HEAD /openapi.json 的 source 字段：本机框架安装
+在仓库 .venv，被误当作项目源码；远端框架在独立环境，登记为 framework。
+修复清单生成器的源码归属判定，并增加两类安装布局一致性测试；不删除路由、
+忽略差异或放过验证。明细 remote-preflight-first.json。

@@ -38,7 +38,9 @@ def build_inventory():
         path = route.path + '/{path:path}' if mount else route.path
         endpoint = getattr(route, 'endpoint', None)
         filename = inspect.getsourcefile(endpoint) if inspect.isfunction(endpoint) else None
-        local = filename and Path(filename).is_relative_to(ROOT)
+        # A venv installed inside the repo is still framework code, not a
+        # project source location. Do not freeze Python/site-packages paths.
+        local = filename and Path(filename).resolve().is_relative_to(ROOT / 'backend')
         location = str(Path(filename).relative_to(ROOT)) + ':' + str(inspect.getsourcelines(endpoint)[1]) if local else 'framework'
         if mount:
             location = 'frontend/'

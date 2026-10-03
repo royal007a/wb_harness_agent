@@ -1,0 +1,11 @@
+{
+  "application_commit": "b639b8bba115f03e6fba4f2a6f68dc29def74828",
+  "stage": "/opt/harnessagent-releases/ha0054-b639b8bba115",
+  "promotion_performed": false,
+  "live_commit_unchanged": "87934de73ab314963509dfe3feff5a2fef8fde85",
+  "pytest": {"passed":318,"failed":1,"skipped":22},
+  "failure": "test_all_registered_routes_and_features_match_versioned_spec",
+  "diagnosis": "Only GET/HEAD /openapi.json source differed: local in-repo venv path .venv/lib/python3.14/site-packages/fastapi/applications.py:1108 versus remote external test environment classified as framework. Method/path sets exactly equal (148), no missing/added routes.",
+  "fix": "Only backend project source gets file/line location; framework remains framework regardless of venv layout. Add a regression comparing both layouts.",
+  "provenance": "Fresh SSH staging pytest stdout plus exact expected/actual route diff; not a production outage"
+}

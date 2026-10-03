@@ -77,11 +77,11 @@
 | `GET /api/v1/tasks/{task_id}/artifacts` | product | `task_artifacts` | `backend/app.py:817` | 是 |
 | `GET /connectors/baidu-netdisk` | web | `baidu_netdisk_page` | `backend/app.py:712` | 否 |
 | `GET /docs` | web | `api_docs` | `backend/app.py:836` | 否 |
-| `GET /openapi.json` | web | `openapi` | `.venv/lib/python3.14/site-packages/fastapi/applications.py:1108` | 否 |
+| `GET /openapi.json` | web | `openapi` | `framework` | 否 |
 | `GET /research` | web | `research_page` | `backend/app.py:602` | 否 |
 | `GET /research-agents` | web | `research_agents_page` | `backend/app.py:700` | 否 |
 | `GET /static/{path:path}` | web | `static` | `frontend/` | 否 |
-| `HEAD /openapi.json` | web | `openapi` | `.venv/lib/python3.14/site-packages/fastapi/applications.py:1108` | 否 |
+| `HEAD /openapi.json` | web | `openapi` | `framework` | 否 |
 | `HEAD /static/{path:path}` | web | `static` | `frontend/` | 否 |
 | `POST /api/local/agent-lab/agents` | agent-lab | `agent_lab_agent_create` | `backend/app.py:506` | 是 |
 | `POST /api/local/agent-lab/models` | agent-lab | `agent_lab_model_create` | `backend/app.py:498` | 是 |

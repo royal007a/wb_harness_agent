@@ -1,0 +1,14 @@
+{
+  "browser": "151.0.7922.34",
+  "errors": [],
+  "checks": [
+    "default_runtime_gate",
+    "provider_readiness_zero_network",
+    "profile_chain",
+    "session",
+    "post_sse_error",
+    "no_synthetic_answer",
+    "persistent_exchange",
+    "mobile_layout"
+  ]
+}

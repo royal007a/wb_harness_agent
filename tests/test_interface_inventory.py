@@ -27,6 +27,19 @@ def test_unknown_api_group_is_not_hidden_by_page_fallback():
         feature_for('/api/local/unreviewed-new-feature')
 
 
+def test_framework_inventory_is_independent_of_venv_install_location(monkeypatch):
+    import harness.interface_inventory as inventory
+    original = inventory.inspect.getsourcefile
+    snapshots = []
+    for location in (ROOT / '.venv/lib/python3.14/site-packages/fastapi/applications.py',
+                     '/opt/isolated-test-env/lib/python3.12/site-packages/fastapi/applications.py'):
+        monkeypatch.setattr(inventory.inspect, 'getsourcefile',
+            lambda endpoint: str(location) if endpoint.__name__ == 'openapi' else original(endpoint))
+        snapshots.append(build_inventory())
+    assert snapshots[0] == snapshots[1]
+    assert all(row['source'] == 'framework' for row in snapshots[0]['routes'] if row['path'] == '/openapi.json')
+
+
 def test_observer_redacts_ids_and_never_claims_acceptance():
     recorder = Recorder(build_inventory()['routes'])
     test = 'tests/test_example.py::test_case'
