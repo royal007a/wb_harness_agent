@@ -1,7 +1,7 @@
 # HA-0061：剩余读取入口行为验证
 
 2026-10-04（北京时间）；基线fff8d75。仅测试、规格及复审记录，无业务代码改动。
-状态：定向、全量观察器及完整verify通过，固定提交后请求独立review。
+状态：定向、全量观察器及完整verify通过；d46f406 已获 mymacclaude 独立 Approved。
 
 ## 范围与结果
 
@@ -49,7 +49,8 @@ test_bad_csv_rejected名称包含2MiB合成输入；仅压缩名称，不改123�
   生成且仍queued。使用已发布ReplanList Schema及额外字段负例。
 - sample逐字匹配版本化CSV，下载头正确，读取不自动登记资源；health明确只验证
   静态进程响应，不能当作Provider/PID/release就绪证据。
-- OpenAPI/静态HEAD的状态、类型、长度等与GET一致，正文为空；静态缺失/越界404。
+- OpenAPI/静态HEAD的状态、类型、长度等与GET一致，客户端收到空正文；该断言
+  证明传输层行为，不证明应用ASGI没有发出body。静态缺失/越界404。
   11入口分别覆盖Host、Origin、Sec-Fetch-Site拒绝和错误代理前缀，无DB变更。
 
 ## 边界与未完成
@@ -67,3 +68,12 @@ test_bad_csv_rejected名称包含2MiB合成输入；仅压缩名称，不改123�
 
 独立复核请挑战测试是否只验自己、根/子和引擎边界、取消/门禁关闭/重启后的状态、
 只读无副作用、HEAD和错误路径，以及observed与验收的边界；不触碰真实服务。
+
+## 独立复审回执
+
+mymacclaude 在 d46f406 上复跑三个文件 123 passed；32处后端突变，31处被测试
+杀死，唯一存活的是给HEAD注入正文：TestClient/httpx会丢弃HEAD正文，原断言
+无法检测应用层发送。这是测试能力边界，以上措辞已修正，未声称补了原始ASGI测试。
+另指出 sample 在动态文档中错误声明JSON空Schema、resources详情空Schema漏登记；
+已明确加入 READ-SCHEMA-01，由HA-0062跟进。全量632未由复审者重跑；非DB
+GET副作用、真实发布也不在本次Approved范围。

@@ -150,9 +150,16 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - **TEAM-READ-03 / Low**：非法status枚举（None/ACTIVE/actve）被当作非active
   静默过滤；现有损坏字段测试未覆盖此形态。应区分合法非active和未知状态。
   Channel列表仍未改用共享(code,status)规则；其持久列/JSON workspace分歧也仍在。
-- **READ-SCHEMA-01**：health/resources、Memory Bank列表、三种research列表的
+- **READ-SCHEMA-01**：health、resources列表与单项详情、Memory Bank列表、三种research列表的
   公开成功响应Schema缺失或为空占位。HA-0061字段断言只补行为验证，不冒充已经
-  补齐公开机器契约。资源本地登记元数据不等同未来平台Resource对象。
+  补齐公开机器契约。sample实际是text/csv，旧动态文档却声明application/json和
+  空Schema。资源本地登记元数据不等同未来平台Resource对象。HA-0062在代码中
+  对齐核心Product/health/resources/sample；Memory及三类research列表仍未补齐。
+- **HEAD-TEST-01 / Low**：HA-0061独立Approved，32突变杀死31处。HEAD空正文
+  断言由TestClient/传输层保证，不能证明应用ASGI未发送body；证据措辞已修正。
+- **SCHEMA-FORMAT-01**：当前venv通用FormatChecker未安装可选date-time检查依赖。
+  HA-0062显式校验本地服务实际UTC输出格式及非法日期；其他测试不能据仅传入
+  FormatChecker就宣称已验证日期语义。未将本测试用UTC子集当通用RFC3339校验器。
 - HA-0061限定剩余11个读取入口的内容、状态、拒绝与持久性测试，不改业务实现。
   原生研究非空列表来自临时测试准入元数据，stream哨兵禁止执行SDK。PDF登记样本
   只有测试头部，不是完整PDF解析/真实研报证据；health是静态响应，不是release验证。

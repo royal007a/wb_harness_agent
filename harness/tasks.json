@@ -1,18 +1,33 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T12:06:02Z",
+  "generated_at": "2026-10-03T20:55:09Z",
   "tasks": [
+    {
+      "id": "HA-0062",
+      "title": "对齐核心Product HTTP静态动态响应契约",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["核心Product/Resource/health/sample响应Schema", "Task详情/取消/事件等静态文档漂移", "HTTP正反例、生命周期、错误和独立review"],
+      "non_goals": ["修改业务响应或新执行权限", "冒充全部模块OpenAPI已完整", "跳过本机部署132"],
+      "acceptance": ["旧静态错拒和动态空过反例按行为失败", "实际HTTP与静态/动态/源Schema一致并拒绝空及损坏实例", "核心完整生命周期和相关全量验证通过", "固定提交独立review及先本机后132发布证据"],
+      "depends_on": ["HA-0053"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0062-product-http-contracts.md",
+      "blocked_reason": "旧19行为反例失败，新52/相关190通过，全量684 passed/16 skipped及verify exit0；固定提交独立review待完成。实际双部署仍等待HA-0056本机兼容拓扑决定。",
+      "recovery_condition": "固定提交独立Approved；用户明确本机兼容拓扑并验收后先本机再132发布，核验部署OpenAPI与实际响应。",
+      "evidence": ["harness/evidence/HA-0062/acceptance.md"]
+    },
     {
       "id": "HA-0061",
       "title": "补齐剩余只读入口的HTTP行为验证",
-      "status": "waiting_approval",
+      "status": "completed",
       "risk": "low",
       "scope": ["11个未观测读取入口", "列表内容/生命周期/详情一致/重启与HEAD", "Schema缺口、全量证据和独立review"],
       "non_goals": ["真实Provider/CLI或权限拓扑变更", "把入口观测等同功能完成", "替代后续公开机器响应契约"],
       "acceptance": ["逐入口有真实HTTP正反例与明确字段断言", "native列表测试不执行SDK且关闭门禁后历史仍可读", "相关/全量/观察器通过且缺口如实列出", "固定提交独立review"],
       "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0061-read-surfaces.md",
+      "plan": "exec-plans/completed/HA-0061-read-surfaces.md",
       "blocked_reason": null,
       "recovery_condition": null,
       "evidence": ["harness/evidence/HA-0061/acceptance.md"]

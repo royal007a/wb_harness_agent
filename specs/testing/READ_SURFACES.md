@@ -11,7 +11,7 @@ HTTP通过临时SQLite、run_worker=False验证；不启动真实Provider、CLI�
 | GET health | 只证明本进程的静态存活响应；不得当作Provider、release/PID或容器就绪 |
 | GET resources / resources/{id} | 空/非空、倒序、去重、CSV/PDF登记元数据与上传/详情一致，无原始内容；不存在404/NOT_FOUND；重启持久 |
 | GET runs/{id}/replans | 无候选时空列表、不存在Run为404；源Run隔离；当前proposed/awaiting_confirmation/cancelled/confirmed状态，取消重提倒序、不触发执行 |
-| HEAD openapi.json / static/{path} | 与GET状态及类型/长度一致、正文为空；静态缺文件/越界拒绝；不改持久数据 |
+| HEAD openapi.json / static/{path} | 与GET状态及类型/长度一致；客户端收到空正文（传输层行为，不证明应用ASGI未发送body）；静态缺文件/越界拒绝；不改持久数据 |
 
 所有入口仍走现有Host/Origin/代理前缀边界。研究native非空列表只能来自临时测试
 准入档案创建的元数据，禁止真的执行SDK。测试应以哨兵保证没有进入native stream；

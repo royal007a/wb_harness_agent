@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="19" skipped="0" tests="19" time="2.229" timestamp="2026-10-04T04:34:38.685250+08:00" hostname="192.168.31.117"><testcase classname="tests.test_product_http_contracts" name="test_static_create_response_accepts_actual_shape_without_links" time="0.179"><failure message="jsonschema.exceptions.ValidationError: 'links' is a required property&#10;&#10;Failed validating 'required' in schema:&#10;    {'type': 'object',&#10;     'additionalProperties': False,&#10;     'required': ['task', 'initial_run', 'links'],&#10;     'properties': {'task': {'$ref': './core-contracts.schema.json#/$defs/task'},&#10;                    'initial_run': {'$ref': './core-contracts.schema.json#/$defs/run'},&#10;                    'links': {'type': 'object',&#10;                              'additionalProperties': False,&#10;                              'required': ['task', 'run', 'events'],&#10;                              'properties': {'task': {'type': 'string'},&#10;                                             'run': {'type': 'string'},&#10;                                             'events': {'type': 'string'}}}}}&#10;&#10;On instance:&#10;    {'task': {'project_id': 'prj_local',&#10;              'objective': '统计表格',&#10;              'agent_spec_version': 'local_analytics@1',&#10;              'context': {'resource_ids': ['res_0584202c3d6f7c20e672ee6ef25f4dc599bbd223e24fa9e37f4f1824eacd1e59'],&#10;                          'variables': {}},&#10;              'engine_policy': {'mode': 'explicit',&#10;                                'engine_id': 'engine_mock_analytics',&#10;                                'required_capabilities': ['artifacts.files']},&#10;              'model_policy': {'text_and_code': 'none',&#10;                               'vision': None,&#10;                               'allow_fallback': False},&#10;              'requested_permissions': {'profile': 'analysis_read_only',&#10;                                        'profile_version': 1,&#10;                                        'allow_tools': ['resource.inspect',&#10;                                                        'artifact.publish',&#10;                                                        'run.final_answer'],&#10;                                        'deny_capabilities': ['network',&#10;                                                              'package_install',&#10;                                                              'external_write',&#10;                                                              'host_path',&#10;                                                              'secret']},&#10;              'limits': {'max_turns': 3,&#10;                         'timeout_seconds': 60,&#10;                         'max_input_tokens': 1,&#10;                         'max_cost_minor': 0},&#10;              'id': 'task_54713975631148dc9aaa9e7de5987e12',&#10;              'created_at': '2026-10-03T20:34:38.989768Z'},&#10;     'initial_run': {'id': 'run_f2d65680ba3d45b8a3dfb8177547548d',&#10;                     'task_id': 'task_54713975631148dc9aaa9e7de5987e12',&#10;                     'status': 'queued',&#10;                     'selected_engine': 'engine_mock_analytics',&#10;                     'selected_models': {},&#10;                     'effective_permissions': {'profile_id': 'analysis_read_only',&#10;                                               'profile_version': 1,&#10;                                               'allowed_tools': ['resource.inspect',&#10;                                                                 'artifact.publish',&#10;                                                                 'run.final_answer'],&#10;                                               'denied_capabilities': ['network',&#10;                                                                       'package_install',&#10;                                                                       'external_write',&#10;                                                                       'host_path',&#10;                                                                       'secret'],&#10;                                               'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1'},&#10;                     'effective_limits': {'max_turns': 3,&#10;                                          'timeout_seconds': 60,&#10;                                          'max_input_tokens': 1,&#10;                                          'max_cost_minor': 0},&#10;                     'attempt_number': 1,&#10;                     'based_on_run_id': None,&#10;                     'restored_from_checkpoint_id': None,&#10;                     'plan_revision_id': 'plan_09c421c5e3db49b0a7d85872e8e3b52d',&#10;                     'replan_attempt_id': None,&#10;                     'consumed_turns': 0,&#10;                     'latest_sequence': 1,&#10;                     'exit_reason': None,&#10;                     'created_at': '2026-10-03T20:34:38.990196Z',&#10;                     'updated_at': '2026-10-03T20:34:38.990435Z'}}">E   jsonschema.exceptions.ValidationError: 'links' is a required property
+    
+    Failed validating 'required' in schema:
+        {'type': 'object',
+         'additionalProperties': False,
+         'required': ['task', 'initial_run', 'links'],
+         'properties': {'task': {'$ref': './core-contracts.schema.json#/$defs/task'},
+                        'initial_run': {'$ref': './core-contracts.schema.json#/$defs/run'},
+                        'links': {'type': 'object',
+                                  'additionalProperties': False,
+                                  'required': ['task', 'run', 'events'],
+                                  'properties': {'task': {'type': 'string'},
+                                                 'run': {'type': 'string'},
+                                                 'events': {'type': 'string'}}}}}
+    
+    On instance:
+        {'task': {'project_id': 'prj_local',
+                  'objective': '统计表格',
+                  'agent_spec_version': 'local_analytics@1',
+                  'context': {'resource_ids': ['res_0584202c3d6f7c20e672ee6ef25f4dc599bbd223e24fa9e37f4f1824eacd1e59'],
+                              'variables': {}},
+                  'engine_policy': {'mode': 'explicit',
+                                    'engine_id': 'engine_mock_analytics',
+                                    'required_capabilities': ['artifacts.files']},
+                  'model_policy': {'text_and_code': 'none',
+                                   'vision': None,
+                                   'allow_fallback': False},
+                  'requested_permissions': {'profile': 'analysis_read_only',
+                                            'profile_version': 1,
+                                            'allow_tools': ['resource.inspect',
+                                                            'artifact.publish',
+                                                            'run.final_answer'],
+                                            'deny_capabilities': ['network',
+                                                                  'package_install',
+                                                                  'external_write',
+                                                                  'host_path',
+                                                                  'secret']},
+                  'limits': {'max_turns': 3,
+                             'timeout_seconds': 60,
+                             'max_input_tokens': 1,
+                             'max_cost_minor': 0},
+                  'id': 'task_54713975631148dc9aaa9e7de5987e12',
+                  'created_at': '2026-10-03T20:34:38.989768Z'},
+         'initial_run': {'id': 'run_f2d65680ba3d45b8a3dfb8177547548d',
+                         'task_id': 'task_54713975631148dc9aaa9e7de5987e12',
+                         'status': 'queued',
+                         'selected_engine': 'engine_mock_analytics',
+                         'selected_models': {},
+                         'effective_permissions': {'profile_id': 'analysis_read_only',
+                                                   'profile_version': 1,
+                                                   'allowed_tools': ['resource.inspect',
+                                                                     'artifact.publish',
+                                                                     'run.final_answer'],
+                                                   'denied_capabilities': ['network',
+                                                                           'package_install',
+                                                                           'external_write',
+                                                                           'host_path',
+                                                                           'secret'],
+                                                   'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1'},
+                         'effective_limits': {'max_turns': 3,
+                                              'timeout_seconds': 60,
+                                              'max_input_tokens': 1,
+                                              'max_cost_minor': 0},
+                         'attempt_number': 1,
+                         'based_on_run_id': None,
+                         'restored_from_checkpoint_id': None,
+                         'plan_revision_id': 'plan_09c421c5e3db49b0a7d85872e8e3b52d',
+                         'replan_attempt_id': None,
+                         'consumed_turns': 0,
+                         'latest_sequence': 1,
+                         'exit_reason': None,
+                         'created_at': '2026-10-03T20:34:38.990196Z',
+                         'updated_at': '2026-10-03T20:34:38.990435Z'}}</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_static_task_detail_accepts_runs_not_latest_run" time="0.119"><failure message="jsonschema.exceptions.ValidationError: Additional properties are not allowed ('runs' was unexpected)&#10;&#10;Failed validating 'additionalProperties' in schema:&#10;    {'type': 'object',&#10;     'additionalProperties': False,&#10;     'required': ['task', 'latest_run'],&#10;     'properties': {'task': {'$ref': './core-contracts.schema.json#/$defs/task'},&#10;                    'latest_run': {'oneOf': [{'$ref': './core-contracts.schema.json#/$defs/run'},&#10;                                             {'type': 'null'}]}}}&#10;&#10;On instance:&#10;    {'task': {'agent_spec_version': 'local_analytics@1',&#10;              'context': {'resource_ids': ['res_0584202c3d6f7c20e672ee6ef25f4dc599bbd223e24fa9e37f4f1824eacd1e59'],&#10;                          'variables': {}},&#10;              'created_at': '2026-10-03T20:34:39.092536Z',&#10;              'engine_policy': {'engine_id': 'engine_mock_analytics',&#10;                                'mode': 'explicit',&#10;                                'required_capabilities': ['artifacts.files']},&#10;              'id': 'task_ffa46a0e04aa498093fb16d300e06e25',&#10;              'limits': {'max_cost_minor': 0,&#10;                         'max_input_tokens': 1,&#10;                         'max_turns': 3,&#10;                         'timeout_seconds': 60},&#10;              'model_policy': {'allow_fallback': False,&#10;                               'text_and_code': 'none',&#10;                               'vision': None},&#10;              'objective': '统计表格',&#10;              'project_id': 'prj_local',&#10;              'requested_permissions': {'allow_tools': ['resource.inspect',&#10;                                                        'artifact.publish',&#10;                                                        'run.final_answer'],&#10;                                        'deny_capabilities': ['network',&#10;                                                              'package_install',&#10;                                                              'external_write',&#10;                                                              'host_path',&#10;                                                              'secret'],&#10;                                        'profile': 'analysis_read_only',&#10;                                        'profile_version': 1}},&#10;     'runs': [{'attempt_number': 1,&#10;               'based_on_run_id': None,&#10;               'consumed_turns': 0,&#10;               'created_at': '2026-10-03T20:34:39.092789Z',&#10;               'effective_limits': {'max_cost_minor': 0,&#10;                                    'max_input_tokens': 1,&#10;                                    'max_turns': 3,&#10;                                    'timeout_seconds': 60},&#10;               'effective_permissions': {'allowed_tools': ['resource.inspect',&#10;                                                           'artifact.publish',&#10;                                                           'run.final_answer'],&#10;                                         'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',&#10;                                         'denied_capabilities': ['network',&#10;                                                                 'package_install',&#10;                                                                 'external_write',&#10;                                                                 'host_path',&#10;                                                                 'secret'],&#10;                                         'profile_id': 'analysis_read_only',&#10;                                         'profile_version': 1},&#10;               'exit_reason': None,&#10;               'id': 'run_704d48634914412fb40e48438d3044e1',&#10;               'latest_sequence': 1,&#10;               'plan_revision_id': 'plan_38efb53478424b0d9ec27bcaedd44300',&#10;               'replan_attempt_id': None,&#10;               'restored_from_checkpoint_id': None,&#10;               'selected_engine': 'engine_mock_analytics',&#10;               'selected_models': {},&#10;               'status': 'queued',&#10;               'task_id': 'task_ffa46a0e04aa498093fb16d300e06e25',&#10;               'updated_at': '2026-10-03T20:34:39.092987Z'}]}">E   jsonschema.exceptions.ValidationError: Additional properties are not allowed ('runs' was unexpected)
+    
+    Failed validating 'additionalProperties' in schema:
+        {'type': 'object',
+         'additionalProperties': False,
+         'required': ['task', 'latest_run'],
+         'properties': {'task': {'$ref': './core-contracts.schema.json#/$defs/task'},
+                        'latest_run': {'oneOf': [{'$ref': './core-contracts.schema.json#/$defs/run'},
+                                                 {'type': 'null'}]}}}
+    
+    On instance:
+        {'task': {'agent_spec_version': 'local_analytics@1',
+                  'context': {'resource_ids': ['res_0584202c3d6f7c20e672ee6ef25f4dc599bbd223e24fa9e37f4f1824eacd1e59'],
+                              'variables': {}},
+                  'created_at': '2026-10-03T20:34:39.092536Z',
+                  'engine_policy': {'engine_id': 'engine_mock_analytics',
+                                    'mode': 'explicit',
+                                    'required_capabilities': ['artifacts.files']},
+                  'id': 'task_ffa46a0e04aa498093fb16d300e06e25',
+                  'limits': {'max_cost_minor': 0,
+                             'max_input_tokens': 1,
+                             'max_turns': 3,
+                             'timeout_seconds': 60},
+                  'model_policy': {'allow_fallback': False,
+                                   'text_and_code': 'none',
+                                   'vision': None},
+                  'objective': '统计表格',
+                  'project_id': 'prj_local',
+                  'requested_permissions': {'allow_tools': ['resource.inspect',
+                                                            'artifact.publish',
+                                                            'run.final_answer'],
+                                            'deny_capabilities': ['network',
+                                                                  'package_install',
+                                                                  'external_write',
+                                                                  'host_path',
+                                                                  'secret'],
+                                            'profile': 'analysis_read_only',
+                                            'profile_version': 1}},
+         'runs': [{'attempt_number': 1,
+                   'based_on_run_id': None,
+                   'consumed_turns': 0,
+                   'created_at': '2026-10-03T20:34:39.092789Z',
+                   'effective_limits': {'max_cost_minor': 0,
+                                        'max_input_tokens': 1,
+                                        'max_turns': 3,
+                                        'timeout_seconds': 60},
+                   'effective_permissions': {'allowed_tools': ['resource.inspect',
+                                                               'artifact.publish',
+                                                               'run.final_answer'],
+                                             'decision_digest': '61703537ba67a640730028b44b8b6222af269d12f6b0487020291c2f7b2835f1',
+                                             'denied_capabilities': ['network',
+                                                                     'package_install',
+                                                                     'external_write',
+                                                                     'host_path',
+                                                                     'secret'],
+                                             'profile_id': 'analysis_read_only',
+                                             'profile_version': 1},
+                   'exit_reason': None,
+                   'id': 'run_704d48634914412fb40e48438d3044e1',
+                   'latest_sequence': 1,
+                   'plan_revision_id': 'plan_38efb53478424b0d9ec27bcaedd44300',
+                   'replan_attempt_id': None,
+                   'restored_from_checkpoint_id': None,
+                   'selected_engine': 'engine_mock_analytics',
+                   'selected_models': {},
+                   'status': 'queued',
+                   'task_id': 'task_ffa46a0e04aa498093fb16d300e06e25',
+                   'updated_at': '2026-10-03T20:34:39.092987Z'}]}</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_static_cancel_declares_actual_200_not_202" time="0.101"><failure message="AssertionError: assert ('200' in {'202': {'description': 'Cancellation requested.'}, 'default': {'$ref': '#/components/responses/Error'}})">E   AssertionError: assert ('200' in {'202': {'description': 'Cancellation requested.'}, 'default': {'$ref': '#/components/responses/Error'}})</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_static_events_declares_actual_json_cursor_not_sse" time="0.102"><failure message="AssertionError: assert {'text/event-stream'} == {'application/json'}&#10;  &#10;  Extra items in the left set:&#10;  'text/event-stream'&#10;  Extra items in the right set:&#10;  'application/json'&#10;  Use -v to get more diff">E   AssertionError: assert {'text/event-stream'} == {'application/json'}
+      
+      Extra items in the left set:
+      'text/event-stream'
+      Extra items in the right set:
+      'application/json'
+      Use -v to get more diff</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/health-get-200]" time="0.096"><failure message="AssertionError: /api/v1/health&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/health
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/resources-get-200]" time="0.096"><failure message="AssertionError: /api/v1/resources&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/resources
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/resources-post-201]" time="0.097"><failure message="AssertionError: /api/v1/resources&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/resources
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/resources/{resource_id}-get-200]" time="0.097"><failure message="AssertionError: /api/v1/resources/{resource_id}&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/resources/{resource_id}
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/local/research-native/documents-post-201]" time="0.135"><failure message="AssertionError: /api/local/research-native/documents&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/local/research-native/documents
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/local/tasks-post-202]" time="0.096"><failure message="AssertionError: /api/local/tasks&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/local/tasks
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/tasks-post-202]" time="0.094"><failure message="AssertionError: /api/v1/tasks&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/tasks
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/tasks-get-200]" time="0.094"><failure message="AssertionError: /api/v1/tasks&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/tasks
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/tasks/{task_id}-get-200]" time="0.098"><failure message="AssertionError: /api/v1/tasks/{task_id}&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/tasks/{task_id}
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/tasks/{task_id}/runs-post-202]" time="0.097"><failure message="AssertionError: /api/v1/tasks/{task_id}/runs&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/tasks/{task_id}/runs
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/runs/{run_id}-get-200]" time="0.143"><failure message="AssertionError: /api/v1/runs/{run_id}&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/runs/{run_id}
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/runs/{run_id}:cancel-post-200]" time="0.096"><failure message="AssertionError: /api/v1/runs/{run_id}:cancel&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/runs/{run_id}:cancel
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/runs/{run_id}/events-get-200]" time="0.096"><failure message="AssertionError: /api/v1/runs/{run_id}/events&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/runs/{run_id}/events
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/runs/{run_id}/artifacts-get-200]" time="0.094"><failure message="AssertionError: /api/v1/runs/{run_id}/artifacts&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/runs/{run_id}/artifacts
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase><testcase classname="tests.test_product_http_contracts" name="test_product_dynamic_success_contract_is_not_an_empty_placeholder[/api/v1/tasks/{task_id}/artifacts-get-200]" time="0.095"><failure message="AssertionError: /api/v1/tasks/{task_id}/artifacts&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">E   AssertionError: /api/v1/tasks/{task_id}/artifacts
+    assert not True
+     +  where True = is_valid({})
+     +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid</failure></testcase></testsuite></testsuites>

@@ -161,21 +161,21 @@
 
 固定资源与能力元数据；readiness 不代表真实模型准入
 
-必须验证：能力与 gate 一致；CSV/资源边界、摘要、恶意内容；无外部请求；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
+必须验证：能力与 gate 一致；CSV/资源边界、摘要、恶意内容；无外部请求；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/FRAMEWORK_INTEGRATION.md`、`specs/testing/READ_SURFACES.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/FRAMEWORK_INTEGRATION.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`
 
-测试入口：`tests/test_workbench.py`、`tests/test_framework_catalog.py`、`tests/test_read_surfaces.py`
+测试入口：`tests/test_workbench.py`、`tests/test_framework_catalog.py`、`tests/test_read_surfaces.py`、`tests/test_product_http_contracts.py`
 
 ### product：Product Task/Run/Event/Artifact
 
 固定 CSV Product 路径；完整模型 CodeAct 仍未准入
 
-必须验证：不可变 Task/终态；权限预算快照；取消、超时、重启、事件序号；数值回算与产物下载；并发/幂等/队列；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
+必须验证：不可变 Task/终态；权限预算快照；取消、超时、重启、事件序号；数值回算与产物下载；并发/幂等/队列；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致。
 
-规格：`docs/harness/CORE_CONTRACTS.md`、`docs/harness/P0_DATA_ANALYSIS.md`、`specs/testing/READ_SURFACES.md`
+规格：`docs/harness/CORE_CONTRACTS.md`、`docs/harness/P0_DATA_ANALYSIS.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`
 
-测试入口：`tests/test_workbench.py`
+测试入口：`tests/test_workbench.py`、`tests/test_product_http_contracts.py`
 
 ### replan：Checkpoint / Try Confirm Cancel
 
@@ -221,11 +221,11 @@ Agent/Skill/Tool 模拟；零模型、零网络
 
 代码/Mock/SDK 配置与拒绝路径；真实模型/资料外发未准入
 
-必须验证：Provider/预算/端点/PDF 全绑定；默认零 CLI/Keychain/网络；来源证据、SSRF/字节上限；取消/部分失败/事件映射；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
+必须验证：Provider/预算/端点/PDF 全绑定；默认零 CLI/Keychain/网络；来源证据、SSRF/字节上限；取消/部分失败/事件映射；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致。
 
-规格：`docs/harness/CLAUDE_RESEARCH_RUNTIME.md`、`specs/testing/READ_SURFACES.md`
+规格：`docs/harness/CLAUDE_RESEARCH_RUNTIME.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`
 
-测试入口：`tests/test_claude_config.py`、`tests/test_claude_research_admission.py`、`tests/test_claude_research_runtime.py`
+测试入口：`tests/test_claude_config.py`、`tests/test_claude_research_admission.py`、`tests/test_claude_research_runtime.py`、`tests/test_product_http_contracts.py`
 
 ### external-skills：外部 Skill 沙箱
 
@@ -331,11 +331,11 @@ OAuth 与本机 CLI 交接；网站接口没有通用分享下载
 
 本机根路径及反向代理 /harness/；无新增身份系统
 
-必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收。
+必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`
 
-测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`
+测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`、`tests/test_product_http_contracts.py`
 
 ### retrieval：迭代检索/Agentic 契约/父子 Chunk
 

@@ -9,4 +9,6 @@
 2026-10-04检查点：1–4完成。新增57项，相关123 passed，全量632 passed/16 skipped，
 verify exit0；148/148入口均有passing-test 2xx。已记录公开Schema与复审Low的
 未实现边界；业务代码/正式服务未改。证据：harness/evidence/HA-0061/acceptance.md。
-当前waiting_approval，不将测试补齐等同于12小时目标或双部署完成。
+独立复审：d46f406 Approved，123项通过，32处突变杀死31处；HEAD正文的应用层
+断言不能成立，已修正证据措辞；sample/resources详情Schema缺口由HA-0062跟进。
+本测试任务completed，不将测试补齐等同于12小时目标或双部署完成。

@@ -6,7 +6,29 @@ HA-0058 修复动态 OpenAPI 的契约归属：Lab、Runtime、研究模拟使�
 旧错误 component 名不保留别名，客户端生成器需重新生成。实例验证范围与边界见
 [OpenAPI 合同验收](../../specs/testing/OPENAPI_CONTRACTS.md)，不代表所有接口已验收。
 
-当前本地 v0.1 实现范围、JSON 事件轮询和简化表单端点见 [LOCAL_WORKBENCH.md](LOCAL_WORKBENCH.md)。下文为完整目标规格，未实现接口不能据此视为可调用。
+## 当前核心 Product HTTP 合同（HA-0062）
+
+静态 OpenAPI 和运行时 `/openapi.json` 共用 core bundle 的 `local_http_*` 封装；
+该范围的 HTTP 行为不变，修正的是原先错写或空缺的公开文档。旧客户端须重新生成。
+
+| 接口 | 当前响应 |
+|---|---|
+| POST tasks / local/tasks | 202，`{task,initial_run}`，没有 links |
+| GET tasks / tasks/{id} | 列表 `{items:[{task,latest_run}]}`；详情 `{task,runs}` |
+| POST tasks/{id}/runs | 202，新 Run；reason 可省略，不限定 retry/rerun 枚举 |
+| POST runs/{id}:cancel | 200，Run；不要求幂等键，已终态保持不变 |
+| GET runs/{id}/events | JSON `{items,next_cursor}`，after≥0，每页最多500；非 SSE |
+| GET/POST resources、GET resources/{id}、POST native/documents | 本地 CSV/合成 JSON/Public PDF 登记元数据，不是未来 ResourceHandle |
+| GET Run/Task artifacts、下载 / sample | 列表 metadata；下载实际 media_type，sample 为 text/csv，不是 JSON |
+| 上述入口错误 | `{error:{code,message,retryable:false,request_id}}`，不是 FastAPI detail 默认体 |
+
+health 是静态存活声明，不是 Provider 调用计数或发布身份。验收与未覆盖范围见
+[Product HTTP 测试合同](../../specs/testing/PRODUCT_HTTP_CONTRACTS.md)。其余模块空响应
+Schema 仍需逐项补齐，不据此称全 API 已验收。
+
+当前本地 v0.1 实现范围、JSON 事件轮询和简化表单端点见 [LOCAL_WORKBENCH.md](LOCAL_WORKBENCH.md)。
+**以下为完整目标规格与历史示意（包括 links、SSE、认证等），不是当前响应样本；与上表
+冲突时以当前机器契约为准。未实现接口不能据此视为可调用。**
 
 > P0 机器契约以 `specs/v1/openapi.yaml` 与 `specs/v1/core-contracts.schema.json` 为准；ADR-0019 的本地受限 Replan 还引用 `execution-control.schema.json` 与 `local-replan.schema.json`。本文是与其同步维护的叙事说明。它们若漂移，HA-0001 不得冻结。
 

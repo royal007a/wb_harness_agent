@@ -3,6 +3,86 @@
   "$id": "https://harnessagent.local/specs/v1/core-contracts.schema.json",
   "title": "HarnessAgent Core Contract Bundle",
   "$defs": {
+    "local_http_health": {
+      "description": "Static local liveness, not Provider health, release identity, or usage telemetry.",
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "version", "mode", "model_calls_enabled"],
+      "properties": {
+        "status": {"const": "ok"}, "version": {"const": "0.1.0"},
+        "mode": {"const": "local_single_user"}, "model_calls_enabled": {"const": false}
+      }
+    },
+    "local_http_resource": {
+      "description": "Persisted local CSV, synthetic JSON or Public PDF metadata; never raw content or a ResourceHandle.",
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "sha256", "size_bytes", "data_class", "row_count", "columns", "encoding", "created_at"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^res_[a-f0-9]{64}$"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 180},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "size_bytes": {"type": "integer", "minimum": 1, "maximum": 15728640},
+        "data_class": {"enum": ["Public", "Internal"]},
+        "row_count": {"type": "integer", "minimum": 0},
+        "columns": {"type": "array", "maxItems": 100, "items": {"type": "string"}},
+        "encoding": {"enum": ["utf-8-sig", "gb18030", "utf-8", "binary/pdf"]},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "local_http_resource_list": {
+      "type": "object", "additionalProperties": false, "required": ["items"],
+      "properties": {"items": {"type": "array", "items": {"$ref": "#/$defs/local_http_resource"}}}
+    },
+    "local_http_task_created": {
+      "type": "object", "additionalProperties": false, "required": ["task", "initial_run"],
+      "properties": {"task": {"$ref": "#/$defs/task"}, "initial_run": {"$ref": "#/$defs/run"}}
+    },
+    "local_http_task_list_item": {
+      "type": "object", "additionalProperties": false, "required": ["task", "latest_run"],
+      "properties": {
+        "task": {"$ref": "#/$defs/task"},
+        "latest_run": {"oneOf": [{"$ref": "#/$defs/run"}, {"type": "null"}]}
+      }
+    },
+    "local_http_task_list": {
+      "type": "object", "additionalProperties": false, "required": ["items"],
+      "properties": {"items": {"type": "array", "items": {"$ref": "#/$defs/local_http_task_list_item"}}}
+    },
+    "local_http_task_detail": {
+      "type": "object", "additionalProperties": false, "required": ["task", "runs"],
+      "properties": {
+        "task": {"$ref": "#/$defs/task"},
+        "runs": {"type": "array", "items": {"$ref": "#/$defs/run"}}
+      }
+    },
+    "local_http_event_page": {
+      "type": "object", "additionalProperties": false, "required": ["items", "next_cursor"],
+      "properties": {
+        "items": {"type": "array", "maxItems": 500, "items": {"$ref": "#/$defs/event"}},
+        "next_cursor": {"type": "integer", "minimum": 0}
+      }
+    },
+    "local_http_artifact_list": {
+      "type": "object", "additionalProperties": false, "required": ["items"],
+      "properties": {"items": {"type": "array", "items": {"$ref": "#/$defs/artifact"}}}
+    },
+    "local_http_rerun_request": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "based_on_run_id": {"type": ["string", "null"]},
+        "reason": {"type": "string", "maxLength": 2000}
+      }
+    },
+    "local_http_error": {
+      "type": "object", "additionalProperties": false, "required": ["error"],
+      "properties": {"error": {
+        "type": "object", "additionalProperties": false,
+        "required": ["code", "message", "retryable", "request_id"],
+        "properties": {
+          "code": {"type": "string", "minLength": 1}, "message": {"type": "string"},
+          "retryable": {"const": false}, "request_id": {"type": "string", "pattern": "^req_[A-Za-z0-9]+$"}
+        }
+      }}
+    },
     "limits": {
       "type": "object",
       "additionalProperties": false,
