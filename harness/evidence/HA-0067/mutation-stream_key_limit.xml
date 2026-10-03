@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.831" timestamp="2026-10-04T06:59:16.526120+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_idempotency_key_limits_match_actual_endpoint[1-128]" time="0.191" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_idempotency_key_limits_match_actual_endpoint[2-128]" time="0.164" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_idempotency_key_limits_match_actual_endpoint[3-128]" time="0.119" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_idempotency_key_limits_match_actual_endpoint[4-120]" time="0.126"><failure message="assert (True is True and 1 == 1 and 128 == 120)">offline = &lt;starlette.testclient.TestClient object at 0x10b6bb490&gt;, index = 4
+maximum = 120
+
+    @pytest.mark.parametrize('index,maximum', [(1, 128), (2, 128), (3, 128), (4, 120)])
+    def test_idempotency_key_limits_match_actual_endpoint(offline, index, maximum):
+        resource, _ = pdf(offline)
+        body = {'action': {'phase': 'context'}, 'policy': policy()} if index == 3 else {'resource_id': resource['id']}
+        headers = {'Accept': 'text/event-stream'} if index == 4 else {}
+        assert post(offline, index, body, key='k' * maximum, **headers).status_code == 200
+        for key in ['', 'k' * (maximum + 1)]:
+            before = snapshot(offline)
+            result = post(offline, index, body, key=key, **headers)
+            assert result.status_code == 422
+            assert snapshot(offline) == before
+        docs = [(offline.get('/openapi.json').json(), OPERATIONS[index][0]),
+                (yaml.safe_load(STATIC.read_text()), OPERATIONS[index][0].removeprefix('/api'))]
+        for doc, path in docs:
+            params = doc['paths'][path]['post'].get('parameters', [])
+            params = [doc['components']['parameters'][p['$ref'].split('/')[-1]] if '$ref' in p else p for p in params]
+            key = next(p for p in params if p['name'] == 'Idempotency-Key')
+&gt;           assert key['required'] is True and key['schema']['minLength'] == 1 and key['schema']['maxLength'] == maximum
+E           assert (True is True and 1 == 1 and 128 == 120)
+
+tests/test_pi_pipeline_http_contracts.py:271: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,6 +1,6 @@
 # ADR-0066：公开Memory与Research读取的实际响应
 
-状态：实现与离线验证完成，待固定提交独立复审及双部署；基线e6e1fb9，HA-0066。
+状态：5429c62 已独立 Approved；2 Low、1 Info已登记，双部署仍待完成。基线e6e1fb9，HA-0066。
 
 行为测试已有Bank/Research历史读取覆盖，但公开成功响应仍为空。决定复用现有
 memory_bank与Product Run，在各自源Schema增加明确local_http命名的封装；

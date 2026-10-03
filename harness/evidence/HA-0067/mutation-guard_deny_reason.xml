@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="5" time="1.453" timestamp="2026-10-04T06:59:13.123004+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_guard_is_evaluation_only_and_does_not_echo_inputs[action0-False-allow]" time="0.354" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_guard_is_evaluation_only_and_does_not_echo_inputs[action1-False-deny]" time="0.188"><failure message="AssertionError: reasons&#10;assert not True&#10; +  where True = is_valid({'schema_version': 'pi-security-guard@1', 'decision': 'deny', 'phase': 'tool_call', 'tool': 'unknown', ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...uard_response', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10eb60190&gt;
+action = {'phase': 'tool_call', 'tool': 'unknown'}, approved = False
+decision = 'deny'
+
+    @pytest.mark.parametrize('action,approved,decision', [
+        ({'phase': 'context'}, False, 'allow'),
+        ({'phase': 'tool_call', 'tool': 'unknown'}, False, 'deny'),
+        ({'phase': 'context', 'content': '13812345678'}, False, 'deny'),
+        ({'phase': 'provider_request'}, False, 'deny'),
+        ({'phase': 'provider_request'}, True, 'allow'),
+    ])
+    def test_guard_is_evaluation_only_and_does_not_echo_inputs(offline, action, approved, decision):
+        body = {'action': action, 'policy': policy(provider_admitted=approved)}
+        for check in validators(offline, OPERATIONS[3], request=True):
+            check.validate(body)
+            assert not check.is_valid({**body, 'extra': True})
+        before_runtime = offline.get(OPERATIONS[0][0]).json()
+        result = post(offline, 3, body)
+        assert result.status_code == 200
+        checks = valid(offline, OPERATIONS[3], result.json())
+        assert result.json()['decision'] == decision
+        assert ('13812345678' not in result.text)
+        for check in checks:
+            for field, value in [('model_calls', 1), ('external_calls', 1), ('phase', 'unknown'),
+                                 ('reasons', ['WRONG'] if decision == 'allow' else [])]:
+&gt;               assert not check.is_valid({**result.json(), field: value}), field
+E               AssertionError: reasons
+E               assert not True
+E                +  where True = is_valid({'schema_version': 'pi-security-guard@1', 'decision': 'deny', 'phase': 'tool_call', 'tool': 'unknown', ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...uard_response', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:309: AssertionError</failure></testcase><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_guard_is_evaluation_only_and_does_not_echo_inputs[action2-False-deny]" time="0.182"><failure message="AssertionError: reasons&#10;assert not True&#10; +  where True = is_valid({'schema_version': 'pi-security-guard@1', 'decision': 'deny', 'phase': 'context', 'tool': None, ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...uard_response', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10ee616d0&gt;
+action = {'phase': 'context', 'content': '13812345678'}, approved = False
+decision = 'deny'
+
+    @pytest.mark.parametrize('action,approved,decision', [
+        ({'phase': 'context'}, False, 'allow'),
+        ({'phase': 'tool_call', 'tool': 'unknown'}, False, 'deny'),
+        ({'phase': 'context', 'content': '13812345678'}, False, 'deny'),
+        ({'phase': 'provider_request'}, False, 'deny'),
+        ({'phase': 'provider_request'}, True, 'allow'),
+    ])
+    def test_guard_is_evaluation_only_and_does_not_echo_inputs(offline, action, approved, decision):
+        body = {'action': action, 'policy': policy(provider_admitted=approved)}
+        for check in validators(offline, OPERATIONS[3], request=True):
+            check.validate(body)
+            assert not check.is_valid({**body, 'extra': True})
+        before_runtime = offline.get(OPERATIONS[0][0]).json()
+        result = post(offline, 3, body)
+        assert result.status_code == 200
+        checks = valid(offline, OPERATIONS[3], result.json())
+        assert result.json()['decision'] == decision
+        assert ('13812345678' not in result.text)
+        for check in checks:
+            for field, value in [('model_calls', 1), ('external_calls', 1), ('phase', 'unknown'),
+                                 ('reasons', ['WRONG'] if decision == 'allow' else [])]:
+&gt;               assert not check.is_valid({**result.json(), field: value}), field
+E               AssertionError: reasons
+E               assert not True
+E                +  where True = is_valid({'schema_version': 'pi-security-guard@1', 'decision': 'deny', 'phase': 'context', 'tool': None, ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...uard_response', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:309: AssertionError</failure></testcase><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_guard_is_evaluation_only_and_does_not_echo_inputs[action3-False-deny]" time="0.200"><failure message="AssertionError: reasons&#10;assert not True&#10; +  where True = is_valid({'schema_version': 'pi-security-guard@1', 'decision': 'deny', 'phase': 'provider_request', 'tool': None, ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...uard_response', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10db3f950&gt;
+action = {'phase': 'provider_request'}, approved = False, decision = 'deny'
+
+    @pytest.mark.parametrize('action,approved,decision', [
+        ({'phase': 'context'}, False, 'allow'),
+        ({'phase': 'tool_call', 'tool': 'unknown'}, False, 'deny'),
+        ({'phase': 'context', 'content': '13812345678'}, False, 'deny'),
+        ({'phase': 'provider_request'}, False, 'deny'),
+        ({'phase': 'provider_request'}, True, 'allow'),
+    ])
+    def test_guard_is_evaluation_only_and_does_not_echo_inputs(offline, action, approved, decision):
+        body = {'action': action, 'policy': policy(provider_admitted=approved)}
+        for check in validators(offline, OPERATIONS[3], request=True):
+            check.validate(body)
+            assert not check.is_valid({**body, 'extra': True})
+        before_runtime = offline.get(OPERATIONS[0][0]).json()
+        result = post(offline, 3, body)
+        assert result.status_code == 200
+        checks = valid(offline, OPERATIONS[3], result.json())
+        assert result.json()['decision'] == decision
+        assert ('13812345678' not in result.text)
+        for check in checks:
+            for field, value in [('model_calls', 1), ('external_calls', 1), ('phase', 'unknown'),
+                                 ('reasons', ['WRONG'] if decision == 'allow' else [])]:
+&gt;               assert not check.is_valid({**result.json(), field: value}), field
+E               AssertionError: reasons
+E               assert not True
+E                +  where True = is_valid({'schema_version': 'pi-security-guard@1', 'decision': 'deny', 'phase': 'provider_request', 'tool': None, ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...uard_response', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:309: AssertionError</failure></testcase><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_guard_is_evaluation_only_and_does_not_echo_inputs[action4-True-allow]" time="0.241" /></testsuite></testsuites>

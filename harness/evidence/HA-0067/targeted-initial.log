@@ -1,0 +1,28 @@
+........................................................................ [ 46%]
+........................................................................ [ 92%]
+.......F....                                                             [100%]
+HTTP observations (not acceptance): {"total": 148, "observed": 55, "not_observed": 93}
+
+=================================== FAILURES ===================================
+____________ test_all_registered_definitions_survive_final_document ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e16a190>
+
+    def test_all_registered_definitions_survive_final_document(monkeypatch):
+        import backend.app as app_module
+        original = app_module.register_definitions
+        observations = []
+        def observe(document, contract, namespace=''):
+            original(document, contract, namespace)
+            observations.append({namespace + name: copy.deepcopy(document['components']['schemas'][namespace + name])
+                                 for name in contract['$defs']})
+        monkeypatch.setattr(app_module, 'register_definitions', observe)
+        document = app_module.create_app(run_worker=False).openapi()
+>       assert len(observations) == 21
+E       AssertionError: assert 24 == 21
+E        +  where 24 = len([{'research_agents_research_agent_request': {'type': 'object', 'additionalProperties': False, 'required': ['companies'...e', 'decision', ...]}, 'items': {'type': 'array', 'items': {'$ref': '#/components/schemas/summary_item'}}}}, ...}, ...])
+
+tests/test_openapi_contracts.py:244: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_openapi_contracts.py::test_all_registered_definitions_survive_final_document
+1 failed, 155 passed in 17.28s

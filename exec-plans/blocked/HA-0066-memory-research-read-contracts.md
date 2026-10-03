@@ -8,4 +8,5 @@
 
 检查点：新增36、相关283通过，旧36项公开合同反例失败，8/8定向突变被杀死；
 全量1131 passed/16 skipped，verify exit0。141项观察器源哈希稳定。证据在
-harness/evidence/HA-0066/acceptance.md；等待独立复审与兼容本机拓扑后的双部署。
+harness/evidence/HA-0066/acceptance.md；5429c62独立Approved，Low/Info已登记，
+等待兼容本机拓扑后的双部署。

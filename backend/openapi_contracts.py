@@ -91,6 +91,41 @@ def bind_memory_research_reads(document):
             operation['responses']['422'] = envelope
 
 
+def bind_pi_pipeline_responses(document):
+    """Offline pipeline data, including one JSON envelope per SSE data frame."""
+    prefix = '/api/local/pi-contract-pipeline/'
+    for path, method, namespace, response, request, media in (
+        ('/api/local/pi/runtime', 'get', 'pi_admission_', 'runtime_status', None, 'application/json'),
+        (prefix + 'preview', 'post', 'pi_pipeline_', 'preview', 'http_request', 'application/json'),
+        (prefix + 'review', 'post', 'pi_pipeline_', 'finding', 'http_request', 'application/json'),
+        (prefix + 'security-check', 'post', 'pi_guard_', 'response', 'request', 'application/json'),
+        (prefix + 'review-stream', 'post', 'pi_pipeline_', 'stream_event', 'http_request', 'text/event-stream'),
+    ):
+        operation = document['paths'][path][method]
+        operation['responses']['200']['content'] = {
+            media: {'schema': {'$ref': '#/components/schemas/' + namespace + response}}}
+        envelope = {'description': 'Current local error envelope (before any SSE frames).', 'content': {
+            'application/json': {'schema': {'$ref': '#/components/schemas/local_http_error'}}}}
+        operation['responses']['default'] = envelope
+        if '422' in operation['responses']:
+            operation['responses']['422'] = envelope
+        if request:
+            operation['requestBody'] = {'required': True, 'content': {
+                'application/json': {'schema': {'$ref': '#/components/schemas/' + namespace + request}}}}
+            operation.setdefault('parameters', []).append({
+                'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+                'schema': {'type': 'string', 'minLength': 1, 'maxLength': 120 if media == 'text/event-stream' else 128}})
+        if media == 'text/event-stream':
+            operation['parameters'].append({
+                'in': 'header', 'name': 'Accept', 'required': True,
+                'description': 'Current case-sensitive substring check, not full HTTP content negotiation.',
+                'schema': {'type': 'string', 'pattern': 'text/event-stream'}})
+            operation['responses']['200']['description'] = 'SSE data JSON frames: preview, finding, done; not model tokens or a passed Gate.'
+            operation['responses']['200']['headers'] = {
+                'Cache-Control': {'schema': {'const': 'no-store'}},
+                'X-Accel-Buffering': {'schema': {'const': 'no'}}}
+
+
 def bind_product_responses(document):
     """Publish current local Product wire contracts, not future API sketches."""
     contracts = (

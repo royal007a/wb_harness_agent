@@ -424,3 +424,14 @@ SSE 客户端使用 `Last-Event-ID` 恢复；服务端必须说明事件保留�
 ### Adaptive Chunk Retrieval（本地切片）
 
 `build_parent_child_chunks` 输出带 `parent_id` 的结构化子证据；`weighted_rrf` 只融合 keyword/temporal/graph 候选；`slot_progress` / `should_stop_minimal` 依据关键槽位和 blocking gap 判断是否已达到最小充分证据。该模块不提供语义检索、外部端点或模型调用。
+
+### Pi 离线管线的当前 HTTP 合同
+
+HA-0067 给 `/api/local/pi/runtime` 和 `pi-contract-pipeline` 四个 POST 发布
+源/静态/动态合同。`review-stream` 是确定性 `text/event-stream`，data JSON
+依次是 preview、finding、done；done 不表示人工 Gate 通过或模型交付。
+普通 POST key 上限 128，流因后缀上限 120；请求投影、Accept 子串检查、
+两次收据非原子等现有边界见 `specs/testing/PI_PIPELINE_HTTP_CONTRACTS.md`。
+security-check 的 allow 只是对调用方 policy 的评估，不授予执行权限；runtime
+是档案投影，不是实时调用计数器。本项不包括 Pi Product Run 五个入口，
+也不代表真实 Provider、部署或合同判断质量已经验收。

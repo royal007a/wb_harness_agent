@@ -19,7 +19,7 @@ from .store import Store, uid, MAX_EVENT_SEQUENCE
 from .readiness import readiness
 from .framework_catalog import catalog as framework_catalog
 from .frontend import frontend_page
-from .openapi_contracts import register_definitions, assert_local_references, bind_chat_responses, bind_product_responses, bind_memory_research_reads
+from .openapi_contracts import register_definitions, assert_local_references, bind_chat_responses, bind_product_responses, bind_memory_research_reads, bind_pi_pipeline_responses
 
 
 def create_app(db_path=None, run_worker=True):
@@ -1207,6 +1207,10 @@ def create_app(db_path=None, run_worker=True):
     bind_chat_responses(generated, 'agent-runtime', 'agent_runtime_')
     bind_product_responses(generated)
     bind_memory_research_reads(generated)
+    for stem, namespace in [('pi-admission', 'pi_admission_'), ('pi-contract-pipeline', 'pi_pipeline_'),
+                            ('pi-security-guard', 'pi_guard_')]:
+        register_definitions(generated, json.loads((ROOT / 'specs/v1' / (stem + '.schema.json')).read_text()), namespace)
+    bind_pi_pipeline_responses(generated)
     assert_local_references(generated)
     return app
 

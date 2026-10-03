@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="1.139" timestamp="2026-10-04T06:59:14.958439+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_runtime_admission_projection_not_execution[default]" time="0.196" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_runtime_admission_projection_not_execution[missing]" time="0.156" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_runtime_admission_projection_not_execution[directory]" time="0.112" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_runtime_admission_projection_not_execution[invalid_json]" time="0.116" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_runtime_admission_projection_not_execution[invalid_utf8]" time="0.116" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_runtime_admission_projection_not_execution[null]" time="0.113" /><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_runtime_admission_projection_not_execution[approved]" time="0.116"><failure message="AssertionError: admission_enabled&#10;assert not True&#10; +  where True = is_valid({'schema_version': 'pi-admission@1', 'status': 'approved_for_l3_probe', 'admission_enabled': False, 'model_calls': 0, ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...untime_status', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10e9ef680&gt;
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1052/test_runtime_admission_project6')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d70f950&gt;
+state = 'approved'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+        checks = valid(offline, OPERATIONS[0], value)
+        assert value['status'] == ('not_admitted' if state == 'default' else 'approved_for_l3_probe' if state == 'approved' else 'invalid_not_admitted')
+        assert value['admission_enabled'] is (state == 'approved')
+        assert value['blocker_count'] == len(value['blockers'])
+        assert value['model_calls'] == value['external_calls'] == 0
+        for check in checks:
+            for field, altered in [('admission_enabled', not value['admission_enabled']), ('model_calls', 1), ('external_calls', -1)]:
+&gt;               assert not check.is_valid({**value, field: altered}), field
+E               AssertionError: admission_enabled
+E               assert not True
+E                +  where True = is_valid({'schema_version': 'pi-admission@1', 'status': 'approved_for_l3_probe', 'admission_enabled': False, 'model_calls': 0, ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...untime_status', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:365: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="0.763" timestamp="2026-10-04T06:58:41.907978+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[False]" time="0.171"><failure message="AssertionError: outer security status mismatch&#10;assert not True&#10; +  where True = is_valid({'char_count': 57, 'chunks': [{'char_count': 57, 'heading': 'software development RAW_SENTINEL_67 source code delivery...', 'focus_areas': ['知识产权归属', '交付标准', '验收条款', '违约责任'], 'method': 'deterministic_keyword_rules@1'}, 'format': 'pdf', ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...eline_preview', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10ba42270&gt;
+sensitive = False
+
+    @pytest.mark.parametrize('sensitive', [False, True])
+    def test_pdf_preview_finding_and_stream_are_real_bound_and_replayable(offline, sensitive):
+        c = offline
+        resource, raw = pdf(c, 'software development RAW_SENTINEL_67 ' + ('13812345678 foo@example.com' if sensitive else 'source code delivery'))
+        body = {'resource_id': resource['id'], 'chunk_max_chars': 1000}
+        preview = post(c, 1, body).json()
+        checks = valid(c, OPERATIONS[1], preview)
+        assert preview['source_sha256'] == hashlib.sha256(raw).hexdigest()
+        assert preview['classification']['contract_type'] == '技术服务'
+        assert preview['status'] == ('needs_human' if sensitive else 'ready_for_skill')
+        assert preview['security']['status'] == ('needs_human' if sensitive else 'clear')
+        assert len(preview['security']['hits']) == (2 if sensitive else 0)
+        for check in checks:
+            bad = copy.deepcopy(preview)
+            bad['status'] = 'ready_for_skill' if sensitive else 'needs_human'
+&gt;           assert not check.is_valid(bad), 'outer security status mismatch'
+E           AssertionError: outer security status mismatch
+E           assert not True
+E            +  where True = is_valid({'char_count': 57, 'chunks': [{'char_count': 57, 'heading': 'software development RAW_SENTINEL_67 source code delivery...', 'focus_areas': ['知识产权归属', '交付标准', '验收条款', '违约责任'], 'method': 'deterministic_keyword_rules@1'}, 'format': 'pdf', ...})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...eline_preview', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:113: AssertionError</failure></testcase><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[True]" time="0.404" /></testsuite></testsuites>

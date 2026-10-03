@@ -31,11 +31,14 @@
     },
     "response": {
       "type": "object", "additionalProperties": false,
+      "if": {"properties": {"decision": {"const": "allow"}}},
+      "then": {"properties": {"reasons": {"maxItems": 0}}},
+      "else": {"properties": {"reasons": {"minItems": 1}}},
       "required": ["schema_version", "decision", "phase", "tool", "reasons", "model_calls", "external_calls"],
       "properties": {
         "schema_version": {"const": "pi-security-guard@1"},
         "decision": {"enum": ["allow", "deny"]},
-        "phase": {"type": "string"}, "tool": {"type": ["string", "null"]},
+        "phase": {"enum": ["tool_call", "tool_result", "context", "provider_request"]}, "tool": {"type": ["string", "null"]},
         "reasons": {"type": "array", "items": {"type": "string"}},
         "model_calls": {"const": 0}, "external_calls": {"const": 0}
       }

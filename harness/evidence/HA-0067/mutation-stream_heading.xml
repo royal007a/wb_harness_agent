@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.761" timestamp="2026-10-04T06:58:40.841476+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[False]" time="0.323"><failure message="AssertionError: stream headings must be sanitized labels&#10;assert not True&#10; +  where True = is_valid({'event': 'preview', 'data': {'char_count': 57, 'chunks': [{'char_count': 57, 'heading': 'RAW_SENTINEL_67', 'index': 0..., 'focus_areas': ['知识产权归属', '交付标准', '验收条款', '违约责任'], 'method': 'deterministic_keyword_rules@1'}, 'format': 'pdf', ...}})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components..._stream_event', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10b952270&gt;
+sensitive = False
+
+    @pytest.mark.parametrize('sensitive', [False, True])
+    def test_pdf_preview_finding_and_stream_are_real_bound_and_replayable(offline, sensitive):
+        c = offline
+        resource, raw = pdf(c, 'software development RAW_SENTINEL_67 ' + ('13812345678 foo@example.com' if sensitive else 'source code delivery'))
+        body = {'resource_id': resource['id'], 'chunk_max_chars': 1000}
+        preview = post(c, 1, body).json()
+        checks = valid(c, OPERATIONS[1], preview)
+        assert preview['source_sha256'] == hashlib.sha256(raw).hexdigest()
+        assert preview['classification']['contract_type'] == '技术服务'
+        assert preview['status'] == ('needs_human' if sensitive else 'ready_for_skill')
+        assert preview['security']['status'] == ('needs_human' if sensitive else 'clear')
+        assert len(preview['security']['hits']) == (2 if sensitive else 0)
+        for check in checks:
+            bad = copy.deepcopy(preview)
+            bad['status'] = 'ready_for_skill' if sensitive else 'needs_human'
+            assert not check.is_valid(bad), 'outer security status mismatch'
+            bad = copy.deepcopy(preview)
+            bad['security']['hits'] = [] if sensitive else [{'kind': '手机号', 'count': 1}]
+            assert not check.is_valid(bad), 'security hits/status mismatch'
+        finding = post(c, 2, body).json()
+        valid(c, OPERATIONS[2], finding)
+        assert finding['status'] == 'needs_human'
+        assert finding['risk_level'] == ('high' if sensitive else 'medium')
+        assert finding['source_resource_id'] == resource['id']
+        assert finding['evidence_refs'] == [f"evidence://{resource['id']}/chunk-{chunk['index']}/{chunk['text_sha256']}" for chunk in preview['chunks']]
+        stream = post(c, 4, body, Accept='text/event-stream')
+        assert stream.status_code == 200, stream.text
+        assert stream.headers['content-type'].startswith('text/event-stream')
+        assert stream.headers['cache-control'] == 'no-store'
+        assert stream.headers['x-accel-buffering'] == 'no'
+        frames = [json.loads(block.removeprefix('data: ')) for block in stream.text.strip().split('\n\n')]
+        assert [f['event'] for f in frames] == ['preview', 'finding', 'done']
+        stream_preview = copy.deepcopy(preview)
+        for chunk in stream_preview['chunks']:
+            chunk['heading'] = f"chunk-{chunk['index']}"
+        assert frames == [{'event': 'preview', 'data': stream_preview}, {'event': 'finding', 'data': finding},
+                          {'event': 'done', 'data': {'model_calls': 0, 'external_calls': 0}}]
+        for frame in frames:
+            frame_checks = valid(c, OPERATIONS[4], frame)
+            for check in frame_checks:
+                for data in [{}, {'model_calls': 1, 'external_calls': 0}, {**frame['data'], 'raw': 'RAW_SENTINEL_67'}]:
+                    assert not check.is_valid({'event': frame['event'], 'data': data})
+                other = frames[(frames.index(frame) + 1) % len(frames)]['data']
+                assert not check.is_valid({'event': frame['event'], 'data': other})
+                if frame['event'] == 'preview':
+                    bad = copy.deepcopy(frame)
+                    bad['data']['chunks'][0]['heading'] = 'RAW_SENTINEL_67'
+&gt;                   assert not check.is_valid(bad), 'stream headings must be sanitized labels'
+E                   AssertionError: stream headings must be sanitized labels
+E                   assert not True
+E                    +  where True = is_valid({'event': 'preview', 'data': {'char_count': 57, 'chunks': [{'char_count': 57, 'heading': 'RAW_SENTINEL_67', 'index': 0..., 'focus_areas': ['知识产权归属', '交付标准', '验收条款', '违约责任'], 'method': 'deterministic_keyword_rules@1'}, 'format': 'pdf', ...}})
+E                    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components..._stream_event', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:145: AssertionError</failure></testcase><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[True]" time="0.240"><failure message="AssertionError: stream headings must be sanitized labels&#10;assert not True&#10; +  where True = is_valid({'event': 'preview', 'data': {'char_count': 64, 'chunks': [{'char_count': 64, 'heading': 'RAW_SENTINEL_67', 'index': 0..., 'focus_areas': ['知识产权归属', '交付标准', '验收条款', '违约责任'], 'method': 'deterministic_keyword_rules@1'}, 'format': 'pdf', ...}})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components..._stream_event', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10d9b0050&gt;
+sensitive = True
+
+    @pytest.mark.parametrize('sensitive', [False, True])
+    def test_pdf_preview_finding_and_stream_are_real_bound_and_replayable(offline, sensitive):
+        c = offline
+        resource, raw = pdf(c, 'software development RAW_SENTINEL_67 ' + ('13812345678 foo@example.com' if sensitive else 'source code delivery'))
+        body = {'resource_id': resource['id'], 'chunk_max_chars': 1000}
+        preview = post(c, 1, body).json()
+        checks = valid(c, OPERATIONS[1], preview)
+        assert preview['source_sha256'] == hashlib.sha256(raw).hexdigest()
+        assert preview['classification']['contract_type'] == '技术服务'
+        assert preview['status'] == ('needs_human' if sensitive else 'ready_for_skill')
+        assert preview['security']['status'] == ('needs_human' if sensitive else 'clear')
+        assert len(preview['security']['hits']) == (2 if sensitive else 0)
+        for check in checks:
+            bad = copy.deepcopy(preview)
+            bad['status'] = 'ready_for_skill' if sensitive else 'needs_human'
+            assert not check.is_valid(bad), 'outer security status mismatch'
+            bad = copy.deepcopy(preview)
+            bad['security']['hits'] = [] if sensitive else [{'kind': '手机号', 'count': 1}]
+            assert not check.is_valid(bad), 'security hits/status mismatch'
+        finding = post(c, 2, body).json()
+        valid(c, OPERATIONS[2], finding)
+        assert finding['status'] == 'needs_human'
+        assert finding['risk_level'] == ('high' if sensitive else 'medium')
+        assert finding['source_resource_id'] == resource['id']
+        assert finding['evidence_refs'] == [f"evidence://{resource['id']}/chunk-{chunk['index']}/{chunk['text_sha256']}" for chunk in preview['chunks']]
+        stream = post(c, 4, body, Accept='text/event-stream')
+        assert stream.status_code == 200, stream.text
+        assert stream.headers['content-type'].startswith('text/event-stream')
+        assert stream.headers['cache-control'] == 'no-store'
+        assert stream.headers['x-accel-buffering'] == 'no'
+        frames = [json.loads(block.removeprefix('data: ')) for block in stream.text.strip().split('\n\n')]
+        assert [f['event'] for f in frames] == ['preview', 'finding', 'done']
+        stream_preview = copy.deepcopy(preview)
+        for chunk in stream_preview['chunks']:
+            chunk['heading'] = f"chunk-{chunk['index']}"
+        assert frames == [{'event': 'preview', 'data': stream_preview}, {'event': 'finding', 'data': finding},
+                          {'event': 'done', 'data': {'model_calls': 0, 'external_calls': 0}}]
+        for frame in frames:
+            frame_checks = valid(c, OPERATIONS[4], frame)
+            for check in frame_checks:
+                for data in [{}, {'model_calls': 1, 'external_calls': 0}, {**frame['data'], 'raw': 'RAW_SENTINEL_67'}]:
+                    assert not check.is_valid({'event': frame['event'], 'data': data})
+                other = frames[(frames.index(frame) + 1) % len(frames)]['data']
+                assert not check.is_valid({'event': frame['event'], 'data': other})
+                if frame['event'] == 'preview':
+                    bad = copy.deepcopy(frame)
+                    bad['data']['chunks'][0]['heading'] = 'RAW_SENTINEL_67'
+&gt;                   assert not check.is_valid(bad), 'stream headings must be sanitized labels'
+E                   AssertionError: stream headings must be sanitized labels
+E                   assert not True
+E                    +  where True = is_valid({'event': 'preview', 'data': {'char_count': 64, 'chunks': [{'char_count': 64, 'heading': 'RAW_SENTINEL_67', 'index': 0..., 'focus_areas': ['知识产权归属', '交付标准', '验收条款', '违约责任'], 'method': 'deterministic_keyword_rules@1'}, 'format': 'pdf', ...}})
+E                    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components..._stream_event', 'components': {'schemas': {'HTTPValidationError':... ...}}, 'info': {'title': 'HarnessAgent Local API', 'version': '0.1.0'}, 'openapi': '3.1.0', ...}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:145: AssertionError</failure></testcase></testsuite></testsuites>

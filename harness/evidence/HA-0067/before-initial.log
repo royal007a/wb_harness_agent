@@ -1,0 +1,231 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+____ test_pi_published_response_is_not_empty_or_wrong_media[runtime_status] ____
+
+offline = <starlette.testclient.TestClient object at 0x10ab6e7b0>
+operation = ('/api/local/pi/runtime', 'get', 'pi-admission', 'runtime_status', 'application/json')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[3])
+    def test_pi_published_response_is_not_empty_or_wrong_media(offline, operation):
+>       validators(offline, operation)
+
+tests/test_pi_pipeline_http_contracts.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ab6e7b0>
+op = ('/api/local/pi/runtime', 'get', 'pi-admission', 'runtime_status', 'application/json')
+request = False, error = False
+
+    def validators(c, op, *, request=False, error=False):
+        path, method, stem, name, media = op
+        sources, resources = {}, []
+        for bundle in ['pi-admission', 'pi-contract-pipeline', 'pi-security-guard', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (bundle + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[bundle] = source
+            resources += [(file.as_uri(), Resource.from_contents(source)),
+                          (source['$id'], Resource.from_contents(source))]
+        registry = Registry().with_resources(resources)
+        dynamic, static = c.get('/openapi.json').json(), yaml.safe_load(STATIC.read_text())
+        checks = []
+        for doc, p, base in [(dynamic, path, {}), (static, path.removeprefix('/api'), {'$id': STATIC.as_uri()})]:
+            operation = doc['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else '200', {})
+            if '$ref' in holder:
+                holder = doc['components']['responses'][holder['$ref'].split('/')[-1]]
+            content = holder.get('content', {})
+            expected_media = 'application/json' if request or error else media
+            assert expected_media in content, ('missing/wrong media', p, expected_media)
+            check = Draft202012Validator({**doc, **base, **content[expected_media].get('schema', {})}, registry=registry)
+>           assert not check.is_valid({}), ('empty payload accepted', p, request, error)
+E           AssertionError: ('empty payload accepted', '/api/local/pi/runtime', False, False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ue}, 'responses': {'201': {'content': {...}, 'description': 'Successful Response'}}, ...}}, ...}}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:60: AssertionError
+_______ test_pi_published_response_is_not_empty_or_wrong_media[preview] ________
+
+offline = <starlette.testclient.TestClient object at 0x10c910550>
+operation = ('/api/local/pi-contract-pipeline/preview', 'post', 'pi-contract-pipeline', 'preview', 'application/json')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[3])
+    def test_pi_published_response_is_not_empty_or_wrong_media(offline, operation):
+>       validators(offline, operation)
+
+tests/test_pi_pipeline_http_contracts.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c910550>
+op = ('/api/local/pi-contract-pipeline/preview', 'post', 'pi-contract-pipeline', 'preview', 'application/json')
+request = False, error = False
+
+    def validators(c, op, *, request=False, error=False):
+        path, method, stem, name, media = op
+        sources, resources = {}, []
+        for bundle in ['pi-admission', 'pi-contract-pipeline', 'pi-security-guard', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (bundle + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[bundle] = source
+            resources += [(file.as_uri(), Resource.from_contents(source)),
+                          (source['$id'], Resource.from_contents(source))]
+        registry = Registry().with_resources(resources)
+        dynamic, static = c.get('/openapi.json').json(), yaml.safe_load(STATIC.read_text())
+        checks = []
+        for doc, p, base in [(dynamic, path, {}), (static, path.removeprefix('/api'), {'$id': STATIC.as_uri()})]:
+            operation = doc['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else '200', {})
+            if '$ref' in holder:
+                holder = doc['components']['responses'][holder['$ref'].split('/')[-1]]
+            content = holder.get('content', {})
+            expected_media = 'application/json' if request or error else media
+            assert expected_media in content, ('missing/wrong media', p, expected_media)
+            check = Draft202012Validator({**doc, **base, **content[expected_media].get('schema', {})}, registry=registry)
+>           assert not check.is_valid({}), ('empty payload accepted', p, request, error)
+E           AssertionError: ('empty payload accepted', '/api/local/pi-contract-pipeline/preview', False, False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ue}, 'responses': {'201': {'content': {...}, 'description': 'Successful Response'}}, ...}}, ...}}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:60: AssertionError
+_______ test_pi_published_response_is_not_empty_or_wrong_media[finding] ________
+
+offline = <starlette.testclient.TestClient object at 0x10cbae0d0>
+operation = ('/api/local/pi-contract-pipeline/review', 'post', 'pi-contract-pipeline', 'finding', 'application/json')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[3])
+    def test_pi_published_response_is_not_empty_or_wrong_media(offline, operation):
+>       validators(offline, operation)
+
+tests/test_pi_pipeline_http_contracts.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10cbae0d0>
+op = ('/api/local/pi-contract-pipeline/review', 'post', 'pi-contract-pipeline', 'finding', 'application/json')
+request = False, error = False
+
+    def validators(c, op, *, request=False, error=False):
+        path, method, stem, name, media = op
+        sources, resources = {}, []
+        for bundle in ['pi-admission', 'pi-contract-pipeline', 'pi-security-guard', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (bundle + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[bundle] = source
+            resources += [(file.as_uri(), Resource.from_contents(source)),
+                          (source['$id'], Resource.from_contents(source))]
+        registry = Registry().with_resources(resources)
+        dynamic, static = c.get('/openapi.json').json(), yaml.safe_load(STATIC.read_text())
+        checks = []
+        for doc, p, base in [(dynamic, path, {}), (static, path.removeprefix('/api'), {'$id': STATIC.as_uri()})]:
+            operation = doc['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else '200', {})
+            if '$ref' in holder:
+                holder = doc['components']['responses'][holder['$ref'].split('/')[-1]]
+            content = holder.get('content', {})
+            expected_media = 'application/json' if request or error else media
+            assert expected_media in content, ('missing/wrong media', p, expected_media)
+            check = Draft202012Validator({**doc, **base, **content[expected_media].get('schema', {})}, registry=registry)
+>           assert not check.is_valid({}), ('empty payload accepted', p, request, error)
+E           AssertionError: ('empty payload accepted', '/api/local/pi-contract-pipeline/review', False, False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ue}, 'responses': {'201': {'content': {...}, 'description': 'Successful Response'}}, ...}}, ...}}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:60: AssertionError
+_______ test_pi_published_response_is_not_empty_or_wrong_media[response] _______
+
+offline = <starlette.testclient.TestClient object at 0x10cd989d0>
+operation = ('/api/local/pi-contract-pipeline/security-check', 'post', 'pi-security-guard', 'response', 'application/json')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[3])
+    def test_pi_published_response_is_not_empty_or_wrong_media(offline, operation):
+>       validators(offline, operation)
+
+tests/test_pi_pipeline_http_contracts.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10cd989d0>
+op = ('/api/local/pi-contract-pipeline/security-check', 'post', 'pi-security-guard', 'response', 'application/json')
+request = False, error = False
+
+    def validators(c, op, *, request=False, error=False):
+        path, method, stem, name, media = op
+        sources, resources = {}, []
+        for bundle in ['pi-admission', 'pi-contract-pipeline', 'pi-security-guard', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (bundle + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[bundle] = source
+            resources += [(file.as_uri(), Resource.from_contents(source)),
+                          (source['$id'], Resource.from_contents(source))]
+        registry = Registry().with_resources(resources)
+        dynamic, static = c.get('/openapi.json').json(), yaml.safe_load(STATIC.read_text())
+        checks = []
+        for doc, p, base in [(dynamic, path, {}), (static, path.removeprefix('/api'), {'$id': STATIC.as_uri()})]:
+            operation = doc['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else '200', {})
+            if '$ref' in holder:
+                holder = doc['components']['responses'][holder['$ref'].split('/')[-1]]
+            content = holder.get('content', {})
+            expected_media = 'application/json' if request or error else media
+            assert expected_media in content, ('missing/wrong media', p, expected_media)
+            check = Draft202012Validator({**doc, **base, **content[expected_media].get('schema', {})}, registry=registry)
+>           assert not check.is_valid({}), ('empty payload accepted', p, request, error)
+E           AssertionError: ('empty payload accepted', '/api/local/pi-contract-pipeline/security-check', False, False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....ue}, 'responses': {'201': {'content': {...}, 'description': 'Successful Response'}}, ...}}, ...}}, format_checker=None).is_valid
+
+tests/test_pi_pipeline_http_contracts.py:60: AssertionError
+_____ test_pi_published_response_is_not_empty_or_wrong_media[stream_event] _____
+
+offline = <starlette.testclient.TestClient object at 0x10cd99350>
+operation = ('/api/local/pi-contract-pipeline/review-stream', 'post', 'pi-contract-pipeline', 'stream_event', 'text/event-stream')
+
+    @pytest.mark.parametrize('operation', OPERATIONS, ids=lambda o: o[3])
+    def test_pi_published_response_is_not_empty_or_wrong_media(offline, operation):
+>       validators(offline, operation)
+
+tests/test_pi_pipeline_http_contracts.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10cd99350>
+op = ('/api/local/pi-contract-pipeline/review-stream', 'post', 'pi-contract-pipeline', 'stream_event', 'text/event-stream')
+request = False, error = False
+
+    def validators(c, op, *, request=False, error=False):
+        path, method, stem, name, media = op
+        sources, resources = {}, []
+        for bundle in ['pi-admission', 'pi-contract-pipeline', 'pi-security-guard', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (bundle + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[bundle] = source
+            resources += [(file.as_uri(), Resource.from_contents(source)),
+                          (source['$id'], Resource.from_contents(source))]
+        registry = Registry().with_resources(resources)
+        dynamic, static = c.get('/openapi.json').json(), yaml.safe_load(STATIC.read_text())
+        checks = []
+        for doc, p, base in [(dynamic, path, {}), (static, path.removeprefix('/api'), {'$id': STATIC.as_uri()})]:
+            operation = doc['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else '200', {})
+            if '$ref' in holder:
+                holder = doc['components']['responses'][holder['$ref'].split('/')[-1]]
+            content = holder.get('content', {})
+            expected_media = 'application/json' if request or error else media
+>           assert expected_media in content, ('missing/wrong media', p, expected_media)
+E           AssertionError: ('missing/wrong media', '/api/local/pi-contract-pipeline/review-stream', 'text/event-stream')
+E           assert 'text/event-stream' in {'application/json': {'schema': {}}}
+
+tests/test_pi_pipeline_http_contracts.py:58: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_pipeline_http_contracts.py::test_pi_published_response_is_not_empty_or_wrong_media[runtime_status]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_pi_published_response_is_not_empty_or_wrong_media[preview]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_pi_published_response_is_not_empty_or_wrong_media[finding]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_pi_published_response_is_not_empty_or_wrong_media[response]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_pi_published_response_is_not_empty_or_wrong_media[stream_event]
+5 failed, 31 deselected, 1 warning in 0.98s

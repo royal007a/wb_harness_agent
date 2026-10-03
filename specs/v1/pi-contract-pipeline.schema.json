@@ -4,6 +4,34 @@
   "title": "Pi Contract Pipeline Preview",
   "description": "Deterministic, offline parse/classify/chunk/security preview for a registered Public PDF.",
   "$defs": {
+    "http_request": {
+      "description": "HTTP facade projects these fields; all other fields are ignored before validation and digesting.",
+      "type": "object", "additionalProperties": true, "required": ["resource_id"],
+      "properties": {
+        "resource_id": {"type": "string", "minLength": 1, "maxLength": 180},
+        "chunk_max_chars": {"type": "integer", "minimum": 1000, "maximum": 16000, "default": 6000}
+      }
+    },
+    "stream_preview": {
+      "allOf": [
+        {"$ref": "#/$defs/preview"},
+        {"properties": {"chunks": {"items": {"properties": {"heading": {"type": "string", "pattern": "^chunk-[0-9]+$"}}}}}}
+      ]
+    },
+    "stream_done": {
+      "type": "object", "additionalProperties": false, "required": ["model_calls", "external_calls"],
+      "properties": {"model_calls": {"const": 0}, "external_calls": {"const": 0}}
+    },
+    "stream_event": {
+      "description": "Schema for the JSON in one SSE data frame, not the entire wire stream. Ordered preview/finding/done is tested separately.",
+      "type": "object", "additionalProperties": false, "required": ["event", "data"],
+      "properties": {"event": {"enum": ["preview", "finding", "done"]}, "data": {"type": "object"}},
+      "oneOf": [
+        {"properties": {"event": {"const": "preview"}, "data": {"$ref": "#/$defs/stream_preview"}}},
+        {"properties": {"event": {"const": "finding"}, "data": {"$ref": "#/$defs/finding"}}},
+        {"properties": {"event": {"const": "done"}, "data": {"$ref": "#/$defs/stream_done"}}}
+      ]
+    },
     "request": {
       "type": "object", "additionalProperties": false, "required": ["resource_id"],
       "properties": {
@@ -32,6 +60,9 @@
     },
     "security": {
       "type": "object", "additionalProperties": false, "required": ["status", "hits", "external_calls", "model_calls"],
+      "if": {"properties": {"status": {"const": "clear"}}},
+      "then": {"properties": {"hits": {"maxItems": 0}}},
+      "else": {"properties": {"hits": {"minItems": 1}}},
       "properties": {
         "status": {"enum": ["clear", "needs_human"]},
         "hits": {"type": "array", "maxItems": 12, "items": {"type": "object", "additionalProperties": false, "required": ["kind", "count"], "properties": {"kind": {"type": "string", "minLength": 1}, "count": {"type": "integer", "minimum": 1}}}},
@@ -41,6 +72,9 @@
     },
     "preview": {
       "type": "object", "additionalProperties": false,
+      "if": {"properties": {"status": {"const": "ready_for_skill"}}},
+      "then": {"properties": {"security": {"properties": {"status": {"const": "clear"}}}}},
+      "else": {"properties": {"security": {"properties": {"status": {"const": "needs_human"}}}}},
       "required": ["schema_version", "resource_id", "source_sha256", "format", "page_count", "char_count", "classification", "chunks", "security", "status"],
       "properties": {
         "schema_version": {"const": "pi-contract-pipeline-preview@1"},

@@ -321,21 +321,21 @@ OAuth 与本机 CLI 交接；网站接口没有通用分享下载
 
 本仓库 Faux/确定性 Public PDF 路径；不是另一个 pi-contract-review 仓库
 
-必须验证：JSONL/事件与版本；PDF/分页/风险/引用；高风险 Gate；敏感输入/注入；取消/有界输出/超时；真实 Provider 保持关闭。
+必须验证：JSONL/事件与版本；PDF/分页/风险/引用；高风险 Gate；敏感输入/注入；取消/有界输出/超时；真实 Provider 保持关闭；Pi离线管线五入口与分阶段SSE合同、错误和无执行边界。
 
-规格：`docs/harness/PI_ADAPTER_DESIGN.md`
+规格：`docs/harness/PI_ADAPTER_DESIGN.md`、`specs/testing/PI_PIPELINE_HTTP_CONTRACTS.md`
 
-测试入口：`tests/test_pi_admission.py`、`tests/test_pi_contract_review_runtime.py`、`tests/test_pi_contract_review_adapter.py`、`tests/test_pi_contract_pipeline.py`、`tests/test_pi_security_guard.py`、`tests/test_pi_sidecar.py`、`tests/test_pi_contract_tui.py`、`tests/test_contract_risk_skill.py`
+测试入口：`tests/test_pi_admission.py`、`tests/test_pi_contract_review_runtime.py`、`tests/test_pi_contract_review_adapter.py`、`tests/test_pi_contract_pipeline.py`、`tests/test_pi_security_guard.py`、`tests/test_pi_sidecar.py`、`tests/test_pi_contract_tui.py`、`tests/test_contract_risk_skill.py`、`tests/test_pi_pipeline_http_contracts.py`
 
 ### web：页面 / 静态文件 / OpenAPI
 
 本机根路径及反向代理 /harness/；无新增身份系统
 
-必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致；Product游标int64边界及响应约束负例/突变保护；Memory/Research读取静态动态源合同、退化状态与历史实例负例。
+必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；当前Product成功/错误/下载与静态动态响应契约实例一致；Product游标int64边界及响应约束负例/突变保护；Memory/Research读取静态动态源合同、退化状态与历史实例负例；Pi离线管线五入口与分阶段SSE合同、错误和无执行边界。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`、`specs/testing/PRODUCT_CONTRACT_BOUNDARIES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/PRODUCT_HTTP_CONTRACTS.md`、`specs/testing/PRODUCT_CONTRACT_BOUNDARIES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`、`specs/testing/PI_PIPELINE_HTTP_CONTRACTS.md`
 
-测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`、`tests/test_product_http_contracts.py`、`tests/test_product_contract_boundaries.py`、`tests/test_memory_research_read_contracts.py`
+测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`、`tests/test_read_surfaces.py`、`tests/test_product_http_contracts.py`、`tests/test_product_contract_boundaries.py`、`tests/test_memory_research_read_contracts.py`、`tests/test_pi_pipeline_http_contracts.py`
 
 ### retrieval：迭代检索/Agentic 契约/父子 Chunk
 

@@ -1,0 +1,197 @@
+{
+  "schema_version": "empty-response-observation@1",
+  "observed_at": "2026-10-03T23:02:16.477217Z",
+  "baseline_commit": "5429c62",
+  "candidate_dirty": true,
+  "openapi_sha256": "a513220f8630cc9c210ef9903cee731f85f9563ed061671a70b25029e766f4ac",
+  "api_count": 30,
+  "page_count": 1,
+  "rows": [
+    {
+      "path": "/api/v1/engines",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/v1/frameworks",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/v1/readiness",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/external-skills/runtime",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/external-skills/packages",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/external-skills/packages",
+      "method": "POST",
+      "status": 201,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/memory/banks/{bank_id}/retain",
+      "method": "POST",
+      "status": 201,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/memory/sources/{source_id}:retract",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/memory/sources/{source_id}",
+      "method": "DELETE",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/team/workspaces/{workspace_id}/agents",
+      "method": "POST",
+      "status": 201,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/team/workspaces/{workspace_id}/channels",
+      "method": "POST",
+      "status": 201,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/team/tasks/{task_id}:close",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}/observations",
+      "method": "POST",
+      "status": 201,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:try",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:confirm",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:cancel",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:link-handoff",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/recovery/cases/{case_id}:complete",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/research",
+      "method": "POST",
+      "status": 202,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/research/{run_id}",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/research-agents",
+      "method": "POST",
+      "status": 202,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/research-agents/{run_id}",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/research-native/runtime",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/research-native",
+      "method": "POST",
+      "status": 202,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/research-native/{run_id}",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/pi-contract-review",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/pi-contract-review",
+      "method": "POST",
+      "status": 202,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/pi-contract-review/{run_id}",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/pi-contract-review/{run_id}/events",
+      "method": "GET",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/api/local/pi-contract-review/{run_id}:gate",
+      "method": "POST",
+      "status": 200,
+      "kind": "api"
+    },
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "kind": "page"
+    }
+  ]
+}

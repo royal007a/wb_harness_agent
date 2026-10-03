@@ -22,6 +22,38 @@
     "admission_evidence": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/admission_evidence" }] }
   },
   "$defs": {
+    "runtime_status": {
+      "description": "Read-only profile projection, not execution admission or live call telemetry. Array length/count equality is checked by behavioral tests.",
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "status", "admission_enabled", "model_calls", "external_calls", "blocker_count", "blockers", "admission_digest", "error"],
+      "properties": {
+        "schema_version": {"const": "pi-admission@1"},
+        "status": {"enum": ["not_admitted", "approved_for_l3_probe", "invalid_not_admitted"]},
+        "admission_enabled": {"type": "boolean"},
+        "model_calls": {"const": 0}, "external_calls": {"const": 0},
+        "blocker_count": {"type": "integer", "minimum": 0},
+        "blockers": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 300}},
+        "admission_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "error": {"type": ["string", "null"]}
+      },
+      "oneOf": [
+        {"properties": {
+          "status": {"const": "not_admitted"}, "admission_enabled": {"const": false},
+          "blocker_count": {"minimum": 1}, "blockers": {"minItems": 1},
+          "admission_digest": {"type": "string"}, "error": {"type": "null"}
+        }},
+        {"properties": {
+          "status": {"const": "approved_for_l3_probe"}, "admission_enabled": {"const": true},
+          "blocker_count": {"const": 0}, "blockers": {"maxItems": 0},
+          "admission_digest": {"type": "string"}, "error": {"type": "null"}
+        }},
+        {"properties": {
+          "status": {"const": "invalid_not_admitted"}, "admission_enabled": {"const": false},
+          "blocker_count": {"const": 1}, "blockers": {"const": ["admission_profile_invalid"]},
+          "admission_digest": {"type": "null"}, "error": {"const": "admission_profile_invalid"}
+        }}
+      ]
+    },
     "credential_ref": { "type": "string", "pattern": "^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$" },
     "provider": {
       "type": "object", "additionalProperties": false,

@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T22:35:35Z",
+  "generated_at": "2026-10-03T23:05:00Z",
   "tasks": [
+    {
+      "id": "HA-0067",
+      "title": "Pi离线管线HTTP与分阶段SSE契约",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Pi runtime及四个离线管线POST", "源静态动态请求响应和分阶段SSE", "真实PDF实例、错误、幂等和定向突变"],
+      "non_goals": ["Pi Product Run五入口合同", "模型准入或法律评测", "绕过本机部署132"],
+      "acceptance": ["旧空声明反例按行为失败", "三份合同与实际HTTP一致并拒绝错误阶段数据", "无执行和无外发、重放无写入证据", "固定提交review及先本机后132发布证据"],
+      "depends_on": ["HA-0062"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0067-pi-pipeline-http-contracts.md",
+      "blocked_reason": "新56/相关156通过，旧54行为反例及8/8突变核实；全量1187 passed/16 skipped，verify exit0。等待固定提交独立review及HA-0056兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交独立Approved；本机兼容拓扑明确并验收后先本机再132部署。",
+      "evidence": ["harness/evidence/HA-0067/acceptance.md", "harness/evidence/HA-0067/mutations.md", "harness/evidence/HA-0067/remaining-empty-responses.json"]
+    },
     {
       "id": "HA-0066",
       "title": "Memory与Research读取公开响应契约",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0061", "HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0066-memory-research-read-contracts.md",
-      "blocked_reason": "新增36/相关283通过，旧36公开合同反例及8/8突变核实，全量1131 passed/16 skipped，verify exit0；等待固定提交独立review与HA-0056兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交独立复审通过；兼容本机拓扑明确并验收后先本机再132发布。",
-      "evidence": ["harness/evidence/HA-0066/acceptance.md", "harness/evidence/HA-0066/mutations.md", "harness/evidence/HA-0066/remaining-empty-responses.json"]
+      "blocked_reason": "5429c62独立Approved，108项及旧36行为反例核实，2 Low与1 Info已登记；等待HA-0056兼容本机拓扑后的双部署。",
+      "recovery_condition": "兼容本机拓扑明确并验收后先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0066/acceptance.md", "harness/evidence/HA-0066/mutations.md", "harness/evidence/HA-0066/remaining-empty-responses.json", "harness/evidence/HA-0066/review.md"]
     },
     {
       "id": "HA-0065",

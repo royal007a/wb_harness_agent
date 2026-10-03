@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.772" timestamp="2026-10-04T07:00:04.718498+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[False]" time="0.317"><failure message="AssertionError: assert ['finding', 'preview', 'done'] == ['preview', 'finding', 'done']&#10;  &#10;  At index 0 diff: 'finding' != 'preview'&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10b08a120&gt;
+sensitive = False
+
+    @pytest.mark.parametrize('sensitive', [False, True])
+    def test_pdf_preview_finding_and_stream_are_real_bound_and_replayable(offline, sensitive):
+        c = offline
+        resource, raw = pdf(c, 'software development RAW_SENTINEL_67 ' + ('13812345678 foo@example.com' if sensitive else 'source code delivery'))
+        body = {'resource_id': resource['id'], 'chunk_max_chars': 1000}
+        preview = post(c, 1, body).json()
+        checks = valid(c, OPERATIONS[1], preview)
+        assert preview['source_sha256'] == hashlib.sha256(raw).hexdigest()
+        assert preview['classification']['contract_type'] == '技术服务'
+        assert preview['status'] == ('needs_human' if sensitive else 'ready_for_skill')
+        assert preview['security']['status'] == ('needs_human' if sensitive else 'clear')
+        assert len(preview['security']['hits']) == (2 if sensitive else 0)
+        for check in checks:
+            bad = copy.deepcopy(preview)
+            bad['status'] = 'ready_for_skill' if sensitive else 'needs_human'
+            assert not check.is_valid(bad), 'outer security status mismatch'
+            bad = copy.deepcopy(preview)
+            bad['security']['hits'] = [] if sensitive else [{'kind': '手机号', 'count': 1}]
+            assert not check.is_valid(bad), 'security hits/status mismatch'
+        finding = post(c, 2, body).json()
+        valid(c, OPERATIONS[2], finding)
+        assert finding['status'] == 'needs_human'
+        assert finding['risk_level'] == ('high' if sensitive else 'medium')
+        assert finding['source_resource_id'] == resource['id']
+        assert finding['evidence_refs'] == [f"evidence://{resource['id']}/chunk-{chunk['index']}/{chunk['text_sha256']}" for chunk in preview['chunks']]
+        stream = post(c, 4, body, Accept='text/event-stream')
+        assert stream.status_code == 200, stream.text
+        assert stream.headers['content-type'].startswith('text/event-stream')
+        assert stream.headers['cache-control'] == 'no-store'
+        assert stream.headers['x-accel-buffering'] == 'no'
+        frames = [json.loads(block.removeprefix('data: ')) for block in stream.text.strip().split('\n\n')]
+&gt;       assert [f['event'] for f in frames] == ['preview', 'finding', 'done']
+E       AssertionError: assert ['finding', 'preview', 'done'] == ['preview', 'finding', 'done']
+E
+E         At index 0 diff: 'finding' != 'preview'
+E         Use -v to get more diff
+
+tests/test_pi_pipeline_http_contracts.py:129: AssertionError</failure></testcase><testcase classname="tests.test_pi_pipeline_http_contracts" name="test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[True]" time="0.183"><failure message="AssertionError: assert ['finding', 'preview', 'done'] == ['preview', 'finding', 'done']&#10;  &#10;  At index 0 diff: 'finding' != 'preview'&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10cfd8050&gt;
+sensitive = True
+
+    @pytest.mark.parametrize('sensitive', [False, True])
+    def test_pdf_preview_finding_and_stream_are_real_bound_and_replayable(offline, sensitive):
+        c = offline
+        resource, raw = pdf(c, 'software development RAW_SENTINEL_67 ' + ('13812345678 foo@example.com' if sensitive else 'source code delivery'))
+        body = {'resource_id': resource['id'], 'chunk_max_chars': 1000}
+        preview = post(c, 1, body).json()
+        checks = valid(c, OPERATIONS[1], preview)
+        assert preview['source_sha256'] == hashlib.sha256(raw).hexdigest()
+        assert preview['classification']['contract_type'] == '技术服务'
+        assert preview['status'] == ('needs_human' if sensitive else 'ready_for_skill')
+        assert preview['security']['status'] == ('needs_human' if sensitive else 'clear')
+        assert len(preview['security']['hits']) == (2 if sensitive else 0)
+        for check in checks:
+            bad = copy.deepcopy(preview)
+            bad['status'] = 'ready_for_skill' if sensitive else 'needs_human'
+            assert not check.is_valid(bad), 'outer security status mismatch'
+            bad = copy.deepcopy(preview)
+            bad['security']['hits'] = [] if sensitive else [{'kind': '手机号', 'count': 1}]
+            assert not check.is_valid(bad), 'security hits/status mismatch'
+        finding = post(c, 2, body).json()
+        valid(c, OPERATIONS[2], finding)
+        assert finding['status'] == 'needs_human'
+        assert finding['risk_level'] == ('high' if sensitive else 'medium')
+        assert finding['source_resource_id'] == resource['id']
+        assert finding['evidence_refs'] == [f"evidence://{resource['id']}/chunk-{chunk['index']}/{chunk['text_sha256']}" for chunk in preview['chunks']]
+        stream = post(c, 4, body, Accept='text/event-stream')
+        assert stream.status_code == 200, stream.text
+        assert stream.headers['content-type'].startswith('text/event-stream')
+        assert stream.headers['cache-control'] == 'no-store'
+        assert stream.headers['x-accel-buffering'] == 'no'
+        frames = [json.loads(block.removeprefix('data: ')) for block in stream.text.strip().split('\n\n')]
+&gt;       assert [f['event'] for f in frames] == ['preview', 'finding', 'done']
+E       AssertionError: assert ['finding', 'preview', 'done'] == ['preview', 'finding', 'done']
+E
+E         At index 0 diff: 'finding' != 'preview'
+E         Use -v to get more diff
+
+tests/test_pi_pipeline_http_contracts.py:129: AssertionError</failure></testcase></testsuite></testsuites>

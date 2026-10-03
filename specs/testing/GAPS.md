@@ -201,7 +201,6 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   列表共7项候选已补实际响应合同。根Run可省略parent_run_id或为null；Memory
   FTS退化与semantic档案异常仍是合法状态。其他研究写入/详情、Pi等空Schema未
   纳入，不称全系统OpenAPI完整；待固定提交独立review与双部署证据。
-- **EVIDENCE-PATH-01**：HA-0063收口时全量任务引用检查发现历史HA-0027仍引用
 - **OPENAPI-EMPTY-03**：HA-0066后程序枚举仍有35个API成功响应的application/json
   Schema恰为空对象，另有1个页面。明细见HA-0066/remaining-empty-responses.json，
   包括Pi、研究创建/详情、Memory写入、Recovery等；不统计缺content或非空但不完整
@@ -219,5 +218,17 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - 参考文档对照与过时 Current/README/历史 evidence 的声明纠正。
 - 真实模型/外发/网盘账号相关能力须保留 gate；没做过的真实验证保持缺失。
 - mymacclaude 对固定修复提交的独立 review。
+
+- **MEMORY-READ-02 / Low**：HA-0066固定5429c62独立Approved。后续补sources负计数、
+  semantic external_calls负数、keyword不可用/error=null三条专门反例，生产约束
+  已有但删除突变存活。非UTF-8准入档案仍会500（既有问题，需另项修复）；
+  静态POST /local/research和GET /local/research/{runId}仍缺。上述0066待review已解除，
+  真实双部署未完成，不把已有信封校验说成档案故障已恢复。
+- **OPENAPI-EMPTY-04**：HA-0067补Pi runtime与四个离线管线响应，剩余明确空
+  JSON成功声明为30个API加1个页面（本项remaining-empty-responses.json）。
+  Pi Product Run五入口仍在，缺content或非空但过宽合同仍不计入此数。
+- **PI-HTTP-01 / Info**：离线管线保留原有请求投影、流key上限120、Accept
+  子串检查与两次独立收据事务；不是严格内容协商或流结果原子持久化承诺。
+  本次公开当前行为并测试，不把metadata guard的allow误当实际执行授权。
 
 本文件是开放问题清单，不意味着用上述样本替代用户的全部接口/功能目标。

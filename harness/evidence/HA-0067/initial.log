@@ -1,0 +1,1891 @@
+.....FF......................FFFFFFF                                     [100%]
+=================================== FAILURES ===================================
+___ test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[False] ___
+
+offline = <starlette.testclient.TestClient object at 0x10d4ea9f0>
+sensitive = False
+
+    @pytest.mark.parametrize('sensitive', [False, True])
+    def test_pdf_preview_finding_and_stream_are_real_bound_and_replayable(offline, sensitive):
+        c = offline
+        resource, raw = pdf(c, 'software development RAW_SENTINEL_67 ' + ('13812345678 foo@example.com' if sensitive else 'source code delivery'))
+        body = {'resource_id': resource['id'], 'chunk_max_chars': 1000}
+        preview = post(c, 1, body).json()
+        checks = valid(c, OPERATIONS[1], preview)
+        assert preview['source_sha256'] == hashlib.sha256(raw).hexdigest()
+        assert preview['classification']['contract_type'] == '技术服务'
+        assert preview['status'] == ('needs_human' if sensitive else 'ready_for_skill')
+        assert preview['security']['status'] == ('needs_human' if sensitive else 'clear')
+        assert len(preview['security']['hits']) == (2 if sensitive else 0)
+        for check in checks:
+            bad = copy.deepcopy(preview)
+            bad['status'] = 'ready_for_skill' if sensitive else 'needs_human'
+            assert not check.is_valid(bad), 'outer security status mismatch'
+            bad = copy.deepcopy(preview)
+            bad['security']['hits'] = [] if sensitive else [{'kind': '手机号', 'count': 1}]
+            assert not check.is_valid(bad), 'security hits/status mismatch'
+        finding = post(c, 2, body).json()
+        valid(c, OPERATIONS[2], finding)
+        assert finding['status'] == 'needs_human'
+        assert finding['risk_level'] == ('high' if sensitive else 'medium')
+        assert finding['source_resource_id'] == resource['id']
+        assert finding['evidence_refs'] == [f"evidence://{resource['id']}/chunk-{chunk['index']}/{chunk['text_sha256']}" for chunk in preview['chunks']]
+        stream = post(c, 4, body, Accept='text/event-stream')
+        assert stream.status_code == 200, stream.text
+        assert stream.headers['content-type'].startswith('text/event-stream')
+>       assert stream.headers['cache-control'] == 'no-cache'
+E       AssertionError: assert 'no-store' == 'no-cache'
+E
+E         - no-cache
+E         + no-store
+
+tests/test_pi_pipeline_http_contracts.py:126: AssertionError
+___ test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[True] ____
+
+offline = <starlette.testclient.TestClient object at 0x10fe07ce0>
+sensitive = True
+
+    @pytest.mark.parametrize('sensitive', [False, True])
+    def test_pdf_preview_finding_and_stream_are_real_bound_and_replayable(offline, sensitive):
+        c = offline
+        resource, raw = pdf(c, 'software development RAW_SENTINEL_67 ' + ('13812345678 foo@example.com' if sensitive else 'source code delivery'))
+        body = {'resource_id': resource['id'], 'chunk_max_chars': 1000}
+        preview = post(c, 1, body).json()
+        checks = valid(c, OPERATIONS[1], preview)
+        assert preview['source_sha256'] == hashlib.sha256(raw).hexdigest()
+        assert preview['classification']['contract_type'] == '技术服务'
+        assert preview['status'] == ('needs_human' if sensitive else 'ready_for_skill')
+        assert preview['security']['status'] == ('needs_human' if sensitive else 'clear')
+        assert len(preview['security']['hits']) == (2 if sensitive else 0)
+        for check in checks:
+            bad = copy.deepcopy(preview)
+            bad['status'] = 'ready_for_skill' if sensitive else 'needs_human'
+            assert not check.is_valid(bad), 'outer security status mismatch'
+            bad = copy.deepcopy(preview)
+            bad['security']['hits'] = [] if sensitive else [{'kind': '手机号', 'count': 1}]
+            assert not check.is_valid(bad), 'security hits/status mismatch'
+        finding = post(c, 2, body).json()
+        valid(c, OPERATIONS[2], finding)
+        assert finding['status'] == 'needs_human'
+        assert finding['risk_level'] == ('high' if sensitive else 'medium')
+        assert finding['source_resource_id'] == resource['id']
+        assert finding['evidence_refs'] == [f"evidence://{resource['id']}/chunk-{chunk['index']}/{chunk['text_sha256']}" for chunk in preview['chunks']]
+        stream = post(c, 4, body, Accept='text/event-stream')
+        assert stream.status_code == 200, stream.text
+        assert stream.headers['content-type'].startswith('text/event-stream')
+>       assert stream.headers['cache-control'] == 'no-cache'
+E       AssertionError: assert 'no-store' == 'no-cache'
+E
+E         - no-cache
+E         + no-store
+
+tests/test_pi_pipeline_http_contracts.py:126: AssertionError
+___________ test_runtime_admission_projection_not_execution[default] ___________
+
+offline = <starlette.testclient.TestClient object at 0x10f3ae580>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1039/test_runtime_admission_project0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e40bd90>
+state = 'default'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+>       checks = valid(offline, OPERATIONS[0], value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_pipeline_http_contracts.py:282:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_pipeline_http_contracts.py:74: in valid
+    check.validate(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Draft202012Validator(schema={'$defs': {'admission_evidence': {'additionalProperties': False, 'properties': {'approval_...n.schema.json', '$ref': '#/$defs/runtime_status', '$schema': 'https://json...020-12/schema', ...}, format_checker=None)
+args = ({'schema_version': 'pi-admission@1', 'status': 'not_admitted', 'admission_enabled': False, 'model_calls': 0, ...},)
+kwargs = {}
+
+    def validate(self, *args, **kwargs):
+        for error in self.iter_errors(*args, **kwargs):
+>           raise error
+E           jsonschema.exceptions.ValidationError: Additional properties are not allowed ('admission_digest', 'blocker_count', 'error' were unexpected)
+E
+E           Failed validating 'additionalProperties' in schema:
+E               {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+E                '$id': 'https://harnessagent.local/specs/v1/pi-admission.schema.json',
+E                'title': 'Pi Agent Adapter Admission Profile',
+E                'description': 'Non-secret, versioned admission profile. It never '
+E                               'enables a runtime or resolves credentials by itself.',
+E                'type': 'object',
+E                'additionalProperties': False,
+E                'required': ['schema_version',
+E                             'status',
+E                             'admission_enabled',
+E                             'model_calls',
+E                             'external_calls',
+E                             'provider',
+E                             'model',
+E                             'budget',
+E                             'sources',
+E                             'public_pdf',
+E                             'operators',
+E                             'blockers',
+E                             'admission_evidence'],
+E                'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                               'status': {'enum': ['not_admitted',
+E                                                   'approved_for_l3_probe']},
+E                               'admission_enabled': {'type': 'boolean'},
+E                               'model_calls': {'type': 'integer', 'minimum': 0},
+E                               'external_calls': {'type': 'integer', 'minimum': 0},
+E                               'provider': {'oneOf': [{'type': 'null'},
+E                                                      {'$ref': '#/$defs/provider'}]},
+E                               'model': {'type': ['string', 'null'],
+E                                         'minLength': 1,
+E                                         'maxLength': 160},
+E                               'budget': {'oneOf': [{'type': 'null'},
+E                                                    {'$ref': '#/$defs/budget'}]},
+E                               'sources': {'$ref': '#/$defs/sources'},
+E                               'public_pdf': {'oneOf': [{'type': 'null'},
+E                                                        {'$ref': '#/$defs/public_pdf'}]},
+E                               'operators': {'$ref': '#/$defs/operators'},
+E                               'blockers': {'type': 'array',
+E                                            'items': {'type': 'string',
+E                                                      'minLength': 1,
+E                                                      'maxLength': 300},
+E                                            'uniqueItems': True},
+E                               'admission_evidence': {'oneOf': [{'type': 'null'},
+E                                                                {'$ref': '#/$defs/admission_evidence'}]}},
+E                '$defs': {'runtime_status': {'description': 'Read-only profile '
+E                                                            'projection, not '
+E                                                            'execution admission or '
+E                                                            'live call telemetry. '
+E                                                            'Array length/count '
+E                                                            'equality is checked by '
+E                                                            'behavioral tests.',
+E                                             'type': 'object',
+E                                             'additionalProperties': False,
+E                                             'required': ['schema_version',
+E                                                          'status',
+E                                                          'admission_enabled',
+E                                                          'model_calls',
+E                                                          'external_calls',
+E                                                          'blocker_count',
+E                                                          'blockers',
+E                                                          'admission_digest',
+E                                                          'error'],
+E                                             'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                                                            'status': {'enum': ['not_admitted',
+E                                                                                'approved_for_l3_probe',
+E                                                                                'invalid_not_admitted']},
+E                                                            'admission_enabled': {'type': 'boolean'},
+E                                                            'model_calls': {'const': 0},
+E                                                            'external_calls': {'const': 0},
+E                                                            'blocker_count': {'type': 'integer',
+E                                                                              'minimum': 0},
+E                                                            'blockers': {'type': 'array',
+E                                                                         'uniqueItems': True,
+E                                                                         'items': {'type': 'string',
+E                                                                                   'minLength': 1,
+E                                                                                   'maxLength': 300}},
+E                                                            'admission_digest': {'type': ['string',
+E                                                                                          'null'],
+E                                                                                 'pattern': '^[a-f0-9]{64}$'},
+E                                                            'error': {'type': ['string',
+E                                                                               'null']}},
+E                                             'oneOf': [{'properties': {'status': {'const': 'not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'minimum': 1},
+E                                                                       'blockers': {'minItems': 1},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'approved_for_l3_probe'},
+E                                                                       'admission_enabled': {'const': True},
+E                                                                       'blocker_count': {'const': 0},
+E                                                                       'blockers': {'maxItems': 0},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'invalid_not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'const': 1},
+E                                                                       'blockers': {'const': ['admission_profile_invalid']},
+E                                                                       'admission_digest': {'type': 'null'},
+E                                                                       'error': {'const': 'admission_profile_invalid'}}}]},
+E                          'credential_ref': {'type': 'string',
+E                                             'pattern': '^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$'},
+E                          'provider': {'type': 'object',
+E                                       'additionalProperties': False,
+E                                       'required': ['kind',
+E                                                    'package',
+E                                                    'authentication_boundary'],
+E                                       'properties': {'kind': {'const': 'pi_sidecar'},
+E                                                      'package': {'type': 'string',
+E                                                                  'minLength': 1,
+E                                                                  'maxLength': 160},
+E                                                      'authentication_boundary': {'const': 'managed_at_platform_transport_not_read_by_pi'}}},
+E                          'budget': {'type': 'object',
+E                                     'additionalProperties': False,
+E                                     'required': ['currency',
+E                                                  'max_cost_minor',
+E                                                  'max_turns',
+E                                                  'timeout_seconds'],
+E                                     'properties': {'currency': {'const': 'USD'},
+E                                                    'max_cost_minor': {'type': 'integer',
+E                                                                       'minimum': 0,
+E                                                                       'maximum': 100000},
+E                                                    'max_turns': {'type': 'integer',
+E                                                                  'minimum': 1,
+E                                                                  'maximum': 100},
+E                                                    'timeout_seconds': {'type': 'integer',
+E                                                                        'minimum': 1,
+E                                                                        'maximum': 3600}}},
+E                          'source_connector': {'type': 'object',
+E                                               'additionalProperties': False,
+E                                               'required': ['endpoint',
+E                                                            'credential_ref'],
+E                                               'properties': {'endpoint': {'type': ['string',
+E                                                                                    'null'],
+E                                                                           'format': 'uri',
+E                                                                           'maxLength': 2048},
+E                                                              'credential_ref': {'oneOf': [{'type': 'null'},
+E                                                                                           {'$ref': '#/$defs/credential_ref'}]}}},
+E                          'sources': {'type': 'object',
+E                                      'additionalProperties': False,
+E                                      'required': ['allowed_domains',
+E                                                   'search',
+E                                                   'financial'],
+E                                      'properties': {'allowed_domains': {'type': 'array',
+E                                                                         'items': {'type': 'string',
+E                                                                                   'pattern': '^[a-z0-9.-]+$'},
+E                                                                         'uniqueItems': True},
+E                                                     'search': {'$ref': '#/$defs/source_connector'},
+E                                                     'financial': {'$ref': '#/$defs/source_connector'}}},
+E                          'public_pdf': {'type': 'object',
+E                                         'additionalProperties': False,
+E                                         'required': ['name', 'sha256', 'data_class'],
+E                                         'properties': {'name': {'type': 'string',
+E                                                                 'pattern': '^[^/\\\\]{1,240}\\.pdf$'},
+E                                                        'sha256': {'type': 'string',
+E                                                                   'pattern': '^[a-f0-9]{64}$'},
+E                                                        'data_class': {'const': 'Public'}}},
+E                          'operators': {'type': 'object',
+E                                        'additionalProperties': False,
+E                                        'required': ['cancel_owner', 'rollback_owner'],
+E                                        'properties': {'cancel_owner': {'type': ['string',
+E                                                                                 'null'],
+E                                                                        'minLength': 1,
+E                                                                        'maxLength': 120},
+E                                                       'rollback_owner': {'type': ['string',
+E                                                                                   'null'],
+E                                                                          'minLength': 1,
+E                                                                          'maxLength': 120}}},
+E                          'admission_evidence': {'type': 'object',
+E                                                 'additionalProperties': False,
+E                                                 'required': ['approval_record',
+E                                                              'data_egress_review',
+E                                                              'probe_runbook',
+E                                                              'rollback_runbook'],
+E                                                 'properties': {'approval_record': {'type': 'string',
+E                                                                                    'minLength': 1,
+E                                                                                    'maxLength': 300},
+E                                                                'data_egress_review': {'type': 'string',
+E                                                                                       'minLength': 1,
+E                                                                                       'maxLength': 300},
+E                                                                'probe_runbook': {'type': 'string',
+E                                                                                  'minLength': 1,
+E                                                                                  'maxLength': 300},
+E                                                                'rollback_runbook': {'type': 'string',
+E                                                                                     'minLength': 1,
+E                                                                                     'maxLength': 300}}}},
+E                '$ref': '#/$defs/runtime_status'}
+E
+E           On instance:
+E               {'schema_version': 'pi-admission@1',
+E                'status': 'not_admitted',
+E                'admission_enabled': False,
+E                'model_calls': 0,
+E                'external_calls': 0,
+E                'blocker_count': 8,
+E                'blockers': ['provider_identity_missing',
+E                             'model_identity_missing',
+E                             'budget_approval_missing',
+E                             'exact_endpoints_missing',
+E                             'keychain_references_missing',
+E                             'public_pdf_binding_missing',
+E                             'cancel_owner_missing',
+E                             'rollback_owner_missing'],
+E                'admission_digest': '1344c7028e00d72820d4e535f85c007b199785bca8d03decae34f76f4a8519b1',
+E                'error': None}
+
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: ValidationError
+___________ test_runtime_admission_projection_not_execution[missing] ___________
+
+offline = <starlette.testclient.TestClient object at 0x10d529d00>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1039/test_runtime_admission_project1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f671b00>
+state = 'missing'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+>       checks = valid(offline, OPERATIONS[0], value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_pipeline_http_contracts.py:282:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_pipeline_http_contracts.py:74: in valid
+    check.validate(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Draft202012Validator(schema={'$defs': {'admission_evidence': {'additionalProperties': False, 'properties': {'approval_...n.schema.json', '$ref': '#/$defs/runtime_status', '$schema': 'https://json...020-12/schema', ...}, format_checker=None)
+args = ({'schema_version': 'pi-admission@1', 'status': 'invalid_not_admitted', 'admission_enabled': False, 'model_calls': 0, ...},)
+kwargs = {}
+
+    def validate(self, *args, **kwargs):
+        for error in self.iter_errors(*args, **kwargs):
+>           raise error
+E           jsonschema.exceptions.ValidationError: Additional properties are not allowed ('admission_digest', 'blocker_count', 'error' were unexpected)
+E
+E           Failed validating 'additionalProperties' in schema:
+E               {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+E                '$id': 'https://harnessagent.local/specs/v1/pi-admission.schema.json',
+E                'title': 'Pi Agent Adapter Admission Profile',
+E                'description': 'Non-secret, versioned admission profile. It never '
+E                               'enables a runtime or resolves credentials by itself.',
+E                'type': 'object',
+E                'additionalProperties': False,
+E                'required': ['schema_version',
+E                             'status',
+E                             'admission_enabled',
+E                             'model_calls',
+E                             'external_calls',
+E                             'provider',
+E                             'model',
+E                             'budget',
+E                             'sources',
+E                             'public_pdf',
+E                             'operators',
+E                             'blockers',
+E                             'admission_evidence'],
+E                'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                               'status': {'enum': ['not_admitted',
+E                                                   'approved_for_l3_probe']},
+E                               'admission_enabled': {'type': 'boolean'},
+E                               'model_calls': {'type': 'integer', 'minimum': 0},
+E                               'external_calls': {'type': 'integer', 'minimum': 0},
+E                               'provider': {'oneOf': [{'type': 'null'},
+E                                                      {'$ref': '#/$defs/provider'}]},
+E                               'model': {'type': ['string', 'null'],
+E                                         'minLength': 1,
+E                                         'maxLength': 160},
+E                               'budget': {'oneOf': [{'type': 'null'},
+E                                                    {'$ref': '#/$defs/budget'}]},
+E                               'sources': {'$ref': '#/$defs/sources'},
+E                               'public_pdf': {'oneOf': [{'type': 'null'},
+E                                                        {'$ref': '#/$defs/public_pdf'}]},
+E                               'operators': {'$ref': '#/$defs/operators'},
+E                               'blockers': {'type': 'array',
+E                                            'items': {'type': 'string',
+E                                                      'minLength': 1,
+E                                                      'maxLength': 300},
+E                                            'uniqueItems': True},
+E                               'admission_evidence': {'oneOf': [{'type': 'null'},
+E                                                                {'$ref': '#/$defs/admission_evidence'}]}},
+E                '$defs': {'runtime_status': {'description': 'Read-only profile '
+E                                                            'projection, not '
+E                                                            'execution admission or '
+E                                                            'live call telemetry. '
+E                                                            'Array length/count '
+E                                                            'equality is checked by '
+E                                                            'behavioral tests.',
+E                                             'type': 'object',
+E                                             'additionalProperties': False,
+E                                             'required': ['schema_version',
+E                                                          'status',
+E                                                          'admission_enabled',
+E                                                          'model_calls',
+E                                                          'external_calls',
+E                                                          'blocker_count',
+E                                                          'blockers',
+E                                                          'admission_digest',
+E                                                          'error'],
+E                                             'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                                                            'status': {'enum': ['not_admitted',
+E                                                                                'approved_for_l3_probe',
+E                                                                                'invalid_not_admitted']},
+E                                                            'admission_enabled': {'type': 'boolean'},
+E                                                            'model_calls': {'const': 0},
+E                                                            'external_calls': {'const': 0},
+E                                                            'blocker_count': {'type': 'integer',
+E                                                                              'minimum': 0},
+E                                                            'blockers': {'type': 'array',
+E                                                                         'uniqueItems': True,
+E                                                                         'items': {'type': 'string',
+E                                                                                   'minLength': 1,
+E                                                                                   'maxLength': 300}},
+E                                                            'admission_digest': {'type': ['string',
+E                                                                                          'null'],
+E                                                                                 'pattern': '^[a-f0-9]{64}$'},
+E                                                            'error': {'type': ['string',
+E                                                                               'null']}},
+E                                             'oneOf': [{'properties': {'status': {'const': 'not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'minimum': 1},
+E                                                                       'blockers': {'minItems': 1},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'approved_for_l3_probe'},
+E                                                                       'admission_enabled': {'const': True},
+E                                                                       'blocker_count': {'const': 0},
+E                                                                       'blockers': {'maxItems': 0},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'invalid_not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'const': 1},
+E                                                                       'blockers': {'const': ['admission_profile_invalid']},
+E                                                                       'admission_digest': {'type': 'null'},
+E                                                                       'error': {'const': 'admission_profile_invalid'}}}]},
+E                          'credential_ref': {'type': 'string',
+E                                             'pattern': '^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$'},
+E                          'provider': {'type': 'object',
+E                                       'additionalProperties': False,
+E                                       'required': ['kind',
+E                                                    'package',
+E                                                    'authentication_boundary'],
+E                                       'properties': {'kind': {'const': 'pi_sidecar'},
+E                                                      'package': {'type': 'string',
+E                                                                  'minLength': 1,
+E                                                                  'maxLength': 160},
+E                                                      'authentication_boundary': {'const': 'managed_at_platform_transport_not_read_by_pi'}}},
+E                          'budget': {'type': 'object',
+E                                     'additionalProperties': False,
+E                                     'required': ['currency',
+E                                                  'max_cost_minor',
+E                                                  'max_turns',
+E                                                  'timeout_seconds'],
+E                                     'properties': {'currency': {'const': 'USD'},
+E                                                    'max_cost_minor': {'type': 'integer',
+E                                                                       'minimum': 0,
+E                                                                       'maximum': 100000},
+E                                                    'max_turns': {'type': 'integer',
+E                                                                  'minimum': 1,
+E                                                                  'maximum': 100},
+E                                                    'timeout_seconds': {'type': 'integer',
+E                                                                        'minimum': 1,
+E                                                                        'maximum': 3600}}},
+E                          'source_connector': {'type': 'object',
+E                                               'additionalProperties': False,
+E                                               'required': ['endpoint',
+E                                                            'credential_ref'],
+E                                               'properties': {'endpoint': {'type': ['string',
+E                                                                                    'null'],
+E                                                                           'format': 'uri',
+E                                                                           'maxLength': 2048},
+E                                                              'credential_ref': {'oneOf': [{'type': 'null'},
+E                                                                                           {'$ref': '#/$defs/credential_ref'}]}}},
+E                          'sources': {'type': 'object',
+E                                      'additionalProperties': False,
+E                                      'required': ['allowed_domains',
+E                                                   'search',
+E                                                   'financial'],
+E                                      'properties': {'allowed_domains': {'type': 'array',
+E                                                                         'items': {'type': 'string',
+E                                                                                   'pattern': '^[a-z0-9.-]+$'},
+E                                                                         'uniqueItems': True},
+E                                                     'search': {'$ref': '#/$defs/source_connector'},
+E                                                     'financial': {'$ref': '#/$defs/source_connector'}}},
+E                          'public_pdf': {'type': 'object',
+E                                         'additionalProperties': False,
+E                                         'required': ['name', 'sha256', 'data_class'],
+E                                         'properties': {'name': {'type': 'string',
+E                                                                 'pattern': '^[^/\\\\]{1,240}\\.pdf$'},
+E                                                        'sha256': {'type': 'string',
+E                                                                   'pattern': '^[a-f0-9]{64}$'},
+E                                                        'data_class': {'const': 'Public'}}},
+E                          'operators': {'type': 'object',
+E                                        'additionalProperties': False,
+E                                        'required': ['cancel_owner', 'rollback_owner'],
+E                                        'properties': {'cancel_owner': {'type': ['string',
+E                                                                                 'null'],
+E                                                                        'minLength': 1,
+E                                                                        'maxLength': 120},
+E                                                       'rollback_owner': {'type': ['string',
+E                                                                                   'null'],
+E                                                                          'minLength': 1,
+E                                                                          'maxLength': 120}}},
+E                          'admission_evidence': {'type': 'object',
+E                                                 'additionalProperties': False,
+E                                                 'required': ['approval_record',
+E                                                              'data_egress_review',
+E                                                              'probe_runbook',
+E                                                              'rollback_runbook'],
+E                                                 'properties': {'approval_record': {'type': 'string',
+E                                                                                    'minLength': 1,
+E                                                                                    'maxLength': 300},
+E                                                                'data_egress_review': {'type': 'string',
+E                                                                                       'minLength': 1,
+E                                                                                       'maxLength': 300},
+E                                                                'probe_runbook': {'type': 'string',
+E                                                                                  'minLength': 1,
+E                                                                                  'maxLength': 300},
+E                                                                'rollback_runbook': {'type': 'string',
+E                                                                                     'minLength': 1,
+E                                                                                     'maxLength': 300}}}},
+E                '$ref': '#/$defs/runtime_status'}
+E
+E           On instance:
+E               {'schema_version': 'pi-admission@1',
+E                'status': 'invalid_not_admitted',
+E                'admission_enabled': False,
+E                'model_calls': 0,
+E                'external_calls': 0,
+E                'blocker_count': 1,
+E                'blockers': ['admission_profile_invalid'],
+E                'admission_digest': None,
+E                'error': 'admission_profile_invalid'}
+
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: ValidationError
+__________ test_runtime_admission_projection_not_execution[directory] __________
+
+offline = <starlette.testclient.TestClient object at 0x10f5796a0>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1039/test_runtime_admission_project2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d618d70>
+state = 'directory'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+>       checks = valid(offline, OPERATIONS[0], value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_pipeline_http_contracts.py:282:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_pipeline_http_contracts.py:74: in valid
+    check.validate(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Draft202012Validator(schema={'$defs': {'admission_evidence': {'additionalProperties': False, 'properties': {'approval_...n.schema.json', '$ref': '#/$defs/runtime_status', '$schema': 'https://json...020-12/schema', ...}, format_checker=None)
+args = ({'schema_version': 'pi-admission@1', 'status': 'invalid_not_admitted', 'admission_enabled': False, 'model_calls': 0, ...},)
+kwargs = {}
+
+    def validate(self, *args, **kwargs):
+        for error in self.iter_errors(*args, **kwargs):
+>           raise error
+E           jsonschema.exceptions.ValidationError: Additional properties are not allowed ('admission_digest', 'blocker_count', 'error' were unexpected)
+E
+E           Failed validating 'additionalProperties' in schema:
+E               {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+E                '$id': 'https://harnessagent.local/specs/v1/pi-admission.schema.json',
+E                'title': 'Pi Agent Adapter Admission Profile',
+E                'description': 'Non-secret, versioned admission profile. It never '
+E                               'enables a runtime or resolves credentials by itself.',
+E                'type': 'object',
+E                'additionalProperties': False,
+E                'required': ['schema_version',
+E                             'status',
+E                             'admission_enabled',
+E                             'model_calls',
+E                             'external_calls',
+E                             'provider',
+E                             'model',
+E                             'budget',
+E                             'sources',
+E                             'public_pdf',
+E                             'operators',
+E                             'blockers',
+E                             'admission_evidence'],
+E                'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                               'status': {'enum': ['not_admitted',
+E                                                   'approved_for_l3_probe']},
+E                               'admission_enabled': {'type': 'boolean'},
+E                               'model_calls': {'type': 'integer', 'minimum': 0},
+E                               'external_calls': {'type': 'integer', 'minimum': 0},
+E                               'provider': {'oneOf': [{'type': 'null'},
+E                                                      {'$ref': '#/$defs/provider'}]},
+E                               'model': {'type': ['string', 'null'],
+E                                         'minLength': 1,
+E                                         'maxLength': 160},
+E                               'budget': {'oneOf': [{'type': 'null'},
+E                                                    {'$ref': '#/$defs/budget'}]},
+E                               'sources': {'$ref': '#/$defs/sources'},
+E                               'public_pdf': {'oneOf': [{'type': 'null'},
+E                                                        {'$ref': '#/$defs/public_pdf'}]},
+E                               'operators': {'$ref': '#/$defs/operators'},
+E                               'blockers': {'type': 'array',
+E                                            'items': {'type': 'string',
+E                                                      'minLength': 1,
+E                                                      'maxLength': 300},
+E                                            'uniqueItems': True},
+E                               'admission_evidence': {'oneOf': [{'type': 'null'},
+E                                                                {'$ref': '#/$defs/admission_evidence'}]}},
+E                '$defs': {'runtime_status': {'description': 'Read-only profile '
+E                                                            'projection, not '
+E                                                            'execution admission or '
+E                                                            'live call telemetry. '
+E                                                            'Array length/count '
+E                                                            'equality is checked by '
+E                                                            'behavioral tests.',
+E                                             'type': 'object',
+E                                             'additionalProperties': False,
+E                                             'required': ['schema_version',
+E                                                          'status',
+E                                                          'admission_enabled',
+E                                                          'model_calls',
+E                                                          'external_calls',
+E                                                          'blocker_count',
+E                                                          'blockers',
+E                                                          'admission_digest',
+E                                                          'error'],
+E                                             'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                                                            'status': {'enum': ['not_admitted',
+E                                                                                'approved_for_l3_probe',
+E                                                                                'invalid_not_admitted']},
+E                                                            'admission_enabled': {'type': 'boolean'},
+E                                                            'model_calls': {'const': 0},
+E                                                            'external_calls': {'const': 0},
+E                                                            'blocker_count': {'type': 'integer',
+E                                                                              'minimum': 0},
+E                                                            'blockers': {'type': 'array',
+E                                                                         'uniqueItems': True,
+E                                                                         'items': {'type': 'string',
+E                                                                                   'minLength': 1,
+E                                                                                   'maxLength': 300}},
+E                                                            'admission_digest': {'type': ['string',
+E                                                                                          'null'],
+E                                                                                 'pattern': '^[a-f0-9]{64}$'},
+E                                                            'error': {'type': ['string',
+E                                                                               'null']}},
+E                                             'oneOf': [{'properties': {'status': {'const': 'not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'minimum': 1},
+E                                                                       'blockers': {'minItems': 1},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'approved_for_l3_probe'},
+E                                                                       'admission_enabled': {'const': True},
+E                                                                       'blocker_count': {'const': 0},
+E                                                                       'blockers': {'maxItems': 0},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'invalid_not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'const': 1},
+E                                                                       'blockers': {'const': ['admission_profile_invalid']},
+E                                                                       'admission_digest': {'type': 'null'},
+E                                                                       'error': {'const': 'admission_profile_invalid'}}}]},
+E                          'credential_ref': {'type': 'string',
+E                                             'pattern': '^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$'},
+E                          'provider': {'type': 'object',
+E                                       'additionalProperties': False,
+E                                       'required': ['kind',
+E                                                    'package',
+E                                                    'authentication_boundary'],
+E                                       'properties': {'kind': {'const': 'pi_sidecar'},
+E                                                      'package': {'type': 'string',
+E                                                                  'minLength': 1,
+E                                                                  'maxLength': 160},
+E                                                      'authentication_boundary': {'const': 'managed_at_platform_transport_not_read_by_pi'}}},
+E                          'budget': {'type': 'object',
+E                                     'additionalProperties': False,
+E                                     'required': ['currency',
+E                                                  'max_cost_minor',
+E                                                  'max_turns',
+E                                                  'timeout_seconds'],
+E                                     'properties': {'currency': {'const': 'USD'},
+E                                                    'max_cost_minor': {'type': 'integer',
+E                                                                       'minimum': 0,
+E                                                                       'maximum': 100000},
+E                                                    'max_turns': {'type': 'integer',
+E                                                                  'minimum': 1,
+E                                                                  'maximum': 100},
+E                                                    'timeout_seconds': {'type': 'integer',
+E                                                                        'minimum': 1,
+E                                                                        'maximum': 3600}}},
+E                          'source_connector': {'type': 'object',
+E                                               'additionalProperties': False,
+E                                               'required': ['endpoint',
+E                                                            'credential_ref'],
+E                                               'properties': {'endpoint': {'type': ['string',
+E                                                                                    'null'],
+E                                                                           'format': 'uri',
+E                                                                           'maxLength': 2048},
+E                                                              'credential_ref': {'oneOf': [{'type': 'null'},
+E                                                                                           {'$ref': '#/$defs/credential_ref'}]}}},
+E                          'sources': {'type': 'object',
+E                                      'additionalProperties': False,
+E                                      'required': ['allowed_domains',
+E                                                   'search',
+E                                                   'financial'],
+E                                      'properties': {'allowed_domains': {'type': 'array',
+E                                                                         'items': {'type': 'string',
+E                                                                                   'pattern': '^[a-z0-9.-]+$'},
+E                                                                         'uniqueItems': True},
+E                                                     'search': {'$ref': '#/$defs/source_connector'},
+E                                                     'financial': {'$ref': '#/$defs/source_connector'}}},
+E                          'public_pdf': {'type': 'object',
+E                                         'additionalProperties': False,
+E                                         'required': ['name', 'sha256', 'data_class'],
+E                                         'properties': {'name': {'type': 'string',
+E                                                                 'pattern': '^[^/\\\\]{1,240}\\.pdf$'},
+E                                                        'sha256': {'type': 'string',
+E                                                                   'pattern': '^[a-f0-9]{64}$'},
+E                                                        'data_class': {'const': 'Public'}}},
+E                          'operators': {'type': 'object',
+E                                        'additionalProperties': False,
+E                                        'required': ['cancel_owner', 'rollback_owner'],
+E                                        'properties': {'cancel_owner': {'type': ['string',
+E                                                                                 'null'],
+E                                                                        'minLength': 1,
+E                                                                        'maxLength': 120},
+E                                                       'rollback_owner': {'type': ['string',
+E                                                                                   'null'],
+E                                                                          'minLength': 1,
+E                                                                          'maxLength': 120}}},
+E                          'admission_evidence': {'type': 'object',
+E                                                 'additionalProperties': False,
+E                                                 'required': ['approval_record',
+E                                                              'data_egress_review',
+E                                                              'probe_runbook',
+E                                                              'rollback_runbook'],
+E                                                 'properties': {'approval_record': {'type': 'string',
+E                                                                                    'minLength': 1,
+E                                                                                    'maxLength': 300},
+E                                                                'data_egress_review': {'type': 'string',
+E                                                                                       'minLength': 1,
+E                                                                                       'maxLength': 300},
+E                                                                'probe_runbook': {'type': 'string',
+E                                                                                  'minLength': 1,
+E                                                                                  'maxLength': 300},
+E                                                                'rollback_runbook': {'type': 'string',
+E                                                                                     'minLength': 1,
+E                                                                                     'maxLength': 300}}}},
+E                '$ref': '#/$defs/runtime_status'}
+E
+E           On instance:
+E               {'schema_version': 'pi-admission@1',
+E                'status': 'invalid_not_admitted',
+E                'admission_enabled': False,
+E                'model_calls': 0,
+E                'external_calls': 0,
+E                'blocker_count': 1,
+E                'blockers': ['admission_profile_invalid'],
+E                'admission_digest': None,
+E                'error': 'admission_profile_invalid'}
+
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: ValidationError
+________ test_runtime_admission_projection_not_execution[invalid_json] _________
+
+offline = <starlette.testclient.TestClient object at 0x110358050>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1039/test_runtime_admission_project3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d821c50>
+state = 'invalid_json'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+>       checks = valid(offline, OPERATIONS[0], value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_pipeline_http_contracts.py:282:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_pipeline_http_contracts.py:74: in valid
+    check.validate(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Draft202012Validator(schema={'$defs': {'admission_evidence': {'additionalProperties': False, 'properties': {'approval_...n.schema.json', '$ref': '#/$defs/runtime_status', '$schema': 'https://json...020-12/schema', ...}, format_checker=None)
+args = ({'schema_version': 'pi-admission@1', 'status': 'invalid_not_admitted', 'admission_enabled': False, 'model_calls': 0, ...},)
+kwargs = {}
+
+    def validate(self, *args, **kwargs):
+        for error in self.iter_errors(*args, **kwargs):
+>           raise error
+E           jsonschema.exceptions.ValidationError: Additional properties are not allowed ('admission_digest', 'blocker_count', 'error' were unexpected)
+E
+E           Failed validating 'additionalProperties' in schema:
+E               {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+E                '$id': 'https://harnessagent.local/specs/v1/pi-admission.schema.json',
+E                'title': 'Pi Agent Adapter Admission Profile',
+E                'description': 'Non-secret, versioned admission profile. It never '
+E                               'enables a runtime or resolves credentials by itself.',
+E                'type': 'object',
+E                'additionalProperties': False,
+E                'required': ['schema_version',
+E                             'status',
+E                             'admission_enabled',
+E                             'model_calls',
+E                             'external_calls',
+E                             'provider',
+E                             'model',
+E                             'budget',
+E                             'sources',
+E                             'public_pdf',
+E                             'operators',
+E                             'blockers',
+E                             'admission_evidence'],
+E                'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                               'status': {'enum': ['not_admitted',
+E                                                   'approved_for_l3_probe']},
+E                               'admission_enabled': {'type': 'boolean'},
+E                               'model_calls': {'type': 'integer', 'minimum': 0},
+E                               'external_calls': {'type': 'integer', 'minimum': 0},
+E                               'provider': {'oneOf': [{'type': 'null'},
+E                                                      {'$ref': '#/$defs/provider'}]},
+E                               'model': {'type': ['string', 'null'],
+E                                         'minLength': 1,
+E                                         'maxLength': 160},
+E                               'budget': {'oneOf': [{'type': 'null'},
+E                                                    {'$ref': '#/$defs/budget'}]},
+E                               'sources': {'$ref': '#/$defs/sources'},
+E                               'public_pdf': {'oneOf': [{'type': 'null'},
+E                                                        {'$ref': '#/$defs/public_pdf'}]},
+E                               'operators': {'$ref': '#/$defs/operators'},
+E                               'blockers': {'type': 'array',
+E                                            'items': {'type': 'string',
+E                                                      'minLength': 1,
+E                                                      'maxLength': 300},
+E                                            'uniqueItems': True},
+E                               'admission_evidence': {'oneOf': [{'type': 'null'},
+E                                                                {'$ref': '#/$defs/admission_evidence'}]}},
+E                '$defs': {'runtime_status': {'description': 'Read-only profile '
+E                                                            'projection, not '
+E                                                            'execution admission or '
+E                                                            'live call telemetry. '
+E                                                            'Array length/count '
+E                                                            'equality is checked by '
+E                                                            'behavioral tests.',
+E                                             'type': 'object',
+E                                             'additionalProperties': False,
+E                                             'required': ['schema_version',
+E                                                          'status',
+E                                                          'admission_enabled',
+E                                                          'model_calls',
+E                                                          'external_calls',
+E                                                          'blocker_count',
+E                                                          'blockers',
+E                                                          'admission_digest',
+E                                                          'error'],
+E                                             'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                                                            'status': {'enum': ['not_admitted',
+E                                                                                'approved_for_l3_probe',
+E                                                                                'invalid_not_admitted']},
+E                                                            'admission_enabled': {'type': 'boolean'},
+E                                                            'model_calls': {'const': 0},
+E                                                            'external_calls': {'const': 0},
+E                                                            'blocker_count': {'type': 'integer',
+E                                                                              'minimum': 0},
+E                                                            'blockers': {'type': 'array',
+E                                                                         'uniqueItems': True,
+E                                                                         'items': {'type': 'string',
+E                                                                                   'minLength': 1,
+E                                                                                   'maxLength': 300}},
+E                                                            'admission_digest': {'type': ['string',
+E                                                                                          'null'],
+E                                                                                 'pattern': '^[a-f0-9]{64}$'},
+E                                                            'error': {'type': ['string',
+E                                                                               'null']}},
+E                                             'oneOf': [{'properties': {'status': {'const': 'not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'minimum': 1},
+E                                                                       'blockers': {'minItems': 1},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'approved_for_l3_probe'},
+E                                                                       'admission_enabled': {'const': True},
+E                                                                       'blocker_count': {'const': 0},
+E                                                                       'blockers': {'maxItems': 0},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'invalid_not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'const': 1},
+E                                                                       'blockers': {'const': ['admission_profile_invalid']},
+E                                                                       'admission_digest': {'type': 'null'},
+E                                                                       'error': {'const': 'admission_profile_invalid'}}}]},
+E                          'credential_ref': {'type': 'string',
+E                                             'pattern': '^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$'},
+E                          'provider': {'type': 'object',
+E                                       'additionalProperties': False,
+E                                       'required': ['kind',
+E                                                    'package',
+E                                                    'authentication_boundary'],
+E                                       'properties': {'kind': {'const': 'pi_sidecar'},
+E                                                      'package': {'type': 'string',
+E                                                                  'minLength': 1,
+E                                                                  'maxLength': 160},
+E                                                      'authentication_boundary': {'const': 'managed_at_platform_transport_not_read_by_pi'}}},
+E                          'budget': {'type': 'object',
+E                                     'additionalProperties': False,
+E                                     'required': ['currency',
+E                                                  'max_cost_minor',
+E                                                  'max_turns',
+E                                                  'timeout_seconds'],
+E                                     'properties': {'currency': {'const': 'USD'},
+E                                                    'max_cost_minor': {'type': 'integer',
+E                                                                       'minimum': 0,
+E                                                                       'maximum': 100000},
+E                                                    'max_turns': {'type': 'integer',
+E                                                                  'minimum': 1,
+E                                                                  'maximum': 100},
+E                                                    'timeout_seconds': {'type': 'integer',
+E                                                                        'minimum': 1,
+E                                                                        'maximum': 3600}}},
+E                          'source_connector': {'type': 'object',
+E                                               'additionalProperties': False,
+E                                               'required': ['endpoint',
+E                                                            'credential_ref'],
+E                                               'properties': {'endpoint': {'type': ['string',
+E                                                                                    'null'],
+E                                                                           'format': 'uri',
+E                                                                           'maxLength': 2048},
+E                                                              'credential_ref': {'oneOf': [{'type': 'null'},
+E                                                                                           {'$ref': '#/$defs/credential_ref'}]}}},
+E                          'sources': {'type': 'object',
+E                                      'additionalProperties': False,
+E                                      'required': ['allowed_domains',
+E                                                   'search',
+E                                                   'financial'],
+E                                      'properties': {'allowed_domains': {'type': 'array',
+E                                                                         'items': {'type': 'string',
+E                                                                                   'pattern': '^[a-z0-9.-]+$'},
+E                                                                         'uniqueItems': True},
+E                                                     'search': {'$ref': '#/$defs/source_connector'},
+E                                                     'financial': {'$ref': '#/$defs/source_connector'}}},
+E                          'public_pdf': {'type': 'object',
+E                                         'additionalProperties': False,
+E                                         'required': ['name', 'sha256', 'data_class'],
+E                                         'properties': {'name': {'type': 'string',
+E                                                                 'pattern': '^[^/\\\\]{1,240}\\.pdf$'},
+E                                                        'sha256': {'type': 'string',
+E                                                                   'pattern': '^[a-f0-9]{64}$'},
+E                                                        'data_class': {'const': 'Public'}}},
+E                          'operators': {'type': 'object',
+E                                        'additionalProperties': False,
+E                                        'required': ['cancel_owner', 'rollback_owner'],
+E                                        'properties': {'cancel_owner': {'type': ['string',
+E                                                                                 'null'],
+E                                                                        'minLength': 1,
+E                                                                        'maxLength': 120},
+E                                                       'rollback_owner': {'type': ['string',
+E                                                                                   'null'],
+E                                                                          'minLength': 1,
+E                                                                          'maxLength': 120}}},
+E                          'admission_evidence': {'type': 'object',
+E                                                 'additionalProperties': False,
+E                                                 'required': ['approval_record',
+E                                                              'data_egress_review',
+E                                                              'probe_runbook',
+E                                                              'rollback_runbook'],
+E                                                 'properties': {'approval_record': {'type': 'string',
+E                                                                                    'minLength': 1,
+E                                                                                    'maxLength': 300},
+E                                                                'data_egress_review': {'type': 'string',
+E                                                                                       'minLength': 1,
+E                                                                                       'maxLength': 300},
+E                                                                'probe_runbook': {'type': 'string',
+E                                                                                  'minLength': 1,
+E                                                                                  'maxLength': 300},
+E                                                                'rollback_runbook': {'type': 'string',
+E                                                                                     'minLength': 1,
+E                                                                                     'maxLength': 300}}}},
+E                '$ref': '#/$defs/runtime_status'}
+E
+E           On instance:
+E               {'schema_version': 'pi-admission@1',
+E                'status': 'invalid_not_admitted',
+E                'admission_enabled': False,
+E                'model_calls': 0,
+E                'external_calls': 0,
+E                'blocker_count': 1,
+E                'blockers': ['admission_profile_invalid'],
+E                'admission_digest': None,
+E                'error': 'admission_profile_invalid'}
+
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: ValidationError
+________ test_runtime_admission_projection_not_execution[invalid_utf8] _________
+
+offline = <starlette.testclient.TestClient object at 0x1105067a0>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1039/test_runtime_admission_project4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d7dac10>
+state = 'invalid_utf8'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+>       checks = valid(offline, OPERATIONS[0], value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_pipeline_http_contracts.py:282:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_pipeline_http_contracts.py:74: in valid
+    check.validate(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Draft202012Validator(schema={'$defs': {'admission_evidence': {'additionalProperties': False, 'properties': {'approval_...n.schema.json', '$ref': '#/$defs/runtime_status', '$schema': 'https://json...020-12/schema', ...}, format_checker=None)
+args = ({'schema_version': 'pi-admission@1', 'status': 'invalid_not_admitted', 'admission_enabled': False, 'model_calls': 0, ...},)
+kwargs = {}
+
+    def validate(self, *args, **kwargs):
+        for error in self.iter_errors(*args, **kwargs):
+>           raise error
+E           jsonschema.exceptions.ValidationError: Additional properties are not allowed ('admission_digest', 'blocker_count', 'error' were unexpected)
+E
+E           Failed validating 'additionalProperties' in schema:
+E               {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+E                '$id': 'https://harnessagent.local/specs/v1/pi-admission.schema.json',
+E                'title': 'Pi Agent Adapter Admission Profile',
+E                'description': 'Non-secret, versioned admission profile. It never '
+E                               'enables a runtime or resolves credentials by itself.',
+E                'type': 'object',
+E                'additionalProperties': False,
+E                'required': ['schema_version',
+E                             'status',
+E                             'admission_enabled',
+E                             'model_calls',
+E                             'external_calls',
+E                             'provider',
+E                             'model',
+E                             'budget',
+E                             'sources',
+E                             'public_pdf',
+E                             'operators',
+E                             'blockers',
+E                             'admission_evidence'],
+E                'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                               'status': {'enum': ['not_admitted',
+E                                                   'approved_for_l3_probe']},
+E                               'admission_enabled': {'type': 'boolean'},
+E                               'model_calls': {'type': 'integer', 'minimum': 0},
+E                               'external_calls': {'type': 'integer', 'minimum': 0},
+E                               'provider': {'oneOf': [{'type': 'null'},
+E                                                      {'$ref': '#/$defs/provider'}]},
+E                               'model': {'type': ['string', 'null'],
+E                                         'minLength': 1,
+E                                         'maxLength': 160},
+E                               'budget': {'oneOf': [{'type': 'null'},
+E                                                    {'$ref': '#/$defs/budget'}]},
+E                               'sources': {'$ref': '#/$defs/sources'},
+E                               'public_pdf': {'oneOf': [{'type': 'null'},
+E                                                        {'$ref': '#/$defs/public_pdf'}]},
+E                               'operators': {'$ref': '#/$defs/operators'},
+E                               'blockers': {'type': 'array',
+E                                            'items': {'type': 'string',
+E                                                      'minLength': 1,
+E                                                      'maxLength': 300},
+E                                            'uniqueItems': True},
+E                               'admission_evidence': {'oneOf': [{'type': 'null'},
+E                                                                {'$ref': '#/$defs/admission_evidence'}]}},
+E                '$defs': {'runtime_status': {'description': 'Read-only profile '
+E                                                            'projection, not '
+E                                                            'execution admission or '
+E                                                            'live call telemetry. '
+E                                                            'Array length/count '
+E                                                            'equality is checked by '
+E                                                            'behavioral tests.',
+E                                             'type': 'object',
+E                                             'additionalProperties': False,
+E                                             'required': ['schema_version',
+E                                                          'status',
+E                                                          'admission_enabled',
+E                                                          'model_calls',
+E                                                          'external_calls',
+E                                                          'blocker_count',
+E                                                          'blockers',
+E                                                          'admission_digest',
+E                                                          'error'],
+E                                             'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                                                            'status': {'enum': ['not_admitted',
+E                                                                                'approved_for_l3_probe',
+E                                                                                'invalid_not_admitted']},
+E                                                            'admission_enabled': {'type': 'boolean'},
+E                                                            'model_calls': {'const': 0},
+E                                                            'external_calls': {'const': 0},
+E                                                            'blocker_count': {'type': 'integer',
+E                                                                              'minimum': 0},
+E                                                            'blockers': {'type': 'array',
+E                                                                         'uniqueItems': True,
+E                                                                         'items': {'type': 'string',
+E                                                                                   'minLength': 1,
+E                                                                                   'maxLength': 300}},
+E                                                            'admission_digest': {'type': ['string',
+E                                                                                          'null'],
+E                                                                                 'pattern': '^[a-f0-9]{64}$'},
+E                                                            'error': {'type': ['string',
+E                                                                               'null']}},
+E                                             'oneOf': [{'properties': {'status': {'const': 'not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'minimum': 1},
+E                                                                       'blockers': {'minItems': 1},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'approved_for_l3_probe'},
+E                                                                       'admission_enabled': {'const': True},
+E                                                                       'blocker_count': {'const': 0},
+E                                                                       'blockers': {'maxItems': 0},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'invalid_not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'const': 1},
+E                                                                       'blockers': {'const': ['admission_profile_invalid']},
+E                                                                       'admission_digest': {'type': 'null'},
+E                                                                       'error': {'const': 'admission_profile_invalid'}}}]},
+E                          'credential_ref': {'type': 'string',
+E                                             'pattern': '^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$'},
+E                          'provider': {'type': 'object',
+E                                       'additionalProperties': False,
+E                                       'required': ['kind',
+E                                                    'package',
+E                                                    'authentication_boundary'],
+E                                       'properties': {'kind': {'const': 'pi_sidecar'},
+E                                                      'package': {'type': 'string',
+E                                                                  'minLength': 1,
+E                                                                  'maxLength': 160},
+E                                                      'authentication_boundary': {'const': 'managed_at_platform_transport_not_read_by_pi'}}},
+E                          'budget': {'type': 'object',
+E                                     'additionalProperties': False,
+E                                     'required': ['currency',
+E                                                  'max_cost_minor',
+E                                                  'max_turns',
+E                                                  'timeout_seconds'],
+E                                     'properties': {'currency': {'const': 'USD'},
+E                                                    'max_cost_minor': {'type': 'integer',
+E                                                                       'minimum': 0,
+E                                                                       'maximum': 100000},
+E                                                    'max_turns': {'type': 'integer',
+E                                                                  'minimum': 1,
+E                                                                  'maximum': 100},
+E                                                    'timeout_seconds': {'type': 'integer',
+E                                                                        'minimum': 1,
+E                                                                        'maximum': 3600}}},
+E                          'source_connector': {'type': 'object',
+E                                               'additionalProperties': False,
+E                                               'required': ['endpoint',
+E                                                            'credential_ref'],
+E                                               'properties': {'endpoint': {'type': ['string',
+E                                                                                    'null'],
+E                                                                           'format': 'uri',
+E                                                                           'maxLength': 2048},
+E                                                              'credential_ref': {'oneOf': [{'type': 'null'},
+E                                                                                           {'$ref': '#/$defs/credential_ref'}]}}},
+E                          'sources': {'type': 'object',
+E                                      'additionalProperties': False,
+E                                      'required': ['allowed_domains',
+E                                                   'search',
+E                                                   'financial'],
+E                                      'properties': {'allowed_domains': {'type': 'array',
+E                                                                         'items': {'type': 'string',
+E                                                                                   'pattern': '^[a-z0-9.-]+$'},
+E                                                                         'uniqueItems': True},
+E                                                     'search': {'$ref': '#/$defs/source_connector'},
+E                                                     'financial': {'$ref': '#/$defs/source_connector'}}},
+E                          'public_pdf': {'type': 'object',
+E                                         'additionalProperties': False,
+E                                         'required': ['name', 'sha256', 'data_class'],
+E                                         'properties': {'name': {'type': 'string',
+E                                                                 'pattern': '^[^/\\\\]{1,240}\\.pdf$'},
+E                                                        'sha256': {'type': 'string',
+E                                                                   'pattern': '^[a-f0-9]{64}$'},
+E                                                        'data_class': {'const': 'Public'}}},
+E                          'operators': {'type': 'object',
+E                                        'additionalProperties': False,
+E                                        'required': ['cancel_owner', 'rollback_owner'],
+E                                        'properties': {'cancel_owner': {'type': ['string',
+E                                                                                 'null'],
+E                                                                        'minLength': 1,
+E                                                                        'maxLength': 120},
+E                                                       'rollback_owner': {'type': ['string',
+E                                                                                   'null'],
+E                                                                          'minLength': 1,
+E                                                                          'maxLength': 120}}},
+E                          'admission_evidence': {'type': 'object',
+E                                                 'additionalProperties': False,
+E                                                 'required': ['approval_record',
+E                                                              'data_egress_review',
+E                                                              'probe_runbook',
+E                                                              'rollback_runbook'],
+E                                                 'properties': {'approval_record': {'type': 'string',
+E                                                                                    'minLength': 1,
+E                                                                                    'maxLength': 300},
+E                                                                'data_egress_review': {'type': 'string',
+E                                                                                       'minLength': 1,
+E                                                                                       'maxLength': 300},
+E                                                                'probe_runbook': {'type': 'string',
+E                                                                                  'minLength': 1,
+E                                                                                  'maxLength': 300},
+E                                                                'rollback_runbook': {'type': 'string',
+E                                                                                     'minLength': 1,
+E                                                                                     'maxLength': 300}}}},
+E                '$ref': '#/$defs/runtime_status'}
+E
+E           On instance:
+E               {'schema_version': 'pi-admission@1',
+E                'status': 'invalid_not_admitted',
+E                'admission_enabled': False,
+E                'model_calls': 0,
+E                'external_calls': 0,
+E                'blocker_count': 1,
+E                'blockers': ['admission_profile_invalid'],
+E                'admission_digest': None,
+E                'error': 'admission_profile_invalid'}
+
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: ValidationError
+____________ test_runtime_admission_projection_not_execution[null] _____________
+
+offline = <starlette.testclient.TestClient object at 0x10f579d00>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1039/test_runtime_admission_project5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1106cc1a0>
+state = 'null'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+>       checks = valid(offline, OPERATIONS[0], value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_pipeline_http_contracts.py:282:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_pipeline_http_contracts.py:74: in valid
+    check.validate(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Draft202012Validator(schema={'$defs': {'admission_evidence': {'additionalProperties': False, 'properties': {'approval_...n.schema.json', '$ref': '#/$defs/runtime_status', '$schema': 'https://json...020-12/schema', ...}, format_checker=None)
+args = ({'schema_version': 'pi-admission@1', 'status': 'invalid_not_admitted', 'admission_enabled': False, 'model_calls': 0, ...},)
+kwargs = {}
+
+    def validate(self, *args, **kwargs):
+        for error in self.iter_errors(*args, **kwargs):
+>           raise error
+E           jsonschema.exceptions.ValidationError: Additional properties are not allowed ('admission_digest', 'blocker_count', 'error' were unexpected)
+E
+E           Failed validating 'additionalProperties' in schema:
+E               {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+E                '$id': 'https://harnessagent.local/specs/v1/pi-admission.schema.json',
+E                'title': 'Pi Agent Adapter Admission Profile',
+E                'description': 'Non-secret, versioned admission profile. It never '
+E                               'enables a runtime or resolves credentials by itself.',
+E                'type': 'object',
+E                'additionalProperties': False,
+E                'required': ['schema_version',
+E                             'status',
+E                             'admission_enabled',
+E                             'model_calls',
+E                             'external_calls',
+E                             'provider',
+E                             'model',
+E                             'budget',
+E                             'sources',
+E                             'public_pdf',
+E                             'operators',
+E                             'blockers',
+E                             'admission_evidence'],
+E                'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                               'status': {'enum': ['not_admitted',
+E                                                   'approved_for_l3_probe']},
+E                               'admission_enabled': {'type': 'boolean'},
+E                               'model_calls': {'type': 'integer', 'minimum': 0},
+E                               'external_calls': {'type': 'integer', 'minimum': 0},
+E                               'provider': {'oneOf': [{'type': 'null'},
+E                                                      {'$ref': '#/$defs/provider'}]},
+E                               'model': {'type': ['string', 'null'],
+E                                         'minLength': 1,
+E                                         'maxLength': 160},
+E                               'budget': {'oneOf': [{'type': 'null'},
+E                                                    {'$ref': '#/$defs/budget'}]},
+E                               'sources': {'$ref': '#/$defs/sources'},
+E                               'public_pdf': {'oneOf': [{'type': 'null'},
+E                                                        {'$ref': '#/$defs/public_pdf'}]},
+E                               'operators': {'$ref': '#/$defs/operators'},
+E                               'blockers': {'type': 'array',
+E                                            'items': {'type': 'string',
+E                                                      'minLength': 1,
+E                                                      'maxLength': 300},
+E                                            'uniqueItems': True},
+E                               'admission_evidence': {'oneOf': [{'type': 'null'},
+E                                                                {'$ref': '#/$defs/admission_evidence'}]}},
+E                '$defs': {'runtime_status': {'description': 'Read-only profile '
+E                                                            'projection, not '
+E                                                            'execution admission or '
+E                                                            'live call telemetry. '
+E                                                            'Array length/count '
+E                                                            'equality is checked by '
+E                                                            'behavioral tests.',
+E                                             'type': 'object',
+E                                             'additionalProperties': False,
+E                                             'required': ['schema_version',
+E                                                          'status',
+E                                                          'admission_enabled',
+E                                                          'model_calls',
+E                                                          'external_calls',
+E                                                          'blocker_count',
+E                                                          'blockers',
+E                                                          'admission_digest',
+E                                                          'error'],
+E                                             'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                                                            'status': {'enum': ['not_admitted',
+E                                                                                'approved_for_l3_probe',
+E                                                                                'invalid_not_admitted']},
+E                                                            'admission_enabled': {'type': 'boolean'},
+E                                                            'model_calls': {'const': 0},
+E                                                            'external_calls': {'const': 0},
+E                                                            'blocker_count': {'type': 'integer',
+E                                                                              'minimum': 0},
+E                                                            'blockers': {'type': 'array',
+E                                                                         'uniqueItems': True,
+E                                                                         'items': {'type': 'string',
+E                                                                                   'minLength': 1,
+E                                                                                   'maxLength': 300}},
+E                                                            'admission_digest': {'type': ['string',
+E                                                                                          'null'],
+E                                                                                 'pattern': '^[a-f0-9]{64}$'},
+E                                                            'error': {'type': ['string',
+E                                                                               'null']}},
+E                                             'oneOf': [{'properties': {'status': {'const': 'not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'minimum': 1},
+E                                                                       'blockers': {'minItems': 1},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'approved_for_l3_probe'},
+E                                                                       'admission_enabled': {'const': True},
+E                                                                       'blocker_count': {'const': 0},
+E                                                                       'blockers': {'maxItems': 0},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'invalid_not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'const': 1},
+E                                                                       'blockers': {'const': ['admission_profile_invalid']},
+E                                                                       'admission_digest': {'type': 'null'},
+E                                                                       'error': {'const': 'admission_profile_invalid'}}}]},
+E                          'credential_ref': {'type': 'string',
+E                                             'pattern': '^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$'},
+E                          'provider': {'type': 'object',
+E                                       'additionalProperties': False,
+E                                       'required': ['kind',
+E                                                    'package',
+E                                                    'authentication_boundary'],
+E                                       'properties': {'kind': {'const': 'pi_sidecar'},
+E                                                      'package': {'type': 'string',
+E                                                                  'minLength': 1,
+E                                                                  'maxLength': 160},
+E                                                      'authentication_boundary': {'const': 'managed_at_platform_transport_not_read_by_pi'}}},
+E                          'budget': {'type': 'object',
+E                                     'additionalProperties': False,
+E                                     'required': ['currency',
+E                                                  'max_cost_minor',
+E                                                  'max_turns',
+E                                                  'timeout_seconds'],
+E                                     'properties': {'currency': {'const': 'USD'},
+E                                                    'max_cost_minor': {'type': 'integer',
+E                                                                       'minimum': 0,
+E                                                                       'maximum': 100000},
+E                                                    'max_turns': {'type': 'integer',
+E                                                                  'minimum': 1,
+E                                                                  'maximum': 100},
+E                                                    'timeout_seconds': {'type': 'integer',
+E                                                                        'minimum': 1,
+E                                                                        'maximum': 3600}}},
+E                          'source_connector': {'type': 'object',
+E                                               'additionalProperties': False,
+E                                               'required': ['endpoint',
+E                                                            'credential_ref'],
+E                                               'properties': {'endpoint': {'type': ['string',
+E                                                                                    'null'],
+E                                                                           'format': 'uri',
+E                                                                           'maxLength': 2048},
+E                                                              'credential_ref': {'oneOf': [{'type': 'null'},
+E                                                                                           {'$ref': '#/$defs/credential_ref'}]}}},
+E                          'sources': {'type': 'object',
+E                                      'additionalProperties': False,
+E                                      'required': ['allowed_domains',
+E                                                   'search',
+E                                                   'financial'],
+E                                      'properties': {'allowed_domains': {'type': 'array',
+E                                                                         'items': {'type': 'string',
+E                                                                                   'pattern': '^[a-z0-9.-]+$'},
+E                                                                         'uniqueItems': True},
+E                                                     'search': {'$ref': '#/$defs/source_connector'},
+E                                                     'financial': {'$ref': '#/$defs/source_connector'}}},
+E                          'public_pdf': {'type': 'object',
+E                                         'additionalProperties': False,
+E                                         'required': ['name', 'sha256', 'data_class'],
+E                                         'properties': {'name': {'type': 'string',
+E                                                                 'pattern': '^[^/\\\\]{1,240}\\.pdf$'},
+E                                                        'sha256': {'type': 'string',
+E                                                                   'pattern': '^[a-f0-9]{64}$'},
+E                                                        'data_class': {'const': 'Public'}}},
+E                          'operators': {'type': 'object',
+E                                        'additionalProperties': False,
+E                                        'required': ['cancel_owner', 'rollback_owner'],
+E                                        'properties': {'cancel_owner': {'type': ['string',
+E                                                                                 'null'],
+E                                                                        'minLength': 1,
+E                                                                        'maxLength': 120},
+E                                                       'rollback_owner': {'type': ['string',
+E                                                                                   'null'],
+E                                                                          'minLength': 1,
+E                                                                          'maxLength': 120}}},
+E                          'admission_evidence': {'type': 'object',
+E                                                 'additionalProperties': False,
+E                                                 'required': ['approval_record',
+E                                                              'data_egress_review',
+E                                                              'probe_runbook',
+E                                                              'rollback_runbook'],
+E                                                 'properties': {'approval_record': {'type': 'string',
+E                                                                                    'minLength': 1,
+E                                                                                    'maxLength': 300},
+E                                                                'data_egress_review': {'type': 'string',
+E                                                                                       'minLength': 1,
+E                                                                                       'maxLength': 300},
+E                                                                'probe_runbook': {'type': 'string',
+E                                                                                  'minLength': 1,
+E                                                                                  'maxLength': 300},
+E                                                                'rollback_runbook': {'type': 'string',
+E                                                                                     'minLength': 1,
+E                                                                                     'maxLength': 300}}}},
+E                '$ref': '#/$defs/runtime_status'}
+E
+E           On instance:
+E               {'schema_version': 'pi-admission@1',
+E                'status': 'invalid_not_admitted',
+E                'admission_enabled': False,
+E                'model_calls': 0,
+E                'external_calls': 0,
+E                'blocker_count': 1,
+E                'blockers': ['admission_profile_invalid'],
+E                'admission_digest': None,
+E                'error': 'admission_profile_invalid'}
+
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: ValidationError
+__________ test_runtime_admission_projection_not_execution[approved] ___________
+
+offline = <starlette.testclient.TestClient object at 0x10d52b790>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1039/test_runtime_admission_project6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1106b6cf0>
+state = 'approved'
+
+    @pytest.mark.parametrize('state', ['default', 'missing', 'directory', 'invalid_json', 'invalid_utf8', 'null', 'approved'])
+    def test_runtime_admission_projection_not_execution(offline, tmp_path, monkeypatch, state):
+        import backend.pi_admission as admission
+        file = tmp_path / 'admission.json'
+        original = json.loads(admission.ADMISSION_STATE.read_text())
+        if state == 'directory':
+            file.mkdir()
+        elif state == 'invalid_json':
+            file.write_text('{')
+        elif state == 'invalid_utf8':
+            file.write_bytes(b'\xff\xfe{')
+        elif state == 'null':
+            file.write_text('null')
+        elif state == 'approved':
+            original.update(status='approved_for_l3_probe', admission_enabled=True,
+                            provider={'kind': 'pi_sidecar', 'package': 'fixture', 'authentication_boundary': 'managed_at_platform_transport_not_read_by_pi'},
+                            model='fixture', budget={'currency': 'USD', 'max_cost_minor': 1, 'max_turns': 1, 'timeout_seconds': 1},
+                            sources={'allowed_domains': ['example.com'], 'search': {'endpoint': 'http://example.com/search', 'credential_ref': None},
+                                     'financial': {'endpoint': 'http://example.com/finance', 'credential_ref': None}},
+                            public_pdf={'name': 'fixture.pdf', 'sha256': 'a' * 64, 'data_class': 'Public'},
+                            operators={'cancel_owner': 'fixture', 'rollback_owner': 'fixture'}, blockers=[],
+                            admission_evidence={k: 'fixture' for k in ['approval_record', 'data_egress_review', 'probe_runbook', 'rollback_runbook']})
+            admission.validate(original)
+            file.write_text(json.dumps(original))
+        if state != 'default':
+            monkeypatch.setattr(admission, 'ADMISSION_STATE', file)
+        before = snapshot(offline)
+        result = offline.get(OPERATIONS[0][0])
+        assert result.status_code == 200, result.text
+        value = result.json()
+>       checks = valid(offline, OPERATIONS[0], value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_pipeline_http_contracts.py:282:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_pipeline_http_contracts.py:74: in valid
+    check.validate(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Draft202012Validator(schema={'$defs': {'admission_evidence': {'additionalProperties': False, 'properties': {'approval_...n.schema.json', '$ref': '#/$defs/runtime_status', '$schema': 'https://json...020-12/schema', ...}, format_checker=None)
+args = ({'schema_version': 'pi-admission@1', 'status': 'approved_for_l3_probe', 'admission_enabled': True, 'model_calls': 0, ...},)
+kwargs = {}
+
+    def validate(self, *args, **kwargs):
+        for error in self.iter_errors(*args, **kwargs):
+>           raise error
+E           jsonschema.exceptions.ValidationError: Additional properties are not allowed ('admission_digest', 'blocker_count', 'error' were unexpected)
+E
+E           Failed validating 'additionalProperties' in schema:
+E               {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+E                '$id': 'https://harnessagent.local/specs/v1/pi-admission.schema.json',
+E                'title': 'Pi Agent Adapter Admission Profile',
+E                'description': 'Non-secret, versioned admission profile. It never '
+E                               'enables a runtime or resolves credentials by itself.',
+E                'type': 'object',
+E                'additionalProperties': False,
+E                'required': ['schema_version',
+E                             'status',
+E                             'admission_enabled',
+E                             'model_calls',
+E                             'external_calls',
+E                             'provider',
+E                             'model',
+E                             'budget',
+E                             'sources',
+E                             'public_pdf',
+E                             'operators',
+E                             'blockers',
+E                             'admission_evidence'],
+E                'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                               'status': {'enum': ['not_admitted',
+E                                                   'approved_for_l3_probe']},
+E                               'admission_enabled': {'type': 'boolean'},
+E                               'model_calls': {'type': 'integer', 'minimum': 0},
+E                               'external_calls': {'type': 'integer', 'minimum': 0},
+E                               'provider': {'oneOf': [{'type': 'null'},
+E                                                      {'$ref': '#/$defs/provider'}]},
+E                               'model': {'type': ['string', 'null'],
+E                                         'minLength': 1,
+E                                         'maxLength': 160},
+E                               'budget': {'oneOf': [{'type': 'null'},
+E                                                    {'$ref': '#/$defs/budget'}]},
+E                               'sources': {'$ref': '#/$defs/sources'},
+E                               'public_pdf': {'oneOf': [{'type': 'null'},
+E                                                        {'$ref': '#/$defs/public_pdf'}]},
+E                               'operators': {'$ref': '#/$defs/operators'},
+E                               'blockers': {'type': 'array',
+E                                            'items': {'type': 'string',
+E                                                      'minLength': 1,
+E                                                      'maxLength': 300},
+E                                            'uniqueItems': True},
+E                               'admission_evidence': {'oneOf': [{'type': 'null'},
+E                                                                {'$ref': '#/$defs/admission_evidence'}]}},
+E                '$defs': {'runtime_status': {'description': 'Read-only profile '
+E                                                            'projection, not '
+E                                                            'execution admission or '
+E                                                            'live call telemetry. '
+E                                                            'Array length/count '
+E                                                            'equality is checked by '
+E                                                            'behavioral tests.',
+E                                             'type': 'object',
+E                                             'additionalProperties': False,
+E                                             'required': ['schema_version',
+E                                                          'status',
+E                                                          'admission_enabled',
+E                                                          'model_calls',
+E                                                          'external_calls',
+E                                                          'blocker_count',
+E                                                          'blockers',
+E                                                          'admission_digest',
+E                                                          'error'],
+E                                             'properties': {'schema_version': {'const': 'pi-admission@1'},
+E                                                            'status': {'enum': ['not_admitted',
+E                                                                                'approved_for_l3_probe',
+E                                                                                'invalid_not_admitted']},
+E                                                            'admission_enabled': {'type': 'boolean'},
+E                                                            'model_calls': {'const': 0},
+E                                                            'external_calls': {'const': 0},
+E                                                            'blocker_count': {'type': 'integer',
+E                                                                              'minimum': 0},
+E                                                            'blockers': {'type': 'array',
+E                                                                         'uniqueItems': True,
+E                                                                         'items': {'type': 'string',
+E                                                                                   'minLength': 1,
+E                                                                                   'maxLength': 300}},
+E                                                            'admission_digest': {'type': ['string',
+E                                                                                          'null'],
+E                                                                                 'pattern': '^[a-f0-9]{64}$'},
+E                                                            'error': {'type': ['string',
+E                                                                               'null']}},
+E                                             'oneOf': [{'properties': {'status': {'const': 'not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'minimum': 1},
+E                                                                       'blockers': {'minItems': 1},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'approved_for_l3_probe'},
+E                                                                       'admission_enabled': {'const': True},
+E                                                                       'blocker_count': {'const': 0},
+E                                                                       'blockers': {'maxItems': 0},
+E                                                                       'admission_digest': {'type': 'string'},
+E                                                                       'error': {'type': 'null'}}},
+E                                                       {'properties': {'status': {'const': 'invalid_not_admitted'},
+E                                                                       'admission_enabled': {'const': False},
+E                                                                       'blocker_count': {'const': 1},
+E                                                                       'blockers': {'const': ['admission_profile_invalid']},
+E                                                                       'admission_digest': {'type': 'null'},
+E                                                                       'error': {'const': 'admission_profile_invalid'}}}]},
+E                          'credential_ref': {'type': 'string',
+E                                             'pattern': '^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$'},
+E                          'provider': {'type': 'object',
+E                                       'additionalProperties': False,
+E                                       'required': ['kind',
+E                                                    'package',
+E                                                    'authentication_boundary'],
+E                                       'properties': {'kind': {'const': 'pi_sidecar'},
+E                                                      'package': {'type': 'string',
+E                                                                  'minLength': 1,
+E                                                                  'maxLength': 160},
+E                                                      'authentication_boundary': {'const': 'managed_at_platform_transport_not_read_by_pi'}}},
+E                          'budget': {'type': 'object',
+E                                     'additionalProperties': False,
+E                                     'required': ['currency',
+E                                                  'max_cost_minor',
+E                                                  'max_turns',
+E                                                  'timeout_seconds'],
+E                                     'properties': {'currency': {'const': 'USD'},
+E                                                    'max_cost_minor': {'type': 'integer',
+E                                                                       'minimum': 0,
+E                                                                       'maximum': 100000},
+E                                                    'max_turns': {'type': 'integer',
+E                                                                  'minimum': 1,
+E                                                                  'maximum': 100},
+E                                                    'timeout_seconds': {'type': 'integer',
+E                                                                        'minimum': 1,
+E                                                                        'maximum': 3600}}},
+E                          'source_connector': {'type': 'object',
+E                                               'additionalProperties': False,
+E                                               'required': ['endpoint',
+E                                                            'credential_ref'],
+E                                               'properties': {'endpoint': {'type': ['string',
+E                                                                                    'null'],
+E                                                                           'format': 'uri',
+E                                                                           'maxLength': 2048},
+E                                                              'credential_ref': {'oneOf': [{'type': 'null'},
+E                                                                                           {'$ref': '#/$defs/credential_ref'}]}}},
+E                          'sources': {'type': 'object',
+E                                      'additionalProperties': False,
+E                                      'required': ['allowed_domains',
+E                                                   'search',
+E                                                   'financial'],
+E                                      'properties': {'allowed_domains': {'type': 'array',
+E                                                                         'items': {'type': 'string',
+E                                                                                   'pattern': '^[a-z0-9.-]+$'},
+E                                                                         'uniqueItems': True},
+E                                                     'search': {'$ref': '#/$defs/source_connector'},
+E                                                     'financial': {'$ref': '#/$defs/source_connector'}}},
+E                          'public_pdf': {'type': 'object',
+E                                         'additionalProperties': False,
+E                                         'required': ['name', 'sha256', 'data_class'],
+E                                         'properties': {'name': {'type': 'string',
+E                                                                 'pattern': '^[^/\\\\]{1,240}\\.pdf$'},
+E                                                        'sha256': {'type': 'string',
+E                                                                   'pattern': '^[a-f0-9]{64}$'},
+E                                                        'data_class': {'const': 'Public'}}},
+E                          'operators': {'type': 'object',
+E                                        'additionalProperties': False,
+E                                        'required': ['cancel_owner', 'rollback_owner'],
+E                                        'properties': {'cancel_owner': {'type': ['string',
+E                                                                                 'null'],
+E                                                                        'minLength': 1,
+E                                                                        'maxLength': 120},
+E                                                       'rollback_owner': {'type': ['string',
+E                                                                                   'null'],
+E                                                                          'minLength': 1,
+E                                                                          'maxLength': 120}}},
+E                          'admission_evidence': {'type': 'object',
+E                                                 'additionalProperties': False,
+E                                                 'required': ['approval_record',
+E                                                              'data_egress_review',
+E                                                              'probe_runbook',
+E                                                              'rollback_runbook'],
+E                                                 'properties': {'approval_record': {'type': 'string',
+E                                                                                    'minLength': 1,
+E                                                                                    'maxLength': 300},
+E                                                                'data_egress_review': {'type': 'string',
+E                                                                                       'minLength': 1,
+E                                                                                       'maxLength': 300},
+E                                                                'probe_runbook': {'type': 'string',
+E                                                                                  'minLength': 1,
+E                                                                                  'maxLength': 300},
+E                                                                'rollback_runbook': {'type': 'string',
+E                                                                                     'minLength': 1,
+E                                                                                     'maxLength': 300}}}},
+E                '$ref': '#/$defs/runtime_status'}
+E
+E           On instance:
+E               {'schema_version': 'pi-admission@1',
+E                'status': 'approved_for_l3_probe',
+E                'admission_enabled': True,
+E                'model_calls': 0,
+E                'external_calls': 0,
+E                'blocker_count': 0,
+E                'blockers': [],
+E                'admission_digest': 'e2026a0e09f1d83fddd65037c5a813e98b293ceaee4129c6d2faa3f814598a93',
+E                'error': None}
+
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: ValidationError
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_pipeline_http_contracts.py::test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[False]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_pdf_preview_finding_and_stream_are_real_bound_and_replayable[True]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_runtime_admission_projection_not_execution[default]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_runtime_admission_projection_not_execution[missing]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_runtime_admission_projection_not_execution[directory]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_runtime_admission_projection_not_execution[invalid_json]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_runtime_admission_projection_not_execution[invalid_utf8]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_runtime_admission_projection_not_execution[null]
+FAILED tests/test_pi_pipeline_http_contracts.py::test_runtime_admission_projection_not_execution[approved]
+9 failed, 27 passed, 1 warning in 5.81s

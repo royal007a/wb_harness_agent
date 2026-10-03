@@ -2234,8 +2234,12 @@ paths:
       operationId: getPiRuntimeAdmission
       description: Read-only Pi admission status. It does not resolve Keychain credentials or start a sidecar.
       responses:
-        '200': {description: Pi admission digest, blockers and zero-call status.}
-        default: {$ref: '#/components/responses/Error'}
+        '200':
+          description: Pi admission profile projection, not execution permission or live telemetry.
+          content:
+            application/json:
+              schema: {$ref: './pi-admission.schema.json#/$defs/runtime_status'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/research-native/documents:
     servers: [{url: /api}]
     post:
@@ -2378,7 +2382,7 @@ paths:
           content:
             application/json:
               schema: {$ref: '#/components/schemas/PiContractPipelinePreview'}
-        default: {$ref: '#/components/responses/Error'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/pi-contract-pipeline/review:
     servers: [{url: /api}]
     post:
@@ -2397,7 +2401,7 @@ paths:
           content:
             application/json:
               schema: {$ref: '#/components/schemas/ContractRiskReviewFinding'}
-        default: {$ref: '#/components/responses/Error'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/pi-contract-pipeline/security-check:
     servers: [{url: /api}]
     post:
@@ -2416,15 +2420,22 @@ paths:
           content:
             application/json:
               schema: {$ref: '#/components/schemas/PiSecurityGuardResponse'}
-        default: {$ref: '#/components/responses/Error'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/pi-contract-pipeline/review-stream:
     servers: [{url: /api}]
     post:
       operationId: streamPiContractPipelineReview
       description: Deterministic ChatPanel event stream for a Public PDF; emits preview, finding and done without sending contract正文 or invoking a model/network.
       parameters:
-        - $ref: '#/components/parameters/IdempotencyKey'
-        - $ref: '#/components/parameters/AcceptEventStream'
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: {type: string, minLength: 1, maxLength: 120}
+        - name: Accept
+          in: header
+          required: true
+          description: Current case-sensitive substring check, not full HTTP content negotiation.
+          schema: {type: string, pattern: text/event-stream}
       requestBody:
         required: true
         content:
@@ -2432,11 +2443,14 @@ paths:
             schema: {$ref: '#/components/schemas/PiContractPipelineRequest'}
       responses:
         '200':
-          description: Structured SSE event stream.
+          description: SSE data JSON frames in order preview, finding, done; not model tokens or a passed Gate.
+          headers:
+            Cache-Control: {schema: {const: no-store}}
+            X-Accel-Buffering: {schema: {const: 'no'}}
           content:
             text/event-stream:
               schema: {$ref: '#/components/schemas/PiContractReviewStreamEvent'}
-        default: {$ref: '#/components/responses/Error'}
+        default: {$ref: '#/components/responses/LocalProductError'}
 components:
   parameters:
     IdempotencyKey:
@@ -2514,7 +2528,7 @@ components:
     PiContractReviewGateDecision:
       $ref: './pi-contract-review.schema.json#/$defs/gate_decision_record'
     PiContractPipelineRequest:
-      $ref: './pi-contract-pipeline.schema.json#/$defs/request'
+      $ref: './pi-contract-pipeline.schema.json#/$defs/http_request'
     PiContractPipelinePreview:
       $ref: './pi-contract-pipeline.schema.json#/$defs/preview'
     PiSecurityGuardRequest:
@@ -2522,12 +2536,7 @@ components:
     PiSecurityGuardResponse:
       $ref: './pi-security-guard.schema.json#/$defs/response'
     PiContractReviewStreamEvent:
-      type: object
-      additionalProperties: false
-      required: [event, data]
-      properties:
-        event: {enum: [preview, finding, done]}
-        data: {type: object}
+      $ref: './pi-contract-pipeline.schema.json#/$defs/stream_event'
     ContractRiskReviewFinding:
       $ref: './pi-contract-pipeline.schema.json#/$defs/finding'
     Error:

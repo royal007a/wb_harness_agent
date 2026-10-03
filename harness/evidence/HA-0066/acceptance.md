@@ -1,6 +1,6 @@
 # HA-0066 Memory / Research读取合同
 
-2026-10-04，基线e6e1fb9。实现/离线验证候选，尚未独立review或双部署。
+2026-10-04，基线e6e1fb9。固定5429c62已独立Approved（review.md）；双部署未完成。
 规格MEMORY_RESEARCH_READ_CONTRACTS.md，ADR-0066，新增测试文件
 tests/test_memory_research_read_contracts.py。
 
@@ -53,7 +53,7 @@ targeted.xml中31个Workbench参数名以safe_test_id哈希化，避免包含大
 - Schema约束和当前元数据过滤不是身份认证，也不自动修复损坏DB。未验证全部
   Memory生命周期、研究POST/详情、Pi响应和其他尚为空的公开声明。
 - 16 skipped不算通过；测试中的PDF只是准入摘要样本，不是PDF解析或真实研究。
-- 独立复审、真实双部署仍待完成；本轮不碰8765、132、正式DB、Keychain、launchctl。
+- 独立复审已完成，真实双部署仍待完成；本轮不碰8765、132、正式DB、Keychain、launchctl。
   先本机后132的部署前提不变，HA-0056拓扑阻塞没有被离线测试解除。
 - remaining-empty-responses.json额外程序枚举到35个API成功响应仍明确声明空JSON
   Schema，另有1个页面；这不是所有缺口的数量（不含缺content或非空但不完整的
