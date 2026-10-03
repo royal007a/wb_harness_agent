@@ -1,11 +1,11 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-09-22T07:07:30Z",
+  "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
       "id": "HA-0052",
       "title": "补齐并受限启用双环境外部 Skill 沙箱",
-      "status": "running",
+      "status": "waiting_approval",
       "risk": "high",
       "scope": ["显式 Linux Docker 与 Colima backend", "loopback-only 包及执行入口、有界输出和并发", "本机与 132 镜像、真实隔离验证和受限启用"],
       "non_goals": ["公网任意代码执行", "真实模型/MCP/联网/凭据注入", "多租户安全认证或 Product Run 集成"],
@@ -15,7 +15,7 @@
       "plan": "exec-plans/active/HA-0052-external-skill-deployment.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": []
+      "evidence": ["harness/evidence/HA-0052/acceptance.md", "harness/evidence/HA-0052/deployment.json", "harness/evidence/HA-0052/remote-deployment.json", "harness/evidence/HA-0052/local-external-skills.xml", "harness/evidence/HA-0052/remote-external-skills.xml"]
     },
     {
       "id": "HA-0051",

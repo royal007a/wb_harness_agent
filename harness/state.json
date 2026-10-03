@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "native_claude_research_l3_admission_binding",
+  "phase": "external_skill_dual_deployment_acceptance",
   "implementation_started": true,
-  "active_task_id": "HA-0027",
-  "active_plan": "exec-plans/active/HA-0027-native-claude-research-runtime.md",
-  "last_checkpoint": "HA-0027 正在把 L3 准入收敛为默认拒绝的无密 `claude-research-admission@1`。该档案只有在 Provider/模型、USD 费用/turn/时间上限、精确域名/JSON connector endpoint、Keychain 引用、单一 Public PDF SHA-256 与取消/回滚责任全部完整且运行配置完全匹配时才可允许一次 Public Probe；当前仍不执行 CLI、Keychain 或网络。",
-  "last_updated_at": "2026-09-22T07:07:30Z",
-  "next_action": "完成 HA-0027 准入档案的 Schema、静态验证、运行时/资料源/PDF 绑定、定向和全量回归，并依双环境发布规范部署。发布后保持 waiting_approval，直到负责人以非秘密方式指定批准模型、预算、准确域名/connector endpoint、Keychain 引用名、Public PDF 与取消/回滚负责人；不得把 metadata-only Team actor_id 当作这些操作的身份授权。",
+  "active_task_id": "HA-0052",
+  "active_plan": "exec-plans/active/HA-0052-external-skill-deployment.md",
+  "last_checkpoint": "HA-0052 应用 87934de 已部署本机与 132；外部 Skill 明确启用且 blockers 为空。两端各 17 项 Skill 测试及真实 API smoke 通过，公网包/执行接口 403，状态保留 Basic 认证。Linux 镜像经过 amd64 子摘要、7 层 diff_id 和 SSH 传输校验。模型/Claude/语义检索门禁未改变。",
+  "last_updated_at": "2026-10-03T12:06:02Z",
+  "next_action": "等待用户验收 HA-0052 的受限管理员沙箱。尚未接入真实模型、Product Run、公众执行、多租户或崩溃后自动回收；不得因此扩大权限。HA-0027 原生投研准入条件仍不满足，不沿用本次沙箱授权打开 Provider/数据外发。",
   "release": "0.1.0-local"
 }

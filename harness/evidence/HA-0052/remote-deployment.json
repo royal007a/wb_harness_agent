@@ -1,0 +1,32 @@
+{
+  "commit": "87934de73ab314963509dfe3feff5a2fef8fde85",
+  "previous_commit": "27ffdf6f7aa6592b60c129d9b14985c3476b38d3",
+  "deployed_at": "20261003T120208Z",
+  "database": "/var/lib/harnessagent/harness.db",
+  "backup": "/var/backups/harnessagent/ha0052-20261003T120208Z",
+  "health": {
+    "status": "ok",
+    "version": "0.1.0",
+    "mode": "local_single_user",
+    "model_calls_enabled": false
+  },
+  "runtime_environment_preserved": true,
+  "credentials_unchanged": true,
+  "public_url": "http://118.196.123.132/harness/",
+  "external_skills": {
+    "mode": "external-skill-runtime@1",
+    "runtime_enabled": true,
+    "backend": "linux-docker",
+    "access_scope": "direct_loopback_or_ssh_tunnel",
+    "max_concurrency": 1,
+    "isolation_profile": "external-skill-stdlib-v1",
+    "image_id": "sha256:73cf1ab4d8a506384e429166faf2ba296ba17cddb9862c401854504cacdea33c",
+    "package_sources": [
+      "local_zip_upload_only"
+    ],
+    "network": "denied",
+    "host_paths": "denied_except_immutable_package_and_request_mounts",
+    "credentials": "not_injected",
+    "blockers": []
+  }
+}

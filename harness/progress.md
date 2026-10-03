@@ -2,6 +2,17 @@
 
 > 本文件应由 `harness/tasks.json` 与 `harness/state.json` 自动生成。当前尚无生成器，因此仅作为初始快照；任务状态仍以 JSON 为准。
 
+## 当前快照（2026-10-03，HA-0052）
+
+- 应用 `87934de` 已发布到本机和 `http://118.196.123.132/harness/`。
+- 外部 Skill 两端明确开启、镜像可用；包与执行仍仅直接 loopback/SSH，公网只
+  查看受 Basic 保护的状态。每端 17 项 Skill 测试、真实 API 合成 smoke 通过。
+- 本机全量 303 passed / 16 skipped；远端 staging 297 passed / 22 skipped。
+- 状态 waiting_approval，备份、镜像供应链与验证边界见 `harness/evidence/HA-0052/`。
+- 真实模型/Claude/MCP、Product Run 沙箱接入、多租户、崩溃回收均未因本次开放。
+
+## 历史快照（以下不代表当前部署状态）
+
 - 当前阶段：`native_claude_research_l3_admission_binding`
 - 是否开始实现：是，用户于 2026-09-12 授权本地初版前后端和部署
 - 当前任务：`HA-0027`。正在为 Native Claude Research 加入版本化、无密的 `claude-research-admission@1`，把 CLI Provider/模型、每 Run USD 费用/turn/时间、精确域名与搜索/财务 JSON connector endpoint、仅 Keychain 引用、单一 Public PDF SHA-256、取消/回滚责任和审批 Evidence 绑定为一个 fail-closed profile。
