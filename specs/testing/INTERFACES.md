@@ -361,11 +361,11 @@ OAuth 与本机 CLI 交接；网站接口没有通用分享下载
 
 launchd/systemd/nginx 双端；需要独立部署和浏览器证据
 
-必须验证：实际 HARNESS_DB 备份；staging/运行环境保留；应用/镜像版本；代理认证/拒绝敏感路由；重启/回滚/全部页面浏览器；未准入功能仍关闭。
+必须验证：实际 HARNESS_DB 备份；staging/运行环境保留；应用/镜像版本；代理认证/拒绝敏感路由；重启/回滚/全部页面浏览器；launchd 暂态有界重试与失败/回退健康证据；未准入功能仍关闭。
 
-规格：`docs/harness/OPERATIONS.md`、`docs/harness/LOCAL_WORKBENCH.md`、`AGENTS.md`
+规格：`docs/harness/OPERATIONS.md`、`docs/harness/LOCAL_WORKBENCH.md`、`specs/testing/LOCAL_DEPLOYMENT_RECOVERY.md`、`AGENTS.md`
 
-测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`
+测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_local_deployment.py`
 
 ### planned：未落地目标能力
 

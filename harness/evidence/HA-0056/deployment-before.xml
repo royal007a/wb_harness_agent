@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.499" timestamp="2026-10-04T00:47:01.333904+08:00" hostname="192.168.31.117"><testcase classname="tests.test_local_deployment" name="test_transient_bootstrap_failure_retries_same_config_without_rollback" time="0.087"><failure message="subprocess.CalledProcessError: Command '('launchctl', 'bootstrap', 'gui/501', '/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-556/test_transient_bootstrap_failu0/.local/backups/ha0055-20261003T164701Z/previous.plist')' returned non-zero exit status 5.">args = ('launchctl', 'bootstrap', 'gui/501', '/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-556/test_transient_bootstrap_failu0/deploy/local.macos.plist')
+kwargs = {}
+
+    def command(*args, **kwargs):
+        calls.append(args)
+        if args[:3] == ('git', 'rev-parse', 'HEAD'):
+            return COMMIT
+        if args[:2] == ('git', 'show'):
+            return plistlib.dumps(SETTINGS).decode()
+        if 'image' in args:
+            return IMAGE
+        if args[:2] == ('launchctl', 'bootstrap') and answers:
+            response = answers.pop(0)
+            if response:
+&gt;               raise subprocess.CalledProcessError(response, args)
+E               subprocess.CalledProcessError: Command '('launchctl', 'bootstrap', 'gui/501', '/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-556/test_transient_bootstrap_failu0/deploy/local.macos.plist')' returned non-zero exit status 5.
+
+tests/test_local_deployment.py:42: CalledProcessError
+
+During handling of the above exception, another exception occurred:
+
+deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-556/test_transient_boo...bbbbbbbbbbbbbb:deploy/local.macos.plist'), ('launchctl', 'bootout', 'gui/501/local.harnessagent.workbench'), ...], [0])
+
+    def test_transient_bootstrap_failure_retries_same_config_without_rollback(deployment):
+        root, calls, answers = deployment
+        answers.extend([5, 5, 0])
+&gt;       activation.main()
+
+tests/test_local_deployment.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+deploy/activate_local_skills.py:66: in main
+    run('launchctl', 'bootstrap', f'gui/{os.getuid()}', str(backup / 'previous.plist'))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ('launchctl', 'bootstrap', 'gui/501', '/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-556/test_transient_bootstrap_failu0/.local/backups/ha0055-20261003T164701Z/previous.plist')
+kwargs = {}
+
+    def command(*args, **kwargs):
+        calls.append(args)
+        if args[:3] == ('git', 'rev-parse', 'HEAD'):
+            return COMMIT
+        if args[:2] == ('git', 'show'):
+            return plistlib.dumps(SETTINGS).decode()
+        if 'image' in args:
+            return IMAGE
+        if args[:2] == ('launchctl', 'bootstrap') and answers:
+            response = answers.pop(0)
+            if response:
+&gt;               raise subprocess.CalledProcessError(response, args)
+E               subprocess.CalledProcessError: Command '('launchctl', 'bootstrap', 'gui/501', '/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-556/test_transient_bootstrap_failu0/.local/backups/ha0055-20261003T164701Z/previous.plist')' returned non-zero exit status 5.
+
+tests/test_local_deployment.py:42: CalledProcessError</failure></testcase><testcase classname="tests.test_local_deployment" name="test_failed_activation_records_verified_plist_recovery" time="0.005"><failure message="assert 0 == 1&#10; +  where 0 = len([])">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-556/test_failed_activa...bbbbbbbbbbbbbbb:deploy/local.macos.plist'), ('launchctl', 'bootout', 'gui/501/local.harnessagent.workbench'), ...], [])
+
+    def test_failed_activation_records_verified_plist_recovery(deployment):
+        root, calls, answers = deployment
+        answers.extend([78, 0])
+        with pytest.raises(Exception):
+            activation.main()
+        receipts = list(root.glob('.local/backups/*/activation-failure.json'))
+&gt;       assert len(receipts) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_local_deployment.py:87: AssertionError</failure></testcase></testsuite></testsuites>

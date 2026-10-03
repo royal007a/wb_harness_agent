@@ -31,6 +31,19 @@
 - 适配器失败时停止新路由并排空或安全取消现有任务。
 - 回滚不得覆盖任务历史；以新事件记录回滚和影响范围。
 
+### 本机 launchd 发布助手（HA-0056）
+
+`deploy/activate_local_skills.py <previous_commit> <work_item>` 保留干净提交、
+固定 plist、镜像和 SQLite 备份前置检查。bootout 后只对 bootstrap 的 exit 5
+进行最多 30 秒的有界重试（单命令不超过 5 秒）；其他退出码和命令超时不重试。
+启动和回退都须在 60 秒内通过 health、默认关闭的模型/工具 gate、Colima
+Skill 镜像一致性验证。命令成功本身不算服务恢复。
+
+失败时只尝试恢复备份 plist，写 `activation-failure.json` 并保持非零退出；
+恢复失败也必须记录，不能生成成功 `deployment.json`。该行为不恢复应用文件
+或数据库，不能当成完整版本回滚。测试与故障边界见
+[`LOCAL_DEPLOYMENT_RECOVERY.md`](../../specs/testing/LOCAL_DEPLOYMENT_RECOVERY.md)。
+
 ## 监控与 SLO
 
 至少监控：

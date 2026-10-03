@@ -51,7 +51,7 @@ def main():
     commit = sys.argv[2]
     assert re.fullmatch('[a-f0-9]{40}', commit)
     work_item = sys.argv[3] if len(sys.argv) > 3 else 'ha0051'
-    assert work_item in {'ha0051', 'ha0052', 'ha0054', 'ha0055'}
+    assert work_item in {'ha0051', 'ha0052', 'ha0054', 'ha0055', 'ha0056'}
     activate_skills = work_item == 'ha0052'
     override = Path('/etc/systemd/system/harnessagent.service.d/external-skills.conf')
     assert stage.parent == Path('/opt/harnessagent-releases') and stage.name == work_item + '-' + commit[:12]
