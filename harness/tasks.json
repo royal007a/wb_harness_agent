@@ -13,7 +13,7 @@
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0056-local-deployment-recovery.md",
-      "blocked_reason": "复审返工29项定向及全量374 passed/16 skipped通过，待固定提交独立复核。当前Background调用方被新预检安全拒绝，8765离线，实际双部署仍未执行。",
+      "blocked_reason": "0f5d6a7复审慢退出问题已返工，45项定向及全量390 passed/16 skipped通过，待新固定提交独立复核。当前Background调用方被预检安全拒绝，8765尚未恢复，实际双部署未执行。",
       "recovery_condition": "固定代码独立复核；取得兼容Aqua调用环境，或由用户明确批准同uid user/501 + Aqua/Background备选并补规格实现验证后，先本机再132部署。",
       "evidence": ["harness/evidence/HA-0056/acceptance.md"]
     },

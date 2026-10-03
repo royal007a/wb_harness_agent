@@ -1,6 +1,36 @@
 # HA-0056 验证（返工验证中，未重新发布）
 
+## 2026-10-04 慢退出复审返工（基线 0f5d6a7）
+
+- 来源：mymacclaude 对 0f5d6a7 的 Changes Requested。确认旧脚本在 label 已消失、
+  旧进程仍监听 20 秒时，正向 15 秒到期后恢复误判未知进程，无法重新启动。
+- 现在停机共用 45 秒窗口（含 bootout），bootout 命令最多 30 秒；版本化 plist
+  显式 ExitTimeOut=20，预检拒绝 Program 覆盖和不受支持的 ExitTimeOut。
+  恢复只允许本次记录的 PID+启动时间且唯一监听的旧进程继续退出；端口不空不启动。
+  第二个窗口仍最多 45 秒，PID 复用/多个监听者不放行，不杀未知进程。
+- teardown 记录最后 label/listener 观察、bootout_attempted/returned 与
+  service_stopped；观察命令耗尽余量时报 teardown_deadline，否则为 command_timeout。
+  恢复中 Ctrl-C 写回执后仍抛 KeyboardInterrupt。ps 观察到进程刚退出时可复查，
+  但 KeepAlive 导致身份变化仍拒绝；不将失败恢复写成原发布成功。
+- `slow-exit-before.xml`：在未修改的 0f5d6a7 部署脚本上，10 个新增行为用例失败：
+  20 秒退出、50 秒恢复、二次截止、两种观察超时、中断、4 种 plist 覆盖。
+  不是因为旧代码缺少新符号而失败。
+- `slow-exit-targeted.xml`：45 passed（0.18 秒）。额外覆盖 PID 复用、多监听者、
+  同步 bootout 等待 20 秒、早期命令超时、lsof/ps 间退出、阶段事实。
+  全部 mock launchctl/HTTP、模拟单调时钟和临时 SQLite；真实服务未操作。
+- `slow-exit-verify.log`：第一轮全量 exit 0，389 passed / 16 skipped（45.41 秒）。
+  新增 lsof/ps 退出竞态测试后，`slow-exit-verify-final.log` 最终 exit 0，
+  390 passed / 16 skipped（46.51 秒），后续定向/确定性评测/JS/diff 检查通过。
+  一个依赖 DeprecationWarning（anyio BlockingPortal 别名），没有忽略测试失败。
+- 仍未验证真机 bootout 的同步等待行为、不可变发布身份、跨用户 lsof 可见性；
+  备份阶段中断可能留未完成目录，不将其称为有效备份。恢复仍运行当前代码，
+  旧提交只提供批准范围内的 plist 配置，不回滚代码/数据库。
+- 本轮未执行真实 bootstrap/bootout、8765 激活或 132 promotion；调用拓扑选择
+  仍待用户。代码待固定提交独立复审，双部署阻塞状态不变。
+
 ## 2026-10-04 复审返工
+
+以下为 0f5d6a7 的上一轮实现/测试记录；15 秒窗口已由本轮替换。
 
 - 不再把 exit 5 归为可自动重试；单次 bootstrap 最多 5 秒，保留 exit_code、
   action、attempts。调用方必须是 Aqua，目标 gui 域可查询，当前与恢复 plist

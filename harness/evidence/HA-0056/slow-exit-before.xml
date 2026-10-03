@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="10" skipped="0" tests="10" time="0.227" timestamp="2026-10-04T02:21:49.355003+08:00" hostname="192.168.31.117"><testcase classname="tests.test_local_deployment" name="test_twenty_second_graceful_exit_does_not_strand_service" time="0.006"><failure message="RuntimeError: Activation failed; previous plist recovery healthy=False; see activation-failure.json">def main():
+        previous = sys.argv[1]
+        assert re.fullmatch('[a-f0-9]{40}', previous)
+        work_item = sys.argv[2] if len(sys.argv) &gt; 2 else 'ha0052'
+        assert work_item in {'ha0052', 'ha0054', 'ha0055', 'ha0056'}
+        commit = run('git', 'rev-parse', 'HEAD')
+        assert not run('git', 'status', '--porcelain')
+        config = ROOT / 'deploy/local.macos.plist'
+        desired = plistlib.loads(config.read_bytes())
+        old = run('git', 'show', previous + ':deploy/local.macos.plist')
+        prior = plistlib.loads(old.encode())
+        # No stop, backup or bootstrap occurs until both configurations are usable.
+        topology = preflight([desired, prior])
+        run('plutil', '-lint', str(config))
+        image = run('/opt/homebrew/bin/docker', '--context', 'colima', 'image', 'inspect',
+                    'harnessagent-external-skill:0.1', '--format', '{{.Id}}')
+        assert image.startswith('sha256:')
+        backup = ROOT / '.local/backups' / (work_item + '-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+        backup.mkdir(parents=True, mode=0o700)
+        (backup / 'previous.plist').write_text(old)
+        db = ROOT / '.local/harness.db'
+        with sqlite3.connect('file:' + str(db) + '?mode=ro', uri=True) as source:
+            with sqlite3.connect(backup / 'harness.db') as target:
+                source.backup(target)
+                assert target.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+        (backup / 'harness.db').chmod(0o600)
+        phase = 'bootout'
+        try:
+&gt;           stop_and_wait()
+
+deploy/activate_local_skills.py:219:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+timeout_seconds = 15
+
+    def stop_and_wait(timeout_seconds=15):
+        deadline = time.monotonic() + timeout_seconds
+        if job_pid(deadline) is not None:
+            try:
+                run('launchctl', 'bootout', LABEL, timeout=command_limit(deadline))
+            except subprocess.CalledProcessError as exc:
+                raise ActivationError('bootout_failed', action='bootout', exit_code=exc.returncode, attempts=1) from exc
+            except subprocess.TimeoutExpired as exc:
+                raise ActivationError('command_timeout', action='bootout', attempts=1) from exc
+        while time.monotonic() &lt; deadline:
+            if job_pid(deadline) is None and not listener_pids(deadline):
+                return
+            time.sleep(min(.25, max(0, deadline - time.monotonic())))
+&gt;       raise ActivationError('teardown_deadline', action='bootout')
+E       deploy.activate_local_skills.ActivationError: teardown_deadline
+
+deploy/activate_local_skills.py:129: ActivationError
+
+The above exception was the direct cause of the following exception:
+
+delayed_exit = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_twenty_second..., 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [15.0], [20.0], ['owned'])
+
+    def test_twenty_second_graceful_exit_does_not_strand_service(delayed_exit):
+        root, calls, clock, _, _ = delayed_exit
+&gt;       activation.main()
+
+tests/test_local_deployment.py:429:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def main():
+        previous = sys.argv[1]
+        assert re.fullmatch('[a-f0-9]{40}', previous)
+        work_item = sys.argv[2] if len(sys.argv) &gt; 2 else 'ha0052'
+        assert work_item in {'ha0052', 'ha0054', 'ha0055', 'ha0056'}
+        commit = run('git', 'rev-parse', 'HEAD')
+        assert not run('git', 'status', '--porcelain')
+        config = ROOT / 'deploy/local.macos.plist'
+        desired = plistlib.loads(config.read_bytes())
+        old = run('git', 'show', previous + ':deploy/local.macos.plist')
+        prior = plistlib.loads(old.encode())
+        # No stop, backup or bootstrap occurs until both configurations are usable.
+        topology = preflight([desired, prior])
+        run('plutil', '-lint', str(config))
+        image = run('/opt/homebrew/bin/docker', '--context', 'colima', 'image', 'inspect',
+                    'harnessagent-external-skill:0.1', '--format', '{{.Id}}')
+        assert image.startswith('sha256:')
+        backup = ROOT / '.local/backups' / (work_item + '-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+        backup.mkdir(parents=True, mode=0o700)
+        (backup / 'previous.plist').write_text(old)
+        db = ROOT / '.local/harness.db'
+        with sqlite3.connect('file:' + str(db) + '?mode=ro', uri=True) as source:
+            with sqlite3.connect(backup / 'harness.db') as target:
+                source.backup(target)
+                assert target.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+        (backup / 'harness.db').chmod(0o600)
+        phase = 'bootout'
+        try:
+            stop_and_wait()
+            phase = 'bootstrap'
+            attempts = bootstrap(config)
+            phase = 'health'
+            status = healthy(image, commit)
+        except (Exception, KeyboardInterrupt) as activation_error:
+            recovery = {'scope': 'previous_plist_only', 'healthy': False, 'phase': 'not_attempted',
+                        'code_commit': commit, 'config_source_commit': previous,
+                        'code_rollback': False, 'database_rollback': False}
+            if not isinstance(activation_error, KeyboardInterrupt):
+                try:
+                    recovery['phase'] = 'preflight'
+                    preflight([prior])
+                    recovery['phase'] = 'bootout'
+                    stop_and_wait()
+                    recovery['phase'] = 'bootstrap'
+                    recovery['bootstrap_attempts'] = bootstrap(backup / 'previous.plist')
+                    recovery['phase'] = 'health'
+                    recovery['health'] = healthy(image, commit)
+                    recovery['healthy'] = True
+                    recovery['phase'] = 'verified'
+                except (Exception, KeyboardInterrupt) as recovery_error:
+                    recovery.update(error_record(recovery_error))
+            failure = {'commit': commit, 'backup': str(backup), 'activation_succeeded': False,
+                       'phase': phase, 'recovery': recovery, **error_record(activation_error)}
+            (backup / 'activation-failure.json').write_text(json.dumps(failure, indent=2) + '\n')
+            (backup / 'activation-failure.json').chmod(0o600)
+            if isinstance(activation_error, KeyboardInterrupt):
+                raise
+&gt;           raise RuntimeError('Activation failed; previous plist recovery healthy=' +
+                               str(recovery['healthy']) + '; see activation-failure.json') from activation_error
+E           RuntimeError: Activation failed; previous plist recovery healthy=False; see activation-failure.json
+
+deploy/activate_local_skills.py:248: RuntimeError</failure></testcase><testcase classname="tests.test_local_deployment" name="test_recovery_waits_for_known_orphan_before_bootstrap" time="0.003"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'recovery healthy=True'&#10;  Actual message: 'Activation failed; previous plist recovery healthy=False; see activation-failure.json'">delayed_exit = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_recovery_wait...l', 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [15.0], [50], ['owned'])
+
+    def test_recovery_waits_for_known_orphan_before_bootstrap(delayed_exit):
+        root, calls, clock, exit_at, _ = delayed_exit
+        exit_at[0] = 50
+&gt;       with pytest.raises(RuntimeError, match='recovery healthy=True'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'recovery healthy=True'
+E         Actual message: 'Activation failed; previous plist recovery healthy=False; see activation-failure.json'
+
+tests/test_local_deployment.py:439: AssertionError</failure></testcase><testcase classname="tests.test_local_deployment" name="test_known_orphan_wait_has_a_second_hard_deadline" time="0.003"><failure message="AssertionError: assert 'port_owned_by_other_process' == 'teardown_deadline'&#10;  &#10;  - teardown_deadline&#10;  + port_owned_by_other_process">delayed_exit = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_known_orphan_..., 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [15.0], [1000], ['owned'])
+
+    def test_known_orphan_wait_has_a_second_hard_deadline(delayed_exit):
+        root, calls, clock, exit_at, _ = delayed_exit
+        exit_at[0] = 1000
+        with pytest.raises(RuntimeError, match='recovery healthy=False'):
+            activation.main()
+        receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+&gt;       assert receipt['recovery']['code'] == 'teardown_deadline'
+E       AssertionError: assert 'port_owned_by_other_process' == 'teardown_deadline'
+E
+E         - teardown_deadline
+E         + port_owned_by_other_process
+
+tests/test_local_deployment.py:467: AssertionError</failure></testcase><testcase classname="tests.test_local_deployment" name="test_teardown_observation_timeout_preserves_deadline_cause[label]" time="0.000"><failure message="subprocess.TimeoutExpired: Command '('launchctl', 'print', 'gui/501/local.harnessagent.workbench')' timed out after 0.1 seconds">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108fba140&gt;
+observe = 'label'
+
+    @pytest.mark.parametrize('observe', ['label', 'listener'])
+    def test_teardown_observation_timeout_preserves_deadline_cause(monkeypatch, observe):
+        clock = [0.0]
+        monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
+        monkeypatch.setattr(activation.time, 'sleep', lambda n: clock.__setitem__(0, clock[0] + n))
+        def command(*args, timeout):
+            if (observe == 'label' and args[:2] == ('launchctl', 'print')) or (
+                    observe == 'listener' and args[0] == '/usr/sbin/lsof'):
+                clock[0] += timeout
+                raise subprocess.TimeoutExpired(args, timeout)
+            if args[:2] == ('launchctl', 'print'):
+                raise subprocess.CalledProcessError(113, args)
+            return ''
+        monkeypatch.setattr(activation, 'run', command)
+        with pytest.raises(activation.ActivationError, match='teardown_deadline'):
+&gt;           activation.stop_and_wait(.1)
+
+tests/test_local_deployment.py:487:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+deploy/activate_local_skills.py:118: in stop_and_wait
+    if job_pid(deadline) is not None:
+       ^^^^^^^^^^^^^^^^^
+deploy/activate_local_skills.py:72: in job_pid
+    value = run('launchctl', 'print', LABEL, timeout=command_limit(deadline))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+timeout = 0.1
+args = ('launchctl', 'print', 'gui/501/local.harnessagent.workbench')
+
+    def command(*args, timeout):
+        if (observe == 'label' and args[:2] == ('launchctl', 'print')) or (
+                observe == 'listener' and args[0] == '/usr/sbin/lsof'):
+            clock[0] += timeout
+&gt;           raise subprocess.TimeoutExpired(args, timeout)
+E           subprocess.TimeoutExpired: Command '('launchctl', 'print', 'gui/501/local.harnessagent.workbench')' timed out after 0.1 seconds
+
+tests/test_local_deployment.py:481: TimeoutExpired</failure></testcase><testcase classname="tests.test_local_deployment" name="test_teardown_observation_timeout_preserves_deadline_cause[listener]" time="0.000"><failure message="subprocess.TimeoutExpired: Command '('/usr/sbin/lsof', '-nP', '-iTCP:8765', '-sTCP:LISTEN', '-Fp')' timed out after 0.1 seconds">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108fba9c0&gt;
+observe = 'listener'
+
+    @pytest.mark.parametrize('observe', ['label', 'listener'])
+    def test_teardown_observation_timeout_preserves_deadline_cause(monkeypatch, observe):
+        clock = [0.0]
+        monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
+        monkeypatch.setattr(activation.time, 'sleep', lambda n: clock.__setitem__(0, clock[0] + n))
+        def command(*args, timeout):
+            if (observe == 'label' and args[:2] == ('launchctl', 'print')) or (
+                    observe == 'listener' and args[0] == '/usr/sbin/lsof'):
+                clock[0] += timeout
+                raise subprocess.TimeoutExpired(args, timeout)
+            if args[:2] == ('launchctl', 'print'):
+                raise subprocess.CalledProcessError(113, args)
+            return ''
+        monkeypatch.setattr(activation, 'run', command)
+        with pytest.raises(activation.ActivationError, match='teardown_deadline'):
+&gt;           activation.stop_and_wait(.1)
+
+tests/test_local_deployment.py:487:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+deploy/activate_local_skills.py:126: in stop_and_wait
+    if job_pid(deadline) is None and not listener_pids(deadline):
+                                         ^^^^^^^^^^^^^^^^^^^^^^^
+deploy/activate_local_skills.py:83: in listener_pids
+    value = run('/usr/sbin/lsof', '-nP', '-iTCP:8765', '-sTCP:LISTEN', '-Fp', timeout=command_limit(deadline))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+timeout = 0.1
+args = ('/usr/sbin/lsof', '-nP', '-iTCP:8765', '-sTCP:LISTEN', '-Fp')
+
+    def command(*args, timeout):
+        if (observe == 'label' and args[:2] == ('launchctl', 'print')) or (
+                observe == 'listener' and args[0] == '/usr/sbin/lsof'):
+            clock[0] += timeout
+&gt;           raise subprocess.TimeoutExpired(args, timeout)
+E           subprocess.TimeoutExpired: Command '('/usr/sbin/lsof', '-nP', '-iTCP:8765', '-sTCP:LISTEN', '-Fp')' timed out after 0.1 seconds
+
+tests/test_local_deployment.py:481: TimeoutExpired</failure></testcase><testcase classname="tests.test_local_deployment" name="test_recovery_keyboard_interrupt_is_reraised_after_receipt" time="0.004"><failure message="RuntimeError: Activation failed; previous plist recovery healthy=False; see activation-failure.json">args = ('launchctl', 'bootstrap', 'gui/501', '/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_recovery_keyboard_interru0/deploy/local.macos.plist')
+kwargs = {'timeout': 5}
+
+    def command(*args, **kwargs):
+        calls.append(args)
+        if args[:3] == ('git', 'rev-parse', 'HEAD'):
+            return COMMIT
+        if args[:2] == ('git', 'show'):
+            return plistlib.dumps(settings(tmp_path)).decode()
+        if 'image' in args:
+            return IMAGE
+        if args == ('launchctl', 'managername'):
+            return 'Aqua'
+        if args == ('launchctl', 'print', activation.LABEL):
+            if process['pid'] is None:
+                raise subprocess.CalledProcessError(113, args, output='', stderr='')
+            return f"pid = {process['pid']}\n"
+        if args[0] == '/usr/sbin/lsof':
+            return f"p{process['pid']}\n" if process['pid'] else ''
+        if args[0] == '/bin/ps':
+            return f"synthetic-start-{process['generation']}"
+        if args[:2] == ('launchctl', 'bootout'):
+            process['pid'] = None
+        if args[:2] == ('launchctl', 'bootstrap'):
+            response = answers.pop(0) if answers else 0
+            if response:
+&gt;               raise subprocess.CalledProcessError(response, args, output='synthetic-secret', stderr='synthetic-secret')
+E               subprocess.CalledProcessError: Command '('launchctl', 'bootstrap', 'gui/501', '/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_recovery_keyboard_interru0/deploy/local.macos.plist')' returned non-zero exit status 78.
+
+tests/test_local_deployment.py:60: CalledProcessError
+
+The above exception was the direct cause of the following exception:
+
+    def main():
+        previous = sys.argv[1]
+        assert re.fullmatch('[a-f0-9]{40}', previous)
+        work_item = sys.argv[2] if len(sys.argv) &gt; 2 else 'ha0052'
+        assert work_item in {'ha0052', 'ha0054', 'ha0055', 'ha0056'}
+        commit = run('git', 'rev-parse', 'HEAD')
+        assert not run('git', 'status', '--porcelain')
+        config = ROOT / 'deploy/local.macos.plist'
+        desired = plistlib.loads(config.read_bytes())
+        old = run('git', 'show', previous + ':deploy/local.macos.plist')
+        prior = plistlib.loads(old.encode())
+        # No stop, backup or bootstrap occurs until both configurations are usable.
+        topology = preflight([desired, prior])
+        run('plutil', '-lint', str(config))
+        image = run('/opt/homebrew/bin/docker', '--context', 'colima', 'image', 'inspect',
+                    'harnessagent-external-skill:0.1', '--format', '{{.Id}}')
+        assert image.startswith('sha256:')
+        backup = ROOT / '.local/backups' / (work_item + '-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+        backup.mkdir(parents=True, mode=0o700)
+        (backup / 'previous.plist').write_text(old)
+        db = ROOT / '.local/harness.db'
+        with sqlite3.connect('file:' + str(db) + '?mode=ro', uri=True) as source:
+            with sqlite3.connect(backup / 'harness.db') as target:
+                source.backup(target)
+                assert target.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+        (backup / 'harness.db').chmod(0o600)
+        phase = 'bootout'
+        try:
+            stop_and_wait()
+            phase = 'bootstrap'
+&gt;           attempts = bootstrap(config)
+                       ^^^^^^^^^^^^^^^^^
+
+deploy/activate_local_skills.py:221:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+config = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_recovery_keyboard_interru0/deploy/local.macos.plist')
+timeout_seconds = 30
+
+    def bootstrap(config, timeout_seconds=30):
+        """Exit 5 is ambiguous, not an admission to retry indefinitely."""
+        if timeout_seconds &lt;= 0:
+            raise ActivationError('bootstrap_deadline', action='bootstrap')
+        try:
+            run('launchctl', 'bootstrap', DOMAIN, str(config), timeout=min(5, timeout_seconds))
+        except subprocess.CalledProcessError as exc:
+&gt;           raise ActivationError('bootstrap_failed', action='bootstrap',
+                                  exit_code=exc.returncode, attempts=1) from exc
+E           deploy.activate_local_skills.ActivationError: bootstrap_failed
+
+deploy/activate_local_skills.py:53: ActivationError
+
+The above exception was the direct cause of the following exception:
+
+deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_recovery_keyb...gername'), ('launchctl', 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x109184e50&gt;
+
+    def test_recovery_keyboard_interrupt_is_reraised_after_receipt(deployment, monkeypatch):
+        root, _, answers = deployment
+        answers.append(78)
+        def interrupted(*args):
+            raise KeyboardInterrupt()
+        monkeypatch.setattr(activation, 'healthy', interrupted)
+        with pytest.raises(KeyboardInterrupt):
+&gt;           activation.main()
+
+tests/test_local_deployment.py:498:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def main():
+        previous = sys.argv[1]
+        assert re.fullmatch('[a-f0-9]{40}', previous)
+        work_item = sys.argv[2] if len(sys.argv) &gt; 2 else 'ha0052'
+        assert work_item in {'ha0052', 'ha0054', 'ha0055', 'ha0056'}
+        commit = run('git', 'rev-parse', 'HEAD')
+        assert not run('git', 'status', '--porcelain')
+        config = ROOT / 'deploy/local.macos.plist'
+        desired = plistlib.loads(config.read_bytes())
+        old = run('git', 'show', previous + ':deploy/local.macos.plist')
+        prior = plistlib.loads(old.encode())
+        # No stop, backup or bootstrap occurs until both configurations are usable.
+        topology = preflight([desired, prior])
+        run('plutil', '-lint', str(config))
+        image = run('/opt/homebrew/bin/docker', '--context', 'colima', 'image', 'inspect',
+                    'harnessagent-external-skill:0.1', '--format', '{{.Id}}')
+        assert image.startswith('sha256:')
+        backup = ROOT / '.local/backups' / (work_item + '-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+        backup.mkdir(parents=True, mode=0o700)
+        (backup / 'previous.plist').write_text(old)
+        db = ROOT / '.local/harness.db'
+        with sqlite3.connect('file:' + str(db) + '?mode=ro', uri=True) as source:
+            with sqlite3.connect(backup / 'harness.db') as target:
+                source.backup(target)
+                assert target.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+        (backup / 'harness.db').chmod(0o600)
+        phase = 'bootout'
+        try:
+            stop_and_wait()
+            phase = 'bootstrap'
+            attempts = bootstrap(config)
+            phase = 'health'
+            status = healthy(image, commit)
+        except (Exception, KeyboardInterrupt) as activation_error:
+            recovery = {'scope': 'previous_plist_only', 'healthy': False, 'phase': 'not_attempted',
+                        'code_commit': commit, 'config_source_commit': previous,
+                        'code_rollback': False, 'database_rollback': False}
+            if not isinstance(activation_error, KeyboardInterrupt):
+                try:
+                    recovery['phase'] = 'preflight'
+                    preflight([prior])
+                    recovery['phase'] = 'bootout'
+                    stop_and_wait()
+                    recovery['phase'] = 'bootstrap'
+                    recovery['bootstrap_attempts'] = bootstrap(backup / 'previous.plist')
+                    recovery['phase'] = 'health'
+                    recovery['health'] = healthy(image, commit)
+                    recovery['healthy'] = True
+                    recovery['phase'] = 'verified'
+                except (Exception, KeyboardInterrupt) as recovery_error:
+                    recovery.update(error_record(recovery_error))
+            failure = {'commit': commit, 'backup': str(backup), 'activation_succeeded': False,
+                       'phase': phase, 'recovery': recovery, **error_record(activation_error)}
+            (backup / 'activation-failure.json').write_text(json.dumps(failure, indent=2) + '\n')
+            (backup / 'activation-failure.json').chmod(0o600)
+            if isinstance(activation_error, KeyboardInterrupt):
+                raise
+&gt;           raise RuntimeError('Activation failed; previous plist recovery healthy=' +
+                               str(recovery['healthy']) + '; see activation-failure.json') from activation_error
+E           RuntimeError: Activation failed; previous plist recovery healthy=False; see activation-failure.json
+
+deploy/activate_local_skills.py:248: RuntimeError</failure></testcase><testcase classname="tests.test_local_deployment" name="test_plist_execution_override_is_rejected_before_stop[Program-/unapproved/program]" time="0.006"><failure message="Failed: DID NOT RAISE ActivationError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_plist_executi...gername'), ('launchctl', 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [])
+key = 'Program', value = '/unapproved/program'
+
+    @pytest.mark.parametrize('key,value', [('Program', '/unapproved/program'), ('ExitTimeOut', 0),
+                                          ('ExitTimeOut', 60), ('ExitTimeOut', True)])
+    def test_plist_execution_override_is_rejected_before_stop(deployment, key, value):
+        root, calls, _ = deployment
+        config = settings(root)
+        config[key] = value
+        (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError, match='plist_not_approved'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ActivationError
+
+tests/test_local_deployment.py:512: Failed</failure></testcase><testcase classname="tests.test_local_deployment" name="test_plist_execution_override_is_rejected_before_stop[ExitTimeOut-0]" time="0.003"><failure message="Failed: DID NOT RAISE ActivationError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_plist_executi...gername'), ('launchctl', 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [])
+key = 'ExitTimeOut', value = 0
+
+    @pytest.mark.parametrize('key,value', [('Program', '/unapproved/program'), ('ExitTimeOut', 0),
+                                          ('ExitTimeOut', 60), ('ExitTimeOut', True)])
+    def test_plist_execution_override_is_rejected_before_stop(deployment, key, value):
+        root, calls, _ = deployment
+        config = settings(root)
+        config[key] = value
+        (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError, match='plist_not_approved'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ActivationError
+
+tests/test_local_deployment.py:512: Failed</failure></testcase><testcase classname="tests.test_local_deployment" name="test_plist_execution_override_is_rejected_before_stop[ExitTimeOut-60]" time="0.004"><failure message="Failed: DID NOT RAISE ActivationError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_plist_executi...gername'), ('launchctl', 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [])
+key = 'ExitTimeOut', value = 60
+
+    @pytest.mark.parametrize('key,value', [('Program', '/unapproved/program'), ('ExitTimeOut', 0),
+                                          ('ExitTimeOut', 60), ('ExitTimeOut', True)])
+    def test_plist_execution_override_is_rejected_before_stop(deployment, key, value):
+        root, calls, _ = deployment
+        config = settings(root)
+        config[key] = value
+        (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError, match='plist_not_approved'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ActivationError
+
+tests/test_local_deployment.py:512: Failed</failure></testcase><testcase classname="tests.test_local_deployment" name="test_plist_execution_override_is_rejected_before_stop[ExitTimeOut-True]" time="0.007"><failure message="Failed: DID NOT RAISE ActivationError">deployment = (PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-735/test_plist_executi...gername'), ('launchctl', 'print', 'gui/501'), ('launchctl', 'print', 'gui/501/local.harnessagent.workbench'), ...], [])
+key = 'ExitTimeOut', value = True
+
+    @pytest.mark.parametrize('key,value', [('Program', '/unapproved/program'), ('ExitTimeOut', 0),
+                                          ('ExitTimeOut', 60), ('ExitTimeOut', True)])
+    def test_plist_execution_override_is_rejected_before_stop(deployment, key, value):
+        root, calls, _ = deployment
+        config = settings(root)
+        config[key] = value
+        (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+&gt;       with pytest.raises(activation.ActivationError, match='plist_not_approved'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ActivationError
+
+tests/test_local_deployment.py:512: Failed</failure></testcase></testsuite></testsuites>

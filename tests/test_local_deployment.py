@@ -396,3 +396,186 @@ def test_five_and_recovery_receipt_preserve_cause_without_secrets(deployment):
     assert receipt['recovery']['database_rollback'] is False
     assert 'synthetic-secret' not in raw
     assert len([c for c in calls if c[:2] == ('launchctl', 'bootstrap')]) == 2
+
+
+@pytest.fixture
+def delayed_exit(deployment, monkeypatch):
+    root, calls, _ = deployment
+    clock = [0.0]
+    exit_at = [20.0]
+    listener_kind = ['owned']
+    original = activation.run
+    monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
+    monkeypatch.setattr(activation.time, 'sleep', lambda n: clock.__setitem__(0, clock[0] + n))
+
+    def command(*args, **kwargs):
+        stopped = any(c[:2] == ('launchctl', 'bootout') for c in calls)
+        started = any(c[:2] == ('launchctl', 'bootstrap') for c in calls)
+        if stopped and not started:
+            if args[0] == '/usr/sbin/lsof' and clock[0] < exit_at[0]:
+                return 'p100\np999' if listener_kind[0] == 'multiple' else 'p100'
+            if args[0] == '/bin/ps' and listener_kind[0] == 'reused':
+                return 'different-process-with-reused-pid'
+        if args[:2] == ('launchctl', 'bootstrap'):
+            assert clock[0] >= exit_at[0], 'bootstrap before previous listener released'
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(activation, 'run', command)
+    return root, calls, clock, exit_at, listener_kind
+
+
+def test_twenty_second_graceful_exit_does_not_strand_service(delayed_exit):
+    root, calls, clock, _, _ = delayed_exit
+    activation.main()
+    assert clock[0] == 20
+    assert len([c for c in calls if c[:2] == ('launchctl', 'bootout')]) == 1
+    assert len([c for c in calls if c[:2] == ('launchctl', 'bootstrap')]) == 1
+    assert len(list(root.glob('.local/backups/*/deployment.json'))) == 1
+
+
+def test_recovery_waits_for_known_orphan_before_bootstrap(delayed_exit):
+    root, calls, clock, exit_at, _ = delayed_exit
+    exit_at[0] = 50
+    with pytest.raises(RuntimeError, match='recovery healthy=True'):
+        activation.main()
+    receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+    assert receipt['code'] == 'teardown_deadline'
+    assert receipt['recovery']['healthy'] is True
+    assert receipt['teardown']['last_label_pid'] is None
+    assert receipt['teardown']['last_listener_pids'] == [100]
+    assert receipt['teardown']['bootout_attempted'] is True
+    assert receipt['teardown']['bootout_returned'] is True
+    assert receipt['teardown']['service_stopped'] is False
+    assert receipt['recovery']['teardown']['bootout_attempted'] is False
+    assert receipt['recovery']['teardown']['service_stopped'] is True
+    assert clock[0] == 50
+    assert len([c for c in calls if c[:2] == ('launchctl', 'bootout')]) == 1
+    assert len([c for c in calls if c[:2] == ('launchctl', 'bootstrap')]) == 1
+    assert not list(root.glob('.local/backups/*/deployment.json'))
+
+
+@pytest.mark.parametrize('kind', ['reused', 'multiple'])
+def test_recovery_does_not_trust_pid_alone_or_multiple_listeners(delayed_exit, kind):
+    root, calls, _, exit_at, listener_kind = delayed_exit
+    exit_at[0], listener_kind[0] = 50, kind
+    with pytest.raises(RuntimeError, match='recovery healthy=False'):
+        activation.main()
+    receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+    assert receipt['recovery']['code'] == 'port_owned_by_other_process'
+    assert not any(c[:2] == ('launchctl', 'bootstrap') for c in calls)
+
+
+def test_known_orphan_wait_has_a_second_hard_deadline(delayed_exit):
+    root, calls, clock, exit_at, _ = delayed_exit
+    exit_at[0] = 1000
+    with pytest.raises(RuntimeError, match='recovery healthy=False'):
+        activation.main()
+    receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+    assert receipt['recovery']['code'] == 'teardown_deadline'
+    assert clock[0] == 90
+    assert not any(c[:2] == ('launchctl', 'bootstrap') for c in calls)
+
+
+@pytest.mark.parametrize('observe', ['label', 'listener'])
+def test_teardown_observation_timeout_preserves_deadline_cause(monkeypatch, observe):
+    clock = [0.0]
+    monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
+    monkeypatch.setattr(activation.time, 'sleep', lambda n: clock.__setitem__(0, clock[0] + n))
+    def command(*args, timeout):
+        if (observe == 'label' and args[:2] == ('launchctl', 'print')) or (
+                observe == 'listener' and args[0] == '/usr/sbin/lsof'):
+            clock[0] += timeout
+            raise subprocess.TimeoutExpired(args, timeout)
+        if args[:2] == ('launchctl', 'print'):
+            raise subprocess.CalledProcessError(113, args)
+        return ''
+    monkeypatch.setattr(activation, 'run', command)
+    with pytest.raises(activation.ActivationError, match='teardown_deadline'):
+        activation.stop_and_wait(.1)
+    assert clock[0] == .1
+
+
+def test_recovery_keyboard_interrupt_is_reraised_after_receipt(deployment, monkeypatch):
+    root, _, answers = deployment
+    answers.append(78)
+    def interrupted(*args):
+        raise KeyboardInterrupt()
+    monkeypatch.setattr(activation, 'healthy', interrupted)
+    with pytest.raises(KeyboardInterrupt):
+        activation.main()
+    receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+    assert receipt['recovery']['error_type'] == 'KeyboardInterrupt'
+    assert receipt['recovery']['healthy'] is False
+    assert not list(root.glob('.local/backups/*/deployment.json'))
+
+
+@pytest.mark.parametrize('key,value', [('Program', '/unapproved/program'), ('ExitTimeOut', 0),
+                                      ('ExitTimeOut', 60), ('ExitTimeOut', True)])
+def test_plist_execution_override_is_rejected_before_stop(deployment, key, value):
+    root, calls, _ = deployment
+    config = settings(root)
+    config[key] = value
+    (root / 'deploy/local.macos.plist').write_bytes(plistlib.dumps(config))
+    with pytest.raises(activation.ActivationError, match='plist_not_approved'):
+        activation.main()
+    assert not any(c[:2] in [('launchctl', 'bootstrap'), ('launchctl', 'bootout')] for c in calls)
+
+
+def test_synchronous_bootout_gets_exit_window_within_total_deadline(deployment, monkeypatch):
+    root, _, _ = deployment
+    clock, limits = [0.0], []
+    original = activation.run
+    monkeypatch.setattr(activation.time, 'monotonic', lambda: clock[0])
+    monkeypatch.setattr(activation.time, 'sleep', lambda n: clock.__setitem__(0, clock[0] + n))
+    def command(*args, **kwargs):
+        if args[:2] == ('launchctl', 'bootout'):
+            limits.append(kwargs['timeout'])
+            assert kwargs['timeout'] > 20
+            clock[0] += 20
+        return original(*args, **kwargs)
+    monkeypatch.setattr(activation, 'run', command)
+    activation.main()
+    receipt = json.loads(next(root.glob('.local/backups/*/deployment.json')).read_text())
+    assert limits == [30] and clock[0] == 20
+    assert receipt['teardown']['service_stopped'] is True
+
+
+def test_early_observer_timeout_is_not_misreported_as_deadline(monkeypatch):
+    monkeypatch.setattr(activation.time, 'monotonic', lambda: 0)
+    def command(*args, **kwargs):
+        raise subprocess.TimeoutExpired(args, 5)
+    monkeypatch.setattr(activation, 'run', command)
+    with pytest.raises(activation.ActivationError, match='command_timeout') as error:
+        activation.stop_and_wait(45)
+    assert error.value.action == 'observe' and error.value.attempts == 0
+
+
+def test_vanished_ps_is_retried_without_accepting_a_different_identity(deployment, monkeypatch):
+    original = activation.run
+    observations = []
+    def command(*args, **kwargs):
+        if args[0] == '/bin/ps':
+            observations.append(1)
+            if len(observations) == 1:
+                raise subprocess.CalledProcessError(1, args)
+        return original(*args, **kwargs)
+    monkeypatch.setattr(activation, 'run', command)
+    assert activation.healthy(IMAGE, COMMIT)['process']['pid'] == 100
+    assert len(observations) == 3
+
+
+def test_known_orphan_exiting_between_lsof_and_ps_can_recover(delayed_exit, monkeypatch):
+    root, calls, clock, exit_at, _ = delayed_exit
+    exit_at[0] = 50
+    original = activation.run
+    def command(*args, **kwargs):
+        if args[0] == '/bin/ps' and clock[0] == 45:
+            clock[0] = 50
+            raise subprocess.CalledProcessError(1, args)
+        return original(*args, **kwargs)
+    monkeypatch.setattr(activation, 'run', command)
+    with pytest.raises(RuntimeError, match='recovery healthy=True'):
+        activation.main()
+    receipt = json.loads(next(root.glob('.local/backups/*/activation-failure.json')).read_text())
+    assert receipt['recovery']['healthy'] is True
+    assert len([c for c in calls if c[:2] == ('launchctl', 'bootstrap')]) == 1

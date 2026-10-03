@@ -88,7 +88,19 @@ def listener_pids(deadline=None):
     return {int(line[1:]) for line in value.splitlines() if re.fullmatch(r'p[0-9]+', line)}
 
 
-def preflight(configs):
+def process_started_at(pid, deadline=None):
+    try:
+        started = run('/bin/ps', '-p', str(pid), '-o', 'lstart=', timeout=command_limit(deadline))
+    except subprocess.CalledProcessError as exc:
+        if exc.returncode == 1:
+            raise OSError('process has exited') from exc
+        raise
+    if not started:
+        raise OSError('process has exited')
+    return started
+
+
+def preflight(configs, exiting_process=None):
     manager = run('launchctl', 'managername', timeout=5)
     if manager != 'Aqua':
         raise ActivationError('gui_requires_aqua_caller', action='preflight')
@@ -104,38 +116,82 @@ def preflight(configs):
             session_types = [session_types]
         if (config.get('Label') != SERVICE or config.get('WorkingDirectory') != str(ROOT)
                 or config.get('ProgramArguments') != expected_args or 'Aqua' not in session_types
+                or 'Program' in config or type(config.get('ExitTimeOut', 20)) is not int
+                or config.get('ExitTimeOut', 20) != 20
                 or config.get('EnvironmentVariables') != {
                     'HARNESS_SANDBOX_BACKEND': 'colima', 'HARNESS_EXTERNAL_SKILLS': 'enabled'}):
             raise ActivationError('plist_not_approved', action='preflight')
     pid, listeners = job_pid(), listener_pids()
+    identity = {'pid': pid, 'started_at': process_started_at(pid)} if pid else None
     if listeners and (not pid or listeners != {pid}):
-        raise ActivationError('port_owned_by_other_process', action='preflight')
-    return {'manager': manager, 'domain': DOMAIN, 'previous_pid': pid}
-
-
-def stop_and_wait(timeout_seconds=15):
-    deadline = time.monotonic() + timeout_seconds
-    if job_pid(deadline) is not None:
+        # Only this activation's previously identified process may still be exiting.
+        # A reused PID or any additional listener is not an approved orphan.
+        if pid is not None or not exiting_process or listeners != {exiting_process['pid']}:
+            raise ActivationError('port_owned_by_other_process', action='preflight')
         try:
-            run('launchctl', 'bootout', LABEL, timeout=command_limit(deadline))
-        except subprocess.CalledProcessError as exc:
-            raise ActivationError('bootout_failed', action='bootout', exit_code=exc.returncode, attempts=1) from exc
-        except subprocess.TimeoutExpired as exc:
-            raise ActivationError('command_timeout', action='bootout', attempts=1) from exc
-    while time.monotonic() < deadline:
-        if job_pid(deadline) is None and not listener_pids(deadline):
-            return
-        time.sleep(min(.25, max(0, deadline - time.monotonic())))
-    raise ActivationError('teardown_deadline', action='bootout')
+            started = process_started_at(exiting_process['pid'])
+        except OSError:
+            # It may exit between lsof and ps; accept only a fresh, fully clear observation.
+            if job_pid() is not None or listener_pids():
+                raise ActivationError('port_owned_by_other_process', action='preflight')
+            identity = None
+        else:
+            if started != exiting_process['started_at']:
+                raise ActivationError('port_owned_by_other_process', action='preflight')
+            identity = exiting_process
+    return {'manager': manager, 'domain': DOMAIN, 'previous_pid': pid,
+            'previous_identity': identity}
+
+
+def stop_and_wait(timeout_seconds=45, *, state=None):
+    """Wait for the whole teardown, including bootout; never kill port owners."""
+    state = state if state is not None else {}
+    state.update(bootout_attempted=False, bootout_returned=False, service_stopped=False,
+                 last_label_pid=None, last_listener_pids=None)
+    deadline = time.monotonic() + timeout_seconds
+    action = 'observe'
+    try:
+        pid = job_pid(deadline)
+        state['last_label_pid'] = pid
+        if pid is not None:
+            if pid:
+                state['exiting_process'] = {'pid': pid, 'started_at': process_started_at(pid, deadline)}
+            action = 'bootout'
+            # launchd may wait for its 20s ExitTimeOut; a 5s command timeout is too short.
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise ActivationError('teardown_deadline', action=action)
+            state['bootout_attempted'] = True
+            run('launchctl', 'bootout', LABEL, timeout=min(30, remaining))
+            state['bootout_returned'] = True
+        action = 'observe'
+        while time.monotonic() < deadline:
+            state['last_label_pid'] = job_pid(deadline)
+            state['last_listener_pids'] = sorted(listener_pids(deadline))
+            if state['last_label_pid'] is None and not state['last_listener_pids']:
+                state['service_stopped'] = True
+                return
+            time.sleep(min(.25, max(0, deadline - time.monotonic())))
+    except subprocess.TimeoutExpired as exc:
+        code = 'teardown_deadline' if time.monotonic() >= deadline else 'command_timeout'
+        raise ActivationError(code, action=action, attempts=int(state['bootout_attempted'])) from exc
+    except subprocess.CalledProcessError as exc:
+        code = 'bootout_failed' if action == 'bootout' else 'teardown_observation_failed'
+        raise ActivationError(code, action=action, exit_code=exc.returncode,
+                              attempts=int(state['bootout_attempted'])) from exc
+    except ActivationError as exc:
+        if exc.code == 'operation_deadline':
+            raise ActivationError('teardown_deadline', action=action,
+                                  attempts=int(state['bootout_attempted'])) from exc
+        raise
+    raise ActivationError('teardown_deadline', action='observe', attempts=int(state['bootout_attempted']))
 
 
 def process_identity(deadline=None):
     pid, listeners = job_pid(deadline), listener_pids(deadline)
     if not pid or listeners != {pid}:
         raise OSError('new process has not acquired listener')
-    started = run('/bin/ps', '-p', str(pid), '-o', 'lstart=', timeout=command_limit(deadline))
-    if not started:
-        raise OSError('new process has exited')
+    started = process_started_at(pid, deadline)
     return {'pid': pid, 'started_at': started}
 
 
@@ -215,8 +271,9 @@ def main():
             assert target.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
     (backup / 'harness.db').chmod(0o600)
     phase = 'bootout'
+    teardown = {'exiting_process': topology['previous_identity']}
     try:
-        stop_and_wait()
+        stop_and_wait(state=teardown)
         phase = 'bootstrap'
         attempts = bootstrap(config)
         phase = 'health'
@@ -225,12 +282,14 @@ def main():
         recovery = {'scope': 'previous_plist_only', 'healthy': False, 'phase': 'not_attempted',
                     'code_commit': commit, 'config_source_commit': previous,
                     'code_rollback': False, 'database_rollback': False}
+        interrupted = None
         if not isinstance(activation_error, KeyboardInterrupt):
             try:
                 recovery['phase'] = 'preflight'
-                preflight([prior])
+                preflight([prior], exiting_process=teardown.get('exiting_process'))
                 recovery['phase'] = 'bootout'
-                stop_and_wait()
+                recovery['teardown'] = {}
+                stop_and_wait(state=recovery['teardown'])
                 recovery['phase'] = 'bootstrap'
                 recovery['bootstrap_attempts'] = bootstrap(backup / 'previous.plist')
                 recovery['phase'] = 'health'
@@ -239,17 +298,22 @@ def main():
                 recovery['phase'] = 'verified'
             except (Exception, KeyboardInterrupt) as recovery_error:
                 recovery.update(error_record(recovery_error))
+                if isinstance(recovery_error, KeyboardInterrupt):
+                    interrupted = recovery_error
         failure = {'commit': commit, 'backup': str(backup), 'activation_succeeded': False,
-                   'phase': phase, 'recovery': recovery, **error_record(activation_error)}
+                   'phase': phase, 'teardown': teardown, 'recovery': recovery, **error_record(activation_error)}
         (backup / 'activation-failure.json').write_text(json.dumps(failure, indent=2) + '\n')
         (backup / 'activation-failure.json').chmod(0o600)
         if isinstance(activation_error, KeyboardInterrupt):
             raise
+        if interrupted is not None:
+            raise interrupted
         raise RuntimeError('Activation failed; previous plist recovery healthy=' +
                            str(recovery['healthy']) + '; see activation-failure.json') from activation_error
     result = dict(commit=commit, backup=str(backup), database=str(db), runtime=status['skills'],
                   health=status['health'], agent_runtime=status['agent_runtime'], bootstrap_attempts=attempts,
-                  topology=topology, process=status['process'], code_rollback=False, database_rollback=False)
+                  topology=topology, teardown=teardown, process=status['process'],
+                  code_rollback=False, database_rollback=False)
     (backup / 'deployment.json').write_text(json.dumps(result, indent=2) + '\n')
     (backup / 'deployment.json').chmod(0o600)
     print(json.dumps(result, indent=2))

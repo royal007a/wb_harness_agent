@@ -11,16 +11,31 @@
    失败记录动作、exit_code、attempts 或命令超时，不用最后一次超时掩盖既有错误。
 3. 服务启动不能用 sleep 成功代替健康验证。最多 60 秒读取 health、模型门禁
    和外部 Skill 状态；模型必须关闭，Skill 必须沿用批准的 Colima profile。
-   bootstrap 前必须等待 label 消失且 8765 不再监听（最多 15 秒），未知端口占用
+   bootstrap 前必须等待 label 消失且 8765 不再监听（最多 45 秒，包含命令等待）；
+   bootout 单次最多 30 秒，覆盖批准 plist 的 ExitTimeOut=20 秒退出窗口。
+   plist 不得通过 Program 覆盖启动命令；ExitTimeOut 仅接受缺省或整数 20。
+   观察命令因剩余窗口耗尽而超时，报 teardown_deadline，不丢失最后观察到的
+   label/listener 状态；窗口尚未耗尽的命令超时另行记录。未知端口占用
    不强杀。启动后 launchd PID 必须等于唯一监听 PID，记录进程启动时间；每轮健康
    检查前后重新核对身份与干净提交，不能接受旧进程、PID 改变或代码漂移的应答。
 4. 正向启动失败，只卸载本应用 label，并尝试恢复备份 plist；恢复也使用
    同样的预检、受控停机和健康验证。bootout 失败/超时也不得忽略。
+   唯一例外是本次助手已经识别且正在退出的进程：label 消失但该进程仍占端口时，
+   恢复预检只允许 PID 与停机前启动时间均相同、且没有其他监听者的进程继续有界退出。
+   不将它当作健康新发布、不再次发送 bootout、不按裸 PID 放行复用进程；端口未释放
+   绝不能 bootstrap。第二个等待窗口也最多 45 秒，耗尽仍失败，不无限等待或强杀。
    原发布仍返回失败，不写成功 deployment.json。未停止任何服务的预检失败不恢复。
 5. 恢复成功或失败均写 activation-failure.json（错误类型、步骤、健康结果），
    不保存命令 stdout/stderr、环境变量或凭据。不能将“发过 bootstrap”记为恢复。
-   KeyboardInterrupt 同样写失败回执，不自动继续发布；恢复明确记录仍运行当前提交，
+   激活开始后的 KeyboardInterrupt 同样写失败回执，不自动继续发布；恢复明确记录仍运行当前提交，
    code_rollback=false、database_rollback=false，原提交仅表示恢复 plist 的来源。
+   回执分别记录 bootout_attempted、bootout_returned、service_stopped（只有观察到
+   label 消失且端口释放才为 true），不能以 phase 推断已停机。恢复中 Ctrl-C 也在
+   写回执后重新抛 KeyboardInterrupt。因两个 plist 必须符合同一批准命令/目录/门禁，
+   此恢复仅涵盖日志、KeepAlive 等非执行配置，不恢复旧代码、旧环境或其他命令。
+   备份准备阶段尚未停服务，中断不写激活失败回执，可能留有未完成备份目录，不能
+   将其作为可恢复备份使用。KeepAlive 重启导致身份变化仍保守拒绝；ps 恰好观察到
+   已退出进程可重查，但不接受新身份冒充原身份。
 6. 不强杀其他进程、不自动回滚 DB、不移植本机数据或凭据到 132。
 
 故障注入：Background/gui 不兼容、域不可访问、已加载、永久 5、非 5、命令超时、
