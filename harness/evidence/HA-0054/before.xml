@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="13" skipped="0" tests="15" time="28.177" timestamp="2026-10-03T22:57:16.702671+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_lifecycle" name="test_cancelled_exchange_replay_has_no_provider_or_credential_call" time="2.473"><failure message="KeyError: 'error_code'">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a844830&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a8444... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+
+    def test_cancelled_exchange_replay_has_no_provider_or_credential_call(state):
+        runtime, adapter, credentials, session, exchange = state
+        terminal = runtime.cancel_exchange(exchange['id'])
+        events = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+&gt;       assert events[-1]['error_code'] == 'EXCHANGE_CANCELLED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'error_code'
+
+tests/test_agent_runtime_lifecycle.py:96: KeyError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_duplicate_consumer_has_no_execution_or_cancellation_ownership" time="2.615"><failure message="TimeoutError">self = &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a8e0190&gt;
+request = ProviderRequest(base_url='https://example.invalid', credential='synthetic-test-value', model_id='synthetic', system_prompt='test', messages=({'role': 'user', 'content': 'original'},), temperature=0, max_output_tokens=32)
+
+    async def stream(self, request):
+        self.calls += 1
+        self.requests.append(request)
+        self.started.set()
+        try:
+            if self.mode == 'wait':
+&gt;               await self.release.wait()
+
+tests/test_agent_runtime_lifecycle.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;asyncio.locks.Event object at 0x10a65d5b0 [set]&gt;
+
+    async def wait(self):
+        """Block until the internal flag is true.
+    
+        If the internal flag is true on entry, return True
+        immediately.  Otherwise, block until another task calls
+        set() to set the flag to true, then return True.
+        """
+        if self._value:
+            return True
+    
+        fut = self._get_loop().create_future()
+        self._waiters.append(fut)
+        try:
+&gt;           await fut
+E           asyncio.exceptions.CancelledError
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/locks.py:213: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a8e0550&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a8e01... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+
+    def test_duplicate_consumer_has_no_execution_or_cancellation_ownership(state):
+        runtime, adapter, credentials, session, exchange = state
+        adapter.mode = 'wait'
+    
+        async def scenario():
+            owner = asyncio.create_task(collect(runtime.stream_exchange(exchange['id'])))
+            await asyncio.wait_for(adapter.started.wait(), 1)
+            # A different runtime instance shares the DB, not an in-memory lock.
+            duplicate_runtime = AgentRuntime(runtime.store, adapter, credentials, runtime_enabled=True)
+            duplicate = duplicate_runtime.stream_exchange(exchange['id'])
+            try:
+                event = await asyncio.wait_for(anext(duplicate), 1)
+                assert event['error_code'] == 'EXCHANGE_IN_PROGRESS'
+            finally:
+                await duplicate.aclose()
+                adapter.release.set()
+            result = await asyncio.wait_for(owner, 1)
+            assert result[-1]['type'] == 'done'
+    
+&gt;       asyncio.run(scenario())
+
+tests/test_agent_runtime_lifecycle.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:205: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:128: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py:720: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/test_agent_runtime_lifecycle.py:113: in scenario
+    event = await asyncio.wait_for(anext(duplicate), 1)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/tasks.py:487: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;Timeout [expired]&gt;
+exc_type = &lt;class 'asyncio.exceptions.CancelledError'&gt;
+exc_val = CancelledError(), exc_tb = &lt;traceback object at 0x10a7bbfc0&gt;
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; bool | None:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() &lt;= self._cancelling and exc_type is not None:
+                # Since there are no new cancel requests, we're
+                # handling this.
+                if issubclass(exc_type, exceptions.CancelledError):
+&gt;                   raise TimeoutError from exc_val
+E                   TimeoutError
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/timeouts.py:115: TimeoutError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_busy_session_rejects_new_key_without_writing_and_replays_same_key" time="0.118"><failure message="Failed: DID NOT RAISE Problem">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a65e3f0&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a8e20... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+
+    def test_busy_session_rejects_new_key_without_writing_and_replays_same_key(state):
+        runtime, _, _, session, exchange = state
+        assert runtime.prepare_exchange(session['id'], {'content': 'original'}, 'send') == exchange
+&gt;       with pytest.raises(Problem) as error:
+             ^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Problem
+
+tests/test_agent_runtime_lifecycle.py:129: Failed</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_cancel_or_close_after_delta_closes_provider_without_publishing[cancel]" time="0.095"><failure message="AssertionError: assert ['delta', 'done'] == ['error']&#10;  &#10;  At index 0 diff: 'delta' != 'error'&#10;  Left contains one more item: 'done'&#10;  Use -v to get more diff">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a65eea0&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a65ec... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+action = 'cancel'
+
+    @pytest.mark.parametrize('action', ['cancel', 'close'])
+    def test_cancel_or_close_after_delta_closes_provider_without_publishing(state, action):
+        runtime, adapter, _, session, exchange = state
+    
+        async def scenario():
+            stream = runtime.stream_exchange(exchange['id'])
+            assert (await anext(stream))['type'] == 'delta'
+            if action == 'cancel':
+                runtime.cancel_exchange(exchange['id'])
+                events = await collect(stream)
+                assert [e['type'] for e in events] == ['error']
+                assert events[0]['error_code'] == 'EXCHANGE_CANCELLED'
+            await stream.aclose()
+    
+&gt;       asyncio.run(scenario())
+
+tests/test_agent_runtime_lifecycle.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:205: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:128: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py:720: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def scenario():
+        stream = runtime.stream_exchange(exchange['id'])
+        assert (await anext(stream))['type'] == 'delta'
+        if action == 'cancel':
+            runtime.cancel_exchange(exchange['id'])
+            events = await collect(stream)
+&gt;           assert [e['type'] for e in events] == ['error']
+E           AssertionError: assert ['delta', 'done'] == ['error']
+E             
+E             At index 0 diff: 'delta' != 'error'
+E             Left contains one more item: 'done'
+E             Use -v to get more diff
+
+tests/test_agent_runtime_lifecycle.py:147: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_cancel_or_close_after_delta_closes_provider_without_publishing[close]" time="0.148"><failure message="AssertionError: assert 'streaming' == 'cancelled'&#10;  &#10;  - cancelled&#10;  + streaming">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a64b650&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a65f8... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+action = 'close'
+
+    @pytest.mark.parametrize('action', ['cancel', 'close'])
+    def test_cancel_or_close_after_delta_closes_provider_without_publishing(state, action):
+        runtime, adapter, _, session, exchange = state
+    
+        async def scenario():
+            stream = runtime.stream_exchange(exchange['id'])
+            assert (await anext(stream))['type'] == 'delta'
+            if action == 'cancel':
+                runtime.cancel_exchange(exchange['id'])
+                events = await collect(stream)
+                assert [e['type'] for e in events] == ['error']
+                assert events[0]['error_code'] == 'EXCHANGE_CANCELLED'
+            await stream.aclose()
+    
+        asyncio.run(scenario())
+        assert adapter.closed == 1
+&gt;       assert runtime.store.runtime_get('runtime_chat_exchanges', exchange['id'])['status'] == 'cancelled'
+E       AssertionError: assert 'streaming' == 'cancelled'
+E         
+E         - cancelled
+E         + streaming
+
+tests/test_agent_runtime_lifecycle.py:153: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_waiting_provider_is_released_without_another_delta[persistent_cancel]" time="0.931"><failure message="TimeoutError">iterator = &lt;async_generator object AgentRuntime.stream_exchange at 0x10a5f26c0&gt;
+
+    async def collect(iterator):
+&gt;       result = [event async for event in iterator]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_agent_runtime_lifecycle.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/agent_runtime.py:317: in stream_exchange
+    async for chunk in adapter.stream(request):
+tests/test_agent_runtime_lifecycle.py:34: in stream
+    await self.release.wait()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;asyncio.locks.Event object at 0x10a9f6030 [unset]&gt;
+
+    async def wait(self):
+        """Block until the internal flag is true.
+    
+        If the internal flag is true on entry, return True
+        immediately.  Otherwise, block until another task calls
+        set() to set the flag to true, then return True.
+        """
+        if self._value:
+            return True
+    
+        fut = self._get_loop().create_future()
+        self._waiters.append(fut)
+        try:
+&gt;           await fut
+E           asyncio.exceptions.CancelledError
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/locks.py:213: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a78af10&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a64bb... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a9c4050&gt;
+action = 'persistent_cancel'
+
+    @pytest.mark.parametrize('action', ['persistent_cancel', 'task_cancel', 'timeout'])
+    def test_waiting_provider_is_released_without_another_delta(state, monkeypatch, action):
+        runtime, adapter, _, session, exchange = state
+        adapter.mode = 'wait'
+        if action == 'timeout':
+            monkeypatch.setattr(runtime_module, 'STREAM_TIMEOUT_SECONDS', .1, raising=False)
+    
+        async def scenario():
+            task = asyncio.create_task(collect(runtime.stream_exchange(exchange['id'])))
+            await asyncio.wait_for(adapter.started.wait(), 1)
+            if action == 'task_cancel':
+                task.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await task
+            else:
+                if action == 'persistent_cancel':
+                    runtime.cancel_exchange(exchange['id'])
+                events = await asyncio.wait_for(task, .8)
+                assert events[-1]['error_code'] == ('MODEL_PROVIDER_TIMEOUT' if action == 'timeout' else 'EXCHANGE_CANCELLED')
+    
+&gt;       asyncio.run(scenario())
+
+tests/test_agent_runtime_lifecycle.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:205: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:128: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py:720: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/test_agent_runtime_lifecycle.py:174: in scenario
+    events = await asyncio.wait_for(task, .8)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/tasks.py:487: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;Timeout [expired]&gt;
+exc_type = &lt;class 'asyncio.exceptions.CancelledError'&gt;
+exc_val = CancelledError(), exc_tb = &lt;traceback object at 0x10aa1f6c0&gt;
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; bool | None:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() &lt;= self._cancelling and exc_type is not None:
+                # Since there are no new cancel requests, we're
+                # handling this.
+                if issubclass(exc_type, exceptions.CancelledError):
+&gt;                   raise TimeoutError from exc_val
+E                   TimeoutError
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/timeouts.py:115: TimeoutError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_waiting_provider_is_released_without_another_delta[task_cancel]" time="0.035"><failure message="AssertionError: assert 'streaming' == 'cancelled'&#10;  &#10;  - cancelled&#10;  + streaming">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a78b9b0&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a78b3... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a9c48a0&gt;
+action = 'task_cancel'
+
+    @pytest.mark.parametrize('action', ['persistent_cancel', 'task_cancel', 'timeout'])
+    def test_waiting_provider_is_released_without_another_delta(state, monkeypatch, action):
+        runtime, adapter, _, session, exchange = state
+        adapter.mode = 'wait'
+        if action == 'timeout':
+            monkeypatch.setattr(runtime_module, 'STREAM_TIMEOUT_SECONDS', .1, raising=False)
+    
+        async def scenario():
+            task = asyncio.create_task(collect(runtime.stream_exchange(exchange['id'])))
+            await asyncio.wait_for(adapter.started.wait(), 1)
+            if action == 'task_cancel':
+                task.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await task
+            else:
+                if action == 'persistent_cancel':
+                    runtime.cancel_exchange(exchange['id'])
+                events = await asyncio.wait_for(task, .8)
+                assert events[-1]['error_code'] == ('MODEL_PROVIDER_TIMEOUT' if action == 'timeout' else 'EXCHANGE_CANCELLED')
+    
+        asyncio.run(scenario())
+        assert adapter.closed == 1
+        assert_no_assistant(runtime, session)
+        current = runtime.store.runtime_get('runtime_chat_exchanges', exchange['id'])
+&gt;       assert current['status'] == ('failed' if action == 'timeout' else 'cancelled')
+E       AssertionError: assert 'streaming' == 'cancelled'
+E         
+E         - cancelled
+E         + streaming
+
+tests/test_agent_runtime_lifecycle.py:181: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_waiting_provider_is_released_without_another_delta[timeout]" time="0.846"><failure message="TimeoutError">iterator = &lt;async_generator object AgentRuntime.stream_exchange at 0x10a5f2a40&gt;
+
+    async def collect(iterator):
+&gt;       result = [event async for event in iterator]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_agent_runtime_lifecycle.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/agent_runtime.py:317: in stream_exchange
+    async for chunk in adapter.stream(request):
+tests/test_agent_runtime_lifecycle.py:34: in stream
+    await self.release.wait()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;asyncio.locks.Event object at 0x10ae48590 [unset]&gt;
+
+    async def wait(self):
+        """Block until the internal flag is true.
+    
+        If the internal flag is true on entry, return True
+        immediately.  Otherwise, block until another task calls
+        set() to set the flag to true, then return True.
+        """
+        if self._value:
+            return True
+    
+        fut = self._get_loop().create_future()
+        self._waiters.append(fut)
+        try:
+&gt;           await fut
+E           asyncio.exceptions.CancelledError
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/locks.py:213: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a9c0d50&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a9a00... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a9d05f0&gt;
+action = 'timeout'
+
+    @pytest.mark.parametrize('action', ['persistent_cancel', 'task_cancel', 'timeout'])
+    def test_waiting_provider_is_released_without_another_delta(state, monkeypatch, action):
+        runtime, adapter, _, session, exchange = state
+        adapter.mode = 'wait'
+        if action == 'timeout':
+            monkeypatch.setattr(runtime_module, 'STREAM_TIMEOUT_SECONDS', .1, raising=False)
+    
+        async def scenario():
+            task = asyncio.create_task(collect(runtime.stream_exchange(exchange['id'])))
+            await asyncio.wait_for(adapter.started.wait(), 1)
+            if action == 'task_cancel':
+                task.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await task
+            else:
+                if action == 'persistent_cancel':
+                    runtime.cancel_exchange(exchange['id'])
+                events = await asyncio.wait_for(task, .8)
+                assert events[-1]['error_code'] == ('MODEL_PROVIDER_TIMEOUT' if action == 'timeout' else 'EXCHANGE_CANCELLED')
+    
+&gt;       asyncio.run(scenario())
+
+tests/test_agent_runtime_lifecycle.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:205: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:128: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py:720: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/test_agent_runtime_lifecycle.py:174: in scenario
+    events = await asyncio.wait_for(task, .8)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/tasks.py:487: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;Timeout [expired]&gt;
+exc_type = &lt;class 'asyncio.exceptions.CancelledError'&gt;
+exc_val = CancelledError(), exc_tb = &lt;traceback object at 0x10a81f280&gt;
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; bool | None:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() &lt;= self._cancelling and exc_type is not None:
+                # Since there are no new cancel requests, we're
+                # handling this.
+                if issubclass(exc_type, exceptions.CancelledError):
+&gt;                   raise TimeoutError from exc_val
+E                   TimeoutError
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/timeouts.py:115: TimeoutError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_failure_replay_preserves_counts_and_no_partial_assistant[empty-MODEL_EMPTY_RESPONSE]" time="0.082"><failure message="assert 1 == 0">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a67ee50&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a67f1... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+mode = 'empty', expected = 'MODEL_EMPTY_RESPONSE'
+
+    @pytest.mark.parametrize('mode,expected', [('empty', 'MODEL_EMPTY_RESPONSE'),
+        ('error', 'MODEL_PROVIDER_UNAVAILABLE'), ('oversize', 'MODEL_OUTPUT_LIMIT')])
+    def test_failure_replay_preserves_counts_and_no_partial_assistant(state, mode, expected):
+        runtime, adapter, credentials, session, exchange = state
+        adapter.mode = mode
+        first = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+        again = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+        assert first[-1]['error_code'] == again[-1]['error_code'] == expected
+&gt;       assert first[-1]['model_calls'] == again[-1]['model_calls'] == 1
+E       assert 1 == 0
+
+tests/test_agent_runtime_lifecycle.py:192: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_failure_replay_preserves_counts_and_no_partial_assistant[error-MODEL_PROVIDER_UNAVAILABLE]" time="0.106"><failure message="assert 1 == 0">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a9f5e50&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a67e9... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+mode = 'error', expected = 'MODEL_PROVIDER_UNAVAILABLE'
+
+    @pytest.mark.parametrize('mode,expected', [('empty', 'MODEL_EMPTY_RESPONSE'),
+        ('error', 'MODEL_PROVIDER_UNAVAILABLE'), ('oversize', 'MODEL_OUTPUT_LIMIT')])
+    def test_failure_replay_preserves_counts_and_no_partial_assistant(state, mode, expected):
+        runtime, adapter, credentials, session, exchange = state
+        adapter.mode = mode
+        first = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+        again = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+        assert first[-1]['error_code'] == again[-1]['error_code'] == expected
+&gt;       assert first[-1]['model_calls'] == again[-1]['model_calls'] == 1
+E       assert 1 == 0
+
+tests/test_agent_runtime_lifecycle.py:192: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_failure_replay_preserves_counts_and_no_partial_assistant[oversize-MODEL_OUTPUT_LIMIT]" time="0.111"><failure message="AssertionError: assert 'VALIDATION_ERROR' == 'MODEL_OUTPUT_LIMIT'&#10;  &#10;  - MODEL_OUTPUT_LIMIT&#10;  + VALIDATION_ERROR">state = (&lt;backend.agent_runtime.AgentRuntime object at 0x10a9f55e0&gt;, &lt;test_agent_runtime_lifecycle.Adapter object at 0x10a9f5a... 'idempotency_key': 'send', 'request_digest': '3656679c3f6ffaf239e7320ebb13a039eb945b4ce7b9b9ef1ed0ff4794f54a08', ...})
+mode = 'oversize', expected = 'MODEL_OUTPUT_LIMIT'
+
+    @pytest.mark.parametrize('mode,expected', [('empty', 'MODEL_EMPTY_RESPONSE'),
+        ('error', 'MODEL_PROVIDER_UNAVAILABLE'), ('oversize', 'MODEL_OUTPUT_LIMIT')])
+    def test_failure_replay_preserves_counts_and_no_partial_assistant(state, mode, expected):
+        runtime, adapter, credentials, session, exchange = state
+        adapter.mode = mode
+        first = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+        again = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+&gt;       assert first[-1]['error_code'] == again[-1]['error_code'] == expected
+E       AssertionError: assert 'VALIDATION_ERROR' == 'MODEL_OUTPUT_LIMIT'
+E         
+E         - MODEL_OUTPUT_LIMIT
+E         + VALIDATION_ERROR
+
+tests/test_agent_runtime_lifecycle.py:191: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_success_replay_and_late_cancel_preserve_terminal_message" time="0.149" /><testcase classname="tests.test_agent_runtime_lifecycle" name="test_restart_recovers_exchange_even_without_product_worker" time="12.561"><failure message="AssertionError: assert 'queued' == 'failed'&#10;  &#10;  - failed&#10;  + queued">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-491/test_restart_recovers_exchange0')
+
+    def test_restart_recovers_exchange_even_without_product_worker(tmp_path):
+        path = tmp_path / 'restart.db'
+        with TestClient(create_app(path, run_worker=False), base_url='http://127.0.0.1') as client:
+            runtime, _, _, session, exchange = setup_runtime(client.app.state.service.store)
+        with TestClient(create_app(path, run_worker=False), base_url='http://127.0.0.1') as client:
+            detail = client.get('/api/local/agent-runtime/sessions/' + session['id']).json()
+&gt;           assert detail['exchanges'][0]['status'] == 'failed'
+E           AssertionError: assert 'queued' == 'failed'
+E             
+E             - failed
+E             + queued
+
+tests/test_agent_runtime_lifecycle.py:214: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_http_busy_and_cancelled_replay" time="0.098"><failure message="assert (200 == 409)&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-491/test_http_busy_and_cancelled_r0')
+
+    def test_http_busy_and_cancelled_replay(tmp_path):
+        with TestClient(create_app(tmp_path / 'http.db', run_worker=False), base_url='http://127.0.0.1') as client:
+            runtime, adapter, credentials, session, exchange = setup_runtime(client.app.state.service.store)
+            client.app.state.service.agent_runtime = runtime
+            url = '/api/local/agent-runtime/sessions/' + session['id'] + '/messages'
+            busy = client.post(url, headers={'Idempotency-Key': 'other', 'Accept': 'text/event-stream'}, json={'content': 'next'})
+&gt;           assert busy.status_code == 409 and busy.json()['error']['code'] == 'SESSION_BUSY'
+E           assert (200 == 409)
+E            +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_agent_runtime_lifecycle.py:228: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_lifecycle" name="test_http_disconnect_cancels_owner_and_closes_upstream" time="0.088" /></testsuite></testsuites>

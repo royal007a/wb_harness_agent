@@ -1,10 +1,12 @@
 """Isolated Provider → Model → Agent → Session/Exchange local chat runtime."""
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import re
 from collections.abc import AsyncIterator
+from contextlib import suppress
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -17,6 +19,9 @@ from .store import dumps, now, uid
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = json.loads((ROOT / 'specs/v1/agent-runtime.schema.json').read_text())
+STREAM_TIMEOUT_SECONDS = 90.0
+CANCEL_POLL_SECONDS = 0.1
+MAX_OUTPUT_CHARS = CONTRACT['$defs']['chat_message']['properties']['content']['maxLength']
 SENSITIVE_INPUT = re.compile(r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token)\s*[:=]|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
 
 
@@ -245,6 +250,8 @@ class AgentRuntime:
                 if old['request_digest'] != request_digest:
                     raise Problem('CONFLICT', '同一幂等键已用于不同消息。', 409)
                 return old
+            if any(item['status'] in {'queued', 'streaming'} for item in self.store.runtime_exchanges(session_id)):
+                raise Problem('SESSION_BUSY', '会话仍有未结束请求；请等待或取消原请求后重试。', 409)
             sequence = db.execute('SELECT COALESCE(MAX(sequence), 0) + 1 FROM runtime_chat_messages WHERE session_id=?', (session_id,)).fetchone()[0]
             user_message = {'id': uid('rtx'), 'session_id': session_id, 'sequence': sequence, 'role': 'user', 'content': content, 'created_at': now()}
             validate_contract('chat_message', user_message)
@@ -264,9 +271,67 @@ class AgentRuntime:
         validate_contract('exchange', exchange)
         db.execute('UPDATE runtime_chat_exchanges SET doc=? WHERE id=?', (dumps(exchange), exchange['id']))
 
-    def _context(self, session_id, max_turns):
-        messages = self.store.runtime_messages(session_id)
+    def _context(self, session_id, max_turns, user_message_id):
+        user = self.store.runtime_get('runtime_chat_messages', user_message_id)
+        messages = [item for item in self.store.runtime_messages(session_id) if item['sequence'] <= user['sequence']]
         return messages[-(max_turns * 2):]
+
+    def recover(self):
+        """Called once at startup under the application's exclusive DB lease."""
+        with self.store.transaction() as db:
+            rows = db.execute('SELECT doc FROM runtime_chat_exchanges').fetchall()
+            for row in rows:
+                exchange = json.loads(row['doc'])
+                if exchange['status'] in {'queued', 'streaming'}:
+                    exchange['status'], exchange['error_code'] = 'failed', 'MODEL_RUNTIME_RESTARTED'
+                    self._save_exchange(db, exchange)
+
+    def _claim(self, exchange_id):
+        with self.store.transaction() as db:
+            exchange = self.store.runtime_get('runtime_chat_exchanges', exchange_id)
+            claimed = exchange['status'] == 'queued'
+            if claimed:
+                exchange['status'] = 'streaming'
+                self._save_exchange(db, exchange)
+            return exchange, claimed
+
+    @staticmethod
+    def _error_event(exchange, fallback=None):
+        code = ('EXCHANGE_CANCELLED' if exchange['status'] == 'cancelled' else
+                exchange.get('error_code') or fallback or 'EXCHANGE_IN_PROGRESS')
+        return {'type': 'error', 'exchange_id': exchange['id'], 'error_code': code,
+                'model_calls': exchange['model_calls'], 'provider_calls': exchange['provider_calls']}
+
+    def _assert_streaming(self, exchange_id):
+        exchange = self.store.runtime_get('runtime_chat_exchanges', exchange_id)
+        if exchange['status'] != 'streaming':
+            raise Problem(self._error_event(exchange)['error_code'], '请求已经结束。', 409)
+        return exchange
+
+    async def _next_chunk(self, upstream, exchange_id, deadline):
+        """Poll persisted cancellation without repeatedly cancelling anext."""
+        self._assert_streaming(exchange_id)
+        if asyncio.get_running_loop().time() >= deadline:
+            raise Problem('MODEL_PROVIDER_TIMEOUT', '模型流达到时间上限。', 504)
+        pending = asyncio.create_task(anext(upstream))
+        try:
+            while True:
+                self._assert_streaming(exchange_id)
+                remaining = deadline - asyncio.get_running_loop().time()
+                if remaining <= 0:
+                    raise Problem('MODEL_PROVIDER_TIMEOUT', '模型流达到时间上限。', 504)
+                done, _ = await asyncio.wait({pending}, timeout=min(CANCEL_POLL_SECONDS, remaining))
+                self._assert_streaming(exchange_id)
+                if asyncio.get_running_loop().time() >= deadline:
+                    raise Problem('MODEL_PROVIDER_TIMEOUT', '模型流达到时间上限。', 504)
+                if done:
+                    return pending.result()
+        finally:
+            if not pending.done():
+                pending.cancel()
+            # Retrieve exceptions and finish cancellation before upstream.aclose.
+            with suppress(asyncio.CancelledError, Exception):
+                await pending
 
     def _failure(self, exchange_id, code):
         with self.store.transaction() as db:
@@ -286,16 +351,17 @@ class AgentRuntime:
             return exchange
 
     async def stream_exchange(self, exchange_id) -> AsyncIterator[dict]:
-        exchange = self.store.runtime_get('runtime_chat_exchanges', exchange_id)
-        if exchange['status'] == 'succeeded':
-            message = self.store.runtime_get('runtime_chat_messages', exchange['assistant_message_id'])
-            for chunk in self.chunk_text(message['content']):
-                yield {'type': 'delta', 'exchange_id': exchange['id'], 'content': chunk, 'model_calls': exchange['model_calls'], 'provider_calls': exchange['provider_calls']}
-            yield {'type': 'done', 'exchange_id': exchange['id'], 'message_id': message['id'], 'finish_reason': 'stop', 'model_calls': exchange['model_calls'], 'provider_calls': exchange['provider_calls']}
+        exchange, owner = self._claim(exchange_id)
+        if not owner:
+            if exchange['status'] == 'succeeded':
+                message = self.store.runtime_get('runtime_chat_messages', exchange['assistant_message_id'])
+                for chunk in self.chunk_text(message['content']):
+                    yield {'type': 'delta', 'exchange_id': exchange['id'], 'content': chunk, 'model_calls': exchange['model_calls'], 'provider_calls': exchange['provider_calls']}
+                yield {'type': 'done', 'exchange_id': exchange['id'], 'message_id': message['id'], 'finish_reason': 'stop', 'model_calls': exchange['model_calls'], 'provider_calls': exchange['provider_calls']}
+            else:
+                yield self._error_event(exchange)
             return
-        if exchange['status'] == 'failed':
-            yield {'type': 'error', 'exchange_id': exchange['id'], 'error_code': exchange['error_code'], 'model_calls': 0, 'provider_calls': 0}
-            return
+        upstream = None
         try:
             session = self.store.runtime_get('runtime_chat_sessions', exchange['session_id'])
             agent, model, provider = self._active_stack(session['agent_profile_id'])
@@ -303,25 +369,36 @@ class AgentRuntime:
                 raise Problem('MODEL_RUNTIME_DISABLED', '模型运行时默认关闭；配置不等于外部数据发送授权。', 409)
             adapter = self.adapters.require(provider['type'])
             credential = self.credentials.resolve(provider['credential_ref'])
-            context = self._context(session['id'], agent['max_context_turns'])
+            context = self._context(session['id'], agent['max_context_turns'], exchange['user_message_id'])
             with self.store.transaction() as db:
-                current = self.store.runtime_get('runtime_chat_exchanges', exchange_id)
-                if current['status'] == 'queued':
-                    current['status'], current['model_calls'], current['provider_calls'] = 'streaming', 1, 1
-                    self._save_exchange(db, current)
+                current = self._assert_streaming(exchange_id)
+                current['model_calls'], current['provider_calls'] = 1, 1
+                current['context_message_count'] = len(context)
+                self._save_exchange(db, current)
                 exchange = current
             request = ProviderRequest(base_url=provider['base_url'], credential=credential, model_id=model['model_id'],
                                       system_prompt=agent['system_prompt'], messages=tuple({'role': item['role'], 'content': item['content']} for item in context),
                                       temperature=agent['temperature'], max_output_tokens=agent['max_output_tokens'])
-            chunks = []
-            async for chunk in adapter.stream(request):
+            chunks, char_count = [], 0
+            upstream = adapter.stream(request)
+            deadline = asyncio.get_running_loop().time() + STREAM_TIMEOUT_SECONDS
+            while True:
+                try:
+                    chunk = await self._next_chunk(upstream, exchange_id, deadline)
+                except StopAsyncIteration:
+                    break
+                if not isinstance(chunk, str):
+                    raise Problem('MODEL_PROVIDER_INVALID_RESPONSE', '模型返回非文本内容。', 502)
+                char_count += len(chunk)
+                if char_count > MAX_OUTPUT_CHARS:
+                    raise Problem('MODEL_OUTPUT_LIMIT', '模型输出超过消息长度上限。', 502)
                 chunks.append(chunk)
                 yield {'type': 'delta', 'exchange_id': exchange_id, 'content': chunk, 'model_calls': 1, 'provider_calls': 1}
             content = ''.join(chunks).strip()
             if not content:
                 raise Problem('MODEL_EMPTY_RESPONSE', '模型 Provider 未返回可用文本。', 502)
             with self.store.transaction() as db:
-                current = self.store.runtime_get('runtime_chat_exchanges', exchange_id)
+                current = self._assert_streaming(exchange_id)
                 next_sequence = db.execute('SELECT COALESCE(MAX(sequence), 0) + 1 FROM runtime_chat_messages WHERE session_id=?', (session['id'],)).fetchone()[0]
                 message = {'id': uid('rtx'), 'session_id': session['id'], 'sequence': next_sequence, 'role': 'assistant', 'content': content, 'created_at': now()}
                 validate_contract('chat_message', message)
@@ -331,10 +408,17 @@ class AgentRuntime:
             yield {'type': 'done', 'exchange_id': exchange_id, 'message_id': message['id'], 'finish_reason': 'stop', 'model_calls': 1, 'provider_calls': 1}
         except Problem as exc:
             failed = self._failure(exchange_id, exc.code)
-            yield {'type': 'error', 'exchange_id': failed['id'], 'error_code': exc.code, 'model_calls': failed['model_calls'], 'provider_calls': failed['provider_calls']}
+            yield self._error_event(failed, exc.code)
         except Exception:
             failed = self._failure(exchange_id, 'MODEL_RUNTIME_INTERNAL_ERROR')
-            yield {'type': 'error', 'exchange_id': failed['id'], 'error_code': 'MODEL_RUNTIME_INTERNAL_ERROR', 'model_calls': failed['model_calls'], 'provider_calls': failed['provider_calls']}
+            yield self._error_event(failed, 'MODEL_RUNTIME_INTERNAL_ERROR')
+        finally:
+            # Only the claimant reaches here. Replay/duplicate consumers cannot
+            # cancel the owner, even if their HTTP connection is interrupted.
+            self.cancel_exchange(exchange_id)
+            if upstream is not None:
+                with suppress(Exception):
+                    await upstream.aclose()
 
     @staticmethod
     def chunk_text(text):

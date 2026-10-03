@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="17" time="57.316" timestamp="2026-10-03T23:05:08.720772+08:00" hostname="192.168.31.117"><testcase classname="tests.test_external_skills" name="test_default_gate_precedes_package_read_or_container_start" time="14.066" /><testcase classname="tests.test_external_skills" name="test_strict_zip_registration_and_idempotency" time="2.755" /><testcase classname="tests.test_external_skills" name="test_sensitive_package_content_and_unknown_fields_are_rejected" time="0.111" /><testcase classname="tests.test_external_skills" name="test_execution_rechecks_digest_and_persists_sanitized_audit" time="1.549" /><testcase classname="tests.test_external_skills" name="test_proxy_cannot_register_or_execute_even_with_local_host[forwarded]" time="0.322" /><testcase classname="tests.test_external_skills" name="test_proxy_cannot_register_or_execute_even_with_local_host[x-forwarded-for]" time="0.537" /><testcase classname="tests.test_external_skills" name="test_proxy_cannot_register_or_execute_even_with_local_host[x-real-ip]" time="0.284" /><testcase classname="tests.test_external_skills" name="test_proxy_cannot_register_or_execute_even_with_local_host[x-forwarded-prefix]" time="0.736" /><testcase classname="tests.test_external_skills" name="test_proxy_cannot_register_or_execute_even_with_local_host[x-forwarded-proto]" time="3.228" /><testcase classname="tests.test_external_skills" name="test_non_loopback_peer_cannot_spoof_host" time="0.950" /><testcase classname="tests.test_external_skills" name="test_execution_limit_fails_closed" time="0.082" /><testcase classname="tests.test_external_skills" name="test_backend_explicit_selection_and_no_fallback" time="0.000" /><testcase classname="tests.test_external_skills" name="test_real_failures_cleanup_container_and_inputs[def main(payload):\n    while True: pass\n-EXTERNAL_SKILL_TIMEOUT]" time="5.746" /><testcase classname="tests.test_external_skills" name="test_real_failures_cleanup_container_and_inputs[def main(payload):\n    import os\n    while True: os.write(1, b'x' * 4096)\n-EXTERNAL_SKILL_OUTPUT_LIMIT]" time="6.996"><failure message="AssertionError: assert 'EXTERNAL_SKILL_TIMEOUT' == 'EXTERNAL_SKILL_OUTPUT_LIMIT'&#10;  &#10;  - EXTERNAL_SKILL_OUTPUT_LIMIT&#10;  + EXTERNAL_SKILL_TIMEOUT">entry = "def main(payload):\n    import os\n    while True: os.write(1, b'x' * 4096)\n"
+expected = 'EXTERNAL_SKILL_OUTPUT_LIMIT'
+
+    @pytest.mark.skipif(os.environ.get('HARNESS_DOCKER_TESTS') != '1', reason='explicit real container probe')
+    @pytest.mark.parametrize('entry,expected', [
+        ("def main(payload):\n    while True: pass\n", 'EXTERNAL_SKILL_TIMEOUT'),
+        ("def main(payload):\n    import os\n    while True: os.write(1, b'x' * 4096)\n", 'EXTERNAL_SKILL_OUTPUT_LIMIT'),
+        ("def main(payload):\n    open('/inputs/request.json', 'w').write('changed')\n    return {}\n", 'EXTERNAL_SKILL_EXECUTION_FAILED'),
+        ("def main(payload):\n    open('/etc/forbidden', 'w').write('changed')\n    return {}\n", 'EXTERNAL_SKILL_EXECUTION_FAILED'),
+    ])
+    def test_real_failures_cleanup_container_and_inputs(entry, expected):
+        import shutil
+        import tempfile
+        from pathlib import Path
+        from backend.sandbox import docker
+    
+        # Colima bind mounts must stay in its shared root; never execute entry on host.
+        root = external_skills.ROOT / '.local'
+        root.mkdir(exist_ok=True)
+        directory = Path(tempfile.mkdtemp(prefix='ha0052-probe-', dir=root))
+        directory.chmod(0o755)
+        (directory / 'entry.py').write_text(entry)
+        (directory / 'entry.py').chmod(0o444)
+        observed = []
+    
+        class ObservedSandbox(ExternalSkillSandbox):
+            def _read_result(self, ident):
+                observed.append(ident)
+                config = json.loads(docker(['inspect', ident]).stdout)[0]
+                assert config['HostConfig']['LogConfig']['Type'] == 'none'
+                assert config['HostConfig']['NetworkMode'] == 'none'
+                assert config['HostConfig']['ReadonlyRootfs'] is True
+                assert config['Config']['User'] == '65532:65532'
+                return super()._read_result(ident)
+    
+        try:
+            box = ObservedSandbox(directory, {'safe': True}, timeout_seconds=2)
+            with pytest.raises(Problem) as exc:
+                box.execute()
+&gt;           assert exc.value.code == expected
+E           AssertionError: assert 'EXTERNAL_SKILL_TIMEOUT' == 'EXTERNAL_SKILL_OUTPUT_LIMIT'
+E             
+E             - EXTERNAL_SKILL_OUTPUT_LIMIT
+E             + EXTERNAL_SKILL_TIMEOUT
+
+tests/test_external_skills.py:201: AssertionError</failure></testcase><testcase classname="tests.test_external_skills" name="test_real_failures_cleanup_container_and_inputs[def main(payload):\n    open('/inputs/request.json', 'w').write('changed')\n    return {}\n-EXTERNAL_SKILL_EXECUTION_FAILED]" time="5.817"><failure message="AssertionError: assert 'EXTERNAL_SKILL_TIMEOUT' == 'EXTERNAL_SKI...CUTION_FAILED'&#10;  &#10;  - EXTERNAL_SKILL_EXECUTION_FAILED&#10;  + EXTERNAL_SKILL_TIMEOUT">entry = "def main(payload):\n    open('/inputs/request.json', 'w').write('changed')\n    return {}\n"
+expected = 'EXTERNAL_SKILL_EXECUTION_FAILED'
+
+    @pytest.mark.skipif(os.environ.get('HARNESS_DOCKER_TESTS') != '1', reason='explicit real container probe')
+    @pytest.mark.parametrize('entry,expected', [
+        ("def main(payload):\n    while True: pass\n", 'EXTERNAL_SKILL_TIMEOUT'),
+        ("def main(payload):\n    import os\n    while True: os.write(1, b'x' * 4096)\n", 'EXTERNAL_SKILL_OUTPUT_LIMIT'),
+        ("def main(payload):\n    open('/inputs/request.json', 'w').write('changed')\n    return {}\n", 'EXTERNAL_SKILL_EXECUTION_FAILED'),
+        ("def main(payload):\n    open('/etc/forbidden', 'w').write('changed')\n    return {}\n", 'EXTERNAL_SKILL_EXECUTION_FAILED'),
+    ])
+    def test_real_failures_cleanup_container_and_inputs(entry, expected):
+        import shutil
+        import tempfile
+        from pathlib import Path
+        from backend.sandbox import docker
+    
+        # Colima bind mounts must stay in its shared root; never execute entry on host.
+        root = external_skills.ROOT / '.local'
+        root.mkdir(exist_ok=True)
+        directory = Path(tempfile.mkdtemp(prefix='ha0052-probe-', dir=root))
+        directory.chmod(0o755)
+        (directory / 'entry.py').write_text(entry)
+        (directory / 'entry.py').chmod(0o444)
+        observed = []
+    
+        class ObservedSandbox(ExternalSkillSandbox):
+            def _read_result(self, ident):
+                observed.append(ident)
+                config = json.loads(docker(['inspect', ident]).stdout)[0]
+                assert config['HostConfig']['LogConfig']['Type'] == 'none'
+                assert config['HostConfig']['NetworkMode'] == 'none'
+                assert config['HostConfig']['ReadonlyRootfs'] is True
+                assert config['Config']['User'] == '65532:65532'
+                return super()._read_result(ident)
+    
+        try:
+            box = ObservedSandbox(directory, {'safe': True}, timeout_seconds=2)
+            with pytest.raises(Problem) as exc:
+                box.execute()
+&gt;           assert exc.value.code == expected
+E           AssertionError: assert 'EXTERNAL_SKILL_TIMEOUT' == 'EXTERNAL_SKI...CUTION_FAILED'
+E             
+E             - EXTERNAL_SKILL_EXECUTION_FAILED
+E             + EXTERNAL_SKILL_TIMEOUT
+
+tests/test_external_skills.py:201: AssertionError</failure></testcase><testcase classname="tests.test_external_skills" name="test_real_failures_cleanup_container_and_inputs[def main(payload):\n    open('/etc/forbidden', 'w').write('changed')\n    return {}\n-EXTERNAL_SKILL_EXECUTION_FAILED]" time="3.364" /><testcase classname="tests.test_external_skills" name="test_real_external_skill_container_isolation" time="7.109" /></testsuite></testsuites>

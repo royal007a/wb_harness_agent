@@ -39,7 +39,12 @@ OpenAI-compatible Chat Completions SSE is implemented as a protocol adapter. Ant
 
 The provider request is assembled from one system prompt and the most recent `2 × max_context_turns` persisted user/assistant messages. The complete provider output is persisted as an assistant message only after a successful stream. A model error, credential error, empty response or cancellation never becomes a synthetic assistant answer.
 
-Browsers use `fetch` with `POST` and parse SSE `delta`, `done` and `error` events. `AbortController` stops browser display; the persisted Exchange remains auditable and is transitioned to cancellation only when the upstream connection is actually interrupted.
+Browsers use `fetch` with `POST` and parse SSE `delta`, `done` and `error` events.
+ADR-0054 specifies unique Exchange ownership, terminal-state protection, bounded
+Provider streaming, and startup recovery. Only the stream owner can cancel its
+in-flight work on disconnect; duplicate consumers cannot cancel another owner.
+Provider cancellation does not guarantee that an external provider stops billing.
+See [lifecycle acceptance cases](../../specs/testing/AGENT_RUNTIME_LIFECYCLE.md).
 
 ## API
 

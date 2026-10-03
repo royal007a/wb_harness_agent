@@ -195,7 +195,11 @@ def test_real_failures_cleanup_container_and_inputs(entry, expected):
             return super()._read_result(ident)
 
     try:
-        box = ObservedSandbox(directory, {'safe': True}, timeout_seconds=2)
+        # Timeout is one independent assertion. Other probes must have enough
+        # startup budget to reach the output/filesystem rule they test; use the
+        # production default rather than accepting TIMEOUT as a false pass.
+        budget = 2 if expected == 'EXTERNAL_SKILL_TIMEOUT' else 10
+        box = ObservedSandbox(directory, {'safe': True}, timeout_seconds=budget)
         with pytest.raises(Problem) as exc:
             box.execute()
         assert exc.value.code == expected

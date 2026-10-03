@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0054",
+      "title": "修复 Agent Runtime 唯一执行权和取消终态",
+      "status": "running",
+      "risk": "high",
+      "scope": ["Exchange 原子认领、终态不变与 Session 活动请求隔离", "取消关闭上游、输出/等待上限、重启失败收敛", "回归、双端部署及独立审查"],
+      "non_goals": ["启用真实 Provider 或工具", "Product Run/Skill 桥接", "身份体系与通用自动恢复"],
+      "acceptance": ["旧缺陷被回归测试捕获，新实现无重复 Provider 和取消后发布", "HTTP 与服务层生命周期、重启、全量验证通过", "本机和 132 发布证据、门禁不变、独立 review"],
+      "depends_on": [],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0054-runtime-lifecycle.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0054/acceptance.md"]
+    },
+    {
       "id": "HA-0053",
       "title": "全功能接口审查：建立可复核测试规格与基线",
       "status": "waiting_approval",

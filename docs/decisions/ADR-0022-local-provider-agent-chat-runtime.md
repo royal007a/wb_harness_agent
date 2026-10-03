@@ -3,6 +3,10 @@
 - Status: Accepted
 - Date: 2026-09-13
 
+取消与并发细则由 [ADR-0054](ADR-0054-agent-runtime-exchange-ownership.md)
+补充：断线仅能取消拥有执行权的流，终态不可覆写；启动时收敛残留活动请求。
+这不改变真实外发仍须单独准入的边界。
+
 ## Context
 
 六篇 Provider、Skill、Agent 与流式聊天 PDF 要求把 Provider、Model、Agent、Session/Message、上下文窗口和 `POST + SSE` 作为明确的系统边界。ADR-0021 的 Local Agent Lab 仅验证了无密配置和确定性演示回复，不能宣称为模型运行时。

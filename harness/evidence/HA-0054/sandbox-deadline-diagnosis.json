@@ -1,0 +1,14 @@
+{
+  "provenance": "Transcribed from fresh isolated Timed ExternalSkillSandbox probe stdout; not historical benchmark data",
+  "external_model_calls": 0,
+  "production_sandbox_changed": false,
+  "initial_test_result": {"passed": 15, "failed": 2, "evidence": "local-sandbox.xml"},
+  "observations": [
+    {"case":"output","timeout_seconds":2,"result":"EXTERNAL_SKILL_TIMEOUT","cleaned":true,"start_attach_read_ms":2034},
+    {"case":"output","timeout_seconds":10,"result":"EXTERNAL_SKILL_OUTPUT_LIMIT","cleaned":true,"start_attach_read_ms":1419},
+    {"case":"readonly","timeout_seconds":2,"result":"EXTERNAL_SKILL_TIMEOUT","cleaned":true,"start_attach_read_ms":2008},
+    {"case":"readonly","timeout_seconds":10,"result":"EXTERNAL_SKILL_EXECUTION_FAILED","cleaned":true,"start_attach_read_ms":1675}
+  ],
+  "interpretation": "The 2s deadline includes docker start/attach; on this loaded Colima host it can preempt the rule under test. Separate timeout probe remains 2s. Output/readonly probes use the existing production default 10s and still require their exact error, not any failure.",
+  "not_evidence": "Not a latency benchmark, proof of all concurrency behavior, or change to sandbox security limits"
+}

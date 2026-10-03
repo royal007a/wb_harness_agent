@@ -23,6 +23,8 @@ def run(*args):
 def main():
     previous = sys.argv[1]
     assert re.fullmatch('[a-f0-9]{40}', previous)
+    work_item = sys.argv[2] if len(sys.argv) > 2 else 'ha0052'
+    assert work_item in {'ha0052', 'ha0054'}
     commit = run('git', 'rev-parse', 'HEAD')
     assert not run('git', 'status', '--porcelain')
     config = ROOT / 'deploy/local.macos.plist'
@@ -33,7 +35,7 @@ def main():
     image = run('/opt/homebrew/bin/docker', '--context', 'colima', 'image', 'inspect',
                 'harnessagent-external-skill:0.1', '--format', '{{.Id}}')
     assert image.startswith('sha256:')
-    backup = ROOT / '.local/backups' / ('ha0052-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+    backup = ROOT / '.local/backups' / (work_item + '-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
     backup.mkdir(parents=True, mode=0o700)
     old = run('git', 'show', previous + ':deploy/local.macos.plist')
     (backup / 'previous.plist').write_text(old)

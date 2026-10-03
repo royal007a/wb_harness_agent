@@ -1,0 +1,19 @@
+{
+  "work_item": "HA-0054",
+  "scope": "isolated Agent Runtime lifecycle, not Agent Loop/Product Run integration",
+  "baseline": "07b566e",
+  "commands": [
+    {"command":"pytest tests/test_agent_runtime_lifecycle.py (before implementation)","passed":2,"failed":13,"evidence":"before.xml"},
+    {"command":"pytest tests/test_agent_runtime_lifecycle.py tests/test_agent_runtime.py tests/test_workbench.py","passed":76,"failed":0,"evidence":"targeted.xml"},
+    {"command":"bash harness/verify.sh","exit_code":0,"passed":325,"skipped":16,"evidence":"verify.log"},
+    {"command":"HARNESS_DOCKER_TESTS=1 pytest tests/test_external_skills.py (initial)","passed":15,"failed":2,"evidence":"local-sandbox.xml"},
+    {"command":"HARNESS_DOCKER_TESTS=1 pytest tests/test_external_skills.py (after separating test budgets)","passed":17,"failed":0,"evidence":"local-sandbox-after.xml"}
+  ],
+  "verification_level": ["deterministic", "synthetic_provider", "HTTP_ASGI", "real_local_container"],
+  "real_model_calls": 0,
+  "default_model_gate_changed": false,
+  "product_run_bridge_implemented": false,
+  "deployment": "pending",
+  "independent_review": "pending",
+  "whole_system_acceptance": false
+}

@@ -4,7 +4,7 @@ import fcntl
 import ipaddress
 import json
 import os
-from contextlib import asynccontextmanager
+from contextlib import aclosing, asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -35,6 +35,7 @@ def create_app(db_path=None, run_worker=True):
         store = Store(target)
         service = Service(store)
         app.state.service = service
+        service.agent_runtime.recover()
         if run_worker:
             service.start()
         try:
@@ -472,19 +473,11 @@ def create_app(db_path=None, run_worker=True):
         )
 
         async def stream():
-            disconnected = False
-            try:
-                async for payload in app.state.service.agent_runtime.stream_exchange(exchange['id']):
+            async with aclosing(app.state.service.agent_runtime.stream_exchange(exchange['id'])) as events:
+                async for payload in events:
                     if await request.is_disconnected():
-                        disconnected = True
                         return
                     yield 'data: ' + json.dumps(payload, ensure_ascii=False) + '\n\n'
-            except asyncio.CancelledError:
-                disconnected = True
-                raise
-            finally:
-                if disconnected:
-                    app.state.service.agent_runtime.cancel_exchange(exchange['id'])
 
         return StreamingResponse(stream(), media_type='text/event-stream', headers={
             'X-Accel-Buffering': 'no', 'Cache-Control': 'no-store', 'Connection': 'keep-alive',
