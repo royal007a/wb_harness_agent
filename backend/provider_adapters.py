@@ -86,7 +86,7 @@ class _SSEFrames:
 
 async def _sse_data(response):
     frames, received = _SSEFrames(), 0
-    async for raw in response.aiter_bytes():
+    async for raw in response.aiter_raw():
         received += len(raw)
         if received > MAX_STREAM_BYTES:
             raise response_limit()
@@ -135,12 +135,17 @@ class OpenAIChatCompletionsAdapter(ProviderAdapter):
             'messages': [{'role': 'system', 'content': request.system_prompt}, *request.messages],
         }
         endpoint = request.base_url.rstrip('/') + '/chat/completions'
-        headers = {'Authorization': 'Bearer ' + request.credential, 'Accept': 'text/event-stream'}
+        headers = {'Authorization': 'Bearer ' + request.credential, 'Accept': 'text/event-stream',
+                   'Accept-Encoding': 'identity'}
         try:
             timeout = httpx.Timeout(connect=10.0, read=90.0, write=20.0, pool=10.0)
             async with httpx.AsyncClient(timeout=timeout, follow_redirects=False, trust_env=False) as client:
                 async with client.stream('POST', endpoint, headers=headers, json=payload) as response:
                     response.raise_for_status()
+                    # Reject before body iteration: decoded-size limits alone cannot
+                    # prevent a compressed network block expanding before the check.
+                    if 'content-encoding' in response.headers:
+                        raise invalid_response()
                     if response.headers.get('content-type', '').split(';')[0].strip().lower() != 'text/event-stream':
                         raise invalid_response()
                     stopped, usage_seen, completion_id = False, False, None

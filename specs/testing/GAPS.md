@@ -71,7 +71,9 @@ observed 仍包含拒绝的 4xx，不等于 observed_2xx_passing 或业务成功
 2026-10-04 最新跟进：HA-0055 2f8a30c 与 HA-0056 ce490c5 **代码已独立 Approved**，
 上述历史 Changes Requested 已返工；真实双部署仍未完成。PROVIDER-01 在
 HA-0057 已扩展到真实 Adapter→Exchange/HTTP 路径：旧4反例确实误发布 done，
-新协议要求 stop+DONE，56项协议回归及全量446 passed/16 skipped，待独立复核。
+新协议要求 stop+DONE，56项协议回归及全量446 passed/16 skipped，85fc7d3已独立
+Approved。复审指出压缩响应在限额检查前内存放大，追加修复为读取前拒绝编码，
+不因此宣称第三方兼容或已部署；补丁验证记录见HA-0057 acceptance。
 OpenAPI 同名 Schema 和未观测接口队列仍开放，不因局部通过而收口全系统目标。
 
 148 个方法/路径组合（包含 HEAD、页面、静态 mount），22 类功能。

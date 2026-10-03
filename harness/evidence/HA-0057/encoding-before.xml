@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="11" time="0.916" timestamp="2026-10-04T02:55:31.602670+08:00" hostname="192.168.31.117"><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[gzip-bomb]" time="0.054"><failure message="AssertionError: assert 'MODEL_PROVID...ESPONSE_LIMIT' == 'MODEL_PROVID...ALID_RESPONSE'&#10;  &#10;  - MODEL_PROVIDER_INVALID_RESPONSE&#10;  ?                --------&#10;  + MODEL_PROVIDER_RESPONSE_LIMIT&#10;  ?                        ++++++">tests/test_provider_stream.py:358: in test_encoded_response_rejected_before_body_read
+    assert error.value.code == 'MODEL_PROVIDER_INVALID_RESPONSE'
+E   AssertionError: assert 'MODEL_PROVID...ESPONSE_LIMIT' == 'MODEL_PROVID...ALID_RESPONSE'
+E
+E     - MODEL_PROVIDER_INVALID_RESPONSE
+E     ?                --------
+E     + MODEL_PROVIDER_RESPONSE_LIMIT
+E     ?                        ++++++</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[deflate]" time="0.001"><failure message="Failed: DID NOT RAISE Problem">tests/test_provider_stream.py:356: in test_encoded_response_rejected_before_body_read
+    with pytest.raises(Problem) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[br]" time="0.001"><failure message="AssertionError: assert 'MODEL_PROVID...MPLETE_STREAM' == 'MODEL_PROVID...ALID_RESPONSE'&#10;  &#10;  - MODEL_PROVIDER_INVALID_RESPONSE&#10;  + MODEL_PROVIDER_INCOMPLETE_STREAM">tests/test_provider_stream.py:358: in test_encoded_response_rejected_before_body_read
+    assert error.value.code == 'MODEL_PROVIDER_INVALID_RESPONSE'
+E   AssertionError: assert 'MODEL_PROVID...MPLETE_STREAM' == 'MODEL_PROVID...ALID_RESPONSE'
+E
+E     - MODEL_PROVIDER_INVALID_RESPONSE
+E     + MODEL_PROVIDER_INCOMPLETE_STREAM</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[zstd]" time="0.001"><failure message="AssertionError: assert 'MODEL_PROVID...MPLETE_STREAM' == 'MODEL_PROVID...ALID_RESPONSE'&#10;  &#10;  - MODEL_PROVIDER_INVALID_RESPONSE&#10;  + MODEL_PROVIDER_INCOMPLETE_STREAM">tests/test_provider_stream.py:358: in test_encoded_response_rejected_before_body_read
+    assert error.value.code == 'MODEL_PROVIDER_INVALID_RESPONSE'
+E   AssertionError: assert 'MODEL_PROVID...MPLETE_STREAM' == 'MODEL_PROVID...ALID_RESPONSE'
+E
+E     - MODEL_PROVIDER_INVALID_RESPONSE
+E     + MODEL_PROVIDER_INCOMPLETE_STREAM</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[identity]" time="0.002"><failure message="Failed: DID NOT RAISE Problem">tests/test_provider_stream.py:356: in test_encoded_response_rejected_before_body_read
+    with pytest.raises(Problem) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[empty]" time="0.001"><failure message="Failed: DID NOT RAISE Problem">tests/test_provider_stream.py:356: in test_encoded_response_rejected_before_body_read
+    with pytest.raises(Problem) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[unknown]" time="0.001"><failure message="Failed: DID NOT RAISE Problem">tests/test_provider_stream.py:356: in test_encoded_response_rejected_before_body_read
+    with pytest.raises(Problem) as error:
+         ^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE Problem</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[combined]" time="0.001"><failure message="AssertionError: assert 'MODEL_PROVIDER_UNAVAILABLE' == 'MODEL_PROVID...ALID_RESPONSE'&#10;  &#10;  - MODEL_PROVIDER_INVALID_RESPONSE&#10;  + MODEL_PROVIDER_UNAVAILABLE">tests/test_provider_stream.py:358: in test_encoded_response_rejected_before_body_read
+    assert error.value.code == 'MODEL_PROVIDER_INVALID_RESPONSE'
+E   AssertionError: assert 'MODEL_PROVIDER_UNAVAILABLE' == 'MODEL_PROVID...ALID_RESPONSE'
+E
+E     - MODEL_PROVIDER_INVALID_RESPONSE
+E     + MODEL_PROVIDER_UNAVAILABLE</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_response_rejected_before_body_read[duplicate]" time="0.001"><failure message="AssertionError: assert 'MODEL_PROVIDER_UNAVAILABLE' == 'MODEL_PROVID...ALID_RESPONSE'&#10;  &#10;  - MODEL_PROVIDER_INVALID_RESPONSE&#10;  + MODEL_PROVIDER_UNAVAILABLE">tests/test_provider_stream.py:358: in test_encoded_response_rejected_before_body_read
+    assert error.value.code == 'MODEL_PROVIDER_INVALID_RESPONSE'
+E   AssertionError: assert 'MODEL_PROVIDER_UNAVAILABLE' == 'MODEL_PROVID...ALID_RESPONSE'
+E
+E     - MODEL_PROVIDER_INVALID_RESPONSE
+E     + MODEL_PROVIDER_UNAVAILABLE</failure></testcase><testcase classname="tests.test_provider_stream" name="test_identity_request_and_raw_response_never_use_content_decoder" time="0.001"><failure message="Failed: Adapter must not use the HTTP content decoder">tests/test_provider_stream.py:368: in test_identity_request_and_raw_response_never_use_content_decoder
+    assert asyncio.run(collect(providers.OpenAIChatCompletionsAdapter().stream(REQUEST))) == ['半段答案']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:205: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:128: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py:720: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/test_provider_stream.py:64: in collect
+    return [item async for item in stream]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/provider_adapters.py:147: in stream
+    async for data in _sse_data(response):
+backend/provider_adapters.py:89: in _sse_data
+    async for raw in response.aiter_bytes():
+.venv/lib/python3.14/site-packages/httpx/_models.py:994: in aiter_bytes
+    decoder = self._get_content_decoder()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_provider_stream.py:365: in forbidden_decoder
+    pytest.fail('Adapter must not use the HTTP content decoder')
+E   Failed: Adapter must not use the HTTP content decoder</failure></testcase><testcase classname="tests.test_provider_stream" name="test_encoded_http_failure_closes_without_delivery_or_replay" time="0.284"><failure message="AssertionError: assert 'MODEL_PROVID...ESPONSE_LIMIT' == 'MODEL_PROVID...ALID_RESPONSE'&#10;  &#10;  - MODEL_PROVIDER_INVALID_RESPONSE&#10;  ?                --------&#10;  + MODEL_PROVIDER_RESPONSE_LIMIT&#10;  ?                        ++++++">tests/test_provider_stream.py:386: in test_encoded_http_failure_closes_without_delivery_or_replay
+    assert events[0]['error_code'] == 'MODEL_PROVIDER_INVALID_RESPONSE'
+E   AssertionError: assert 'MODEL_PROVID...ESPONSE_LIMIT' == 'MODEL_PROVID...ALID_RESPONSE'
+E
+E     - MODEL_PROVIDER_INVALID_RESPONSE
+E     ?                --------
+E     + MODEL_PROVIDER_RESPONSE_LIMIT
+E     ?                        ++++++</failure></testcase></testsuite></testsuites>

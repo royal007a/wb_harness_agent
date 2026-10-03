@@ -13,7 +13,7 @@
       "depends_on": ["HA-0054"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0057-provider-stream-integrity.md",
-      "blocked_reason": "协议56项与全量446 passed/16 skipped通过，待固定提交独立review；实际部署仍需HA-0056兼容调用拓扑决定，未启用真实模型。",
+      "blocked_reason": "85fc7d3代码独立Approved；压缩响应Low已补丁化，11个旧版反例失败、相关143项及全量457 passed/16 skipped通过，追加补丁待复核；实际部署仍需HA-0056兼容调用拓扑决定，未启用真实模型。",
       "recovery_condition": "代码独立复核，HA-0056本机拓扑确认并验证后，先本机再132固定版本发布。",
       "evidence": ["harness/evidence/HA-0057/acceptance.md"]
     },

@@ -1,6 +1,7 @@
 """Real protocol adapter, synthetic HTTP only; no Provider or Keychain access."""
 import asyncio
 import json
+import zlib
 
 import httpx
 import pytest
@@ -33,10 +34,11 @@ REQUEST = providers.ProviderRequest('https://example.invalid/v1', 'synthetic-cre
 @pytest.fixture
 def wire(monkeypatch):
     original = httpx.AsyncClient
-    def install(body, *, status=200, content_type='text/event-stream', exception=None, hang=False):
-        record = {'requests': [], 'closed': 0, 'waiting': asyncio.Event()}
+    def install(body, *, status=200, content_type='text/event-stream', exception=None, hang=False, headers=()):
+        record = {'requests': [], 'closed': 0, 'body_reads': 0, 'waiting': asyncio.Event()}
         class Stream(httpx.AsyncByteStream):
             async def __aiter__(self):
+                record['body_reads'] += 1
                 for part in ([body] if isinstance(body, bytes) else body):
                     yield part
                 if hang:
@@ -49,7 +51,7 @@ def wire(monkeypatch):
         def handle(request):
             assert request.url.host == 'example.invalid'
             record['requests'].append(request)
-            return httpx.Response(status, headers={'Content-Type': content_type}, stream=Stream())
+            return httpx.Response(status, headers=[('Content-Type', content_type), *headers], stream=Stream())
         def client(**kwargs):
             assert kwargs['follow_redirects'] is False and kwargs['trust_env'] is False
             return original(transport=httpx.MockTransport(handle), **kwargs)
@@ -184,7 +186,8 @@ def test_transport_errors_are_structured_and_closed(wire, status, content_type, 
     assert record['closed'] == 1
 
 
-@pytest.mark.parametrize('body', [b':' + b'x' * (256 * 1024 + 1), (b':keepalive\n\n' * 200000)])
+@pytest.mark.parametrize('body', [b':' + b'x' * (256 * 1024 + 1), (b':keepalive\n\n' * 200000)],
+                         ids=['frame-over-limit', 'stream-over-limit'])
 def test_wire_limits_also_bound_ignored_data(wire, body):
     wire(body + b'\n\n' + DELTA + STOP + DONE)
     with pytest.raises(Problem) as error:
@@ -329,3 +332,62 @@ def test_large_ignored_batch_is_cooperative_not_quadratic(wire):
         assert await collect(stream) == []
         await heartbeat_task
     asyncio.run(scenario())
+
+
+def gzip_bomb():
+    # Generate a 60 MiB decoded payload without allocating that plaintext in tests.
+    compressor = zlib.compressobj(wbits=31)
+    block = b'\n' * (64 * 1024)
+    return b''.join(compressor.compress(block) for _ in range(960)) + compressor.flush()
+
+
+@pytest.mark.parametrize('headers,body', [
+    ([('Content-Encoding', 'gzip')], gzip_bomb()),
+    ([('Content-Encoding', 'deflate')], zlib.compress(DELTA + STOP + DONE)),
+    ([('Content-Encoding', 'br')], b'not-read-or-decoded'),
+    ([('Content-Encoding', 'zstd')], b'not-read-or-decoded'),
+    ([('Content-Encoding', 'identity')], DELTA + STOP + DONE),
+    ([('Content-Encoding', '')], DELTA + STOP + DONE),
+    ([('cOnTeNt-EnCoDiNg', 'unknown')], DELTA + STOP + DONE),
+    ([('Content-Encoding', 'identity, gzip')], DELTA + STOP + DONE),
+    ([('Content-Encoding', ''), ('Content-Encoding', 'gzip')], DELTA + STOP + DONE),
+], ids=['gzip-bomb', 'deflate', 'br', 'zstd', 'identity', 'empty', 'unknown', 'combined', 'duplicate'])
+def test_encoded_response_rejected_before_body_read(wire, headers, body):
+    record = wire(body, headers=headers)
+    with pytest.raises(Problem) as error:
+        asyncio.run(collect(providers.OpenAIChatCompletionsAdapter().stream(REQUEST)))
+    assert error.value.code == 'MODEL_PROVIDER_INVALID_RESPONSE'
+    assert record['body_reads'] == 0
+    assert record['closed'] == len(record['requests']) == 1
+
+
+def test_identity_request_and_raw_response_never_use_content_decoder(wire, monkeypatch):
+    def forbidden_decoder(_):
+        pytest.fail('Adapter must not use the HTTP content decoder')
+    monkeypatch.setattr(httpx.Response, '_get_content_decoder', forbidden_decoder)
+    record = wire(DELTA + STOP + DONE)
+    assert asyncio.run(collect(providers.OpenAIChatCompletionsAdapter().stream(REQUEST))) == ['半段答案']
+    assert record['requests'][0].headers['accept-encoding'] == 'identity'
+    assert record['body_reads'] == record['closed'] == 1
+
+
+def test_encoded_http_failure_closes_without_delivery_or_replay(tmp_path, wire):
+    record = wire(gzip_bomb(), headers=[('Content-Encoding', 'gzip')])
+    app = create_app(tmp_path / 'encoded.db', run_worker=False)
+    with TestClient(app, base_url='http://127.0.0.1') as client:
+        runtime, credentials, session = make_runtime(app.state.service.store)
+        app.state.service.agent_runtime = runtime
+        endpoint = f"/api/local/agent-runtime/sessions/{session['id']}/messages"
+        for _ in range(2):
+            response = client.post(endpoint, headers={'Idempotency-Key': 'encoded-send', 'Accept': 'text/event-stream'},
+                                   json={'content': 'question'})
+            assert response.status_code == 200
+            events = [json.loads(line[6:]) for line in response.text.splitlines() if line.startswith('data: ')]
+            assert [event['type'] for event in events] == ['error']
+            assert events[0]['error_code'] == 'MODEL_PROVIDER_INVALID_RESPONSE'
+        detail = runtime.session_detail(session['id'])
+        assert [message['role'] for message in detail['messages']] == ['user']
+        assert detail['exchanges'][0]['status'] == 'failed'
+        assert detail['exchanges'][0]['assistant_message_id'] is None
+        assert record['body_reads'] == 0
+        assert credentials.calls == len(record['requests']) == record['closed'] == 1

@@ -6,6 +6,11 @@
 ## 成功契约
 
 - HTTP 成功且 Content-Type 为 text/event-stream（可带参数）。
+- 请求固定 `Accept-Encoding: identity`。响应必须没有 `Content-Encoding` 字段：
+  gzip/deflate/br/zstd、未知值、空值、显式 identity、重复或组合值均在读取正文前
+  以 INVALID_RESPONSE 拒绝。采用原始字节流，不启用 HTTP 自动解压；避免在 2 MiB
+  检查之前出现解压内存放大。这里只保证 Adapter 不读取/解压编码正文，不声称
+  HTTP 客户端、内核缓冲或整个进程具备 2 MiB 内存硬上限。
 - SSE 按空行组帧，支持 UTF-8/BOM、LF/CRLF/CR、跨网络块和多行 data；注释与
   非 data 字段不进入文本。未完整分隔的最后一帧不得因 EOF 自动当成成功。
 - JSON 帧是 chat.completion.chunk 对象，非空 id 在同一响应内保持一致；唯一
@@ -27,8 +32,8 @@
 | tool_calls/function_call 或工具 delta | MODEL_PROVIDER_UNSUPPORTED_OUTPUT |
 | refusal 非空 | MODEL_PROVIDER_REFUSED |
 | 上游 error 对象或非 2xx | MODEL_PROVIDER_REJECTED |
-| Content-Type/JSON/choice/delta/id/终止顺序不合法 | MODEL_PROVIDER_INVALID_RESPONSE |
-| 解码后流字节超过 2 MiB，或一帧超过 256 Ki 字符 | MODEL_PROVIDER_RESPONSE_LIMIT |
+| 存在 Content-Encoding，或 Content-Type/JSON/choice/delta/id/终止顺序不合法 | MODEL_PROVIDER_INVALID_RESPONSE |
+| 无 Content-Encoding 的正文原始字节超过 2 MiB，或一帧超过 256 Ki 字符 | MODEL_PROVIDER_RESPONSE_LIMIT |
 | 传输超时/HTTP 传输异常 | 保留 MODEL_PROVIDER_TIMEOUT / MODEL_PROVIDER_UNAVAILABLE |
 
 不把上游 error 文本、请求 Authorization 或凭据放进 SSE/持久消息。任何失败都
@@ -43,3 +48,7 @@
 真实 Provider/Keychain/生产库调用均为零。全量及 tests/test_workbench.py 回归。
 旧 ce490c5 的 EOF/length 反例必须行为失败；文档协议加强不是第三方 Provider
 兼容性验收，未实测的服务不能宣称可用。
+
+压缩回归：约 60 MiB 解压体积的合成 gzip、其他编码及重复字段必须在正文迭代
+次数为零时失败，响应恰好关闭一次；HTTP/持久化与失败重放仍无 assistant、done
+或新增 Provider 请求。无编码响应走原始字节，测试禁止调用 HTTPX 内容解码器。

@@ -39,6 +39,9 @@ ADR-0057 narrows the implemented protocol to one text choice (index 0), stable
 completion ID and explicit `finish_reason=stop` followed by a complete `[DONE]`
 frame. EOF or `length` does not certify success; errors, tool/refusal output,
 malformed frames and bounded-response overruns fail without an assistant message.
+Requests explicitly ask for identity encoding; any Content-Encoding response is
+rejected before body iteration. Unencoded bodies use raw bytes, not HTTPX automatic
+decompression. This prevents pre-limit decompression, not total-process memory use.
 See [Provider stream acceptance](../../specs/testing/PROVIDER_STREAM.md).
 `supported` describes implemented translation, not tested third-party compatibility
 or admission for real calls. Usage metadata is not a cost ledger.

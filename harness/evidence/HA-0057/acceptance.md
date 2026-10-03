@@ -1,4 +1,4 @@
-# HA-0057 验证（代码待复审，未部署）
+# HA-0057 验证（85fc7d3 代码 Approved，追加 Low 修复待复核，未部署）
 
 基线 ce490c5。规格 PROVIDER_STREAM.md，决策 ADR-0057。
 MockTransport 和临时 SQLite 验证 Provider 到 Exchange 的失败语义；不使用真实
@@ -30,7 +30,34 @@ MockTransport 和临时 SQLite 验证 Provider 到 Exchange 的失败语义；�
 
 ## 边界与待办
 
-独立 review 未收、真实模型/第三方兼容性未验证、双端未发布。协议 `supported`
+85fc7d3 独立 review 已收，追加补丁待复核；真实模型/第三方兼容性未验证、双端未发布。协议 `supported`
 不等于真实服务 available；usage 不构成费用硬上限；内存/CPU 限额不是 OS 沙箱。
 没有增加工具执行、重试、fallback、Product Run 桥接或放宽准入。
 HA-0056 ce490c5 代码已独立 Approved，但真实本机调用拓扑与双部署仍待完成。
+
+## 独立复审（85fc7d3）与压缩响应 Low
+
+2026-10-04 mymacclaude 只读复审给出 Approved：独立重跑 56 项通过，四条旧版
+误发 done 反例均行为失败，另做 39 个协议边界/限额/资源/持久化探针。其输入、
+编码边界和每路径一次关闭/一次请求是 reviewer 报告，不伪称本代理运行了该套探针。
+剩余 Low 为 `aiter_bytes()` 解压先于大小检查；reviewer 报告约 61 KB gzip
+展开约 60 MB，tracemalloc 峰值 144 MB。该峰值亦非本代理本轮测量。
+
+补丁先更新规格，再在尚未修改的 85fc7d3 Adapter 上运行新增测试：
+- `encoding-before.xml`：11 failed / 56 deselected（0.95 秒），全部为行为失败，
+  非缺符号/导入失败。gzip 报错太晚，deflate/identity/空值/未知值会接受或读取；
+  decoder 哨兵证明旧路径确实进入 HTTPX 内容解码器，HTTP 也报错太晚。
+- 新路径固定请求 identity；存在任意 Content-Encoding 立即拒绝；无编码使用
+  `aiter_raw()`。9 种编码输入 body_reads=0、close=1、request=1；另用 decoder
+  哨兵验证正常路径不调用解码器，用 HTTP/临时 SQLite 验证无预览、无交付及重放。
+- gzip 夹具通过流式压缩 960 个 64 KiB 空行块生成（总解压体积 60 MiB），
+  测试构造无需保留整份明文。断言“未迭代正文”而非不稳定的进程峰值阈值。
+- `encoding-targeted.xml`：新增 11 项 + 原协议 56 项，**67 passed**（1.44 秒）；
+  `encoding-related.log`：再含 Runtime/Lifecycle/Workbench 76 项，**143 passed**
+  （5.86 秒）。大正文参数采用短测试 ID，避免 XML 将合成 body 写入用例名称；
+  仅调整测试标签，无输入或断言变化。
+- `encoding-verify.log`：完整 verify **exit 0，457 passed / 16 skipped**
+  （47.46 秒），清单、后续确定性评测、JS 与 diff 检查均通过。
+
+不声称整个 HTTP 栈/OS 缓冲具备 2 MiB 内存硬限额。没有实际模型/真实端点、
+Keychain、8765 或132操作，部署阻塞不变。
