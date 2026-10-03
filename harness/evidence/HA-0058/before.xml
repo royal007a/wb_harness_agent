@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="7" time="0.751" timestamp="2026-10-04T03:07:38.515740+08:00" hostname="192.168.31.117"><testcase classname="tests.test_openapi_contracts" name="test_lab_published_request_accepts_its_actual_ids[models]" time="0.180"><failure message="jsonschema.exceptions.ValidationError: 'ppr_ab807b2063e04603847650fb38f869ce' does not match '^rtp_[a-f0-9]{32}$'&#10;&#10;Failed validating 'pattern' in schema['properties']['provider_profile_id']:&#10;    {'type': 'string', 'pattern': '^rtp_[a-f0-9]{32}$'}&#10;&#10;On instance['provider_profile_id']:&#10;    'ppr_ab807b2063e04603847650fb38f869ce'">tests/test_openapi_contracts.py:61: in test_lab_published_request_accepts_its_actual_ids
+    request_validator(client, 'agent-lab', resource).validate(requests[resource])
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'ppr_ab807b2063e04603847650fb38f869ce' does not match '^rtp_[a-f0-9]{32}$'
+E
+E   Failed validating 'pattern' in schema['properties']['provider_profile_id']:
+E       {'type': 'string', 'pattern': '^rtp_[a-f0-9]{32}$'}
+E
+E   On instance['provider_profile_id']:
+E       'ppr_ab807b2063e04603847650fb38f869ce'</failure></testcase><testcase classname="tests.test_openapi_contracts" name="test_lab_published_request_accepts_its_actual_ids[agents]" time="0.042"><failure message="jsonschema.exceptions.ValidationError: 'mdl_aa40b008c7154b94910aac9bc0c6eabe' does not match '^rtm_[a-f0-9]{32}$'&#10;&#10;Failed validating 'pattern' in schema['properties']['model_profile_id']:&#10;    {'type': 'string', 'pattern': '^rtm_[a-f0-9]{32}$'}&#10;&#10;On instance['model_profile_id']:&#10;    'mdl_aa40b008c7154b94910aac9bc0c6eabe'">tests/test_openapi_contracts.py:61: in test_lab_published_request_accepts_its_actual_ids
+    request_validator(client, 'agent-lab', resource).validate(requests[resource])
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'mdl_aa40b008c7154b94910aac9bc0c6eabe' does not match '^rtm_[a-f0-9]{32}$'
+E
+E   Failed validating 'pattern' in schema['properties']['model_profile_id']:
+E       {'type': 'string', 'pattern': '^rtm_[a-f0-9]{32}$'}
+E
+E   On instance['model_profile_id']:
+E       'mdl_aa40b008c7154b94910aac9bc0c6eabe'</failure></testcase><testcase classname="tests.test_openapi_contracts" name="test_lab_published_request_accepts_its_actual_ids[sessions]" time="0.045"><failure message="jsonschema.exceptions.ValidationError: 'agt_c0b198ef95e94015b621a23cdbd0cd0a' does not match '^rta_[a-f0-9]{32}$'&#10;&#10;Failed validating 'pattern' in schema['properties']['agent_profile_id']:&#10;    {'type': 'string', 'pattern': '^rta_[a-f0-9]{32}$'}&#10;&#10;On instance['agent_profile_id']:&#10;    'agt_c0b198ef95e94015b621a23cdbd0cd0a'">tests/test_openapi_contracts.py:61: in test_lab_published_request_accepts_its_actual_ids
+    request_validator(client, 'agent-lab', resource).validate(requests[resource])
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: 'agt_c0b198ef95e94015b621a23cdbd0cd0a' does not match '^rta_[a-f0-9]{32}$'
+E
+E   Failed validating 'pattern' in schema['properties']['agent_profile_id']:
+E       {'type': 'string', 'pattern': '^rta_[a-f0-9]{32}$'}
+E
+E   On instance['agent_profile_id']:
+E       'agt_c0b198ef95e94015b621a23cdbd0cd0a'</failure></testcase><testcase classname="tests.test_openapi_contracts" name="test_lab_published_request_rejects_runtime_credential_field" time="0.039"><failure message="AssertionError: assert not True&#10; +  where True = is_valid({'name': 'Fixture', 'type': 'openai_compatible', 'base_url': 'https://example.invalid', 'credential_ref': 'keychain://harnessagent/test'})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...reate_request', 'components': {'schemas': {'HTTPValidationError':...ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid&#10; +      where Draft202012Validator(schema={'$ref': '#/components...reate_request', 'components': {'schemas': {'HTTPValidationError':...ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;) = request_validator(&lt;starlette.testclient.TestClient object at 0x10b56fa80&gt;, 'agent-lab', 'providers')">tests/test_openapi_contracts.py:69: in test_lab_published_request_rejects_runtime_credential_field
+    assert not request_validator(client, 'agent-lab', 'providers').is_valid(body)
+E   AssertionError: assert not True
+E    +  where True = is_valid({'name': 'Fixture', 'type': 'openai_compatible', 'base_url': 'https://example.invalid', 'credential_ref': 'keychain://harnessagent/test'})
+E    +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...reate_request', 'components': {'schemas': {'HTTPValidationError':...ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+E    +      where Draft202012Validator(schema={'$ref': '#/components...reate_request', 'components': {'schemas': {'HTTPValidationError':...ecker=&lt;FormatChecker checkers=['date', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;) = request_validator(&lt;starlette.testclient.TestClient object at 0x10b56fa80&gt;, 'agent-lab', 'providers')</failure></testcase><testcase classname="tests.test_openapi_contracts" name="test_research_definition_keeps_its_own_nested_skill_contract" time="0.041"><failure message="jsonschema.exceptions.ValidationError: Additional properties are not allowed ('external_access', 'id', 'mode', 'path', 'sha256' were unexpected)&#10;&#10;Failed validating 'additionalProperties' in schema['properties']['skill']:&#10;    {'type': 'object',&#10;     'additionalProperties': False,&#10;     'required': ['schema_version',&#10;                  'skill_id',&#10;                  'version',&#10;                  'entrypoint',&#10;                  'runtime',&#10;                  'capabilities'],&#10;     'properties': {'schema_version': {'const': 'external-skill-manifest@1'},&#10;                    'skill_id': {'type': 'string',&#10;                                 'pattern': '^ext_[a-z][a-z0-9_-]{2,63}$'},&#10;                    'version': {'type': 'string',&#10;                                'pattern': '^[0-9]+\\.[0-9]+\\.[0-9]+$'},&#10;                    'entrypoint': {'const': 'entry.py'},&#10;                    'runtime': {'const': 'python-stdlib@3.12'},&#10;                    'capabilities': {'type': 'array',&#10;                                     'items': {'enum': ['transform_json']},&#10;                                     'minItems': 1,&#10;                                     'maxItems': 1,&#10;                                     'uniqueItems': True}}}&#10;&#10;On instance['skill']:&#10;    {'id': 'research.financial',&#10;     'version': '1.0.0',&#10;     'path': 'skills/research-financial-analysis/SKILL.md',&#10;     'sha256': '325bd9468ff136686b847509de27fd953ec37127ad4e02fec0caa2cdae05a4b2',&#10;     'mode': 'first_party_local_instruction_only',&#10;     'external_access': False}">tests/test_openapi_contracts.py:78: in test_research_definition_keeps_its_own_nested_skill_contract
+    validator(document, {'$ref': agent_ref}).validate(agent)
+.venv/lib/python3.14/site-packages/jsonschema/validators.py:450: in validate
+    raise error
+E   jsonschema.exceptions.ValidationError: Additional properties are not allowed ('external_access', 'id', 'mode', 'path', 'sha256' were unexpected)
+E
+E   Failed validating 'additionalProperties' in schema['properties']['skill']:
+E       {'type': 'object',
+E        'additionalProperties': False,
+E        'required': ['schema_version',
+E                     'skill_id',
+E                     'version',
+E                     'entrypoint',
+E                     'runtime',
+E                     'capabilities'],
+E        'properties': {'schema_version': {'const': 'external-skill-manifest@1'},
+E                       'skill_id': {'type': 'string',
+E                                    'pattern': '^ext_[a-z][a-z0-9_-]{2,63}$'},
+E                       'version': {'type': 'string',
+E                                   'pattern': '^[0-9]+\\.[0-9]+\\.[0-9]+$'},
+E                       'entrypoint': {'const': 'entry.py'},
+E                       'runtime': {'const': 'python-stdlib@3.12'},
+E                       'capabilities': {'type': 'array',
+E                                        'items': {'enum': ['transform_json']},
+E                                        'minItems': 1,
+E                                        'maxItems': 1,
+E                                        'uniqueItems': True}}}
+E
+E   On instance['skill']:
+E       {'id': 'research.financial',
+E        'version': '1.0.0',
+E        'path': 'skills/research-financial-analysis/SKILL.md',
+E        'sha256': '325bd9468ff136686b847509de27fd953ec37127ad4e02fec0caa2cdae05a4b2',
+E        'mode': 'first_party_local_instruction_only',
+E        'external_access': False}</failure></testcase><testcase classname="tests.test_openapi_contracts" name="test_profile_creation_response_has_a_real_published_contract[agent-lab]" time="0.043"><failure message="AssertionError: Published response must not be an unconstrained placeholder&#10;assert {}">tests/test_openapi_contracts.py:87: in test_profile_creation_response_has_a_real_published_contract
+    check = validator(document, schema)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_openapi_contracts.py:29: in validator
+    assert schema, 'Published response must not be an unconstrained placeholder'
+E   AssertionError: Published response must not be an unconstrained placeholder
+E   assert {}</failure></testcase><testcase classname="tests.test_openapi_contracts" name="test_profile_creation_response_has_a_real_published_contract[agent-runtime]" time="0.040"><failure message="AssertionError: Published response must not be an unconstrained placeholder&#10;assert {}">tests/test_openapi_contracts.py:87: in test_profile_creation_response_has_a_real_published_contract
+    check = validator(document, schema)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_openapi_contracts.py:29: in validator
+    assert schema, 'Published response must not be an unconstrained placeholder'
+E   AssertionError: Published response must not be an unconstrained placeholder
+E   assert {}</failure></testcase></testsuite></testsuites>

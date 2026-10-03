@@ -4,6 +4,141 @@
   "title": "HarnessAgent Local Agent Lab Contract",
   "description": "Local single-user configuration and deterministic chat-demo contracts. No credential or model invocation fields are permitted.",
   "$defs": {
+    "runtime_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "model_calls",
+        "provider_calls",
+        "network_calls",
+        "tool_calls",
+        "tool_binding_count",
+        "note"
+      ],
+      "properties": {
+        "mode": {
+          "const": "local_deterministic_demo"
+        },
+        "model_calls": {
+          "const": 0
+        },
+        "provider_calls": {
+          "const": 0
+        },
+        "network_calls": {
+          "const": 0
+        },
+        "tool_calls": {
+          "const": 0
+        },
+        "tool_binding_count": {
+          "const": 0
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "provider_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/provider_profile"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "model_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/model_profile"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "agent_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agent_profile"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "session_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chat_session"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "session_detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session",
+        "messages",
+        "runtime"
+      ],
+      "properties": {
+        "session": {
+          "$ref": "#/$defs/chat_session"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chat_message"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
     "provider_type": {
       "type": "string",
       "enum": ["openai_compatible", "anthropic", "ollama"]

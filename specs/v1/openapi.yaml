@@ -1675,13 +1675,27 @@ paths:
                 $ref: './core-contracts.schema.json#/$defs/approval'
         default:
           $ref: '#/components/responses/Error'
+  /local/agent-lab/runtime:
+    servers: [{url: /api}]
+    get:
+      operationId: getLocalAgentLabRuntime
+      responses:
+        '200':
+          description: Local deterministic demo status; zero external calls.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/runtime_status'}
   /local/agent-lab/providers:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentLabProviders
       description: ADR-0021 local configuration only; no remote Provider call occurs.
       responses:
-        '200': {description: Local Provider Profiles and zero-call runtime status.}
+        '200':
+          description: Local Provider Profiles and zero-call runtime status.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/provider_list'}
     post:
       operationId: createLocalAgentLabProvider
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1701,7 +1715,12 @@ paths:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentLabModels
-      responses: {'200': {description: Local Model Profiles.}}
+      responses:
+        '200':
+          description: Local Model Profiles.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/model_list'}
     post:
       operationId: createLocalAgentLabModel
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1721,7 +1740,12 @@ paths:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentLabAgents
-      responses: {'200': {description: Local Agent configuration templates.}}
+      responses:
+        '200':
+          description: Local Agent configuration templates.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/agent_list'}
     post:
       operationId: createLocalAgentLabAgent
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1741,7 +1765,12 @@ paths:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentLabSessions
-      responses: {'200': {description: Locally persisted chat sessions.}}
+      responses:
+        '200':
+          description: Locally persisted chat sessions.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/session_list'}
     post:
       operationId: createLocalAgentLabSession
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1767,7 +1796,11 @@ paths:
           required: true
           schema: {type: string}
       responses:
-        '200': {description: One local Session and its ordered pure-text messages.}
+        '200':
+          description: One local Session and its ordered pure-text messages.
+          content:
+            application/json:
+              schema: {$ref: './local-agent-lab.schema.json#/$defs/session_detail'}
         default: {$ref: '#/components/responses/Error'}
   /local/agent-lab/sessions/{sessionId}/messages:
     servers: [{url: /api}]
@@ -1798,11 +1831,26 @@ paths:
             text/event-stream:
               schema: {$ref: './local-agent-lab.schema.json#/$defs/stream_event'}
         default: {$ref: '#/components/responses/Error'}
+  /local/agent-runtime/runtime:
+    servers: [{url: /api}]
+    get:
+      operationId: getLocalAgentRuntimeStatus
+      responses:
+        '200':
+          description: Configuration status, not a live Provider health check.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/runtime_status'}
   /local/agent-runtime/providers:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentRuntimeProviders
-      responses: {'200': {description: Provider Profiles and the current zero-call runtime status.}}
+      responses:
+        '200':
+          description: Provider Profiles and the current zero-call runtime status.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/provider_list'}
     post:
       operationId: createLocalAgentRuntimeProvider
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1828,12 +1876,23 @@ paths:
           in: path
           required: true
           schema: {type: string}
-      responses: {'200': {description: Zero-network provider readiness result.}, default: {$ref: '#/components/responses/Error'}}
+      responses:
+        '200':
+          description: Zero-network provider readiness result.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/provider_readiness'}
+        default: {$ref: '#/components/responses/Error'}
   /local/agent-runtime/models:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentRuntimeModels
-      responses: {'200': {description: Explicit local Model Profiles.}}
+      responses:
+        '200':
+          description: Explicit local Model Profiles.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/model_list'}
     post:
       operationId: createLocalAgentRuntimeModel
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1853,7 +1912,12 @@ paths:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentRuntimeAgents
-      responses: {'200': {description: Agent Profiles with zero Tool/MCP/Skill bindings.}}
+      responses:
+        '200':
+          description: Agent Profiles with zero Tool/MCP/Skill bindings.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/agent_list'}
     post:
       operationId: createLocalAgentRuntimeAgent
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1873,7 +1937,12 @@ paths:
     servers: [{url: /api}]
     get:
       operationId: listLocalAgentRuntimeSessions
-      responses: {'200': {description: Runtime sessions.}}
+      responses:
+        '200':
+          description: Runtime sessions.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/session_list'}
     post:
       operationId: createLocalAgentRuntimeSession
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -1898,7 +1967,13 @@ paths:
           in: path
           required: true
           schema: {type: string}
-      responses: {'200': {description: Ordered messages and auditable Exchanges.}, default: {$ref: '#/components/responses/Error'}}
+      responses:
+        '200':
+          description: Ordered messages and auditable Exchanges.
+          content:
+            application/json:
+              schema: {$ref: './agent-runtime.schema.json#/$defs/session_detail'}
+        default: {$ref: '#/components/responses/Error'}
   /local/agent-runtime/sessions/{sessionId}/messages:
     servers: [{url: /api}]
     post:

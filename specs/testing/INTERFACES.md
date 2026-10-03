@@ -6,154 +6,154 @@
 
 | 方法与路径 | 功能 | 处理器 | 来源 | OpenAPI |
 |---|---|---|---|---|
-| `DELETE /api/local/memory/sources/{source_id}` | memory | `memory_source_delete` | `backend/app.py:233` | 是 |
-| `GET /` | web | `index` | `backend/app.py:832` | 是 |
-| `GET /agent-lab` | web | `agent_lab_page` | `backend/app.py:704` | 否 |
-| `GET /agent-runtime` | web | `agent_runtime_page` | `backend/app.py:708` | 否 |
-| `GET /api/local/agent-lab/agents` | agent-lab | `agent_lab_agents` | `backend/app.py:502` | 是 |
-| `GET /api/local/agent-lab/models` | agent-lab | `agent_lab_models` | `backend/app.py:494` | 是 |
-| `GET /api/local/agent-lab/providers` | agent-lab | `agent_lab_providers` | `backend/app.py:486` | 是 |
-| `GET /api/local/agent-lab/runtime` | agent-lab | `agent_lab_runtime` | `backend/app.py:419` | 是 |
-| `GET /api/local/agent-lab/sessions` | agent-lab | `agent_lab_sessions` | `backend/app.py:510` | 是 |
-| `GET /api/local/agent-lab/sessions/{session_id}` | agent-lab | `agent_lab_session_detail` | `backend/app.py:518` | 是 |
-| `GET /api/local/agent-runtime/agents` | agent-runtime | `agent_runtime_agents` | `backend/app.py:447` | 是 |
-| `GET /api/local/agent-runtime/models` | agent-runtime | `agent_runtime_models` | `backend/app.py:439` | 是 |
-| `GET /api/local/agent-runtime/providers` | agent-runtime | `agent_runtime_providers` | `backend/app.py:427` | 是 |
-| `GET /api/local/agent-runtime/providers/{provider_id}/readiness` | agent-runtime | `agent_runtime_provider_readiness` | `backend/app.py:435` | 是 |
-| `GET /api/local/agent-runtime/runtime` | agent-runtime | `agent_runtime_status` | `backend/app.py:423` | 是 |
-| `GET /api/local/agent-runtime/sessions` | agent-runtime | `agent_runtime_sessions` | `backend/app.py:455` | 是 |
-| `GET /api/local/agent-runtime/sessions/{session_id}` | agent-runtime | `agent_runtime_session_detail` | `backend/app.py:463` | 是 |
-| `GET /api/local/connectors/baidu-netdisk` | baidu | `baidu_netdisk_status` | `backend/app.py:554` | 是 |
-| `GET /api/local/connectors/baidu-netdisk/callback` | baidu | `baidu_netdisk_callback` | `backend/app.py:566` | 否 |
-| `GET /api/local/external-skills/packages` | external-skills | `external_skill_packages` | `backend/app.py:156` | 是 |
-| `GET /api/local/external-skills/runtime` | external-skills | `external_skill_runtime` | `backend/app.py:152` | 是 |
-| `GET /api/local/memory/banks` | memory | `memory_banks` | `backend/app.py:179` | 是 |
-| `GET /api/local/memory/banks/{bank_id}` | memory | `memory_bank_detail` | `backend/app.py:187` | 是 |
-| `GET /api/local/memory/runtime` | memory | `memory_runtime` | `backend/app.py:175` | 是 |
-| `GET /api/local/pi-contract-review` | pi | `pi_contract_review_list` | `backend/app.py:653` | 是 |
-| `GET /api/local/pi-contract-review/{run_id}` | pi | `pi_contract_review_detail` | `backend/app.py:657` | 是 |
-| `GET /api/local/pi-contract-review/{run_id}/events` | pi | `pi_contract_review_events` | `backend/app.py:661` | 是 |
-| `GET /api/local/pi/runtime` | pi | `pi_runtime` | `backend/app.py:625` | 是 |
-| `GET /api/local/recovery/cases` | recovery | `recovery_cases` | `backend/app.py:383` | 是 |
-| `GET /api/local/recovery/cases/{case_id}` | recovery | `recovery_case_detail` | `backend/app.py:391` | 是 |
-| `GET /api/local/recovery/runtime` | recovery | `recovery_runtime` | `backend/app.py:379` | 是 |
-| `GET /api/local/research` | research | `research_list` | `backend/app.py:592` | 是 |
-| `GET /api/local/research-agents` | research-agents | `research_agents_list` | `backend/app.py:610` | 是 |
-| `GET /api/local/research-agents/{run_id}` | research-agents | `research_agents_detail` | `backend/app.py:616` | 是 |
-| `GET /api/local/research-native` | research-native | `research_native_list` | `backend/app.py:640` | 是 |
-| `GET /api/local/research-native/runtime` | research-native | `research_native_runtime` | `backend/app.py:620` | 是 |
-| `GET /api/local/research-native/{run_id}` | research-native | `research_native_detail` | `backend/app.py:645` | 是 |
-| `GET /api/local/research/{run_id}` | research | `research_detail` | `backend/app.py:598` | 是 |
-| `GET /api/local/runs/{run_id}/restore` | replan | `restore_status` | `backend/app.py:802` | 是 |
-| `GET /api/local/sample` | platform | `sample` | `backend/app.py:724` | 是 |
-| `GET /api/local/team/attention/runtime` | attention | `team_attention_runtime` | `backend/app.py:247` | 是 |
-| `GET /api/local/team/channels/{channel_id}` | team | `team_channel_detail` | `backend/app.py:338` | 是 |
-| `GET /api/local/team/foundation/runtime` | team | `team_foundation_runtime` | `backend/app.py:243` | 是 |
-| `GET /api/local/team/inbox` | attention | `team_inbox` | `backend/app.py:273` | 是 |
-| `GET /api/local/team/runtime` | team | `team_runtime` | `backend/app.py:239` | 是 |
-| `GET /api/local/team/sessions` | continuity | `team_sessions` | `backend/app.py:255` | 是 |
-| `GET /api/local/team/sessions/runtime` | continuity | `team_session_runtime` | `backend/app.py:251` | 是 |
-| `GET /api/local/team/sessions/{session_id}` | continuity | `team_session_detail` | `backend/app.py:264` | 是 |
-| `GET /api/local/team/tasks` | team | `team_tasks` | `backend/app.py:347` | 是 |
-| `GET /api/local/team/tasks/{task_id}` | team | `team_task_detail` | `backend/app.py:355` | 是 |
-| `GET /api/local/team/workspaces` | team | `team_workspaces` | `backend/app.py:302` | 是 |
-| `GET /api/local/team/workspaces/{workspace_id}` | team | `team_workspace_detail` | `backend/app.py:311` | 是 |
-| `GET /api/local/team/workspaces/{workspace_id}/agents` | team | `team_workspace_agents` | `backend/app.py:315` | 是 |
-| `GET /api/local/team/workspaces/{workspace_id}/channels` | team | `team_workspace_channels` | `backend/app.py:329` | 是 |
-| `GET /api/v1/artifacts/{artifact_id}/content` | product | `content` | `backend/app.py:824` | 是 |
-| `GET /api/v1/engines` | platform | `engines` | `backend/app.py:126` | 是 |
-| `GET /api/v1/frameworks` | platform | `frameworks` | `backend/app.py:139` | 是 |
-| `GET /api/v1/health` | platform | `health` | `backend/app.py:122` | 是 |
-| `GET /api/v1/readiness` | platform | `engine_readiness` | `backend/app.py:144` | 是 |
-| `GET /api/v1/replans/{replan_id}` | replan | `replan_detail` | `backend/app.py:778` | 是 |
-| `GET /api/v1/resources` | platform | `resources` | `backend/app.py:148` | 是 |
-| `GET /api/v1/resources/{resource_id}` | platform | `resource` | `backend/app.py:720` | 是 |
-| `GET /api/v1/runs/{run_id}` | product | `run` | `backend/app.py:766` | 是 |
-| `GET /api/v1/runs/{run_id}/artifacts` | product | `artifact_list` | `backend/app.py:813` | 是 |
-| `GET /api/v1/runs/{run_id}/events` | product | `events` | `backend/app.py:806` | 是 |
-| `GET /api/v1/runs/{run_id}/replans` | product | `replan_list` | `backend/app.py:774` | 是 |
-| `GET /api/v1/tasks` | product | `tasks` | `backend/app.py:751` | 是 |
-| `GET /api/v1/tasks/{task_id}` | product | `task_detail` | `backend/app.py:757` | 是 |
-| `GET /api/v1/tasks/{task_id}/artifacts` | product | `task_artifacts` | `backend/app.py:817` | 是 |
-| `GET /connectors/baidu-netdisk` | web | `baidu_netdisk_page` | `backend/app.py:712` | 否 |
-| `GET /docs` | web | `api_docs` | `backend/app.py:836` | 否 |
+| `DELETE /api/local/memory/sources/{source_id}` | memory | `memory_source_delete` | `backend/app.py:234` | 是 |
+| `GET /` | web | `index` | `backend/app.py:833` | 是 |
+| `GET /agent-lab` | web | `agent_lab_page` | `backend/app.py:705` | 否 |
+| `GET /agent-runtime` | web | `agent_runtime_page` | `backend/app.py:709` | 否 |
+| `GET /api/local/agent-lab/agents` | agent-lab | `agent_lab_agents` | `backend/app.py:503` | 是 |
+| `GET /api/local/agent-lab/models` | agent-lab | `agent_lab_models` | `backend/app.py:495` | 是 |
+| `GET /api/local/agent-lab/providers` | agent-lab | `agent_lab_providers` | `backend/app.py:487` | 是 |
+| `GET /api/local/agent-lab/runtime` | agent-lab | `agent_lab_runtime` | `backend/app.py:420` | 是 |
+| `GET /api/local/agent-lab/sessions` | agent-lab | `agent_lab_sessions` | `backend/app.py:511` | 是 |
+| `GET /api/local/agent-lab/sessions/{session_id}` | agent-lab | `agent_lab_session_detail` | `backend/app.py:519` | 是 |
+| `GET /api/local/agent-runtime/agents` | agent-runtime | `agent_runtime_agents` | `backend/app.py:448` | 是 |
+| `GET /api/local/agent-runtime/models` | agent-runtime | `agent_runtime_models` | `backend/app.py:440` | 是 |
+| `GET /api/local/agent-runtime/providers` | agent-runtime | `agent_runtime_providers` | `backend/app.py:428` | 是 |
+| `GET /api/local/agent-runtime/providers/{provider_id}/readiness` | agent-runtime | `agent_runtime_provider_readiness` | `backend/app.py:436` | 是 |
+| `GET /api/local/agent-runtime/runtime` | agent-runtime | `agent_runtime_status` | `backend/app.py:424` | 是 |
+| `GET /api/local/agent-runtime/sessions` | agent-runtime | `agent_runtime_sessions` | `backend/app.py:456` | 是 |
+| `GET /api/local/agent-runtime/sessions/{session_id}` | agent-runtime | `agent_runtime_session_detail` | `backend/app.py:464` | 是 |
+| `GET /api/local/connectors/baidu-netdisk` | baidu | `baidu_netdisk_status` | `backend/app.py:555` | 是 |
+| `GET /api/local/connectors/baidu-netdisk/callback` | baidu | `baidu_netdisk_callback` | `backend/app.py:567` | 否 |
+| `GET /api/local/external-skills/packages` | external-skills | `external_skill_packages` | `backend/app.py:157` | 是 |
+| `GET /api/local/external-skills/runtime` | external-skills | `external_skill_runtime` | `backend/app.py:153` | 是 |
+| `GET /api/local/memory/banks` | memory | `memory_banks` | `backend/app.py:180` | 是 |
+| `GET /api/local/memory/banks/{bank_id}` | memory | `memory_bank_detail` | `backend/app.py:188` | 是 |
+| `GET /api/local/memory/runtime` | memory | `memory_runtime` | `backend/app.py:176` | 是 |
+| `GET /api/local/pi-contract-review` | pi | `pi_contract_review_list` | `backend/app.py:654` | 是 |
+| `GET /api/local/pi-contract-review/{run_id}` | pi | `pi_contract_review_detail` | `backend/app.py:658` | 是 |
+| `GET /api/local/pi-contract-review/{run_id}/events` | pi | `pi_contract_review_events` | `backend/app.py:662` | 是 |
+| `GET /api/local/pi/runtime` | pi | `pi_runtime` | `backend/app.py:626` | 是 |
+| `GET /api/local/recovery/cases` | recovery | `recovery_cases` | `backend/app.py:384` | 是 |
+| `GET /api/local/recovery/cases/{case_id}` | recovery | `recovery_case_detail` | `backend/app.py:392` | 是 |
+| `GET /api/local/recovery/runtime` | recovery | `recovery_runtime` | `backend/app.py:380` | 是 |
+| `GET /api/local/research` | research | `research_list` | `backend/app.py:593` | 是 |
+| `GET /api/local/research-agents` | research-agents | `research_agents_list` | `backend/app.py:611` | 是 |
+| `GET /api/local/research-agents/{run_id}` | research-agents | `research_agents_detail` | `backend/app.py:617` | 是 |
+| `GET /api/local/research-native` | research-native | `research_native_list` | `backend/app.py:641` | 是 |
+| `GET /api/local/research-native/runtime` | research-native | `research_native_runtime` | `backend/app.py:621` | 是 |
+| `GET /api/local/research-native/{run_id}` | research-native | `research_native_detail` | `backend/app.py:646` | 是 |
+| `GET /api/local/research/{run_id}` | research | `research_detail` | `backend/app.py:599` | 是 |
+| `GET /api/local/runs/{run_id}/restore` | replan | `restore_status` | `backend/app.py:803` | 是 |
+| `GET /api/local/sample` | platform | `sample` | `backend/app.py:725` | 是 |
+| `GET /api/local/team/attention/runtime` | attention | `team_attention_runtime` | `backend/app.py:248` | 是 |
+| `GET /api/local/team/channels/{channel_id}` | team | `team_channel_detail` | `backend/app.py:339` | 是 |
+| `GET /api/local/team/foundation/runtime` | team | `team_foundation_runtime` | `backend/app.py:244` | 是 |
+| `GET /api/local/team/inbox` | attention | `team_inbox` | `backend/app.py:274` | 是 |
+| `GET /api/local/team/runtime` | team | `team_runtime` | `backend/app.py:240` | 是 |
+| `GET /api/local/team/sessions` | continuity | `team_sessions` | `backend/app.py:256` | 是 |
+| `GET /api/local/team/sessions/runtime` | continuity | `team_session_runtime` | `backend/app.py:252` | 是 |
+| `GET /api/local/team/sessions/{session_id}` | continuity | `team_session_detail` | `backend/app.py:265` | 是 |
+| `GET /api/local/team/tasks` | team | `team_tasks` | `backend/app.py:348` | 是 |
+| `GET /api/local/team/tasks/{task_id}` | team | `team_task_detail` | `backend/app.py:356` | 是 |
+| `GET /api/local/team/workspaces` | team | `team_workspaces` | `backend/app.py:303` | 是 |
+| `GET /api/local/team/workspaces/{workspace_id}` | team | `team_workspace_detail` | `backend/app.py:312` | 是 |
+| `GET /api/local/team/workspaces/{workspace_id}/agents` | team | `team_workspace_agents` | `backend/app.py:316` | 是 |
+| `GET /api/local/team/workspaces/{workspace_id}/channels` | team | `team_workspace_channels` | `backend/app.py:330` | 是 |
+| `GET /api/v1/artifacts/{artifact_id}/content` | product | `content` | `backend/app.py:825` | 是 |
+| `GET /api/v1/engines` | platform | `engines` | `backend/app.py:127` | 是 |
+| `GET /api/v1/frameworks` | platform | `frameworks` | `backend/app.py:140` | 是 |
+| `GET /api/v1/health` | platform | `health` | `backend/app.py:123` | 是 |
+| `GET /api/v1/readiness` | platform | `engine_readiness` | `backend/app.py:145` | 是 |
+| `GET /api/v1/replans/{replan_id}` | replan | `replan_detail` | `backend/app.py:779` | 是 |
+| `GET /api/v1/resources` | platform | `resources` | `backend/app.py:149` | 是 |
+| `GET /api/v1/resources/{resource_id}` | platform | `resource` | `backend/app.py:721` | 是 |
+| `GET /api/v1/runs/{run_id}` | product | `run` | `backend/app.py:767` | 是 |
+| `GET /api/v1/runs/{run_id}/artifacts` | product | `artifact_list` | `backend/app.py:814` | 是 |
+| `GET /api/v1/runs/{run_id}/events` | product | `events` | `backend/app.py:807` | 是 |
+| `GET /api/v1/runs/{run_id}/replans` | product | `replan_list` | `backend/app.py:775` | 是 |
+| `GET /api/v1/tasks` | product | `tasks` | `backend/app.py:752` | 是 |
+| `GET /api/v1/tasks/{task_id}` | product | `task_detail` | `backend/app.py:758` | 是 |
+| `GET /api/v1/tasks/{task_id}/artifacts` | product | `task_artifacts` | `backend/app.py:818` | 是 |
+| `GET /connectors/baidu-netdisk` | web | `baidu_netdisk_page` | `backend/app.py:713` | 否 |
+| `GET /docs` | web | `api_docs` | `backend/app.py:837` | 否 |
 | `GET /openapi.json` | web | `openapi` | `framework` | 否 |
-| `GET /research` | web | `research_page` | `backend/app.py:602` | 否 |
-| `GET /research-agents` | web | `research_agents_page` | `backend/app.py:700` | 否 |
+| `GET /research` | web | `research_page` | `backend/app.py:603` | 否 |
+| `GET /research-agents` | web | `research_agents_page` | `backend/app.py:701` | 否 |
 | `GET /static/{path:path}` | web | `static` | `frontend/` | 否 |
 | `HEAD /openapi.json` | web | `openapi` | `framework` | 否 |
 | `HEAD /static/{path:path}` | web | `static` | `frontend/` | 否 |
-| `POST /api/local/agent-lab/agents` | agent-lab | `agent_lab_agent_create` | `backend/app.py:506` | 是 |
-| `POST /api/local/agent-lab/models` | agent-lab | `agent_lab_model_create` | `backend/app.py:498` | 是 |
-| `POST /api/local/agent-lab/providers` | agent-lab | `agent_lab_provider_create` | `backend/app.py:490` | 是 |
-| `POST /api/local/agent-lab/sessions` | agent-lab | `agent_lab_session_create` | `backend/app.py:514` | 是 |
-| `POST /api/local/agent-lab/sessions/{session_id}/messages` | agent-lab | `agent_lab_message_create` | `backend/app.py:522` | 是 |
-| `POST /api/local/agent-runtime/agents` | agent-runtime | `agent_runtime_agent_create` | `backend/app.py:451` | 是 |
-| `POST /api/local/agent-runtime/models` | agent-runtime | `agent_runtime_model_create` | `backend/app.py:443` | 是 |
-| `POST /api/local/agent-runtime/providers` | agent-runtime | `agent_runtime_provider_create` | `backend/app.py:431` | 是 |
-| `POST /api/local/agent-runtime/sessions` | agent-runtime | `agent_runtime_session_create` | `backend/app.py:459` | 是 |
-| `POST /api/local/agent-runtime/sessions/{session_id}/messages` | agent-runtime | `agent_runtime_message_create` | `backend/app.py:467` | 是 |
-| `POST /api/local/connectors/baidu-netdisk/authorization` | baidu | `baidu_netdisk_authorization` | `backend/app.py:558` | 是 |
-| `POST /api/local/connectors/baidu-netdisk:disconnect` | baidu | `baidu_netdisk_disconnect` | `backend/app.py:574` | 是 |
-| `POST /api/local/external-skills/packages` | external-skills | `external_skill_package_register` | `backend/app.py:160` | 是 |
-| `POST /api/local/external-skills/packages/{package_id}:execute` | external-skills | `external_skill_execute` | `backend/app.py:169` | 是 |
-| `POST /api/local/intents:interpret` | intent | `interpret_intent` | `backend/app.py:728` | 是 |
-| `POST /api/local/memory/banks` | memory | `memory_bank_create` | `backend/app.py:183` | 是 |
-| `POST /api/local/memory/banks/{bank_id}/entities` | memory | `memory_entity_create` | `backend/app.py:195` | 是 |
-| `POST /api/local/memory/banks/{bank_id}/relations` | memory | `memory_relation_create` | `backend/app.py:199` | 是 |
-| `POST /api/local/memory/banks/{bank_id}/retain` | memory | `memory_retain` | `backend/app.py:191` | 是 |
-| `POST /api/local/memory/banks/{bank_id}:context` | memory | `memory_context` | `backend/app.py:207` | 是 |
-| `POST /api/local/memory/banks/{bank_id}:fact-lineage` | memory | `memory_fact_lineage` | `backend/app.py:223` | 是 |
-| `POST /api/local/memory/banks/{bank_id}:graph-recall` | memory | `memory_graph_recall` | `backend/app.py:215` | 是 |
-| `POST /api/local/memory/banks/{bank_id}:recall` | memory | `memory_recall` | `backend/app.py:203` | 是 |
-| `POST /api/local/memory/banks/{bank_id}:recall-details` | memory | `memory_recall_details` | `backend/app.py:211` | 是 |
-| `POST /api/local/memory/banks/{bank_id}:resolve-entity` | memory | `memory_entity_resolve` | `backend/app.py:219` | 是 |
-| `POST /api/local/memory/sources/{source_id}:retract` | memory | `memory_source_retract` | `backend/app.py:227` | 是 |
-| `POST /api/local/pi-contract-pipeline/preview` | pi | `pi_contract_pipeline_preview` | `backend/app.py:669` | 是 |
-| `POST /api/local/pi-contract-pipeline/review` | pi | `pi_contract_pipeline_review` | `backend/app.py:673` | 是 |
-| `POST /api/local/pi-contract-pipeline/review-stream` | pi | `pi_contract_pipeline_review_stream` | `backend/app.py:681` | 是 |
-| `POST /api/local/pi-contract-pipeline/security-check` | pi | `pi_contract_pipeline_security_check` | `backend/app.py:677` | 是 |
-| `POST /api/local/pi-contract-review` | pi | `pi_contract_review_create` | `backend/app.py:649` | 是 |
-| `POST /api/local/pi-contract-review/{run_id}:gate` | pi | `pi_contract_review_gate` | `backend/app.py:665` | 是 |
-| `POST /api/local/recovery/cases` | recovery | `recovery_case_create` | `backend/app.py:387` | 是 |
-| `POST /api/local/recovery/cases/{case_id}/observations` | recovery | `recovery_observation_create` | `backend/app.py:395` | 是 |
-| `POST /api/local/recovery/cases/{case_id}:cancel` | recovery | `recovery_cancel` | `backend/app.py:407` | 是 |
-| `POST /api/local/recovery/cases/{case_id}:complete` | recovery | `recovery_complete` | `backend/app.py:415` | 是 |
-| `POST /api/local/recovery/cases/{case_id}:confirm` | recovery | `recovery_confirm` | `backend/app.py:403` | 是 |
-| `POST /api/local/recovery/cases/{case_id}:link-handoff` | recovery | `recovery_link_handoff` | `backend/app.py:411` | 是 |
-| `POST /api/local/recovery/cases/{case_id}:try` | recovery | `recovery_try` | `backend/app.py:399` | 是 |
-| `POST /api/local/research` | research | `research_create` | `backend/app.py:588` | 是 |
-| `POST /api/local/research-agents` | research-agents | `research_agents_create` | `backend/app.py:606` | 是 |
-| `POST /api/local/research-native` | research-native | `research_native_create` | `backend/app.py:636` | 是 |
-| `POST /api/local/research-native/documents` | research-native | `research_native_document` | `backend/app.py:630` | 是 |
-| `POST /api/local/runs/{run_id}:restore` | replan | `restore` | `backend/app.py:798` | 是 |
-| `POST /api/local/tasks` | product | `quick_task` | `backend/app.py:735` | 是 |
-| `POST /api/local/team/attention/items` | attention | `team_attention_item_create` | `backend/app.py:277` | 是 |
-| `POST /api/local/team/attention/items/{item_id}:claim` | attention | `team_attention_item_claim` | `backend/app.py:282` | 是 |
-| `POST /api/local/team/attention/items/{item_id}:complete` | attention | `team_attention_item_complete` | `backend/app.py:292` | 是 |
-| `POST /api/local/team/attention/items/{item_id}:release` | attention | `team_attention_item_release` | `backend/app.py:287` | 是 |
-| `POST /api/local/team/channels/{channel_id}/memberships` | team | `team_channel_membership_grant` | `backend/app.py:342` | 是 |
-| `POST /api/local/team/channels/{channel_id}/threads/{thread_id}:read` | team | `team_attention_read` | `backend/app.py:297` | 是 |
-| `POST /api/local/team/sessions` | continuity | `team_session_create` | `backend/app.py:259` | 是 |
-| `POST /api/local/team/sessions/{session_id}:handoff` | continuity | `team_session_handoff` | `backend/app.py:268` | 是 |
-| `POST /api/local/team/tasks` | team | `team_task_create` | `backend/app.py:351` | 是 |
-| `POST /api/local/team/tasks/{task_id}/gate-decisions` | team | `team_task_gate_decision` | `backend/app.py:375` | 是 |
-| `POST /api/local/team/tasks/{task_id}/handoffs` | team | `team_task_handoff` | `backend/app.py:363` | 是 |
-| `POST /api/local/team/tasks/{task_id}:claim` | team | `team_task_claim` | `backend/app.py:359` | 是 |
-| `POST /api/local/team/tasks/{task_id}:close` | team | `team_task_close` | `backend/app.py:371` | 是 |
-| `POST /api/local/team/tasks/{task_id}:submit` | team | `team_task_submit` | `backend/app.py:367` | 是 |
-| `POST /api/local/team/workspaces` | team | `team_workspace_create` | `backend/app.py:306` | 是 |
-| `POST /api/local/team/workspaces/{workspace_id}/agents` | team | `team_agent_create` | `backend/app.py:319` | 是 |
-| `POST /api/local/team/workspaces/{workspace_id}/channels` | team | `team_channel_create` | `backend/app.py:333` | 是 |
-| `POST /api/local/team/workspaces/{workspace_id}/memberships` | team | `team_workspace_membership_grant` | `backend/app.py:324` | 是 |
-| `POST /api/v1/replans/{replan_id}:cancel` | replan | `replan_cancel` | `backend/app.py:790` | 是 |
-| `POST /api/v1/replans/{replan_id}:confirm` | replan | `replan_confirm` | `backend/app.py:786` | 是 |
-| `POST /api/v1/replans/{replan_id}:try` | replan | `replan_try` | `backend/app.py:782` | 是 |
-| `POST /api/v1/resources` | platform | `upload` | `backend/app.py:716` | 是 |
-| `POST /api/v1/runs/{run_id}/replans` | product | `replan_create` | `backend/app.py:770` | 是 |
-| `POST /api/v1/runs/{run_id}:cancel` | product | `cancel` | `backend/app.py:794` | 是 |
-| `POST /api/v1/tasks` | product | `task_create` | `backend/app.py:747` | 是 |
-| `POST /api/v1/tasks/{task_id}/runs` | product | `rerun` | `backend/app.py:762` | 是 |
+| `POST /api/local/agent-lab/agents` | agent-lab | `agent_lab_agent_create` | `backend/app.py:507` | 是 |
+| `POST /api/local/agent-lab/models` | agent-lab | `agent_lab_model_create` | `backend/app.py:499` | 是 |
+| `POST /api/local/agent-lab/providers` | agent-lab | `agent_lab_provider_create` | `backend/app.py:491` | 是 |
+| `POST /api/local/agent-lab/sessions` | agent-lab | `agent_lab_session_create` | `backend/app.py:515` | 是 |
+| `POST /api/local/agent-lab/sessions/{session_id}/messages` | agent-lab | `agent_lab_message_create` | `backend/app.py:523` | 是 |
+| `POST /api/local/agent-runtime/agents` | agent-runtime | `agent_runtime_agent_create` | `backend/app.py:452` | 是 |
+| `POST /api/local/agent-runtime/models` | agent-runtime | `agent_runtime_model_create` | `backend/app.py:444` | 是 |
+| `POST /api/local/agent-runtime/providers` | agent-runtime | `agent_runtime_provider_create` | `backend/app.py:432` | 是 |
+| `POST /api/local/agent-runtime/sessions` | agent-runtime | `agent_runtime_session_create` | `backend/app.py:460` | 是 |
+| `POST /api/local/agent-runtime/sessions/{session_id}/messages` | agent-runtime | `agent_runtime_message_create` | `backend/app.py:468` | 是 |
+| `POST /api/local/connectors/baidu-netdisk/authorization` | baidu | `baidu_netdisk_authorization` | `backend/app.py:559` | 是 |
+| `POST /api/local/connectors/baidu-netdisk:disconnect` | baidu | `baidu_netdisk_disconnect` | `backend/app.py:575` | 是 |
+| `POST /api/local/external-skills/packages` | external-skills | `external_skill_package_register` | `backend/app.py:161` | 是 |
+| `POST /api/local/external-skills/packages/{package_id}:execute` | external-skills | `external_skill_execute` | `backend/app.py:170` | 是 |
+| `POST /api/local/intents:interpret` | intent | `interpret_intent` | `backend/app.py:729` | 是 |
+| `POST /api/local/memory/banks` | memory | `memory_bank_create` | `backend/app.py:184` | 是 |
+| `POST /api/local/memory/banks/{bank_id}/entities` | memory | `memory_entity_create` | `backend/app.py:196` | 是 |
+| `POST /api/local/memory/banks/{bank_id}/relations` | memory | `memory_relation_create` | `backend/app.py:200` | 是 |
+| `POST /api/local/memory/banks/{bank_id}/retain` | memory | `memory_retain` | `backend/app.py:192` | 是 |
+| `POST /api/local/memory/banks/{bank_id}:context` | memory | `memory_context` | `backend/app.py:208` | 是 |
+| `POST /api/local/memory/banks/{bank_id}:fact-lineage` | memory | `memory_fact_lineage` | `backend/app.py:224` | 是 |
+| `POST /api/local/memory/banks/{bank_id}:graph-recall` | memory | `memory_graph_recall` | `backend/app.py:216` | 是 |
+| `POST /api/local/memory/banks/{bank_id}:recall` | memory | `memory_recall` | `backend/app.py:204` | 是 |
+| `POST /api/local/memory/banks/{bank_id}:recall-details` | memory | `memory_recall_details` | `backend/app.py:212` | 是 |
+| `POST /api/local/memory/banks/{bank_id}:resolve-entity` | memory | `memory_entity_resolve` | `backend/app.py:220` | 是 |
+| `POST /api/local/memory/sources/{source_id}:retract` | memory | `memory_source_retract` | `backend/app.py:228` | 是 |
+| `POST /api/local/pi-contract-pipeline/preview` | pi | `pi_contract_pipeline_preview` | `backend/app.py:670` | 是 |
+| `POST /api/local/pi-contract-pipeline/review` | pi | `pi_contract_pipeline_review` | `backend/app.py:674` | 是 |
+| `POST /api/local/pi-contract-pipeline/review-stream` | pi | `pi_contract_pipeline_review_stream` | `backend/app.py:682` | 是 |
+| `POST /api/local/pi-contract-pipeline/security-check` | pi | `pi_contract_pipeline_security_check` | `backend/app.py:678` | 是 |
+| `POST /api/local/pi-contract-review` | pi | `pi_contract_review_create` | `backend/app.py:650` | 是 |
+| `POST /api/local/pi-contract-review/{run_id}:gate` | pi | `pi_contract_review_gate` | `backend/app.py:666` | 是 |
+| `POST /api/local/recovery/cases` | recovery | `recovery_case_create` | `backend/app.py:388` | 是 |
+| `POST /api/local/recovery/cases/{case_id}/observations` | recovery | `recovery_observation_create` | `backend/app.py:396` | 是 |
+| `POST /api/local/recovery/cases/{case_id}:cancel` | recovery | `recovery_cancel` | `backend/app.py:408` | 是 |
+| `POST /api/local/recovery/cases/{case_id}:complete` | recovery | `recovery_complete` | `backend/app.py:416` | 是 |
+| `POST /api/local/recovery/cases/{case_id}:confirm` | recovery | `recovery_confirm` | `backend/app.py:404` | 是 |
+| `POST /api/local/recovery/cases/{case_id}:link-handoff` | recovery | `recovery_link_handoff` | `backend/app.py:412` | 是 |
+| `POST /api/local/recovery/cases/{case_id}:try` | recovery | `recovery_try` | `backend/app.py:400` | 是 |
+| `POST /api/local/research` | research | `research_create` | `backend/app.py:589` | 是 |
+| `POST /api/local/research-agents` | research-agents | `research_agents_create` | `backend/app.py:607` | 是 |
+| `POST /api/local/research-native` | research-native | `research_native_create` | `backend/app.py:637` | 是 |
+| `POST /api/local/research-native/documents` | research-native | `research_native_document` | `backend/app.py:631` | 是 |
+| `POST /api/local/runs/{run_id}:restore` | replan | `restore` | `backend/app.py:799` | 是 |
+| `POST /api/local/tasks` | product | `quick_task` | `backend/app.py:736` | 是 |
+| `POST /api/local/team/attention/items` | attention | `team_attention_item_create` | `backend/app.py:278` | 是 |
+| `POST /api/local/team/attention/items/{item_id}:claim` | attention | `team_attention_item_claim` | `backend/app.py:283` | 是 |
+| `POST /api/local/team/attention/items/{item_id}:complete` | attention | `team_attention_item_complete` | `backend/app.py:293` | 是 |
+| `POST /api/local/team/attention/items/{item_id}:release` | attention | `team_attention_item_release` | `backend/app.py:288` | 是 |
+| `POST /api/local/team/channels/{channel_id}/memberships` | team | `team_channel_membership_grant` | `backend/app.py:343` | 是 |
+| `POST /api/local/team/channels/{channel_id}/threads/{thread_id}:read` | team | `team_attention_read` | `backend/app.py:298` | 是 |
+| `POST /api/local/team/sessions` | continuity | `team_session_create` | `backend/app.py:260` | 是 |
+| `POST /api/local/team/sessions/{session_id}:handoff` | continuity | `team_session_handoff` | `backend/app.py:269` | 是 |
+| `POST /api/local/team/tasks` | team | `team_task_create` | `backend/app.py:352` | 是 |
+| `POST /api/local/team/tasks/{task_id}/gate-decisions` | team | `team_task_gate_decision` | `backend/app.py:376` | 是 |
+| `POST /api/local/team/tasks/{task_id}/handoffs` | team | `team_task_handoff` | `backend/app.py:364` | 是 |
+| `POST /api/local/team/tasks/{task_id}:claim` | team | `team_task_claim` | `backend/app.py:360` | 是 |
+| `POST /api/local/team/tasks/{task_id}:close` | team | `team_task_close` | `backend/app.py:372` | 是 |
+| `POST /api/local/team/tasks/{task_id}:submit` | team | `team_task_submit` | `backend/app.py:368` | 是 |
+| `POST /api/local/team/workspaces` | team | `team_workspace_create` | `backend/app.py:307` | 是 |
+| `POST /api/local/team/workspaces/{workspace_id}/agents` | team | `team_agent_create` | `backend/app.py:320` | 是 |
+| `POST /api/local/team/workspaces/{workspace_id}/channels` | team | `team_channel_create` | `backend/app.py:334` | 是 |
+| `POST /api/local/team/workspaces/{workspace_id}/memberships` | team | `team_workspace_membership_grant` | `backend/app.py:325` | 是 |
+| `POST /api/v1/replans/{replan_id}:cancel` | replan | `replan_cancel` | `backend/app.py:791` | 是 |
+| `POST /api/v1/replans/{replan_id}:confirm` | replan | `replan_confirm` | `backend/app.py:787` | 是 |
+| `POST /api/v1/replans/{replan_id}:try` | replan | `replan_try` | `backend/app.py:783` | 是 |
+| `POST /api/v1/resources` | platform | `upload` | `backend/app.py:717` | 是 |
+| `POST /api/v1/runs/{run_id}/replans` | product | `replan_create` | `backend/app.py:771` | 是 |
+| `POST /api/v1/runs/{run_id}:cancel` | product | `cancel` | `backend/app.py:795` | 是 |
+| `POST /api/v1/tasks` | product | `task_create` | `backend/app.py:748` | 是 |
+| `POST /api/v1/tasks/{task_id}/runs` | product | `rerun` | `backend/app.py:763` | 是 |
 
 ## 功能验收口径（含非 HTTP）
 
@@ -211,11 +211,11 @@
 
 Agent/Skill/Tool 模拟；零模型、零网络
 
-必须验证：Skill 摘要与资源 scope；Action/Observation/Final；拒绝越权；父报告独立复算。
+必须验证：Skill 摘要与资源 scope；Action/Observation/Final；拒绝越权；父报告独立复算；已发布Schema归属、无覆盖、HTTP实例正反例。
 
-规格：`docs/harness/RESEARCH_AGENT_RUNTIME.md`
+规格：`docs/harness/RESEARCH_AGENT_RUNTIME.md`、`specs/testing/OPENAPI_CONTRACTS.md`
 
-测试入口：`tests/test_research_agents.py`
+测试入口：`tests/test_research_agents.py`、`tests/test_openapi_contracts.py`
 
 ### research-native：Claude 原生投研准入与资料控制
 
@@ -291,21 +291,21 @@ metadata-only protocol actor，不是 HTTP 身份或自动委派
 
 确定性演示回复，不调用 Provider
 
-必须验证：Profile/Session/幂等；SSE delta/done；敏感字段拒绝；工具和模型调用恒零。
+必须验证：Profile/Session/幂等；SSE delta/done；敏感字段拒绝；工具和模型调用恒零；已发布Schema归属、无覆盖、HTTP实例正反例。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`specs/testing/OPENAPI_CONTRACTS.md`
 
-测试入口：`tests/test_agent_lab.py`
+测试入口：`tests/test_agent_lab.py`、`tests/test_openapi_contracts.py`
 
 ### agent-runtime：Provider/Agent/Session 文本 Runtime
 
 默认关闭的文本 SSE；工具数 0，未接 Product Run
 
-必须验证：Keychain 延迟解析；门禁/协议/上下文；流错误、取消、终态与并发；上游stop+DONE完整性与有界SSE解码；失败不伪造 assistant；持久 Exchange UI/重选刷新/过时响应/未提交预览；真实外发证据单列。
+必须验证：Keychain 延迟解析；门禁/协议/上下文；流错误、取消、终态与并发；上游stop+DONE完整性与有界SSE解码；失败不伪造 assistant；持久 Exchange UI/重选刷新/过时响应/未提交预览；真实外发证据单列；已发布Schema归属、无覆盖、HTTP实例正反例。
 
-规格：`docs/harness/AGENT_RUNTIME.md`、`specs/testing/AGENT_RUNTIME_LIFECYCLE.md`、`specs/testing/AGENT_RUNTIME_UI.md`、`specs/testing/PROVIDER_STREAM.md`
+规格：`docs/harness/AGENT_RUNTIME.md`、`specs/testing/AGENT_RUNTIME_LIFECYCLE.md`、`specs/testing/AGENT_RUNTIME_UI.md`、`specs/testing/PROVIDER_STREAM.md`、`specs/testing/OPENAPI_CONTRACTS.md`
 
-测试入口：`tests/test_agent_runtime.py`、`tests/test_agent_runtime_lifecycle.py`、`tests/test_agent_runtime_ui.py`、`tests/test_provider_stream.py`
+测试入口：`tests/test_agent_runtime.py`、`tests/test_agent_runtime_lifecycle.py`、`tests/test_agent_runtime_ui.py`、`tests/test_provider_stream.py`、`tests/test_openapi_contracts.py`
 
 ### baidu：百度网盘 OAuth / 分享交接
 
@@ -331,11 +331,11 @@ OAuth 与本机 CLI 交接；网站接口没有通用分享下载
 
 本机根路径及反向代理 /harness/；无新增身份系统
 
-必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面。
+必须验证：静态资源与 CSP；API/下载/SSE 前缀；HTTP UUID fallback；动态/静态 OpenAPI 与真实契约一致；浏览器各页面；已发布Schema归属、无覆盖、HTTP实例正反例。
 
-规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`
+规格：`docs/harness/LOCAL_WORKBENCH.md`、`docs/harness/API.md`、`specs/testing/OPENAPI_CONTRACTS.md`
 
-测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`
+测试入口：`tests/test_frontend_paths.py`、`tests/test_workbench.py`、`tests/test_openapi_contracts.py`
 
 ### retrieval：迭代检索/Agentic 契约/父子 Chunk
 

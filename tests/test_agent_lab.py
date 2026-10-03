@@ -128,7 +128,7 @@ def test_agent_lab_session_and_message_contracts_are_valid(client):
     openapi = client.get('/openapi.json').json()
     operation = openapi['paths']['/api/local/agent-lab/sessions/{session_id}/messages']['post']
     assert operation['requestBody']['content']['application/json']['schema'] == {
-        '$ref': '#/components/schemas/send_message_request'}
+        '$ref': '#/components/schemas/agent_lab_send_message_request'}
     assert 'text/event-stream' in operation['responses']['200']['content']
     static = yaml.safe_load((ROOT / 'specs/v1/openapi.yaml').read_text())
     static_path = static['paths']['/local/agent-lab/sessions/{sessionId}/messages']

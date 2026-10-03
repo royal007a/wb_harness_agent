@@ -4,6 +4,187 @@
   "title": "HarnessAgent Local Agent Runtime Contract",
   "description": "Configuration and conversational runtime contracts. Credential references are identifiers only; secrets and tool bindings are not accepted.",
   "$defs": {
+    "runtime_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "runtime_enabled",
+        "credential_resolution",
+        "model_calls",
+        "provider_calls",
+        "network_calls",
+        "tool_binding_count",
+        "note"
+      ],
+      "properties": {
+        "mode": {
+          "const": "provider_agent_chat_runtime@1"
+        },
+        "runtime_enabled": {
+          "type": "boolean"
+        },
+        "credential_resolution": {
+          "const": "deferred_to_keychain_at_transport_boundary"
+        },
+        "model_calls": {
+          "const": 0
+        },
+        "provider_calls": {
+          "const": 0
+        },
+        "network_calls": {
+          "const": 0
+        },
+        "tool_binding_count": {
+          "const": 0
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "provider_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/provider_profile"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "model_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/model_profile"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "agent_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agent_profile"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "session_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "runtime"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chat_session"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "session_detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session",
+        "messages",
+        "exchanges",
+        "runtime"
+      ],
+      "properties": {
+        "session": {
+          "$ref": "#/$defs/chat_session"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chat_message"
+          }
+        },
+        "exchanges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/exchange"
+          }
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime_status"
+        }
+      }
+    },
+    "provider_readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_id",
+        "state",
+        "detail",
+        "network_calls",
+        "checked_at"
+      ],
+      "properties": {
+        "provider_id": {
+          "type": "string",
+          "pattern": "^rtp_[a-f0-9]{32}$"
+        },
+        "state": {
+          "enum": [
+            "disabled",
+            "adapter_not_implemented",
+            "blocked_by_runtime_gate",
+            "credential_reference_missing",
+            "ready_to_attempt"
+          ]
+        },
+        "detail": {
+          "type": "string"
+        },
+        "network_calls": {
+          "const": 0
+        },
+        "checked_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
     "provider_type": {"type": "string", "enum": ["openai_compatible", "anthropic", "ollama"]},
     "credential_ref": {"type": "string", "pattern": "^keychain://harnessagent/[A-Za-z0-9._-]{1,96}$"},
     "timestamp": {"type": "string", "format": "date-time"},

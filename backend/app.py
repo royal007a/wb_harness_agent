@@ -19,6 +19,7 @@ from .store import Store, uid
 from .readiness import readiness
 from .framework_catalog import catalog as framework_catalog
 from .frontend import frontend_page
+from .openapi_contracts import register_definitions, assert_local_references, bind_chat_responses
 
 
 def create_app(db_path=None, run_worker=True):
@@ -842,13 +843,11 @@ def create_app(db_path=None, run_worker=True):
     generated['paths']['/api/local/research']['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': json.loads((ROOT / 'specs/v1/research-request.schema.json').read_text())}}}
     research_agents_schema = json.loads((ROOT / 'specs/v1/research-agent-runtime.schema.json').read_text())
-    research_agents_definitions = json.loads(json.dumps(research_agents_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(research_agents_definitions)
+    register_definitions(generated, research_agents_schema, 'research_agents_')
     generated['paths']['/api/local/research-agents']['post']['requestBody'] = {
-        'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/research_agent_request'}}}}
+        'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/research_agents_research_agent_request'}}}}
     native_research_schema = json.loads((ROOT / 'specs/v1/claude-research-runtime.schema.json').read_text())
-    native_research_definitions = json.loads(json.dumps(native_research_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(native_research_definitions)
+    register_definitions(generated, native_research_schema, '')
     generated['paths']['/api/local/research-native']['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/native_research_request'}}}}
     generated['paths']['/api/local/research-native']['post'].setdefault('parameters', []).append({
@@ -856,8 +855,7 @@ def create_app(db_path=None, run_worker=True):
         'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
     })
     external_skill_schema = json.loads((ROOT / 'specs/v1/external-skill-runtime.schema.json').read_text())
-    external_skill_definitions = json.loads(json.dumps(external_skill_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(external_skill_definitions)
+    register_definitions(generated, external_skill_schema, '')
     generated['paths']['/api/local/external-skills/packages']['post']['requestBody'] = {
         'required': True, 'content': {'application/zip': {'schema': {'type': 'string', 'format': 'binary'}}}}
     generated['paths']['/api/local/external-skills/packages']['post'].setdefault('parameters', []).append({
@@ -874,8 +872,7 @@ def create_app(db_path=None, run_worker=True):
         'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
     })
     memory_schema = json.loads((ROOT / 'specs/v1/memory-plane.schema.json').read_text())
-    memory_definitions = json.loads(json.dumps(memory_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(memory_definitions)
+    register_definitions(generated, memory_schema, '')
     generated['paths']['/api/local/memory/banks']['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/bank_create_request'}}}}
     generated['paths']['/api/local/memory/banks']['post'].setdefault('parameters', []).append({
@@ -890,8 +887,7 @@ def create_app(db_path=None, run_worker=True):
         'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
     })
     memory_graph_schema = json.loads((ROOT / 'specs/v1/memory-graph.schema.json').read_text())
-    memory_graph_definitions = json.loads(json.dumps(memory_graph_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(memory_graph_definitions)
+    register_definitions(generated, memory_graph_schema, '')
     for graph_path, definition, response_definition in (
         ('/api/local/memory/banks/{bank_id}/entities', 'entity_input', 'entity_create_result'),
         ('/api/local/memory/banks/{bank_id}/relations', 'relation_input', 'relation_create_result'),
@@ -910,8 +906,7 @@ def create_app(db_path=None, run_worker=True):
     generated['paths'][memory_recall_path]['post']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/evidence_bundle'}}}
     memory_context_schema = json.loads((ROOT / 'specs/v1/memory-context.schema.json').read_text())
-    memory_context_definitions = json.loads(json.dumps(memory_context_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(memory_context_definitions)
+    register_definitions(generated, memory_context_schema, '')
     memory_context_path = '/api/local/memory/banks/{bank_id}:context'
     generated['paths'][memory_context_path]['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/context_request'}}}}
@@ -928,16 +923,14 @@ def create_app(db_path=None, run_worker=True):
     generated['paths'][memory_graph_recall_path]['post']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/graph_evidence_bundle'}}}
     memory_entity_catalog_schema = json.loads((ROOT / 'specs/v1/memory-entity-catalog.schema.json').read_text())
-    memory_entity_catalog_definitions = json.loads(json.dumps(memory_entity_catalog_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(memory_entity_catalog_definitions)
+    register_definitions(generated, memory_entity_catalog_schema, '')
     memory_entity_resolve_path = '/api/local/memory/banks/{bank_id}:resolve-entity'
     generated['paths'][memory_entity_resolve_path]['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/entity_resolve_request'}}}}
     generated['paths'][memory_entity_resolve_path]['post']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/entity_resolution'}}}
     memory_lineage_schema = json.loads((ROOT / 'specs/v1/memory-fact-lineage.schema.json').read_text())
-    memory_lineage_definitions = json.loads(json.dumps(memory_lineage_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(memory_lineage_definitions)
+    register_definitions(generated, memory_lineage_schema, '')
     memory_lineage_path = '/api/local/memory/banks/{bank_id}:fact-lineage'
     generated['paths'][memory_lineage_path]['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/request'}}}}
@@ -954,10 +947,7 @@ def create_app(db_path=None, run_worker=True):
         'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
     })
     foundation_schema = json.loads((ROOT / 'specs/v1/team-foundation.schema.json').read_text())
-    foundation_definitions = json.loads(json.dumps(foundation_schema['$defs']).replace(
-        '#/$defs/', '#/components/schemas/ha0040_'))
-    foundation_definitions = {'ha0040_' + name: value for name, value in foundation_definitions.items()}
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(foundation_definitions)
+    register_definitions(generated, foundation_schema, 'ha0040_')
     foundation_post_contracts = (
         ('/api/local/team/workspaces', 'workspace_create_request', '201', 'workspace'),
         ('/api/local/team/workspaces/{workspace_id}/agents', 'agent_create_request', '201', None),
@@ -989,10 +979,7 @@ def create_app(db_path=None, run_worker=True):
         generated['paths'][foundation_path]['get']['responses']['200']['content'] = {
             'application/json': {'schema': {'$ref': '#/components/schemas/ha0040_' + response_definition}}}
     attention_schema = json.loads((ROOT / 'specs/v1/team-attention.schema.json').read_text())
-    attention_definitions = json.loads(json.dumps(attention_schema['$defs']).replace(
-        '#/$defs/', '#/components/schemas/ha0038_'))
-    attention_definitions = {'ha0038_' + name: value for name, value in attention_definitions.items()}
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(attention_definitions)
+    register_definitions(generated, attention_schema, 'ha0038_')
     attention_post_contracts = (
         ('/api/local/team/attention/items', 'attention_item_create_request', '201', 'attention_mutation_result'),
         ('/api/local/team/attention/items/{item_id}:claim', 'attention_claim_request', '200', 'attention_mutation_result'),
@@ -1020,10 +1007,7 @@ def create_app(db_path=None, run_worker=True):
         generated['paths'][attention_path]['get']['responses']['200']['content'] = {
             'application/json': {'schema': {'$ref': '#/components/schemas/ha0038_' + response_definition}}}
     session_schema = json.loads((ROOT / 'specs/v1/team-session-continuity.schema.json').read_text())
-    session_definitions = json.loads(json.dumps(session_schema['$defs']).replace(
-        '#/$defs/', '#/components/schemas/ha0041_'))
-    session_definitions = {'ha0041_' + name: value for name, value in session_definitions.items()}
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(session_definitions)
+    register_definitions(generated, session_schema, 'ha0041_')
     session_post_contracts = (
         ('/api/local/team/sessions', 'session_create_request', '201', 'session_create_result'),
         ('/api/local/team/sessions/{session_id}:handoff', 'session_handoff_create_request', '201', 'session_handoff_result'),
@@ -1049,8 +1033,7 @@ def create_app(db_path=None, run_worker=True):
         generated['paths'][session_path]['get']['responses']['200']['content'] = {
             'application/json': {'schema': {'$ref': '#/components/schemas/ha0041_' + response_definition}}}
     team_schema = json.loads((ROOT / 'specs/v1/team-coordination.schema.json').read_text())
-    team_definitions = json.loads(json.dumps(team_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(team_definitions)
+    register_definitions(generated, team_schema, '')
     team_post_contracts = (
         ('/api/local/team/tasks', 'team_task_create_request', '201', 'team_task'),
         ('/api/local/team/tasks/{task_id}:claim', 'claim_request', '200', 'team_task'),
@@ -1077,9 +1060,7 @@ def create_app(db_path=None, run_worker=True):
     generated['paths']['/api/local/team/tasks/{task_id}']['get']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/team_task_detail'}}}
     recovery_schema = json.loads((ROOT / 'specs/v1/recovery-loop-guard.schema.json').read_text())
-    recovery_definitions = json.loads(json.dumps(recovery_schema['$defs']).replace('#/$defs/', '#/components/schemas/ha0039_'))
-    recovery_definitions = {'ha0039_' + name: value for name, value in recovery_definitions.items()}
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(recovery_definitions)
+    register_definitions(generated, recovery_schema, 'ha0039_')
     recovery_post_contracts = (
         ('/api/local/recovery/cases', 'recovery_case_create_request', '201', 'recovery_case'),
         ('/api/local/recovery/cases/{case_id}/observations', 'observation_create_request', '201', None),
@@ -1108,8 +1089,7 @@ def create_app(db_path=None, run_worker=True):
         'application/json': {'schema': {'$ref': '#/components/schemas/ha0039_recovery_case_list'}}}
     generated['paths']['/api/local/recovery/cases/{case_id}']['get']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/ha0039_recovery_case_detail'}}}
-    definitions = json.loads(json.dumps(BUNDLE['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(definitions)
+    register_definitions(generated, BUNDLE, '')
     generated['paths']['/api/v1/tasks']['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/task_create'}}}}
     generated['paths']['/api/local/tasks']['post']['requestBody'] = {
@@ -1118,15 +1098,14 @@ def create_app(db_path=None, run_worker=True):
             'properties': {'resource_id': {'type': 'string'}, 'objective': {'type': 'string', 'minLength': 1, 'maxLength': 2000},
                            'timeout_seconds': {'type': 'integer', 'minimum': 1, 'maximum': 300}}}}}}
     intent_schema = json.loads((ROOT / 'specs/v1/intent-contract.schema.json').read_text())
-    intent_definitions = json.loads(json.dumps(intent_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(intent_definitions)
+    register_definitions(generated, intent_schema, '')
     generated['paths']['/api/local/intents:interpret']['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {
             '$ref': '#/components/schemas/intent_interpret_request'}}}}
     generated['paths']['/api/local/intents:interpret']['post']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/intent_interpretation'}}}
     connector_schema = json.loads((ROOT / 'specs/v1/baidu-netdisk-connector.schema.json').read_text())
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(connector_schema['$defs'])
+    register_definitions(generated, connector_schema)
     generated['paths']['/api/local/connectors/baidu-netdisk/authorization']['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'type': 'object', 'additionalProperties': False}}}}
     generated['paths']['/api/local/connectors/baidu-netdisk:disconnect']['post']['requestBody'] = {
@@ -1139,19 +1118,7 @@ def create_app(db_path=None, run_worker=True):
         generated['paths'][path][method]['responses'][status]['content'] = {
             'application/json': {'schema': {'$ref': '#/components/schemas/' + schema}}}
     agent_lab_schema = json.loads((ROOT / 'specs/v1/local-agent-lab.schema.json').read_text())
-    agent_lab_definitions = json.loads(json.dumps(agent_lab_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(agent_lab_definitions)
-    generated['components']['schemas'].update({
-        'agent_lab_runtime': {
-            'type': 'object', 'additionalProperties': False,
-            'required': ['mode', 'model_calls', 'provider_calls', 'network_calls', 'tool_calls', 'tool_binding_count', 'note'],
-            'properties': {
-                'mode': {'const': 'local_deterministic_demo'}, 'model_calls': {'const': 0},
-                'provider_calls': {'const': 0}, 'network_calls': {'const': 0}, 'tool_calls': {'const': 0},
-                'tool_binding_count': {'const': 0}, 'note': {'type': 'string'},
-            },
-        },
-    })
+    register_definitions(generated, agent_lab_schema, 'agent_lab_')
     for path, definition in (
         ('/api/local/agent-lab/providers', 'provider_create_request'),
         ('/api/local/agent-lab/models', 'model_create_request'),
@@ -1160,7 +1127,7 @@ def create_app(db_path=None, run_worker=True):
         ('/api/local/agent-lab/sessions/{session_id}/messages', 'send_message_request'),
     ):
         generated['paths'][path]['post']['requestBody'] = {
-            'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/' + definition}}}}
+            'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/agent_lab_' + definition}}}}
         generated['paths'][path]['post'].setdefault('parameters', []).append({
             'in': 'header', 'name': 'Idempotency-Key', 'required': True,
             'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
@@ -1169,19 +1136,9 @@ def create_app(db_path=None, run_worker=True):
         'in': 'header', 'name': 'Accept', 'required': True, 'schema': {'const': 'text/event-stream'},
     })
     generated['paths']['/api/local/agent-lab/sessions/{session_id}/messages']['post']['responses']['200']['content'] = {
-        'text/event-stream': {'schema': {'$ref': '#/components/schemas/stream_event'}}}
+        'text/event-stream': {'schema': {'$ref': '#/components/schemas/agent_lab_stream_event'}}}
     runtime_schema = json.loads((ROOT / 'specs/v1/agent-runtime.schema.json').read_text())
-    runtime_definitions = json.loads(json.dumps(runtime_schema['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(runtime_definitions)
-    generated['components']['schemas']['agent_runtime_status'] = {
-        'type': 'object', 'additionalProperties': False,
-        'required': ['mode', 'runtime_enabled', 'credential_resolution', 'model_calls', 'provider_calls', 'network_calls', 'tool_binding_count', 'note'],
-        'properties': {
-            'mode': {'const': 'provider_agent_chat_runtime@1'}, 'runtime_enabled': {'type': 'boolean'},
-            'credential_resolution': {'const': 'deferred_to_keychain_at_transport_boundary'}, 'model_calls': {'const': 0},
-            'provider_calls': {'const': 0}, 'network_calls': {'const': 0}, 'tool_binding_count': {'const': 0}, 'note': {'type': 'string'},
-        },
-    }
+    register_definitions(generated, runtime_schema, 'agent_runtime_')
     for path, definition in (
         ('/api/local/agent-runtime/providers', 'provider_create_request'),
         ('/api/local/agent-runtime/models', 'model_create_request'),
@@ -1190,7 +1147,7 @@ def create_app(db_path=None, run_worker=True):
         ('/api/local/agent-runtime/sessions/{session_id}/messages', 'send_message_request'),
     ):
         generated['paths'][path]['post']['requestBody'] = {
-            'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/' + definition}}}}
+            'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/agent_runtime_' + definition}}}}
         generated['paths'][path]['post'].setdefault('parameters', []).append({
             'in': 'header', 'name': 'Idempotency-Key', 'required': True,
             'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128},
@@ -1199,9 +1156,9 @@ def create_app(db_path=None, run_worker=True):
         'in': 'header', 'name': 'Accept', 'required': True, 'schema': {'const': 'text/event-stream'},
     })
     generated['paths']['/api/local/agent-runtime/sessions/{session_id}/messages']['post']['responses']['200']['content'] = {
-        'text/event-stream': {'schema': {'$ref': '#/components/schemas/runtime_stream_event'}}}
+        'text/event-stream': {'schema': {'$ref': '#/components/schemas/agent_runtime_runtime_stream_event'}}}
     restore_schema = json.loads((ROOT / 'specs/v1/local-checkpoint-restore.schema.json').read_text())
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(restore_schema['$defs'])
+    register_definitions(generated, restore_schema)
     generated['paths']['/api/local/runs/{run_id}:restore']['post']['requestBody'] = {
         'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/restore_request'}}}}
     generated['paths']['/api/local/runs/{run_id}:restore']['post']['responses']['202'] = {
@@ -1209,10 +1166,9 @@ def create_app(db_path=None, run_worker=True):
         'content': {'application/json': {'schema': {'$ref': '#/components/schemas/restore_response'}}}}
     generated['paths']['/api/local/runs/{run_id}/restore']['get']['responses']['200']['content'] = {
         'application/json': {'schema': {'$ref': '#/components/schemas/restore_status'}}}
-    control_definitions = json.loads(json.dumps(CONTROL['$defs']).replace('#/$defs/', '#/components/schemas/'))
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(control_definitions)
+    register_definitions(generated, CONTROL, '')
     replan_schema = json.loads((ROOT / 'specs/v1/local-replan.schema.json').read_text())
-    generated.setdefault('components', {}).setdefault('schemas', {}).update(replan_schema['$defs'])
+    register_definitions(generated, replan_schema)
     generated['components']['schemas'].update({
         'ReplanList': {
             'type': 'object', 'additionalProperties': False, 'required': ['items'],
@@ -1248,6 +1204,10 @@ def create_app(db_path=None, run_worker=True):
                  '/api/v1/replans/{replan_id}:cancel'):
         generated['paths'][path]['post'].setdefault('parameters', []).append({
             'in': 'header', 'name': 'Idempotency-Key', 'required': True, 'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
+
+    bind_chat_responses(generated, 'agent-lab', 'agent_lab_')
+    bind_chat_responses(generated, 'agent-runtime', 'agent_runtime_')
+    assert_local_references(generated)
     return app
 
 

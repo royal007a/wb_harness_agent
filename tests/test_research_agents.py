@@ -196,7 +196,7 @@ def test_openapi_and_engine_state_are_explicit(client):
     openapi = client.get('/openapi.json').json()
     operation = openapi['paths']['/api/local/research-agents']['post']
     assert operation['requestBody']['content']['application/json']['schema'] == {
-        '$ref': '#/components/schemas/research_agent_request'
+        '$ref': '#/components/schemas/research_agents_research_agent_request'
     }
     engines = client.get('/api/v1/engines').json()['items']
     engine = next(item for item in engines if item['id'] == 'engine_research_multi_agent_simulation')

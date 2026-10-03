@@ -143,9 +143,9 @@ def test_runtime_openapi_declares_separate_stream_contract(client):
     openapi = client.get('/openapi.json').json()
     operation = openapi['paths']['/api/local/agent-runtime/sessions/{session_id}/messages']['post']
     assert operation['requestBody']['content']['application/json']['schema'] == {
-        '$ref': '#/components/schemas/send_message_request'}
+        '$ref': '#/components/schemas/agent_runtime_send_message_request'}
     assert operation['responses']['200']['content']['text/event-stream']['schema'] == {
-        '$ref': '#/components/schemas/runtime_stream_event'}
+        '$ref': '#/components/schemas/agent_runtime_runtime_stream_event'}
     static = yaml.safe_load((Path(__file__).resolve().parents[1] / 'specs/v1/openapi.yaml').read_text())
     endpoint = static['paths']['/local/agent-runtime/sessions/{sessionId}/messages']['post']
     assert endpoint['requestBody']['content']['application/json']['schema']['$ref'].endswith('#/$defs/send_message_request')

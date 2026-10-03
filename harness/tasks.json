@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0058",
+      "title": "修复 OpenAPI Schema 归属并补 Lab/Runtime 实例验证",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["已注册Schema冲突检查与引用完整性", "Lab/Runtime/研究Skill定义隔离", "两套聊天接口响应合同与HTTP实例正反例"],
+      "non_goals": ["新运行时或Provider准入", "业务权限或持久ID变更", "用本轮冒充全系统全部接口已验收"],
+      "acceptance": ["旧版错拒或错放的反例确实失败", "注册原子拒绝冲突且动态引用完整", "Lab/Runtime静态动态与实际请求响应对齐", "相关和全量验证、独立review、双部署证据"],
+      "depends_on": ["HA-0053"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0058-openapi-contracts.md",
+      "blocked_reason": "代码与离线实例验证完成：旧7反例失败、相关101项、全量483 passed/16 skipped；待独立review。真实发布仍需HA-0056兼容本机拓扑选择，未部署。",
+      "recovery_condition": "固定提交独立复审通过；HA-0056本机拓扑确认并验证后先本机再132发布，核验实部署OpenAPI。",
+      "evidence": ["harness/evidence/HA-0058/acceptance.md"]
+    },
+    {
       "id": "HA-0057",
       "title": "修复 Provider 流截断和 EOF 被误判成功",
       "status": "blocked",

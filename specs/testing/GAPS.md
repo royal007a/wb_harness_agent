@@ -85,6 +85,23 @@ Team Session/Agent 列表、资源读取及 Replan 列表；另外 Workspace 创
 授予的 HTTP 路径尚无观测（内部方法测试不等于端点测试）。全部需补 HTTP
 正反例。122 个 observed 仍需逐项检查断言，不能直接标为验收通过。
 
+### HA-0058 跟进（2026-10-04）
+
+OPENAPI-01 的同名覆盖已修复，待固定提交独立 review 与部署验收：三个冲突域
+隔离命名空间，21 份契约注册拒绝异义重名；Lab/Runtime 现有聊天 API 补齐响应
+合同并对照静态、动态 Schema 验证实际 HTTP 实例。旧版 7 个行为反例失败；
+26 项新增测试、相关 101 passed；完整 verify 为 483 passed/16 skipped。
+
+最新全量观察器：131/148 observed，17 未观测；其中 130 个入口有 passing test
+的 2xx，剩余已观测的 Channel 详情只有 403。这些数字均非业务验收率。
+结果见 `harness/evidence/HA-0058/full-http-observations.json`，源码哈希在运行前后
+一致；报告固定基线 cd9b113 + 当时未提交修复，不冒充基线自身的结果。
+
+尚未观测的入口：Memory Bank / Recovery / 三类 Research 列表、sample、
+Team runtime / sessions / workspace agents、health、resources 列表与详情、
+Run replans、OpenAPI/静态 HEAD，以及 Workspace 创建/成员授予。
+0057 编码修复986ed1d已独立 Approved，但0055–0058均没有本轮双端发布证据。
+
 ## 尚未完成的端到端验证
 
 - 所有公开请求/响应与实际 OpenAPI/静态 OpenAPI/JSON Schema 一致性。

@@ -1,5 +1,11 @@
 # API 规格
 
+HA-0058 修复动态 OpenAPI 的契约归属：Lab、Runtime、研究模拟使用独立 component
+命名空间，注册时拒绝同名不同义；Lab/Runtime 的列表、状态、详情、readiness 与
+创建响应均引用本域 JSON Schema，静态 OpenAPI 同源。请求 JSON 和持久 ID 不变，
+旧错误 component 名不保留别名，客户端生成器需重新生成。实例验证范围与边界见
+[OpenAPI 合同验收](../../specs/testing/OPENAPI_CONTRACTS.md)，不代表所有接口已验收。
+
 当前本地 v0.1 实现范围、JSON 事件轮询和简化表单端点见 [LOCAL_WORKBENCH.md](LOCAL_WORKBENCH.md)。下文为完整目标规格，未实现接口不能据此视为可调用。
 
 > P0 机器契约以 `specs/v1/openapi.yaml` 与 `specs/v1/core-contracts.schema.json` 为准；ADR-0019 的本地受限 Replan 还引用 `execution-control.schema.json` 与 `local-replan.schema.json`。本文是与其同步维护的叙事说明。它们若漂移，HA-0001 不得冻结。
