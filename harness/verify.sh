@@ -17,6 +17,7 @@ cd "$(dirname "$0")/.."
 .venv/bin/python harness/team_session_continuity_evaluation.py
 .venv/bin/python harness/verify_claude_research_admission.py
 node --check frontend/app.js
+node --check frontend/paths.js
 node --check frontend/research.js
 node --check frontend/research-agents.js
 node --check frontend/baidu-netdisk.js

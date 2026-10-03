@@ -13,7 +13,7 @@ function notice(message, error = false) {
   noticeTimer = setTimeout(() => (target.hidden = true), 6000);
 }
 async function api(url, options = {}) {
-  const response = await fetch(url, options);
+  const response = await fetch(HarnessURLs.url(url), options);
   if (!response.ok) {
     let body = {};
     try { body = await response.json(); } catch {}
@@ -22,7 +22,7 @@ async function api(url, options = {}) {
   return response.json();
 }
 function post(url, body, accept = "application/json") {
-  return fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "Accept": accept, "Idempotency-Key": crypto.randomUUID() }, body: JSON.stringify(body) });
+  return fetch(HarnessURLs.url(url), { method: "POST", headers: { "Content-Type": "application/json", "Accept": accept, "Idempotency-Key": HarnessURLs.requestId() }, body: JSON.stringify(body) });
 }
 function option(select, value, text) {
   const item = document.createElement("option"); item.value = value; item.textContent = text; select.append(item);
@@ -109,7 +109,7 @@ async function sendMessage(event) {
   box.append(bubble({ role: "user", content })); const assistant = bubble({ role: "assistant", content: "正在建立本地 SSE 流…" }); const target = assistant.querySelector(".bubble-content"); box.append(assistant); scrollIfNearBottom();
   state.controller = new AbortController();
   try {
-    const response = await fetch(`/api/local/agent-lab/sessions/${encodeURIComponent(state.session.id)}/messages`, { method: "POST", signal: state.controller.signal, headers: { "Content-Type": "application/json", "Accept": "text/event-stream", "Idempotency-Key": crypto.randomUUID() }, body: JSON.stringify({ content }) });
+    const response = await fetch(HarnessURLs.url(`/api/local/agent-lab/sessions/${encodeURIComponent(state.session.id)}/messages`), { method: "POST", signal: state.controller.signal, headers: { "Content-Type": "application/json", "Accept": "text/event-stream", "Idempotency-Key": HarnessURLs.requestId() }, body: JSON.stringify({ content }) });
     if (!response.ok || !response.body) { let data = {}; try { data = await response.json(); } catch {} throw new Error(data?.error?.message || "流式请求失败"); }
     target.textContent = ""; const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = ""; let done = false;
     while (!done) { const result = await reader.read(); if (result.done) break; buffer = parseSseChunk(buffer + decoder.decode(result.value, { stream: true }), (message) => { if (message.type === "delta") { target.textContent += message.content; scrollIfNearBottom(); } else if (message.type === "error") throw new Error("本地流式响应失败。"); else if (message.type === "done") done = true; }); }

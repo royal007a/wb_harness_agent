@@ -113,6 +113,19 @@ cd /Users/weberzhao/code/ai/harnessagent
 
 ## 验证
 
+### 反向代理子路径（HA-0051）
+
+页面支持本地根路径及公网 `/harness/`。nginx 去除上游路径前缀，并**覆盖**
+`X-Forwarded-Prefix: /harness`；应用只接受空值或这个固定值，不反射任意前缀。
+服务端为所有页面静态资源、导航加前缀，外部脚本 `paths.js` 为 API、SSE、
+图表和下载使用同一前缀。不得把站点根 `/api`、`/static` 指向本应用。
+外部 OAuth URL 不改写。不使用 inline script、`base` 标签或放宽 CSP。
+
+HTTP 下缺少 `crypto.randomUUID` 时，通过 `crypto.getRandomValues` 生成
+UUIDv4 幂等键，禁止用非密码学随机数降级。保留反向代理 Basic 认证；HTTP
+不提供传输加密，公网有敏感输入时应使用现有 HTTPS 入口。
+
+
 ```sh
 sh harness/verify.sh
 .venv/bin/python -m pip install -r requirements-browser.txt

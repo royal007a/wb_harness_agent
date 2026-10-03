@@ -3,6 +3,21 @@
   "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
+      "id": "HA-0051",
+      "title": "修复子路径前端资源并双环境重新部署",
+      "status": "running",
+      "risk": "high",
+      "scope": ["统一 /harness 子路径的页面、API、下载与 SSE URL", "保留鉴权和运行时门禁的本地与 132 发布", "浏览器与路径回归"],
+      "non_goals": ["改变 Basic 账号或密码", "抢占同机其他站点的 /api 或 /static", "启用真实模型或外部检索"],
+      "acceptance": ["根路径和代理前缀下 CSS/JS/API/导航一致", "示例分析、产物下载与窄屏浏览器通过", "两端部署版本与健康记录，备份真实远端数据库"],
+      "depends_on": ["HA-0050"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0051-proxy-paths.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
+    {
       "id": "HA-0050",
       "title": "实现父子 Chunk 与 Slot 驱动动态检索切片",
       "status": "completed",

@@ -7,8 +7,8 @@ const roles = {financial: "财务专项", industry: "行业专项", risk: "风�
 let selected = "", detail = null, generation = 0, refreshing = false;
 
 async function api(path, body) {
-  const init = body === undefined ? {} : {method: "POST", headers: {"Content-Type": "application/json", "Idempotency-Key": crypto.randomUUID()}, body: JSON.stringify(body)};
-  const response = await fetch(path, init);
+  const init = body === undefined ? {} : {method: "POST", headers: {"Content-Type": "application/json", "Idempotency-Key": HarnessURLs.requestId()}, body: JSON.stringify(body)};
+  const response = await fetch(HarnessURLs.url(path), init);
   const value = await response.json();
   if (!response.ok) throw new Error(value.error?.message || "请求失败");
   return value;

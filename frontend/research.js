@@ -7,8 +7,8 @@ const companies = {demo_a:"演示公司 A",demo_b:"演示公司 B",demo_c:"演�
 const roles = {financial:"财务指标",industry:"行业资料",risk:"风险资料覆盖"};
 let selected = "", current = null, generation = 0, refreshing = false;
 async function api(path, body) {
-  const options = body === undefined ? {} : {method:"POST",headers:{"Content-Type":"application/json","Idempotency-Key":crypto.randomUUID()},body:JSON.stringify(body)};
-  const response = await fetch(path, options);
+  const options = body === undefined ? {} : {method:"POST",headers:{"Content-Type":"application/json","Idempotency-Key":HarnessURLs.requestId()},body:JSON.stringify(body)};
+  const response = await fetch(HarnessURLs.url(path), options);
   const value = await response.json();
   if (!response.ok) throw new Error(value.error?.message || "请求失败");
   return value;
@@ -38,10 +38,10 @@ async function refreshDetail() {
   const success = detail.children.filter(c=>c.run.status==="succeeded").length;
   const failures = detail.children.filter(c=>["failed","cancelled","expired"].includes(c.run.status)).length;
   $("#research-summary").textContent = `${detail.children.length} 个子任务 · ${success} 个有效结果 · ${failures} 个失败/取消。模型调用 0 次。风险状态始终为“未评估”，不能将缺失资料解释为无风险。`;
-  $("#research-downloads").innerHTML = detail.artifacts.map(a=>`<a class="artifact-link" href="/api/v1/artifacts/${esc(a.id)}/content?download=true">↓ ${esc(a.name)}</a>`).join("");
+  $("#research-downloads").innerHTML = detail.artifacts.map(a=>`<a class="artifact-link" href="${HarnessURLs.url(`/api/v1/artifacts/${esc(a.id)}/content?download=true`)}">↓ ${esc(a.name)}</a>`).join("");
   $("#research-children").innerHTML = detail.children.map(child=>{
     const c = child.run, a = child.assignment;
-    return `<article class="research-child"><span class="status ${esc(c.status)}">${esc(labels[c.status])}</span><h3>${esc(companies[a.company])} / ${esc(roles[a.role])}</h3><p class="mono">${esc(c.id)}</p><p>独立资源：${esc(a.resource_id.slice(0,20))}…<br>步骤上限 ${esc(c.effective_limits.max_turns)} · 仅资源读取<br>退出原因：${esc(c.exit_reason || "—")}</p>${child.artifacts.map(file=>`<a href="/api/v1/artifacts/${esc(file.id)}/content?download=true">↓ 结构化结果与来源</a>`).join("")}${!terminal.has(c.status)?`<button class="child-cancel" data-child="${esc(c.id)}" type="button">取消该子任务</button>`:""}</article>`;
+    return `<article class="research-child"><span class="status ${esc(c.status)}">${esc(labels[c.status])}</span><h3>${esc(companies[a.company])} / ${esc(roles[a.role])}</h3><p class="mono">${esc(c.id)}</p><p>独立资源：${esc(a.resource_id.slice(0,20))}…<br>步骤上限 ${esc(c.effective_limits.max_turns)} · 仅资源读取<br>退出原因：${esc(c.exit_reason || "—")}</p>${child.artifacts.map(file=>`<a href="${HarnessURLs.url(`/api/v1/artifacts/${esc(file.id)}/content?download=true`)}">↓ 结构化结果与来源</a>`).join("")}${!terminal.has(c.status)?`<button class="child-cancel" data-child="${esc(c.id)}" type="button">取消该子任务</button>`:""}</article>`;
   }).join("");
   $("#research-events").innerHTML = events.items.map(e=>`<li><span class="mono">${esc(e.event_type)}</span> ${esc(e.data.exit_reason || e.data.coverage || e.data.child_run_id || "")}</li>`).join("");
 }

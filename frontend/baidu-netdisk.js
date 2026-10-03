@@ -3,8 +3,8 @@ const $ = (selector) => document.querySelector(selector);
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
 const labels = { not_configured: "未配置", ready: "可授权", authorizing: "授权中", connected: "已连接", error: "异常" };
 function notice(message, failed = false) { const node = $("#notice"); node.textContent = message; node.className = failed ? "error-box" : "authorization-link"; node.hidden = false; }
-async function api(path, options = {}) { const response = await fetch(path, options); if (!response.ok) { let payload; try { payload = await response.json(); } catch {} throw new Error(payload?.error?.message || `请求失败 (${response.status})`); } return response.json(); }
-const post = (path) => api(path, { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": crypto.randomUUID() }, body: "{}" });
+async function api(path, options = {}) { const response = await fetch(HarnessURLs.url(path), options); if (!response.ok) { let payload; try { payload = await response.json(); } catch {} throw new Error(payload?.error?.message || `请求失败 (${response.status})`); } return response.json(); }
+const post = (path) => api(path, { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": HarnessURLs.requestId() }, body: "{}" });
 function render(status) {
   $("#state-badge").textContent = labels[status.status] || status.status;
   $("#state-badge").className = `status ${status.status}`;

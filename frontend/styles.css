@@ -863,9 +863,13 @@ footer span {
   }
   .sidebar nav {
     display: flex;
+    flex-wrap: wrap;
     margin-top: 12px;
   }
   .nav-item {
+    width: auto;
+    flex: 0 0 auto;
+    white-space: nowrap;
     padding: 10px;
     justify-content: center;
   }

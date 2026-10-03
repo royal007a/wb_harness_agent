@@ -8,7 +8,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from .analysis import MAX_BYTES, Problem
@@ -16,6 +16,7 @@ from .service import BUNDLE, CONTROL, ROOT, Service, local_task
 from .store import Store, uid
 from .readiness import readiness
 from .framework_catalog import catalog as framework_catalog
+from .frontend import frontend_page
 
 
 def create_app(db_path=None, run_worker=True):
@@ -50,6 +51,8 @@ def create_app(db_path=None, run_worker=True):
     @app.middleware('http')
     async def local_boundary(request, call_next):
         request_id = uid('req')
+        if request.headers.get('x-forwarded-prefix', '') not in {'', '/harness'}:
+            return error('INVALID_PROXY_PREFIX', '不支持的代理路径。', 400, request_id)
         host = request.headers.get('host', '')
         if host.split(':')[0] not in {'localhost', '127.0.0.1'}:
             return error('FORBIDDEN', '仅支持本地访问。', 403, request_id)
@@ -591,8 +594,8 @@ def create_app(db_path=None, run_worker=True):
         return app.state.service.research.detail(run_id)
 
     @app.get('/research', include_in_schema=False)
-    def research_page():
-        return FileResponse(ROOT / 'frontend/research.html')
+    def research_page(request: Request):
+        return frontend_page(request, 'research.html')
 
     @app.post('/api/local/research-agents', status_code=202)
     async def research_agents_create(request: Request):
@@ -689,20 +692,20 @@ def create_app(db_path=None, run_worker=True):
         return StreamingResponse(stream(), media_type='text/event-stream', headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
 
     @app.get('/research-agents', include_in_schema=False)
-    def research_agents_page():
-        return FileResponse(ROOT / 'frontend/research-agents.html')
+    def research_agents_page(request: Request):
+        return frontend_page(request, 'research-agents.html')
 
     @app.get('/agent-lab', include_in_schema=False)
-    def agent_lab_page():
-        return FileResponse(ROOT / 'frontend/agent-lab.html')
+    def agent_lab_page(request: Request):
+        return frontend_page(request, 'agent-lab.html')
 
     @app.get('/agent-runtime', include_in_schema=False)
-    def agent_runtime_page():
-        return FileResponse(ROOT / 'frontend/agent-runtime.html')
+    def agent_runtime_page(request: Request):
+        return frontend_page(request, 'agent-runtime.html')
 
     @app.get('/connectors/baidu-netdisk', include_in_schema=False)
-    def baidu_netdisk_page():
-        return FileResponse(ROOT / 'frontend/baidu-netdisk.html')
+    def baidu_netdisk_page(request: Request):
+        return frontend_page(request, 'baidu-netdisk.html')
 
     @app.post('/api/v1/resources', status_code=201)
     async def upload(request: Request, name: str = 'data.csv'):
@@ -821,12 +824,12 @@ def create_app(db_path=None, run_worker=True):
         return Response(body, media_type=doc['media_type'], headers={'Content-Disposition': ('attachment' if download else 'inline') + '; filename="' + doc['name'] + '"'})
 
     @app.get('/')
-    def index():
-        return FileResponse(ROOT / 'frontend/index.html')
+    def index(request: Request):
+        return frontend_page(request, 'index.html')
 
     @app.get('/docs', include_in_schema=False)
-    def api_docs():
-        return FileResponse(ROOT / 'frontend/api.html')
+    def api_docs(request: Request):
+        return frontend_page(request, 'api.html')
 
     app.mount('/static', StaticFiles(directory=ROOT / 'frontend'), name='static')
     generated = app.openapi()

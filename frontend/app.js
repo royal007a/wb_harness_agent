@@ -47,7 +47,7 @@ function notice(message, error = false) {
   noticeTimer = setTimeout(() => ($("#notice").hidden = true), 6000);
 }
 async function api(url, options = {}) {
-  const response = await fetch(url, options);
+  const response = await fetch(HarnessURLs.url(url), options);
   if (!response.ok) {
     let data;
     try {
@@ -62,7 +62,7 @@ const post = (url, body) =>
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Idempotency-Key": crypto.randomUUID(),
+      "Idempotency-Key": HarnessURLs.requestId(),
     },
     body: JSON.stringify(body),
   });
@@ -252,7 +252,7 @@ async function refreshRun(generation = state.generation) {
     const chart = items.find((a) => a.media_type === "image/svg+xml");
     const [data, reportText] = await Promise.all([
       api(`/api/v1/artifacts/${manifest.id}/content`),
-      fetch(`/api/v1/artifacts/${report.id}/content`).then((r) => {
+      fetch(HarnessURLs.url(`/api/v1/artifacts/${report.id}/content`)).then((r) => {
         if (!r.ok) throw new Error("报告读取失败");
         return r.text();
       }),
@@ -260,7 +260,7 @@ async function refreshRun(generation = state.generation) {
     if (generation !== state.generation || runId !== state.run?.id) return;
     const m = data.metrics;
     $("#tab-overview").innerHTML =
-      `<div class="artifact-links">${items.map((a) => `<a class="artifact-link" href="/api/v1/artifacts/${a.id}/content?download=true">↓ ${esc(a.name)}<small>验证通过 · ${(a.size_bytes / 1024).toFixed(1)} KB</small></a>`).join("")}</div><div class="result-grid"><div class="result-stat">数据行<strong>${m.row_count}</strong></div><div class="result-stat">字段数<strong>${m.column_count}</strong></div><div class="result-stat">缺失单元格<strong>${m.missing_cells}</strong></div></div><img class="chart" src="/api/v1/artifacts/${chart.id}/content" alt="各字段的数据完整率柱状图"><details><summary>查看完整 Markdown 报告</summary><pre class="report">${esc(reportText)}</pre></details>`;
+      `<div class="artifact-links">${items.map((a) => `<a class="artifact-link" href="${HarnessURLs.url(`/api/v1/artifacts/${a.id}/content?download=true`)}">↓ ${esc(a.name)}<small>验证通过 · ${(a.size_bytes / 1024).toFixed(1)} KB</small></a>`).join("")}</div><div class="result-grid"><div class="result-stat">数据行<strong>${m.row_count}</strong></div><div class="result-stat">字段数<strong>${m.column_count}</strong></div><div class="result-stat">缺失单元格<strong>${m.missing_cells}</strong></div></div><img class="chart" src="${HarnessURLs.url(`/api/v1/artifacts/${chart.id}/content`)}" alt="各字段的数据完整率柱状图"><details><summary>查看完整 Markdown 报告</summary><pre class="report">${esc(reportText)}</pre></details>`;
   } else if (live(run)) {
     $("#tab-overview").innerHTML =
       '<div class="empty"><span>⌁</span><h3>正在处理数据</h3><p>检查输入 → 计算统计 → 校验并发布产物<br>可切换到执行事件查看进度。</p></div>';
@@ -338,7 +338,7 @@ $("#dropzone").addEventListener(
 $("#sample").addEventListener(
   "click",
   guard(async () => {
-    const r = await fetch("/api/local/sample");
+    const r = await fetch(HarnessURLs.url("/api/local/sample"));
     if (!r.ok) throw new Error("示例加载失败");
     await upload(new File([await r.blob()], "sales.csv", { type: "text/csv" }));
   }),
