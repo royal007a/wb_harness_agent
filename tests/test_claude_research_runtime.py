@@ -1,5 +1,6 @@
 import asyncio
 import json
+import sys
 from pathlib import Path
 
 import httpx
@@ -40,6 +41,9 @@ class Gateway:
 
 def enabled_env(monkeypatch, tmp_path=None):
     values = {
+        # These tests inject SDK events and never execute a CLI. Do not depend
+        # on a developer's globally installed/authenticated `claude` binary.
+        'HARNESS_CLAUDE_RESEARCH_CLI': sys.executable,
         'HARNESS_CLAUDE_RESEARCH_RUNTIME': 'enabled',
         'HARNESS_CLAUDE_RESEARCH_EXTERNAL_DATA': 'enabled',
         'HARNESS_CLAUDE_RESEARCH_MODEL': 'claude-test-controlled',
@@ -52,7 +56,7 @@ def enabled_env(monkeypatch, tmp_path=None):
     admission = {
         'schema_version': 'claude-research-admission@1', 'status': 'approved_for_l3_probe',
         'admission_enabled': True, 'model_calls': 0, 'external_calls': 0,
-        'provider': {'kind': 'claude_agent_sdk_cli', 'cli_path': 'claude',
+        'provider': {'kind': 'claude_agent_sdk_cli', 'cli_path': sys.executable,
                      'authentication_boundary': 'managed_by_claude_cli_not_read_by_harness'},
         'model': 'claude-test-controlled',
         'budget': {'currency': 'USD', 'max_cost_minor': 300, 'max_turns': 12, 'timeout_seconds': 60},
@@ -78,7 +82,7 @@ def enabled_env(monkeypatch, tmp_path=None):
 
 def config():
     return NativeResearchConfig(model='claude-test-controlled', runtime_enabled=True, external_data_enabled=True,
-                                allowed_domains=('finance.example', 'search.example'), cli_path='claude',
+                                allowed_domains=('finance.example', 'search.example'), cli_path=sys.executable,
                                 max_turns=12, max_cost_minor=300, timeout_seconds=60)
 
 
