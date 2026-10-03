@@ -3,6 +3,79 @@
   "$id": "https://harnessagent.local/specs/v1/core-contracts.schema.json",
   "title": "HarnessAgent Core Contract Bundle",
   "$defs": {
+    "local_http_pi_run": {
+      "allOf": [{"$ref": "#/$defs/run"}, {"properties": {
+        "selected_engine": {"const": "engine_pi_contract_review_offline"},
+        "selected_models": {"const": {"text_and_code": "faux:offline-contract-review"}}
+      }}]
+    },
+    "local_http_pi_task": {
+      "allOf": [{"$ref": "#/$defs/task"}, {"properties": {
+        "agent_spec_version": {"const": "pi_contract_review_offline@1"},
+        "engine_policy": {"properties": {"engine_id": {"const": "engine_pi_contract_review_offline"}}},
+        "model_policy": {"const": {"text_and_code": "faux:offline-contract-review", "vision": null, "allow_fallback": false}}
+      }}]
+    },
+    "local_http_pi_created": {
+      "type": "object", "additionalProperties": false, "required": ["task", "initial_run"],
+      "properties": {
+        "task": {"$ref": "#/$defs/local_http_pi_task"},
+        "initial_run": {"allOf": [{"$ref": "#/$defs/local_http_pi_run"}, {"properties": {"status": {"const": "queued"}}}]}
+      }
+    },
+    "local_http_pi_list": {
+      "type": "object", "additionalProperties": false, "required": ["items"],
+      "properties": {"items": {"type": "array", "items": {"allOf": [
+        {"$ref": "#/$defs/local_http_pi_run"}, {"properties": {"parent_run_id": {"const": null}}}
+      ]}}}
+    },
+    "local_http_pi_gate_pending": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "handoff_artifact_id", "decision_options"],
+      "properties": {
+        "artifact_id": {"type": "string", "pattern": "^art_[A-Za-z0-9]+$"},
+        "handoff_artifact_id": {"type": "string", "pattern": "^art_[A-Za-z0-9]+$"},
+        "decision_options": {"const": ["pass", "reject"]}
+      }
+    },
+    "local_http_pi_gate_decided": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision", "reason", "handoff_artifact_id", "gate_artifact_id"],
+      "properties": {
+        "decision": {"enum": ["pass", "reject"]}, "reason": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "handoff_artifact_id": {"type": "string", "pattern": "^art_[A-Za-z0-9]+$"},
+        "gate_artifact_id": {"type": "string", "pattern": "^art_[A-Za-z0-9]+$"}
+      }
+    },
+    "local_http_pi_detail": {
+      "type": "object", "additionalProperties": false,
+      "required": ["run", "task", "artifacts", "mode", "runtime_enabled", "external_calls", "gate_required", "gate"],
+      "properties": {
+        "run": {"$ref": "#/$defs/local_http_pi_run"}, "task": {"$ref": "#/$defs/local_http_pi_task"},
+        "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}},
+        "mode": {"const": "pi_contract_review_offline@1"}, "runtime_enabled": {"const": false},
+        "external_calls": {"const": 0}, "gate_required": {"type": "boolean"},
+        "gate": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/local_http_pi_gate_pending"}, {"$ref": "#/$defs/local_http_pi_gate_decided"}]}
+      },
+      "if": {"properties": {"run": {"properties": {"status": {"const": "waiting_approval"}}}}},
+      "then": {"properties": {"gate_required": {"const": true}, "gate": {"$ref": "#/$defs/local_http_pi_gate_pending"}}},
+      "else": {"properties": {"gate_required": {"const": false}}}
+    },
+    "local_http_pi_events": {
+      "type": "object", "additionalProperties": false, "required": ["run_id", "events", "next_seq", "status"],
+      "properties": {
+        "run_id": {"type": "string", "pattern": "^run_[A-Za-z0-9]+$"},
+        "events": {"type": "array", "maxItems": 500, "items": {"$ref": "#/$defs/event"}},
+        "next_seq": {"type": "integer", "minimum": 0, "maximum": 9223372036854775807},
+        "status": {"enum": ["queued", "running", "waiting_approval", "succeeded", "failed", "cancelled", "expired"]}
+      }
+    },
+    "local_http_pi_gate_result": {
+      "allOf": [{"$ref": "#/$defs/local_http_pi_run"}, {"oneOf": [
+        {"properties": {"status": {"const": "succeeded"}, "exit_reason": {"const": "GATE_PASSED"}}},
+        {"properties": {"status": {"const": "failed"}, "exit_reason": {"const": "GATE_REJECTED"}}}
+      ]}]
+    },
     "local_http_research_demo_list": {
       "type": "object", "additionalProperties": false, "required": ["items"],
       "properties": {"items": {"type": "array", "items": {"allOf": [

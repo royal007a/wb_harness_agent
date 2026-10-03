@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T23:05:00Z",
+  "generated_at": "2026-10-03T23:41:00Z",
   "tasks": [
+    {
+      "id": "HA-0068",
+      "title": "Pi Product Run终态、Gate回放与分页合同",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Pi Product Run五入口公开合同", "Gate原子终态与幂等回放、取消后禁止发布", "事件分页及最新Gate、正反例和突变"],
+      "non_goals": ["启用真实Pi模型或法律评测", "新增身份认证或重做通用幂等框架", "绕过本机部署132"],
+      "acceptance": ["生命周期反例在基线按行为失败", "三套合同与真实HTTP实例一致且拒绝坏实例", "分页不跳号、Gate回放不写入、终态不可覆盖", "定向全量verify、固定提交review与双部署证据"],
+      "depends_on": ["HA-0062", "HA-0067"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0068-pi-product-run-contracts.md",
+      "blocked_reason": "38新增/185相关、旧30行为反例及9/9突变；全量1225 passed/16 skipped，verify退出0。待固定提交独立review及HA-0056兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交独立Approved；兼容本机拓扑明确后先本机再132部署验收。",
+      "evidence": ["harness/evidence/HA-0068/acceptance.md", "harness/evidence/HA-0068/mutations.md", "harness/evidence/HA-0068/remaining-empty-responses.json"]
+    },
     {
       "id": "HA-0067",
       "title": "Pi离线管线HTTP与分阶段SSE契约",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0067-pi-pipeline-http-contracts.md",
-      "blocked_reason": "新56/相关156通过，旧54行为反例及8/8突变核实；全量1187 passed/16 skipped，verify exit0。等待固定提交独立review及HA-0056兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交独立Approved；本机兼容拓扑明确并验收后先本机再132部署。",
-      "evidence": ["harness/evidence/HA-0067/acceptance.md", "harness/evidence/HA-0067/mutations.md", "harness/evidence/HA-0067/remaining-empty-responses.json"]
+      "blocked_reason": "868f4b3独立Approved，新56/指定96及旧54行为反例已核实；2 Low和1 Info登记。仍待HA-0056兼容本机拓扑后的双部署。",
+      "recovery_condition": "本机兼容拓扑明确并验收后先本机再132部署。",
+      "evidence": ["harness/evidence/HA-0067/acceptance.md", "harness/evidence/HA-0067/mutations.md", "harness/evidence/HA-0067/remaining-empty-responses.json", "harness/evidence/HA-0067/review.md"]
     },
     {
       "id": "HA-0066",

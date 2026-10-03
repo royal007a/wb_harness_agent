@@ -435,3 +435,12 @@ HA-0067 给 `/api/local/pi/runtime` 和 `pi-contract-pipeline` 四个 POST 发�
 security-check 的 allow 只是对调用方 policy 的评估，不授予执行权限；runtime
 是档案投影，不是实时调用计数器。本项不包括 Pi Product Run 五个入口，
 也不代表真实 Provider、部署或合同判断质量已经验收。
+
+### Pi Product Run 当前合同（HA-0068）
+
+`/api/local/pi-contract-review`的创建/列表/详情/events/Gate共五入口，源/静态/
+动态合同复用Product Task/Run/Event/Artifact。事件为JSON页（最多500），
+next_seq按返回页而非全Run最新序号推进，空页保留after_seq，范围为非负int64。
+首次Gate在事务内核对waiting_approval并提交审计/终态；同key/body只读回放原收据，
+不是新的执行许可。取消/超时后的迟到Adapter结果不再发布。仍是Faux-only、本机
+可信用户纵切，非真实Provider/法律评测；详细验证见PI_PRODUCT_HTTP_CONTRACTS.md。

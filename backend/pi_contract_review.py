@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import copy
 import json
-from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
@@ -77,28 +76,29 @@ class PiContractReviewRuns:
         return run
 
     def detail(self, run_id):
-        run = self.store.get('runs', run_id)
-        if run['selected_engine'] != ENGINE:
-            raise Problem('NOT_FOUND', 'Pi 合同审查 Run 不存在。', 404)
-        gate_events = [event for event in self.store.events(run_id) if event['event_type'] in {'gate.awaiting_human', 'gate.decision'}]
-        return {'run': run, 'task': self.store.get('tasks', run['task_id']),
-                'artifacts': self.store.artifact_list(run_id), 'mode': RUNTIME,
-                'runtime_enabled': False, 'external_calls': 0,
-                'gate_required': run['status'] == 'waiting_approval',
-                'gate': gate_events[-1]['data'] if gate_events else None}
+        with self.store.lock:
+            run = self.store.get('runs', run_id)
+            if run['selected_engine'] != ENGINE:
+                raise Problem('NOT_FOUND', 'Pi 合同审查 Run 不存在。', 404)
+            gate = self.store.latest_event(run_id, {'gate.awaiting_human', 'gate.decision'})
+            return {'run': run, 'task': self.store.get('tasks', run['task_id']),
+                    'artifacts': self.store.artifact_list(run_id), 'mode': RUNTIME,
+                    'runtime_enabled': False, 'external_calls': 0,
+                    'gate_required': run['status'] == 'waiting_approval',
+                    'gate': gate['data'] if gate else None}
 
     def listing(self):
         return {'items': [run for run in self.store.listing('runs')
                           if run['selected_engine'] == ENGINE and not run.get('parent_run_id')]}
 
     def events(self, run_id, after=0):
-        run = self.store.get('runs', run_id)
-        if run['selected_engine'] != ENGINE:
-            raise Problem('NOT_FOUND', 'Pi 合同审查 Run 不存在。', 404)
-        if not isinstance(after, int) or after < 0:
-            raise Problem('VALIDATION_ERROR', 'after_seq 必须是不小于 0 的整数。', 422)
-        return {'run_id': run_id, 'events': self.store.events(run_id, after=after),
-                'next_seq': run['latest_sequence'], 'status': run['status']}
+        with self.store.lock:
+            run = self.store.get('runs', run_id)
+            if run['selected_engine'] != ENGINE:
+                raise Problem('NOT_FOUND', 'Pi 合同审查 Run 不存在。', 404)
+            events = self.store.events(run_id, after=after)
+            return {'run_id': run_id, 'events': events,
+                    'next_seq': events[-1]['sequence'] if events else after, 'status': run['status']}
 
     def _publish(self, db, run, name, value, media='application/json'):
         body = value.encode() if isinstance(value, str) else dumps(value).encode()
@@ -123,17 +123,16 @@ class PiContractReviewRuns:
                 self.store.event(db, run, 'run.started', {'mode': RUNTIME, 'external_calls': 0})
             task = self.store.get('tasks', run['task_id'])
             resource = self.store.get('resources', task['context']['resource_ids'][0])
-            events = []
-
             def emit(kind, payload):
-                events.append((kind, payload))
                 with self.store.transaction() as db:
+                    self.service.check(run_id)
                     current = self.store.get('runs', run_id)
                     self.store.event(db, current, 'pi.' + kind.replace('.', '_'), {'payload': payload})
 
             result = self.adapter.start_run(AdapterRequest(task, run, resource, self.store.raw(resource['id'])), emit,
                                             lambda: self.service.check(run_id))
             with self.store.transaction() as db:
+                self.service.check(run_id)
                 current = self.store.get('runs', run_id)
                 artifact = self._publish(db, current, 'pi-contract-review.json', result.finding)
                 evidence = result.finding['evidence_refs']
@@ -178,12 +177,10 @@ class PiContractReviewRuns:
 
     def gate(self, run_id, body, key):
         self._validate('gate_decision', body)
-        run = self.store.get('runs', run_id)
-        if run['selected_engine'] != ENGINE or run['status'] != 'waiting_approval':
-            raise Problem('GATE_NOT_OPEN', 'Pi Run 当前没有可处理的人工 Gate。', 409)
-
         def decide(db):
             current = self.store.get('runs', run_id)
+            if current['selected_engine'] != ENGINE or current['status'] != 'waiting_approval':
+                raise Problem('GATE_NOT_OPEN', 'Pi Run 当前没有可处理的人工 Gate。', 409)
             handoffs = [item for item in self.store.artifact_list(run_id) if item['name'] == 'pi-contract-review-handoff.json']
             if not handoffs:
                 raise Problem('HANDOFF_MISSING', 'Gate 前必须存在可审计的 Pi Task Handoff。', 409)

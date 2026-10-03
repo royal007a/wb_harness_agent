@@ -241,7 +241,7 @@ def test_all_registered_definitions_survive_final_document(monkeypatch):
                              for name in contract['$defs']})
     monkeypatch.setattr(app_module, 'register_definitions', observe)
     document = app_module.create_app(run_worker=False).openapi()
-    assert len(observations) == 24  # Includes the three separately namespaced Pi contracts.
+    assert len(observations) == 25  # Includes pipeline contracts and the separate Pi Product request namespace.
     for definitions in observations:
         for name, value in definitions.items():
             assert document['components']['schemas'][name] == value, name

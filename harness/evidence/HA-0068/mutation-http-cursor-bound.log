@@ -1,0 +1,68 @@
+.F..F                                                                    [100%]
+=================================== FAILURES ===================================
+________ test_pi_cursor_http_rejects_before_store[9223372036854775808] _________
+
+offline = <starlette.testclient.TestClient object at 0x10cca0190>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c0b6c40>
+cursor = '9223372036854775808'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+>       assert calls == [], 'invalid HTTP cursor must not reach Store'
+E       AssertionError: invalid HTTP cursor must not reach Store
+E       assert [(('run_12188...36854775808})] == []
+E
+E         Left contains one more item: (('run_121883f162994986842c0e5dd07a96e8',), {'after': 9223372036854775808})
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:364: AssertionError
+_ test_pi_cursor_http_rejects_before_store[9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999] _
+
+offline = <starlette.testclient.TestClient object at 0x10ea9c2b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cb90490>
+cursor = '999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999...9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+>       assert calls == [], 'invalid HTTP cursor must not reach Store'
+E       AssertionError: invalid HTTP cursor must not reach Store
+E       assert [(('run_f0174...99999999999})] == []
+E
+E         Left contains one more item: (('run_f0174631bbbc41f09608a7a864970206',), {'after': 999999999999999999...9999999999999999999})
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:364: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_pi_cursor_http_rejects_before_store[9223372036854775808]
+FAILED tests/test_pi_product_http_contracts.py::test_pi_cursor_http_rejects_before_store[9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999]
+2 failed, 3 passed, 33 deselected, 1 warning in 0.78s

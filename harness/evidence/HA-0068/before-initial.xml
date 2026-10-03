@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="9" time="0.826" timestamp="2026-10-04T07:18:39.079386+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_same_key_replay_is_read_only_after_terminal[case_sha256=d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1]" time="0.164"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;GATE_NOT_OPEN&quot;,&quot;message&quot;:&quot;Pi Run 当前没有可处理的人工 Gate。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_4b5b00ca17294c41b15b32b7377acc10&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10ba32a50&gt;
+decision = 'pass'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+&gt;       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Pi Run 当前没有可处理的人工 Gate。","retryable":false,"request_id":"req_4b5b00ca17294c41b15b32b7377acc10"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:85: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_same_key_replay_is_read_only_after_terminal[case_sha256=084e990a49ba65e622926853785e0ed05c63fc7fbf798a26e8242b5ee3d7ce9f]" time="0.040"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;GATE_NOT_OPEN&quot;,&quot;message&quot;:&quot;Pi Run 当前没有可处理的人工 Gate。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_cb9320ecdb6d434b841ccaa5a7c085a3&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10d40ca50&gt;
+decision = 'reject'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+&gt;       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Pi Run 当前没有可处理的人工 Gate。","retryable":false,"request_id":"req_cb9320ecdb6d434b841ccaa5a7c085a3"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:85: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_event_page_cursor_never_skips_or_moves_backwards" time="0.088"><failure message="assert 1001 == 500">offline = &lt;starlette.testclient.TestClient object at 0x10c5e6ad0&gt;
+
+    def test_event_page_cursor_never_skips_or_moves_backwards(offline):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        store = c.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', run_id)
+            for _ in range(1000):
+                store.event(db, run, 'pi.synthetic', {})
+        before = snapshot(c)
+        after, sequences, sizes = 0, [], []
+        for _ in range(4):
+            response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': after})
+            assert response.status_code == 200
+            page = response.json()
+            sizes.append(len(page['events']))
+            expected = page['events'][-1]['sequence'] if page['events'] else after
+&gt;           assert page['next_seq'] == expected
+E           assert 1001 == 500
+
+tests/test_pi_product_http_contracts.py:109: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_detail_finds_gate_after_first_five_hundred_events" time="0.053"><failure message="KeyError: 'decision'">offline = &lt;starlette.testclient.TestClient object at 0x10c612d70&gt;
+
+    def test_detail_finds_gate_after_first_five_hundred_events(offline):
+        c = offline
+        run_id, _, _ = waiting(c)
+        store = c.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', run_id)
+            for _ in range(510):
+                store.event(db, run, 'pi.synthetic', {})
+        assert gate(c, run_id).status_code == 200
+        before = snapshot(c)
+        detail = c.get(BASE + '/' + run_id).json()
+&gt;       assert detail['gate']['decision'] == 'pass'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision'
+
+tests/test_pi_product_http_contracts.py:128: KeyError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_cancel_wins_before_result_publication[case_sha256=60a33e6cf5151f2d52eddae9685cfa270426aa89d8dbc7dfb854606f1d1a40fe]" time="0.036"><failure message="AssertionError: cancelled Run must not receive late events/artifacts/state&#10;assert (28, {'resour...), ...], ...}) == (16, {'resour...al&quot;}')], ...})&#10;  &#10;  At index 0 diff: 28 != 16&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10c613820&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d964050&gt;
+late_emit = False
+
+    @pytest.mark.parametrize('late_emit', [False, True])
+    def test_cancel_wins_before_result_publication(offline, monkeypatch, late_emit):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        at_cancel = []
+        def delayed(request, emit, check):
+            service.pi_contract_review.cancel(run_id)
+            at_cancel.append(snapshot(c))
+            if late_emit:
+                emit('run.result.proposed', {'late': True})
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+&gt;       assert snapshot(c) == at_cancel[0], 'cancelled Run must not receive late events/artifacts/state'
+E       AssertionError: cancelled Run must not receive late events/artifacts/state
+E       assert (28, {'resour...), ...], ...}) == (16, {'resour...al"}')], ...})
+E
+E         At index 0 diff: 28 != 16
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:148: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_cancel_wins_before_result_publication[case_sha256=3cbc87c7681f34db4617feaa2c8801931bc5e42d8d0f560e756dd4cd92885f18]" time="0.037"><failure message="AssertionError: cancelled Run must not receive late events/artifacts/state&#10;assert (30, {'resour...), ...], ...}) == (16, {'resour...al&quot;}')], ...})&#10;  &#10;  At index 0 diff: 30 != 16&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x1094e5b50&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c6f3b50&gt;
+late_emit = True
+
+    @pytest.mark.parametrize('late_emit', [False, True])
+    def test_cancel_wins_before_result_publication(offline, monkeypatch, late_emit):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        at_cancel = []
+        def delayed(request, emit, check):
+            service.pi_contract_review.cancel(run_id)
+            at_cancel.append(snapshot(c))
+            if late_emit:
+                emit('run.result.proposed', {'late': True})
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+&gt;       assert snapshot(c) == at_cancel[0], 'cancelled Run must not receive late events/artifacts/state'
+E       AssertionError: cancelled Run must not receive late events/artifacts/state
+E       assert (30, {'resour...), ...], ...}) == (16, {'resour...al"}')], ...})
+E
+E         At index 0 diff: 30 != 16
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:148: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_rechecks_state_inside_idempotency_transaction[case_sha256=2374d91794b79f4fb4ec9587d2cf00aecc4f9953fab3ed1dd12ab147a0b721f9]" time="0.040"><failure message="assert (200 == 409)&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10de77f00&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10de58050&gt;
+winner = 'cancel'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+&gt;       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:170: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_rechecks_state_inside_idempotency_transaction[case_sha256=084e990a49ba65e622926853785e0ed05c63fc7fbf798a26e8242b5ee3d7ce9f]" time="0.041"><failure message="assert (200 == 409)&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10e199370&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d97fc50&gt;
+winner = 'reject'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+&gt;       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:170: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_deadline_is_rechecked_before_publishing" time="0.038"><failure message="AssertionError: assert ('waiting_approval' == 'failed'&#10;  &#10;  - failed&#10;  + waiting_approval)">offline = &lt;starlette.testclient.TestClient object at 0x10e3ba7a0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d97fa70&gt;
+
+    def test_deadline_is_rechecked_before_publishing(offline, monkeypatch):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        def delayed(request, emit, check):
+            with service.store.transaction() as db:
+                run = service.store.get('runs', run_id)
+                run['created_at'] = '2000-01-01T00:00:00Z'
+                db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(run), run_id))
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+        detail = c.get(BASE + '/' + run_id).json()
+&gt;       assert detail['run']['status'] == 'failed' and detail['run']['exit_reason'] == 'TIMEOUT'
+E       AssertionError: assert ('waiting_approval' == 'failed'
+E
+E         - failed
+E         + waiting_approval)
+
+tests/test_pi_product_http_contracts.py:188: AssertionError</failure></testcase></testsuite></testsuites>

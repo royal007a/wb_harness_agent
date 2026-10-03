@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.367" timestamp="2026-10-04T07:33:28.096228+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_detail_finds_gate_after_first_five_hundred_events" time="0.137"><failure message="KeyError: 'decision'">offline = &lt;starlette.testclient.TestClient object at 0x10d462cf0&gt;
+
+    def test_detail_finds_gate_after_first_five_hundred_events(offline):
+        c = offline
+        run_id, _, _ = waiting(c)
+        store = c.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', run_id)
+            for _ in range(510):
+                store.event(db, run, 'pi.synthetic', {})
+        assert gate(c, run_id).status_code == 200
+        before = snapshot(c)
+        detail = c.get(BASE + '/' + run_id).json()
+&gt;       assert detail['gate']['decision'] == 'pass'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision'
+
+tests/test_pi_product_http_contracts.py:132: KeyError</failure></testcase></testsuite></testsuites>

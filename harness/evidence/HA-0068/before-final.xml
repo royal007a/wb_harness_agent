@@ -1,0 +1,1123 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="30" skipped="0" tests="38" time="5.165" timestamp="2026-10-04T07:31:42.983072+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_same_key_replay_is_read_only_after_terminal[case_sha256=d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1]" time="0.215"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;GATE_NOT_OPEN&quot;,&quot;message&quot;:&quot;Pi Run 当前没有可处理的人工 Gate。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_4bb0e8261b4840de8df37264e990a186&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x109712510&gt;
+decision = 'pass'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+&gt;       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Pi Run 当前没有可处理的人工 Gate。","retryable":false,"request_id":"req_4bb0e8261b4840de8df37264e990a186"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:89: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_same_key_replay_is_read_only_after_terminal[case_sha256=084e990a49ba65e622926853785e0ed05c63fc7fbf798a26e8242b5ee3d7ce9f]" time="0.061"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;GATE_NOT_OPEN&quot;,&quot;message&quot;:&quot;Pi Run 当前没有可处理的人工 Gate。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_0fa511158cf048579818f5d667f0ccfa&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10b195090&gt;
+decision = 'reject'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+&gt;       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Pi Run 当前没有可处理的人工 Gate。","retryable":false,"request_id":"req_0fa511158cf048579818f5d667f0ccfa"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:89: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_event_page_cursor_never_skips_or_moves_backwards" time="0.112"><failure message="assert 1001 == 500">offline = &lt;starlette.testclient.TestClient object at 0x1098eee90&gt;
+
+    def test_event_page_cursor_never_skips_or_moves_backwards(offline):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        store = c.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', run_id)
+            for _ in range(1000):
+                store.event(db, run, 'pi.synthetic', {})
+        before = snapshot(c)
+        after, sequences, sizes = 0, [], []
+        for _ in range(4):
+            response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': after})
+            assert response.status_code == 200
+            page = response.json()
+            sizes.append(len(page['events']))
+            expected = page['events'][-1]['sequence'] if page['events'] else after
+&gt;           assert page['next_seq'] == expected
+E           assert 1001 == 500
+
+tests/test_pi_product_http_contracts.py:113: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_detail_finds_gate_after_first_five_hundred_events" time="0.063"><failure message="KeyError: 'decision'">offline = &lt;starlette.testclient.TestClient object at 0x10a3e3a80&gt;
+
+    def test_detail_finds_gate_after_first_five_hundred_events(offline):
+        c = offline
+        run_id, _, _ = waiting(c)
+        store = c.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', run_id)
+            for _ in range(510):
+                store.event(db, run, 'pi.synthetic', {})
+        assert gate(c, run_id).status_code == 200
+        before = snapshot(c)
+        detail = c.get(BASE + '/' + run_id).json()
+&gt;       assert detail['gate']['decision'] == 'pass'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision'
+
+tests/test_pi_product_http_contracts.py:132: KeyError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_cancel_wins_before_result_publication[case_sha256=60a33e6cf5151f2d52eddae9685cfa270426aa89d8dbc7dfb854606f1d1a40fe]" time="0.045"><failure message="AssertionError: cancelled Run must not receive late events/artifacts/state&#10;assert (28, {'resour...), ...], ...}) == (16, {'resour...al&quot;}')], ...})&#10;  &#10;  At index 0 diff: 28 != 16&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10b750180&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b4d1040&gt;
+late_emit = False
+
+    @pytest.mark.parametrize('late_emit', [False, True])
+    def test_cancel_wins_before_result_publication(offline, monkeypatch, late_emit):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        at_cancel = []
+        def delayed(request, emit, check):
+            service.pi_contract_review.cancel(run_id)
+            at_cancel.append(snapshot(c))
+            if late_emit:
+                emit('run.result.proposed', {'late': True})
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+&gt;       assert snapshot(c) == at_cancel[0], 'cancelled Run must not receive late events/artifacts/state'
+E       AssertionError: cancelled Run must not receive late events/artifacts/state
+E       assert (28, {'resour...), ...], ...}) == (16, {'resour...al"}')], ...})
+E
+E         At index 0 diff: 28 != 16
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:152: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_cancel_wins_before_result_publication[case_sha256=3cbc87c7681f34db4617feaa2c8801931bc5e42d8d0f560e756dd4cd92885f18]" time="0.049"><failure message="AssertionError: cancelled Run must not receive late events/artifacts/state&#10;assert (30, {'resour...), ...], ...}) == (16, {'resour...al&quot;}')], ...})&#10;  &#10;  At index 0 diff: 30 != 16&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10a4c4a70&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b3b1c50&gt;
+late_emit = True
+
+    @pytest.mark.parametrize('late_emit', [False, True])
+    def test_cancel_wins_before_result_publication(offline, monkeypatch, late_emit):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        at_cancel = []
+        def delayed(request, emit, check):
+            service.pi_contract_review.cancel(run_id)
+            at_cancel.append(snapshot(c))
+            if late_emit:
+                emit('run.result.proposed', {'late': True})
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+&gt;       assert snapshot(c) == at_cancel[0], 'cancelled Run must not receive late events/artifacts/state'
+E       AssertionError: cancelled Run must not receive late events/artifacts/state
+E       assert (30, {'resour...), ...], ...}) == (16, {'resour...al"}')], ...})
+E
+E         At index 0 diff: 30 != 16
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:152: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_rechecks_state_inside_idempotency_transaction[case_sha256=2374d91794b79f4fb4ec9587d2cf00aecc4f9953fab3ed1dd12ab147a0b721f9]" time="0.068"><failure message="assert (200 == 409)&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10be5d370&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b3b2650&gt;
+winner = 'cancel'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+&gt;       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:174: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_rechecks_state_inside_idempotency_transaction[case_sha256=084e990a49ba65e622926853785e0ed05c63fc7fbf798a26e8242b5ee3d7ce9f]" time="0.112"><failure message="assert (200 == 409)&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10bf7e7a0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b75ec60&gt;
+winner = 'reject'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+&gt;       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:174: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_deadline_is_rechecked_before_publishing" time="0.075"><failure message="AssertionError: assert ('waiting_approval' == 'failed'&#10;  &#10;  - failed&#10;  + waiting_approval)">offline = &lt;starlette.testclient.TestClient object at 0x10c2dbbd0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10bf194f0&gt;
+
+    def test_deadline_is_rechecked_before_publishing(offline, monkeypatch):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        def delayed(request, emit, check):
+            with service.store.transaction() as db:
+                run = service.store.get('runs', run_id)
+                run['created_at'] = '2000-01-01T00:00:00Z'
+                db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(run), run_id))
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+        detail = c.get(BASE + '/' + run_id).json()
+&gt;       assert detail['run']['status'] == 'failed' and detail['run']['exit_reason'] == 'TIMEOUT'
+E       AssertionError: assert ('waiting_approval' == 'failed'
+E
+E         - failed
+E         + waiting_approval)
+
+tests/test_pi_product_http_contracts.py:192: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_five_published_pi_contracts_reject_empty[case_sha256=5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9]" time="0.242"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10c439e10&gt;, index = 0
+
+    @pytest.mark.parametrize('index', range(5))
+    def test_five_published_pi_contracts_reject_empty(offline, index):
+&gt;       validators(offline, index)
+
+tests/test_pi_product_http_contracts.py:245:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10c439e10&gt;, index = 0
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_five_published_pi_contracts_reject_empty[case_sha256=6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b]" time="0.136"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10ca28490&gt;, index = 1
+
+    @pytest.mark.parametrize('index', range(5))
+    def test_five_published_pi_contracts_reject_empty(offline, index):
+&gt;       validators(offline, index)
+
+tests/test_pi_product_http_contracts.py:245:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10ca28490&gt;, index = 1
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_five_published_pi_contracts_reject_empty[case_sha256=d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35]" time="0.264"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10cebead0&gt;, index = 2
+
+    @pytest.mark.parametrize('index', range(5))
+    def test_five_published_pi_contracts_reject_empty(offline, index):
+&gt;       validators(offline, index)
+
+tests/test_pi_product_http_contracts.py:245:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10cebead0&gt;, index = 2
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_five_published_pi_contracts_reject_empty[case_sha256=4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce]" time="0.118"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}/events')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10c43bf00&gt;, index = 3
+
+    @pytest.mark.parametrize('index', range(5))
+    def test_five_published_pi_contracts_reject_empty(offline, index):
+&gt;       validators(offline, index)
+
+tests/test_pi_product_http_contracts.py:245:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10c43bf00&gt;, index = 3
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}/events')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_five_published_pi_contracts_reject_empty[case_sha256=4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a]" time="0.136"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}:gate')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10bd01260&gt;, index = 4
+
+    @pytest.mark.parametrize('index', range(5))
+    def test_five_published_pi_contracts_reject_empty(offline, index):
+&gt;       validators(offline, index)
+
+tests/test_pi_product_http_contracts.py:245:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10bd01260&gt;, index = 4
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}:gate')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_lifecycle_instances_artifacts_and_replays_match_three_schemas[case_sha256=d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1]" time="0.127"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10be5c9e0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ccbeba0&gt;
+decision = 'pass'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject', 'cancel'])
+    def test_lifecycle_instances_artifacts_and_replays_match_three_schemas(offline, monkeypatch, decision):
+        c = offline
+        service = c.app.state.service
+&gt;       assert validated(c, 1, c.get(BASE)) == {'items': []}
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_product_http_contracts.py:252:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10be5c9e0&gt;, index = 1
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_lifecycle_instances_artifacts_and_replays_match_three_schemas[case_sha256=084e990a49ba65e622926853785e0ed05c63fc7fbf798a26e8242b5ee3d7ce9f]" time="0.153"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10b4d2cf0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c8317b0&gt;
+decision = 'reject'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject', 'cancel'])
+    def test_lifecycle_instances_artifacts_and_replays_match_three_schemas(offline, monkeypatch, decision):
+        c = offline
+        service = c.app.state.service
+&gt;       assert validated(c, 1, c.get(BASE)) == {'items': []}
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_product_http_contracts.py:252:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10b4d2cf0&gt;, index = 1
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_lifecycle_instances_artifacts_and_replays_match_three_schemas[case_sha256=2374d91794b79f4fb4ec9587d2cf00aecc4f9953fab3ed1dd12ab147a0b721f9]" time="0.138"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10a4f2470&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b0ddd10&gt;
+decision = 'cancel'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject', 'cancel'])
+    def test_lifecycle_instances_artifacts_and_replays_match_three_schemas(offline, monkeypatch, decision):
+        c = offline
+        service = c.app.state.service
+&gt;       assert validated(c, 1, c.get(BASE)) == {'items': []}
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_product_http_contracts.py:252:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10a4f2470&gt;, index = 1
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_requests_headers_and_error_contracts[case_sha256=5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9]" time="0.213"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10b151000&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10b151000&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x1096bfac0&gt;, index = 0
+
+    @pytest.mark.parametrize('index', [0, 4])
+    def test_requests_headers_and_error_contracts(offline, index):
+        c = offline
+        run_id, _, body = waiting(c)
+        if index == 4:
+            body = {'decision': 'pass', 'reason': 'Synthetic human decision'}
+        url = BASE if index == 0 else BASE + '/' + run_id + ':gate'
+&gt;       request_checks = validators(c, index, request=True)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_product_http_contracts.py:326:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x1096bfac0&gt;, index = 0
+error = False, request = True
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10b151000&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10b151000&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_requests_headers_and_error_contracts[case_sha256=4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a]" time="0.142"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}:gate')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10b5bf1c0&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10b5bf1c0&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x10ba64490&gt;, index = 4
+
+    @pytest.mark.parametrize('index', [0, 4])
+    def test_requests_headers_and_error_contracts(offline, index):
+        c = offline
+        run_id, _, body = waiting(c)
+        if index == 4:
+            body = {'decision': 'pass', 'reason': 'Synthetic human decision'}
+        url = BASE if index == 0 else BASE + '/' + run_id + ':gate'
+&gt;       request_checks = validators(c, index, request=True)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_product_http_contracts.py:326:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10ba64490&gt;, index = 4
+error = False, request = True
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}:gate')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10b5bf1c0&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10b5bf1c0&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464]" time="0.145"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10c54cd40&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10c54cd40&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x10be5d150&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c9cbdd0&gt;
+cursor = '-1'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+        assert calls == [], 'invalid HTTP cursor must not reach Store'
+&gt;       validated(c, 3, response, error=True)
+
+tests/test_pi_product_http_contracts.py:365:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10be5d150&gt;, index = 3
+error = True, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10c54cd40&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10c54cd40&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=c5c29af0c2b1ba23907ca40686689919361601e7740335050476b290f2f87ee8]" time="0.075"><failure message="AssertionError: invalid HTTP cursor must not reach Store&#10;assert [(('run_78947...36854775808})] == []&#10;  &#10;  Left contains one more item: (('run_7894739ef6ba428cb06661ef054f2540',), {'after': 9223372036854775808})&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10c1a1370&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c4235d0&gt;
+cursor = '9223372036854775808'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+&gt;       assert calls == [], 'invalid HTTP cursor must not reach Store'
+E       AssertionError: invalid HTTP cursor must not reach Store
+E       assert [(('run_78947...36854775808})] == []
+E
+E         Left contains one more item: (('run_7894739ef6ba428cb06661ef054f2540',), {'after': 9223372036854775808})
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:364: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=9f29a130438b81170b92a42650f9a94291ecad60bd47af2a3886e75f7f728725]" time="0.149"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10bc6b400&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10bc6b400&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x10cebcaf0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c653e70&gt;
+cursor = '1.5'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+        assert calls == [], 'invalid HTTP cursor must not reach Store'
+&gt;       validated(c, 3, response, error=True)
+
+tests/test_pi_product_http_contracts.py:365:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10cebcaf0&gt;, index = 3
+error = True, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10bc6b400&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10bc6b400&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59]" time="0.165"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10b24c2c0&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10b24c2c0&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x10b26c9e0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ca4d780&gt;
+cursor = 'no'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+        assert calls == [], 'invalid HTTP cursor must not reach Store'
+&gt;       validated(c, 3, response, error=True)
+
+tests/test_pi_product_http_contracts.py:365:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10b26c9e0&gt;, index = 3
+error = True, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10b24c2c0&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10b24c2c0&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=32ea2837f59d1c4e51213a0b18773aff71e74e8cab7c23d10843b5814ae1cf02]" time="0.068"><failure message="AssertionError: invalid HTTP cursor must not reach Store&#10;assert [(('run_6a300...99999999999})] == []&#10;  &#10;  Left contains one more item: (('run_6a300f54f47e4e7c9a91b224e41cb0f9',), {'after': 999999999999999999...9999999999999999999})&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10c7e7130&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c0423c0&gt;
+cursor = '999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999...9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+&gt;       assert calls == [], 'invalid HTTP cursor must not reach Store'
+E       AssertionError: invalid HTTP cursor must not reach Store
+E       assert [(('run_6a300...99999999999})] == []
+E
+E         Left contains one more item: (('run_6a300f54f47e4e7c9a91b224e41cb0f9',), {'after': 999999999999999999...9999999999999999999})
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:364: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_direct_service_rejects_non_int_or_out_of_range[case_sha256=3cbc87c7681f34db4617feaa2c8801931bc5e42d8d0f560e756dd4cd92885f18]" time="0.055" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_direct_service_rejects_non_int_or_out_of_range[case_sha256=60a33e6cf5151f2d52eddae9685cfa270426aa89d8dbc7dfb854606f1d1a40fe]" time="0.052" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_direct_service_rejects_non_int_or_out_of_range[case_sha256=d0ff5974b6aa52cf562bea5921840c032a860a91a3512f7fe8f768f6bbe005f6]" time="0.154" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_direct_service_rejects_non_int_or_out_of_range[case_sha256=6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b]" time="0.068" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_direct_service_rejects_non_int_or_out_of_range[case_sha256=1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464]" time="0.065" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_direct_service_rejects_non_int_or_out_of_range[case_sha256=c5c29af0c2b1ba23907ca40686689919361601e7740335050476b290f2f87ee8]" time="0.073" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_direct_service_rejects_non_int_or_out_of_range[case_sha256=dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91]" time="0.053" /><testcase classname="tests.test_pi_product_http_contracts" name="test_bad_instances_and_parameter_schemas_are_rejected" time="0.146"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10c1a3ac0&gt;
+
+    def test_bad_instances_and_parameter_schemas_are_rejected(offline):
+        c = offline
+        run_id, created, _ = waiting(c)
+        values = [created.json(), c.get(BASE).json(), c.get(BASE + '/' + run_id).json(),
+                  c.get(BASE + '/' + run_id + '/events').json(), gate(c, run_id).json()]
+        mutations = [
+            (0, lambda v: v['initial_run'].update(status='succeeded')),
+            (0, lambda v: v['task']['model_policy'].update(allow_fallback=True)),
+            (1, lambda v: v['items'][0].update(selected_engine='engine_mock_analytics')),
+            (1, lambda v: v['items'][0].update(parent_run_id='run_parent')),
+            (2, lambda v: v.update(gate_required=False)),
+            (2, lambda v: v.update(runtime_enabled=True)),
+            (2, lambda v: v.update(external_calls=1)),
+            (2, lambda v: v.update(gate=None)),
+            (2, lambda v: v['gate'].update(decision_options=['pass'])),
+            (3, lambda v: v.update(next_seq=MAX + 1)),
+            (3, lambda v: v.update(next_seq=-1)),
+            (3, lambda v: v.update(events=[v['events'][0]] * 501)),
+            (4, lambda v: v.update(exit_reason='GATE_REJECTED')),
+            (4, lambda v: v.update(status='waiting_approval')),
+        ]
+        for index, mutate in mutations:
+&gt;           for check in validators(c, index):
+                         ^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_product_http_contracts.py:401:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10c1a3ac0&gt;, index = 0
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_concurrent_gate_requests_commit_only_once[case_sha256=60a33e6cf5151f2d52eddae9685cfa270426aa89d8dbc7dfb854606f1d1a40fe]" time="0.056"><failure message="assert [200, 200] == [200, 409]&#10;  &#10;  At index 1 diff: 200 != 409&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10a3cb680&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b80a3c0&gt;
+same_key = False
+
+    @pytest.mark.parametrize('same_key', [False, True])
+    def test_concurrent_gate_requests_commit_only_once(offline, monkeypatch, same_key):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original, barrier = service.idempotent, threading.Barrier(2)
+        def synchronized(scope, key, body, action):
+            barrier.wait(timeout=5)
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', synchronized)
+        def decide(number):
+            body = {'decision': 'pass' if same_key or number == 0 else 'reject', 'reason': 'concurrent'}
+            try:
+                return 200, service.pi_contract_review.gate(run_id, body, 'same' if same_key else str(number))
+            except Problem as exc:
+                return exc.status, exc.code
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(decide, [0, 1]))
+&gt;       assert sorted(r[0] for r in results) == ([200, 200] if same_key else [200, 409])
+E       assert [200, 200] == [200, 409]
+E
+E         At index 1 diff: 200 != 409
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:433: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_concurrent_gate_requests_commit_only_once[case_sha256=3cbc87c7681f34db4617feaa2c8801931bc5e42d8d0f560e756dd4cd92885f18]" time="0.068" /><testcase classname="tests.test_pi_product_http_contracts" name="test_failure_and_restart_keep_historical_receipts" time="0.163"><failure message="AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}')&#10;assert not True&#10; +  where True = is_valid({})&#10; +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1078/test_failure_and_restart_keep_0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10bd25e80&gt;
+
+    def test_failure_and_restart_keep_historical_receipts(tmp_path, monkeypatch):
+        database = tmp_path / 'restart68.db'
+        with TestClient(create_app(database, False), base_url='http://127.0.0.1') as first:
+            created, _ = create(first)
+            service = first.app.state.service
+            run_id = created.json()['initial_run']['id']
+            def fail(*args):
+                raise Problem('PI_SYNTHETIC_FAILED', 'synthetic failure', 409)
+            monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', fail)
+            service.execute(run_id)
+&gt;           failed = validated(first, 2, first.get(BASE + '/' + run_id))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pi_product_http_contracts.py:455:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10bd2c6b0&gt;, index = 2
+error = False, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+            assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+            schema = holder['content']['application/json'].get('schema', {})
+            check = Draft202012Validator({**document, **base, **schema}, registry=registry, format_checker=FORMATS)
+&gt;           assert not check.is_valid({}), ('empty contract accepted', p)
+E           AssertionError: ('empty contract accepted', '/api/local/pi-contract-review/{run_id}')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:217: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_wrong_engine_and_missing_run_are_not_returned[case_sha256=d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35]" time="0.155"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10ca2c500&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10ca2c500&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x10c13ecf0&gt;, index = 2
+
+    @pytest.mark.parametrize('index', [2, 3, 4])
+    def test_wrong_engine_and_missing_run_are_not_returned(offline, index):
+        c = offline
+        resource = c.post('/api/v1/resources?name=other.csv', content=b'a,b\n1,2\n').json()
+        response = c.post('/api/local/tasks', json={'resource_id': resource['id'], 'objective': '统计CSV'},
+                          headers={'Idempotency-Key': 'other68'})
+        assert response.status_code == 202, response.text
+        for run_id in [response.json()['initial_run']['id'], 'run_missing']:
+            before = snapshot(c)
+            response = gate(c, run_id) if index == 4 else c.get(OPS[index][0].replace('{run_id}', run_id))
+            assert response.status_code == (409 if index == 4 and run_id != 'run_missing' else 404)
+&gt;           validated(c, index, response, error=True)
+
+tests/test_pi_product_http_contracts.py:493:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10c13ecf0&gt;, index = 2
+error = True, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10ca2c500&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10ca2c500&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_wrong_engine_and_missing_run_are_not_returned[case_sha256=4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce]" time="0.182"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10b26a340&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10b26a340&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x10bd2c6b0&gt;, index = 3
+
+    @pytest.mark.parametrize('index', [2, 3, 4])
+    def test_wrong_engine_and_missing_run_are_not_returned(offline, index):
+        c = offline
+        resource = c.post('/api/v1/resources?name=other.csv', content=b'a,b\n1,2\n').json()
+        response = c.post('/api/local/tasks', json={'resource_id': resource['id'], 'objective': '统计CSV'},
+                          headers={'Idempotency-Key': 'other68'})
+        assert response.status_code == 202, response.text
+        for run_id in [response.json()['initial_run']['id'], 'run_missing']:
+            before = snapshot(c)
+            response = gate(c, run_id) if index == 4 else c.get(OPS[index][0].replace('{run_id}', run_id))
+            assert response.status_code == (409 if index == 4 and run_id != 'run_missing' else 404)
+&gt;           validated(c, index, response, error=True)
+
+tests/test_pi_product_http_contracts.py:493:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10bd2c6b0&gt;, index = 3
+error = True, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}/events')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10b26a340&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10b26a340&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_wrong_engine_and_missing_run_are_not_returned[case_sha256=4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a]" time="0.117"><failure message="AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}:gate')&#10;assert 'application/json' in {}&#10; +  where {} = &lt;built-in method get of dict object at 0x10c51bfc0&gt;('content', {})&#10; +    where &lt;built-in method get of dict object at 0x10c51bfc0&gt; = {}.get">offline = &lt;starlette.testclient.TestClient object at 0x10b4d2360&gt;, index = 4
+
+    @pytest.mark.parametrize('index', [2, 3, 4])
+    def test_wrong_engine_and_missing_run_are_not_returned(offline, index):
+        c = offline
+        resource = c.post('/api/v1/resources?name=other.csv', content=b'a,b\n1,2\n').json()
+        response = c.post('/api/local/tasks', json={'resource_id': resource['id'], 'objective': '统计CSV'},
+                          headers={'Idempotency-Key': 'other68'})
+        assert response.status_code == 202, response.text
+        for run_id in [response.json()['initial_run']['id'], 'run_missing']:
+            before = snapshot(c)
+            response = gate(c, run_id) if index == 4 else c.get(OPS[index][0].replace('{run_id}', run_id))
+            assert response.status_code == (409 if index == 4 and run_id != 'run_missing' else 404)
+&gt;           validated(c, index, response, error=True)
+
+tests/test_pi_product_http_contracts.py:493:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_pi_product_http_contracts.py:232: in validated
+    for check in validators(c, index, error=error):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10b4d2360&gt;, index = 4
+error = True, request = False
+
+    def validators(c, index, *, error=False, request=False):
+        path, method, status, name = OPS[index]
+        resources, sources = [], {}
+        for stem in ('core-contracts', 'pi-contract-review-runtime'):
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        static_file = ROOT / 'specs/v1/openapi.yaml'
+        result = []
+        for document, p, base in [(c.get('/openapi.json').json(), path, {}),
+                                  (yaml.safe_load(static_file.read_text()), static_path(path), {'$id': static_file.as_uri()})]:
+            operation = document['paths'][p][method]
+            holder = operation.get('requestBody', {}) if request else operation['responses'].get('default' if error else str(status), {})
+            if '$ref' in holder:
+                holder = document['components']['responses'][holder['$ref'].split('/')[-1]]
+&gt;           assert 'application/json' in holder.get('content', {}), ('missing JSON contract', p)
+E           AssertionError: ('missing JSON contract', '/api/local/pi-contract-review/{run_id}:gate')
+E           assert 'application/json' in {}
+E            +  where {} = &lt;built-in method get of dict object at 0x10c51bfc0&gt;('content', {})
+E            +    where &lt;built-in method get of dict object at 0x10c51bfc0&gt; = {}.get
+
+tests/test_pi_product_http_contracts.py:214: AssertionError</failure></testcase></testsuite></testsuites>

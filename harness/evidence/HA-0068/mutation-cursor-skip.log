@@ -1,0 +1,36 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_event_page_cursor_never_skips_or_moves_backwards _____________
+
+offline = <starlette.testclient.TestClient object at 0x10b7b6900>
+
+    def test_event_page_cursor_never_skips_or_moves_backwards(offline):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        store = c.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', run_id)
+            for _ in range(1000):
+                store.event(db, run, 'pi.synthetic', {})
+        before = snapshot(c)
+        after, sequences, sizes = 0, [], []
+        for _ in range(4):
+            response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': after})
+            assert response.status_code == 200
+            page = response.json()
+            sizes.append(len(page['events']))
+            expected = page['events'][-1]['sequence'] if page['events'] else after
+>           assert page['next_seq'] == expected
+E           assert 1001 == 500
+
+tests/test_pi_product_http_contracts.py:113: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_event_page_cursor_never_skips_or_moves_backwards
+1 failed, 37 deselected, 1 warning in 0.39s

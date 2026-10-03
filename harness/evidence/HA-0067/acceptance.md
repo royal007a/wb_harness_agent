@@ -1,6 +1,6 @@
 # HA-0067 Pi 离线管线公开 HTTP / SSE 合同
 
-2026-10-04，基线 5429c62。实现和离线验证完成，待固定提交独立复审及双部署。
+2026-10-04，基线5429c62。868f4b3独立Approved，见review.md；实际双部署仍待验收。
 规格 PI_PIPELINE_HTTP_CONTRACTS.md；ADR-0067；测试 test_pi_pipeline_http_contracts.py。
 
 ## 实现及兼容边界

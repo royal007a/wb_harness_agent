@@ -232,3 +232,14 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   本次公开当前行为并测试，不把metadata guard的allow误当实际执行授权。
 
 本文件是开放问题清单，不意味着用上述样本替代用户的全部接口/功能目标。
+
+- **PI-HTTP-02 / Low/Info**：HA-0067固定868f4b3独立Approved。流与普通管线共享
+  后缀key空间；review冲突前preview可能已持久化，不是所有失败零写入。
+  blocker_count等式仍仅行为验证；Accept header声明不保证生成SDK强制校验。
+  见HA-0067/review.md与规格新增边界；本项未修改业务行为，双部署仍未完成。
+- **PI-RUN-01**：HA-0068候选覆盖Pi Product五个HTTP合同、Gate重放/终态、
+  迟到提交和连续分页。通用rerun的Pi attempt_number一直为1属另项待核实/修复，
+  以及PDF内容语义、真实Provider/sidecar强制中止等不在本项验收范围。
+- **OPENAPI-EMPTY-05**：HA-0068后仍有25个API及1个页面的成功JSON Schema恰为
+  空对象，见HA-0068/remaining-empty-responses.json。不包含缺content/非空但过宽
+  合同，仍须继续逐功能验证；不是“全部接口已完成”的依据。

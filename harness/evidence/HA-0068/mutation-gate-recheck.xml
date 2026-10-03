@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="0.561" timestamp="2026-10-04T07:33:25.514895+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_rechecks_state_inside_idempotency_transaction[case_sha256=2374d91794b79f4fb4ec9587d2cf00aecc4f9953fab3ed1dd12ab147a0b721f9]" time="0.147"><failure message="assert (200 == 409)&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10cf42660&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c6fa780&gt;
+winner = 'cancel'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+&gt;       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:174: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_rechecks_state_inside_idempotency_transaction[case_sha256=084e990a49ba65e622926853785e0ed05c63fc7fbf798a26e8242b5ee3d7ce9f]" time="0.049"><failure message="assert (200 == 409)&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10ea1ccd0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c6fa650&gt;
+winner = 'reject'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+&gt;       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:174: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_concurrent_gate_requests_commit_only_once[case_sha256=60a33e6cf5151f2d52eddae9685cfa270426aa89d8dbc7dfb854606f1d1a40fe]" time="0.045"><failure message="assert [200, 200] == [200, 409]&#10;  &#10;  At index 1 diff: 200 != 409&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10ec3e710&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cda6b10&gt;
+same_key = False
+
+    @pytest.mark.parametrize('same_key', [False, True])
+    def test_concurrent_gate_requests_commit_only_once(offline, monkeypatch, same_key):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original, barrier = service.idempotent, threading.Barrier(2)
+        def synchronized(scope, key, body, action):
+            barrier.wait(timeout=5)
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', synchronized)
+        def decide(number):
+            body = {'decision': 'pass' if same_key or number == 0 else 'reject', 'reason': 'concurrent'}
+            try:
+                return 200, service.pi_contract_review.gate(run_id, body, 'same' if same_key else str(number))
+            except Problem as exc:
+                return exc.status, exc.code
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(decide, [0, 1]))
+&gt;       assert sorted(r[0] for r in results) == ([200, 200] if same_key else [200, 409])
+E       assert [200, 200] == [200, 409]
+E
+E         At index 1 diff: 200 != 409
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:433: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_concurrent_gate_requests_commit_only_once[case_sha256=3cbc87c7681f34db4617feaa2c8801931bc5e42d8d0f560e756dd4cd92885f18]" time="0.075" /></testsuite></testsuites>

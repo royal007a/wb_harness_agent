@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.223" timestamp="2026-10-04T07:33:31.467801+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_bad_instances_and_parameter_schemas_are_rejected" time="0.993"><failure message="AssertionError: (3, {'run_id': 'run_29c19fc803d2401c94238d03d899bee0', 'events': [{'data': {'adapter': {'adapter_id': 'pi_contract_rev...ef9f03b2647', 'event_type': 'run.queued', 'event_version': 1, ...}, ...], 'next_seq': 8, 'status': 'waiting_approval'})&#10;assert not True&#10; +  where True = is_valid({'run_id': 'run_29c19fc803d2401c94238d03d899bee0', 'events': [{'data': {'adapter': {'adapter_id': 'pi_contract_review_...cef9f03b2647', 'event_type': 'run.queued', 'event_version': 1, ...}, ...], 'next_seq': 8, 'status': 'waiting_approval'})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...ttp_pi_events', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">offline = &lt;starlette.testclient.TestClient object at 0x10d612900&gt;
+
+    def test_bad_instances_and_parameter_schemas_are_rejected(offline):
+        c = offline
+        run_id, created, _ = waiting(c)
+        values = [created.json(), c.get(BASE).json(), c.get(BASE + '/' + run_id).json(),
+                  c.get(BASE + '/' + run_id + '/events').json(), gate(c, run_id).json()]
+        mutations = [
+            (0, lambda v: v['initial_run'].update(status='succeeded')),
+            (0, lambda v: v['task']['model_policy'].update(allow_fallback=True)),
+            (1, lambda v: v['items'][0].update(selected_engine='engine_mock_analytics')),
+            (1, lambda v: v['items'][0].update(parent_run_id='run_parent')),
+            (2, lambda v: v.update(gate_required=False)),
+            (2, lambda v: v.update(runtime_enabled=True)),
+            (2, lambda v: v.update(external_calls=1)),
+            (2, lambda v: v.update(gate=None)),
+            (2, lambda v: v['gate'].update(decision_options=['pass'])),
+            (3, lambda v: v.update(next_seq=MAX + 1)),
+            (3, lambda v: v.update(next_seq=-1)),
+            (3, lambda v: v.update(events=[v['events'][0]] * 501)),
+            (4, lambda v: v.update(exit_reason='GATE_REJECTED')),
+            (4, lambda v: v.update(status='waiting_approval')),
+        ]
+        for index, mutate in mutations:
+            for check in validators(c, index):
+                check.validate(values[index])
+                bad = copy.deepcopy(values[index])
+                mutate(bad)
+&gt;               assert not check.is_valid(bad), (index, bad)
+E               AssertionError: (3, {'run_id': 'run_29c19fc803d2401c94238d03d899bee0', 'events': [{'data': {'adapter': {'adapter_id': 'pi_contract_rev...ef9f03b2647', 'event_type': 'run.queued', 'event_version': 1, ...}, ...], 'next_seq': 8, 'status': 'waiting_approval'})
+E               assert not True
+E                +  where True = is_valid({'run_id': 'run_29c19fc803d2401c94238d03d899bee0', 'events': [{'data': {'adapter': {'adapter_id': 'pi_contract_review_...cef9f03b2647', 'event_type': 'run.queued', 'event_version': 1, ...}, ...], 'next_seq': 8, 'status': 'waiting_approval'})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...ttp_pi_events', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_pi_product_http_contracts.py:405: AssertionError</failure></testcase></testsuite></testsuites>

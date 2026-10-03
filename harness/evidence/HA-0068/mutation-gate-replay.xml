@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.382" timestamp="2026-10-04T07:33:26.510466+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_same_key_replay_is_read_only_after_terminal[case_sha256=d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1]" time="0.123"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;GATE_NOT_OPEN&quot;,&quot;message&quot;:&quot;Closed&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_5affeeec570a4e09973be1d2b3b2a1ea&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10d14e660&gt;
+decision = 'pass'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+&gt;       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Closed","retryable":false,"request_id":"req_5affeeec570a4e09973be1d2b3b2a1ea"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:89: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_gate_same_key_replay_is_read_only_after_terminal[case_sha256=084e990a49ba65e622926853785e0ed05c63fc7fbf798a26e8242b5ee3d7ce9f]" time="0.046"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;GATE_NOT_OPEN&quot;,&quot;message&quot;:&quot;Closed&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_3f0576fab8a340f7b60264527ca0f03b&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">offline = &lt;starlette.testclient.TestClient object at 0x10ec14cd0&gt;
+decision = 'reject'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+&gt;       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Closed","retryable":false,"request_id":"req_3f0576fab8a340f7b60264527ca0f03b"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/test_pi_product_http_contracts.py:89: AssertionError</failure></testcase></testsuite></testsuites>

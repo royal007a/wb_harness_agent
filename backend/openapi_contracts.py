@@ -91,6 +91,32 @@ def bind_memory_research_reads(document):
             operation['responses']['422'] = envelope
 
 
+def bind_pi_product_responses(document):
+    """Offline Product Runs, not the separate no-Run PDF pipeline."""
+    prefix = '/api/local/pi-contract-review'
+    for suffix, method, status, response, request in (
+        ('', 'post', '202', 'local_http_pi_created', 'request'),
+        ('', 'get', '200', 'local_http_pi_list', None),
+        ('/{run_id}', 'get', '200', 'local_http_pi_detail', None),
+        ('/{run_id}/events', 'get', '200', 'local_http_pi_events', None),
+        ('/{run_id}:gate', 'post', '200', 'local_http_pi_gate_result', 'gate_decision'),
+    ):
+        operation = document['paths'][prefix + suffix][method]
+        operation['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/' + response}}}
+        envelope = {'description': 'Current local error envelope.', 'content': {
+            'application/json': {'schema': {'$ref': '#/components/schemas/local_http_error'}}}}
+        operation['responses']['default'] = envelope
+        if '422' in operation['responses']:
+            operation['responses']['422'] = envelope
+        if request:
+            operation['requestBody'] = {'required': True, 'content': {
+                'application/json': {'schema': {'$ref': '#/components/schemas/pi_review_' + request}}}}
+            operation.setdefault('parameters', []).append({
+                'in': 'header', 'name': 'Idempotency-Key', 'required': True,
+                'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
+
+
 def bind_pi_pipeline_responses(document):
     """Offline pipeline data, including one JSON envelope per SSE data frame."""
     prefix = '/api/local/pi-contract-pipeline/'

@@ -1,6 +1,6 @@
 # ADR-0067：Pi 离线管线的公开合同与流边界
 
-状态：实现及离线验证完成，待固定提交独立复审与双部署；基线 5429c62，HA-0067。
+状态：868f4b3已获独立Approved，Low/Info见Evidence/review.md；待双部署。基线5429c62。
 
 现有 Pi 课程离线管线已有输出 Schema，但动态 OpenAPI 的五个成功响应为空，
 review-stream 甚至声明成 JSON；静态流 data 只是任意对象，无法核验阶段数据。

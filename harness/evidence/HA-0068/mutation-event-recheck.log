@@ -1,0 +1,40 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+_______________ test_cancel_wins_before_result_publication[True] _______________
+
+offline = <starlette.testclient.TestClient object at 0x10acc4a50>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1089d63f0>
+late_emit = True
+
+    @pytest.mark.parametrize('late_emit', [False, True])
+    def test_cancel_wins_before_result_publication(offline, monkeypatch, late_emit):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        at_cancel = []
+        def delayed(request, emit, check):
+            service.pi_contract_review.cancel(run_id)
+            at_cancel.append(snapshot(c))
+            if late_emit:
+                emit('run.result.proposed', {'late': True})
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+>       assert snapshot(c) == at_cancel[0], 'cancelled Run must not receive late events/artifacts/state'
+E       AssertionError: cancelled Run must not receive late events/artifacts/state
+E       assert (18, {'resour...al"}')], ...}) == (16, {'resour...al"}')], ...})
+E
+E         At index 0 diff: 18 != 16
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:152: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_cancel_wins_before_result_publication[True]
+1 failed, 1 passed, 36 deselected, 1 warning in 0.42s

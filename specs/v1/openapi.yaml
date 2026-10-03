@@ -2303,8 +2303,12 @@ paths:
     get:
       operationId: listOfflinePiContractReviews
       responses:
-        '200': {description: Offline Pi Product Runs and their current Gate states.}
-        default: {$ref: '#/components/responses/Error'}
+        '200':
+          description: Offline Pi root Product Runs.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_pi_list'}
+        default: {$ref: '#/components/responses/LocalProductError'}
     post:
       operationId: createOfflinePiContractReview
       description: Creates a Faux-only Pi Product Run for a registered Public PDF. The Run stops at a human Gate.
@@ -2316,8 +2320,12 @@ paths:
           application/json:
             schema: {$ref: './pi-contract-review-runtime.schema.json#/$defs/request'}
       responses:
-        '202': {description: Queued Pi Product Run.}
-        default: {$ref: '#/components/responses/Error'}
+        '202':
+          description: Immutable Task and queued Pi Product Run receipt.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_pi_created'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/pi-contract-review/{runId}:
     servers: [{url: /api}]
     get:
@@ -2328,8 +2336,12 @@ paths:
           required: true
           schema: {type: string}
       responses:
-        '200': {description: Pi Run, Risk Artifact, Evidence and Handoff/Gate status.}
-        default: {$ref: '#/components/responses/Error'}
+        '200':
+          description: Pi Run, Task, Artifact metadata and latest Handoff/Gate status.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_pi_detail'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/pi-contract-review/{runId}/events:
     servers: [{url: /api}]
     get:
@@ -2342,10 +2354,14 @@ paths:
         - name: after_seq
           in: query
           required: false
-          schema: {type: integer, minimum: 0, default: 0}
+          schema: {type: integer, minimum: 0, maximum: 9223372036854775807, default: 0}
       responses:
-        '200': {description: Append-only Pi event audit stream for the Run.}
-        default: {$ref: '#/components/responses/Error'}
+        '200':
+          description: JSON event page (at most 500); next_seq is the last returned sequence or after_seq for an empty page.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_pi_events'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/pi-contract-review/{runId}:gate:
     servers: [{url: /api}]
     post:
@@ -2362,8 +2378,12 @@ paths:
           application/json:
             schema: {$ref: './pi-contract-review-runtime.schema.json#/$defs/gate_decision'}
       responses:
-        '200': {description: Gate decision and resulting terminal Run state.}
-        default: {$ref: '#/components/responses/Error'}
+        '200':
+          description: Terminal Run receipt; same key/body replays without writes, not a new execution permit.
+          content:
+            application/json:
+              schema: {$ref: './core-contracts.schema.json#/$defs/local_http_pi_gate_result'}
+        default: {$ref: '#/components/responses/LocalProductError'}
   /local/pi-contract-pipeline/preview:
     servers: [{url: /api}]
     post:

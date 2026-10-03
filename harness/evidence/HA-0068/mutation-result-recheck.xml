@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="0.705" timestamp="2026-10-04T07:33:23.563349+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_cancel_wins_before_result_publication[case_sha256=60a33e6cf5151f2d52eddae9685cfa270426aa89d8dbc7dfb854606f1d1a40fe]" time="0.225"><failure message="AssertionError: cancelled Run must not receive late events/artifacts/state&#10;assert (28, {'resour...), ...], ...}) == (16, {'resour...al&quot;}')], ...})&#10;  &#10;  At index 0 diff: 28 != 16&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10da26510&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d7342b0&gt;
+late_emit = False
+
+    @pytest.mark.parametrize('late_emit', [False, True])
+    def test_cancel_wins_before_result_publication(offline, monkeypatch, late_emit):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        at_cancel = []
+        def delayed(request, emit, check):
+            service.pi_contract_review.cancel(run_id)
+            at_cancel.append(snapshot(c))
+            if late_emit:
+                emit('run.result.proposed', {'late': True})
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+&gt;       assert snapshot(c) == at_cancel[0], 'cancelled Run must not receive late events/artifacts/state'
+E       AssertionError: cancelled Run must not receive late events/artifacts/state
+E       assert (28, {'resour...), ...], ...}) == (16, {'resour...al"}')], ...})
+E
+E         At index 0 diff: 28 != 16
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:152: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_cancel_wins_before_result_publication[case_sha256=3cbc87c7681f34db4617feaa2c8801931bc5e42d8d0f560e756dd4cd92885f18]" time="0.042" /><testcase classname="tests.test_pi_product_http_contracts" name="test_deadline_is_rechecked_before_publishing" time="0.042"><failure message="AssertionError: assert ('waiting_approval' == 'failed'&#10;  &#10;  - failed&#10;  + waiting_approval)">offline = &lt;starlette.testclient.TestClient object at 0x10f742d50&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10e77c5f0&gt;
+
+    def test_deadline_is_rechecked_before_publishing(offline, monkeypatch):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        def delayed(request, emit, check):
+            with service.store.transaction() as db:
+                run = service.store.get('runs', run_id)
+                run['created_at'] = '2000-01-01T00:00:00Z'
+                db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(run), run_id))
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+        detail = c.get(BASE + '/' + run_id).json()
+&gt;       assert detail['run']['status'] == 'failed' and detail['run']['exit_reason'] == 'TIMEOUT'
+E       AssertionError: assert ('waiting_approval' == 'failed'
+E
+E         - failed
+E         + waiting_approval)
+
+tests/test_pi_product_http_contracts.py:192: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,31 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_detail_finds_gate_after_first_five_hundred_events ____________
+
+offline = <starlette.testclient.TestClient object at 0x10d462cf0>
+
+    def test_detail_finds_gate_after_first_five_hundred_events(offline):
+        c = offline
+        run_id, _, _ = waiting(c)
+        store = c.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', run_id)
+            for _ in range(510):
+                store.event(db, run, 'pi.synthetic', {})
+        assert gate(c, run_id).status_code == 200
+        before = snapshot(c)
+        detail = c.get(BASE + '/' + run_id).json()
+>       assert detail['gate']['decision'] == 'pass'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision'
+
+tests/test_pi_product_http_contracts.py:132: KeyError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_detail_finds_gate_after_first_five_hundred_events
+1 failed, 37 deselected, 1 warning in 0.37s

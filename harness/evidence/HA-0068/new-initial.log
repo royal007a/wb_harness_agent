@@ -1,0 +1,211 @@
+..............FFF...............                                         [100%]
+=================================== FAILURES ===================================
+___ test_lifecycle_instances_artifacts_and_replays_match_three_schemas[pass] ___
+
+offline = <starlette.testclient.TestClient object at 0x10adde360>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10afdd9c0>
+decision = 'pass'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject', 'cancel'])
+    def test_lifecycle_instances_artifacts_and_replays_match_three_schemas(offline, monkeypatch, decision):
+        c = offline
+        service = c.app.state.service
+        assert validated(c, 1, c.get(BASE)) == {'items': []}
+        response, body = create(c)
+        created = validated(c, 0, response)
+        run_id = created['initial_run']['id']
+        path = BASE + '/' + run_id
+        queued = validated(c, 2, c.get(path))
+        assert queued['gate'] is None and queued['artifacts'] == [] and queued['gate_required'] is False
+        initial = validated(c, 3, c.get(path + '/events'))
+        assert len(initial['events']) == 1 and initial['events'][0]['event_type'] == 'run.queued'
+        seen = []
+        adapter = service.pi_contract_review.adapter
+        original = adapter.start_run
+        def running(request, emit, check):
+            current = c.get(path)
+            assert validated(c, 2, current)['run']['status'] == 'running'
+            seen.append(current.json())
+            return original(request, emit, check)
+        monkeypatch.setattr(adapter, 'start_run', running)
+        service.execute(run_id)
+        pending = validated(c, 2, c.get(path))
+        assert seen and pending['run']['status'] == 'waiting_approval' and pending['gate_required'] is True
+        if decision == 'cancel':
+            response = c.post('/api/v1/runs/' + run_id + ':cancel')
+            assert response.status_code == 200 and response.json()['status'] == 'cancelled'
+        else:
+            response = gate(c, run_id, decision)
+            terminal = validated(c, 4, response)
+            assert terminal['status'] == ('succeeded' if decision == 'pass' else 'failed')
+            assert terminal['exit_reason'] == ('GATE_PASSED' if decision == 'pass' else 'GATE_REJECTED')
+        final = validated(c, 2, c.get(path))
+        assert final['gate_required'] is False
+        assert final['gate'] == pending['gate'] if decision == 'cancel' else final['gate']['decision'] == decision
+        listed = validated(c, 1, c.get(BASE))
+        assert listed['items'] == [final['run']]
+        page = validated(c, 3, c.get(path + '/events'))
+        assert page['events'][-1]['event_type'] == 'run.' + final['run']['status']
+        assert page['next_seq'] == final['run']['latest_sequence']
+        assert len(final['artifacts']) == (2 if decision == 'cancel' else 3)
+        for artifact in final['artifacts']:
+            downloaded = c.get('/api/v1/artifacts/' + artifact['id'] + '/content')
+            assert downloaded.status_code == 200
+            assert hashlib.sha256(downloaded.content).hexdigest() == artifact['sha256']
+            assert len(downloaded.content) == artifact['size_bytes']
+            if artifact['name'] == 'pi-contract-review-gate.json':
+                record = downloaded.json()
+                assert record['decision'] == decision
+                assert record['handoff_artifact_id'] == pending['gate']['handoff_artifact_id']
+                assert record['evidence_artifact_id'] == pending['gate']['artifact_id']
+        before = snapshot(c)
+>       assert c.post(BASE, json=body, headers={'Idempotency-Key': 'create68'}).content == response_bytes(created)
+E       assert b'{"initial_r...version":1}}}' == b'{"task":{"i...53.654970Z"}}'
+E
+E         At index 2 diff: b'i' != b't'
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:297: AssertionError
+__ test_lifecycle_instances_artifacts_and_replays_match_three_schemas[reject] __
+
+offline = <starlette.testclient.TestClient object at 0x10dcc8050>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d2587e0>
+decision = 'reject'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject', 'cancel'])
+    def test_lifecycle_instances_artifacts_and_replays_match_three_schemas(offline, monkeypatch, decision):
+        c = offline
+        service = c.app.state.service
+        assert validated(c, 1, c.get(BASE)) == {'items': []}
+        response, body = create(c)
+        created = validated(c, 0, response)
+        run_id = created['initial_run']['id']
+        path = BASE + '/' + run_id
+        queued = validated(c, 2, c.get(path))
+        assert queued['gate'] is None and queued['artifacts'] == [] and queued['gate_required'] is False
+        initial = validated(c, 3, c.get(path + '/events'))
+        assert len(initial['events']) == 1 and initial['events'][0]['event_type'] == 'run.queued'
+        seen = []
+        adapter = service.pi_contract_review.adapter
+        original = adapter.start_run
+        def running(request, emit, check):
+            current = c.get(path)
+            assert validated(c, 2, current)['run']['status'] == 'running'
+            seen.append(current.json())
+            return original(request, emit, check)
+        monkeypatch.setattr(adapter, 'start_run', running)
+        service.execute(run_id)
+        pending = validated(c, 2, c.get(path))
+        assert seen and pending['run']['status'] == 'waiting_approval' and pending['gate_required'] is True
+        if decision == 'cancel':
+            response = c.post('/api/v1/runs/' + run_id + ':cancel')
+            assert response.status_code == 200 and response.json()['status'] == 'cancelled'
+        else:
+            response = gate(c, run_id, decision)
+            terminal = validated(c, 4, response)
+            assert terminal['status'] == ('succeeded' if decision == 'pass' else 'failed')
+            assert terminal['exit_reason'] == ('GATE_PASSED' if decision == 'pass' else 'GATE_REJECTED')
+        final = validated(c, 2, c.get(path))
+        assert final['gate_required'] is False
+        assert final['gate'] == pending['gate'] if decision == 'cancel' else final['gate']['decision'] == decision
+        listed = validated(c, 1, c.get(BASE))
+        assert listed['items'] == [final['run']]
+        page = validated(c, 3, c.get(path + '/events'))
+        assert page['events'][-1]['event_type'] == 'run.' + final['run']['status']
+        assert page['next_seq'] == final['run']['latest_sequence']
+        assert len(final['artifacts']) == (2 if decision == 'cancel' else 3)
+        for artifact in final['artifacts']:
+            downloaded = c.get('/api/v1/artifacts/' + artifact['id'] + '/content')
+            assert downloaded.status_code == 200
+            assert hashlib.sha256(downloaded.content).hexdigest() == artifact['sha256']
+            assert len(downloaded.content) == artifact['size_bytes']
+            if artifact['name'] == 'pi-contract-review-gate.json':
+                record = downloaded.json()
+                assert record['decision'] == decision
+                assert record['handoff_artifact_id'] == pending['gate']['handoff_artifact_id']
+                assert record['evidence_artifact_id'] == pending['gate']['artifact_id']
+        before = snapshot(c)
+>       assert c.post(BASE, json=body, headers={'Idempotency-Key': 'create68'}).content == response_bytes(created)
+E       assert b'{"initial_r...version":1}}}' == b'{"task":{"i...54.406246Z"}}'
+E
+E         At index 2 diff: b'i' != b't'
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:297: AssertionError
+__ test_lifecycle_instances_artifacts_and_replays_match_three_schemas[cancel] __
+
+offline = <starlette.testclient.TestClient object at 0x10dcca8b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10bb016d0>
+decision = 'cancel'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject', 'cancel'])
+    def test_lifecycle_instances_artifacts_and_replays_match_three_schemas(offline, monkeypatch, decision):
+        c = offline
+        service = c.app.state.service
+        assert validated(c, 1, c.get(BASE)) == {'items': []}
+        response, body = create(c)
+        created = validated(c, 0, response)
+        run_id = created['initial_run']['id']
+        path = BASE + '/' + run_id
+        queued = validated(c, 2, c.get(path))
+        assert queued['gate'] is None and queued['artifacts'] == [] and queued['gate_required'] is False
+        initial = validated(c, 3, c.get(path + '/events'))
+        assert len(initial['events']) == 1 and initial['events'][0]['event_type'] == 'run.queued'
+        seen = []
+        adapter = service.pi_contract_review.adapter
+        original = adapter.start_run
+        def running(request, emit, check):
+            current = c.get(path)
+            assert validated(c, 2, current)['run']['status'] == 'running'
+            seen.append(current.json())
+            return original(request, emit, check)
+        monkeypatch.setattr(adapter, 'start_run', running)
+        service.execute(run_id)
+        pending = validated(c, 2, c.get(path))
+        assert seen and pending['run']['status'] == 'waiting_approval' and pending['gate_required'] is True
+        if decision == 'cancel':
+            response = c.post('/api/v1/runs/' + run_id + ':cancel')
+            assert response.status_code == 200 and response.json()['status'] == 'cancelled'
+        else:
+            response = gate(c, run_id, decision)
+            terminal = validated(c, 4, response)
+            assert terminal['status'] == ('succeeded' if decision == 'pass' else 'failed')
+            assert terminal['exit_reason'] == ('GATE_PASSED' if decision == 'pass' else 'GATE_REJECTED')
+        final = validated(c, 2, c.get(path))
+        assert final['gate_required'] is False
+        assert final['gate'] == pending['gate'] if decision == 'cancel' else final['gate']['decision'] == decision
+        listed = validated(c, 1, c.get(BASE))
+        assert listed['items'] == [final['run']]
+        page = validated(c, 3, c.get(path + '/events'))
+        assert page['events'][-1]['event_type'] == 'run.' + final['run']['status']
+        assert page['next_seq'] == final['run']['latest_sequence']
+        assert len(final['artifacts']) == (2 if decision == 'cancel' else 3)
+        for artifact in final['artifacts']:
+            downloaded = c.get('/api/v1/artifacts/' + artifact['id'] + '/content')
+            assert downloaded.status_code == 200
+            assert hashlib.sha256(downloaded.content).hexdigest() == artifact['sha256']
+            assert len(downloaded.content) == artifact['size_bytes']
+            if artifact['name'] == 'pi-contract-review-gate.json':
+                record = downloaded.json()
+                assert record['decision'] == decision
+                assert record['handoff_artifact_id'] == pending['gate']['handoff_artifact_id']
+                assert record['evidence_artifact_id'] == pending['gate']['artifact_id']
+        before = snapshot(c)
+>       assert c.post(BASE, json=body, headers={'Idempotency-Key': 'create68'}).content == response_bytes(created)
+E       assert b'{"initial_r...version":1}}}' == b'{"task":{"i...55.157053Z"}}'
+E
+E         At index 2 diff: b'i' != b't'
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:297: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_lifecycle_instances_artifacts_and_replays_match_three_schemas[pass]
+FAILED tests/test_pi_product_http_contracts.py::test_lifecycle_instances_artifacts_and_replays_match_three_schemas[reject]
+FAILED tests/test_pi_product_http_contracts.py::test_lifecycle_instances_artifacts_and_replays_match_three_schemas[cancel]
+3 failed, 29 passed, 1 warning in 6.26s

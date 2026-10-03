@@ -19,7 +19,7 @@ from .store import Store, uid, MAX_EVENT_SEQUENCE
 from .readiness import readiness
 from .framework_catalog import catalog as framework_catalog
 from .frontend import frontend_page
-from .openapi_contracts import register_definitions, assert_local_references, bind_chat_responses, bind_product_responses, bind_memory_research_reads, bind_pi_pipeline_responses
+from .openapi_contracts import register_definitions, assert_local_references, bind_chat_responses, bind_product_responses, bind_memory_research_reads, bind_pi_pipeline_responses, bind_pi_product_responses
 
 
 def create_app(db_path=None, run_worker=True):
@@ -660,7 +660,7 @@ def create_app(db_path=None, run_worker=True):
         return app.state.service.pi_contract_review.detail(run_id)
 
     @app.get('/api/local/pi-contract-review/{run_id}/events')
-    def pi_contract_review_events(run_id: str, after_seq: int = 0):
+    def pi_contract_review_events(run_id: str, after_seq: int = Query(0, ge=0, le=MAX_EVENT_SEQUENCE)):
         return app.state.service.pi_contract_review.events(run_id, after_seq)
 
     @app.post('/api/local/pi-contract-review/{run_id}:gate')
@@ -1208,9 +1208,10 @@ def create_app(db_path=None, run_worker=True):
     bind_product_responses(generated)
     bind_memory_research_reads(generated)
     for stem, namespace in [('pi-admission', 'pi_admission_'), ('pi-contract-pipeline', 'pi_pipeline_'),
-                            ('pi-security-guard', 'pi_guard_')]:
+                            ('pi-security-guard', 'pi_guard_'), ('pi-contract-review-runtime', 'pi_review_')]:
         register_definitions(generated, json.loads((ROOT / 'specs/v1' / (stem + '.schema.json')).read_text()), namespace)
     bind_pi_pipeline_responses(generated)
+    bind_pi_product_responses(generated)
     assert_local_references(generated)
     return app
 

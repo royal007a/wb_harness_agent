@@ -1,0 +1,67 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+______________ test_cancel_wins_before_result_publication[False] _______________
+
+offline = <starlette.testclient.TestClient object at 0x10da26510>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d7342b0>
+late_emit = False
+
+    @pytest.mark.parametrize('late_emit', [False, True])
+    def test_cancel_wins_before_result_publication(offline, monkeypatch, late_emit):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        at_cancel = []
+        def delayed(request, emit, check):
+            service.pi_contract_review.cancel(run_id)
+            at_cancel.append(snapshot(c))
+            if late_emit:
+                emit('run.result.proposed', {'late': True})
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+>       assert snapshot(c) == at_cancel[0], 'cancelled Run must not receive late events/artifacts/state'
+E       AssertionError: cancelled Run must not receive late events/artifacts/state
+E       assert (28, {'resour...), ...], ...}) == (16, {'resour...al"}')], ...})
+E
+E         At index 0 diff: 28 != 16
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:152: AssertionError
+_________________ test_deadline_is_rechecked_before_publishing _________________
+
+offline = <starlette.testclient.TestClient object at 0x10f742d50>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e77c5f0>
+
+    def test_deadline_is_rechecked_before_publishing(offline, monkeypatch):
+        c = offline
+        service = c.app.state.service
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        def delayed(request, emit, check):
+            with service.store.transaction() as db:
+                run = service.store.get('runs', run_id)
+                run['created_at'] = '2000-01-01T00:00:00Z'
+                db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(run), run_id))
+            return result(request)
+        monkeypatch.setattr(service.pi_contract_review.adapter, 'start_run', delayed)
+        service.execute(run_id)
+        detail = c.get(BASE + '/' + run_id).json()
+>       assert detail['run']['status'] == 'failed' and detail['run']['exit_reason'] == 'TIMEOUT'
+E       AssertionError: assert ('waiting_approval' == 'failed'
+E
+E         - failed
+E         + waiting_approval)
+
+tests/test_pi_product_http_contracts.py:192: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_cancel_wins_before_result_publication[False]
+FAILED tests/test_pi_product_http_contracts.py::test_deadline_is_rechecked_before_publishing
+2 failed, 1 passed, 35 deselected, 1 warning in 0.75s

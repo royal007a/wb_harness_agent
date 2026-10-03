@@ -273,6 +273,24 @@ class Store:
         with self.lock:
             return [json.loads(r[0]) for r in self.db.execute('SELECT doc FROM artifacts WHERE run_id=? ORDER BY rowid', (run_id,))]
 
+    def latest_event(self, run_id, kinds):
+        """Read newest matching event, independently of the public 500-event page.
+
+        Reverse iteration uses the existing (run_id, sequence) index and keeps
+        one decoded event in memory; no JSON1 extension or new index required.
+        """
+        self.get('runs', run_id)
+        with self.lock:
+            cursor = self.db.execute('SELECT doc FROM events WHERE run_id=? ORDER BY sequence DESC', (run_id,))
+            try:
+                for row in cursor:
+                    event = json.loads(row[0])
+                    if event['event_type'] in kinds:
+                        return event
+            finally:
+                cursor.close()
+        return None
+
     def put_checkpoint(self, db, checkpoint, state):
         """Append an immutable checkpoint and opaque state in the caller transaction."""
         db.execute('INSERT INTO checkpoints VALUES(?,?,?,?)',

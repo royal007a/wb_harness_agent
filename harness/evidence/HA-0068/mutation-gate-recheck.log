@@ -1,0 +1,100 @@
+FFF.                                                                     [100%]
+=================================== FAILURES ===================================
+_______ test_gate_rechecks_state_inside_idempotency_transaction[cancel] ________
+
+offline = <starlette.testclient.TestClient object at 0x10cf42660>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c6fa780>
+winner = 'cancel'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+>       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_pi_product_http_contracts.py:174: AssertionError
+_______ test_gate_rechecks_state_inside_idempotency_transaction[reject] ________
+
+offline = <starlette.testclient.TestClient object at 0x10ea1ccd0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c6fa650>
+winner = 'reject'
+
+    @pytest.mark.parametrize('winner', ['cancel', 'reject'])
+    def test_gate_rechecks_state_inside_idempotency_transaction(offline, monkeypatch, winner):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original = service.idempotent
+        before_loser = []
+        def interleave(scope, key, body, action):
+            if key == 'loser':
+                if winner == 'cancel':
+                    service.pi_contract_review.cancel(run_id)
+                else:
+                    service.pi_contract_review.gate(run_id, {'decision': 'reject', 'reason': 'first'}, 'winner')
+                before_loser.append(snapshot(c))
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', interleave)
+        late = gate(c, run_id, 'pass', 'loser')
+>       assert late.status_code == 409 and late.json()['error']['code'] == 'GATE_NOT_OPEN'
+E       assert (200 == 409)
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_pi_product_http_contracts.py:174: AssertionError
+____________ test_concurrent_gate_requests_commit_only_once[False] _____________
+
+offline = <starlette.testclient.TestClient object at 0x10ec3e710>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cda6b10>
+same_key = False
+
+    @pytest.mark.parametrize('same_key', [False, True])
+    def test_concurrent_gate_requests_commit_only_once(offline, monkeypatch, same_key):
+        c = offline
+        run_id, _, _ = waiting(c)
+        service = c.app.state.service
+        original, barrier = service.idempotent, threading.Barrier(2)
+        def synchronized(scope, key, body, action):
+            barrier.wait(timeout=5)
+            return original(scope, key, body, action)
+        monkeypatch.setattr(service, 'idempotent', synchronized)
+        def decide(number):
+            body = {'decision': 'pass' if same_key or number == 0 else 'reject', 'reason': 'concurrent'}
+            try:
+                return 200, service.pi_contract_review.gate(run_id, body, 'same' if same_key else str(number))
+            except Problem as exc:
+                return exc.status, exc.code
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(decide, [0, 1]))
+>       assert sorted(r[0] for r in results) == ([200, 200] if same_key else [200, 409])
+E       assert [200, 200] == [200, 409]
+E
+E         At index 1 diff: 200 != 409
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:433: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_gate_rechecks_state_inside_idempotency_transaction[cancel]
+FAILED tests/test_pi_product_http_contracts.py::test_gate_rechecks_state_inside_idempotency_transaction[reject]
+FAILED tests/test_pi_product_http_contracts.py::test_concurrent_gate_requests_commit_only_once[False]
+3 failed, 1 passed, 34 deselected, 1 warning in 0.57s

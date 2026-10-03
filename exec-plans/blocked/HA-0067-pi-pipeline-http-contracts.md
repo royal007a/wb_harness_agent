@@ -9,3 +9,6 @@
 检查点：新56/相关156通过，旧54行为反例/2通过，8/8突变被杀死；全量1187
 passed/16 skipped，verify exit0。证据见HA-0067/acceptance.md。等待独立review
 以及本机拓扑明确后的真实双部署，不把离线测试当实际发布。
+
+后续：868f4b3独立Approved，review.md记录96/56口径及2 Low/1 Info；解除review等待，
+不解除双部署前提。

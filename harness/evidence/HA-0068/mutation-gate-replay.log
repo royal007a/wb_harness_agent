@@ -1,0 +1,50 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_________ test_gate_same_key_replay_is_read_only_after_terminal[pass] __________
+
+offline = <starlette.testclient.TestClient object at 0x10d14e660>
+decision = 'pass'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+>       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Closed","retryable":false,"request_id":"req_5affeeec570a4e09973be1d2b3b2a1ea"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_pi_product_http_contracts.py:89: AssertionError
+________ test_gate_same_key_replay_is_read_only_after_terminal[reject] _________
+
+offline = <starlette.testclient.TestClient object at 0x10ec14cd0>
+decision = 'reject'
+
+    @pytest.mark.parametrize('decision', ['pass', 'reject'])
+    def test_gate_same_key_replay_is_read_only_after_terminal(offline, decision):
+        c = offline
+        run_id, _, _ = waiting(c)
+        first = gate(c, run_id, decision)
+        assert first.status_code == 200, first.text
+        before = snapshot(c)
+        replay = gate(c, run_id, decision)
+>       assert replay.status_code == 200, replay.text
+E       AssertionError: {"error":{"code":"GATE_NOT_OPEN","message":"Closed","retryable":false,"request_id":"req_3f0576fab8a340f7b60264527ca0f03b"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_pi_product_http_contracts.py:89: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pi_product_http_contracts.py::test_gate_same_key_replay_is_read_only_after_terminal[pass]
+FAILED tests/test_pi_product_http_contracts.py::test_gate_same_key_replay_is_read_only_after_terminal[reject]
+2 failed, 36 deselected, 1 warning in 0.38s

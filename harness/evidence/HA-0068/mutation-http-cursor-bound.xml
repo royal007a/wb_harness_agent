@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="5" time="0.782" timestamp="2026-10-04T07:33:28.862252+08:00" hostname="192.168.31.117"><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464]" time="0.192" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=c5c29af0c2b1ba23907ca40686689919361601e7740335050476b290f2f87ee8]" time="0.078"><failure message="AssertionError: invalid HTTP cursor must not reach Store&#10;assert [(('run_12188...36854775808})] == []&#10;  &#10;  Left contains one more item: (('run_121883f162994986842c0e5dd07a96e8',), {'after': 9223372036854775808})&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10cca0190&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c0b6c40&gt;
+cursor = '9223372036854775808'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+&gt;       assert calls == [], 'invalid HTTP cursor must not reach Store'
+E       AssertionError: invalid HTTP cursor must not reach Store
+E       assert [(('run_12188...36854775808})] == []
+E
+E         Left contains one more item: (('run_121883f162994986842c0e5dd07a96e8',), {'after': 9223372036854775808})
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:364: AssertionError</failure></testcase><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=9f29a130438b81170b92a42650f9a94291ecad60bd47af2a3886e75f7f728725]" time="0.109" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59]" time="0.115" /><testcase classname="tests.test_pi_product_http_contracts" name="test_pi_cursor_http_rejects_before_store[case_sha256=32ea2837f59d1c4e51213a0b18773aff71e74e8cab7c23d10843b5814ae1cf02]" time="0.058"><failure message="AssertionError: invalid HTTP cursor must not reach Store&#10;assert [(('run_f0174...99999999999})] == []&#10;  &#10;  Left contains one more item: (('run_f0174631bbbc41f09608a7a864970206',), {'after': 999999999999999999...9999999999999999999})&#10;  Use -v to get more diff">offline = &lt;starlette.testclient.TestClient object at 0x10ea9c2b0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cb90490&gt;
+cursor = '999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999...9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999'
+
+    @pytest.mark.parametrize('cursor', ['-1', str(MAX + 1), '1.5', 'no', '9' * 400])
+    def test_pi_cursor_http_rejects_before_store(offline, monkeypatch, cursor):
+        c = offline
+        response, _ = create(c)
+        run_id = response.json()['initial_run']['id']
+        calls = []
+        original = c.app.state.service.store.events
+        def observed(*args, **kwargs):
+            calls.append((args, kwargs))
+            return original(*args, **kwargs)
+        monkeypatch.setattr(c.app.state.service.store, 'events', observed)
+        before = snapshot(c)
+        response = c.get(BASE + '/' + run_id + '/events', params={'after_seq': cursor})
+        assert response.status_code == 422
+&gt;       assert calls == [], 'invalid HTTP cursor must not reach Store'
+E       AssertionError: invalid HTTP cursor must not reach Store
+E       assert [(('run_f0174...99999999999})] == []
+E
+E         Left contains one more item: (('run_f0174631bbbc41f09608a7a864970206',), {'after': 999999999999999999...9999999999999999999})
+E         Use -v to get more diff
+
+tests/test_pi_product_http_contracts.py:364: AssertionError</failure></testcase></testsuite></testsuites>

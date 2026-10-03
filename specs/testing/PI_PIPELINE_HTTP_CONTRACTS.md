@@ -30,8 +30,12 @@
    与 :review，当前原始 key 有效范围为 1–120 字符。121 及以上拒绝；不更改
    已持久 key 编码。相同 key 和有效请求重放相同结果且不新增写入；改有效
    请求返回 409。流有两个独立幂等事务，不承诺两份收据原子提交。
+   流收据还与普通preview/review端点共用对应scope；普通key K:preview或K:review
+   可命中/冲突流K的收据。第二步冲突时第一份收据可能已经写入，失败并非全都零写入。
 7. 源、静态、动态三份契约拒绝空对象、缺字段、多字段、错误阶段 data、
    非零调用和损坏枚举；现有错误信封是 local_http_error。
+   runtime的blocker_count与blockers长度等式由行为测试核验，不是Schema算术。
+   OpenAPI的Accept header参数可能被生成器忽略；运行时检查仍由HTTP处理器执行。
 
 ## 测试与证据
 

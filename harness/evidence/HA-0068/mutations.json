@@ -1,0 +1,80 @@
+{
+  "baseline": "868f4b3",
+  "candidate": "working tree; commit fixed after validation",
+  "scope": "Temporary worktree only; no service/Provider; each mutation restored and compared byte-for-byte.",
+  "test_sha256": "a5de199292992c2f51f6856a0e24c87cf007a2dc6bbd93ed0099be278ad2ace2",
+  "mutants": [
+    {
+      "id": "result-recheck",
+      "file": "backend/pi_contract_review.py",
+      "old": "            with self.store.transaction() as db:\n                self.service.check(run_id)\n                current = self.store.get('runs', run_id)\n                artifact = self._publish",
+      "new": "            with self.store.transaction() as db:\n                current = self.store.get('runs', run_id)\n                artifact = self._publish",
+      "select": "test_cancel_wins_before_result_publication or test_deadline_is_rechecked_before_publishing",
+      "exit_code": 1
+    },
+    {
+      "id": "event-recheck",
+      "file": "backend/pi_contract_review.py",
+      "old": "                with self.store.transaction() as db:\n                    self.service.check(run_id)\n                    current = self.store.get('runs', run_id)",
+      "new": "                with self.store.transaction() as db:\n                    current = self.store.get('runs', run_id)",
+      "select": "test_cancel_wins_before_result_publication",
+      "exit_code": 1
+    },
+    {
+      "id": "gate-recheck",
+      "file": "backend/pi_contract_review.py",
+      "old": "            if current['selected_engine'] != ENGINE or current['status'] != 'waiting_approval':\n                raise Problem('GATE_NOT_OPEN', 'Pi Run 当前没有可处理的人工 Gate。', 409)",
+      "new": "            # mutant: current state not rechecked",
+      "select": "test_gate_rechecks_state_inside_idempotency_transaction or test_concurrent_gate_requests_commit_only_once",
+      "exit_code": 1
+    },
+    {
+      "id": "gate-replay",
+      "file": "backend/pi_contract_review.py",
+      "old": "        self._validate('gate_decision', body)\n        def decide(db):",
+      "new": "        self._validate('gate_decision', body)\n        if self.store.get('runs', run_id)['status'] != 'waiting_approval':\n            raise Problem('GATE_NOT_OPEN', 'Closed', 409)\n        def decide(db):",
+      "select": "test_gate_same_key_replay_is_read_only_after_terminal",
+      "exit_code": 1
+    },
+    {
+      "id": "cursor-skip",
+      "file": "backend/pi_contract_review.py",
+      "old": "'next_seq': events[-1]['sequence'] if events else after, 'status': run['status']",
+      "new": "'next_seq': run['latest_sequence'], 'status': run['status']",
+      "select": "test_event_page_cursor_never_skips_or_moves_backwards",
+      "exit_code": 1
+    },
+    {
+      "id": "gate-oldest",
+      "file": "backend/store.py",
+      "old": "cursor = self.db.execute('SELECT doc FROM events WHERE run_id=? ORDER BY sequence DESC', (run_id,))",
+      "new": "cursor = self.db.execute('SELECT doc FROM events WHERE run_id=? ORDER BY sequence ASC', (run_id,))",
+      "select": "test_detail_finds_gate_after_first_five_hundred_events",
+      "exit_code": 1
+    },
+    {
+      "id": "http-cursor-bound",
+      "file": "backend/app.py",
+      "old": "def pi_contract_review_events(run_id: str, after_seq: int = Query(0, ge=0, le=MAX_EVENT_SEQUENCE)):",
+      "new": "def pi_contract_review_events(run_id: str, after_seq: int = Query(0, ge=0)):",
+      "select": "test_pi_cursor_http_rejects_before_store",
+      "exit_code": 1
+    },
+    {
+      "id": "runtime-enabled",
+      "file": "specs/v1/core-contracts.schema.json",
+      "old": "\"mode\": {\"const\": \"pi_contract_review_offline@1\"}, \"runtime_enabled\": {\"const\": false},",
+      "new": "\"mode\": {\"const\": \"pi_contract_review_offline@1\"}, \"runtime_enabled\": {\"type\": \"boolean\"},",
+      "select": "test_bad_instances_and_parameter_schemas_are_rejected",
+      "exit_code": 1
+    },
+    {
+      "id": "page-max",
+      "file": "specs/v1/core-contracts.schema.json",
+      "old": "\"events\": {\"type\": \"array\", \"maxItems\": 500, \"items\": {\"$ref\": \"#/$defs/event\"}},",
+      "new": "\"events\": {\"type\": \"array\", \"maxItems\": 501, \"items\": {\"$ref\": \"#/$defs/event\"}},",
+      "select": "test_bad_instances_and_parameter_schemas_are_rejected",
+      "exit_code": 1
+    }
+  ]
+}

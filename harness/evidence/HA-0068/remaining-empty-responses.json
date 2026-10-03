@@ -1,0 +1,136 @@
+{
+  "api_count": 25,
+  "rows": [
+    {
+      "method": "GET",
+      "path": "/api/v1/engines",
+      "status": "200"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/frameworks",
+      "status": "200"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/readiness",
+      "status": "200"
+    },
+    {
+      "method": "GET",
+      "path": "/api/local/external-skills/runtime",
+      "status": "200"
+    },
+    {
+      "method": "GET",
+      "path": "/api/local/external-skills/packages",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/external-skills/packages",
+      "status": "201"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/memory/banks/{bank_id}/retain",
+      "status": "201"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/memory/sources/{source_id}:retract",
+      "status": "200"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/local/memory/sources/{source_id}",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/team/workspaces/{workspace_id}/agents",
+      "status": "201"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/team/workspaces/{workspace_id}/channels",
+      "status": "201"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/team/tasks/{task_id}:close",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}/observations",
+      "status": "201"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:try",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:confirm",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:cancel",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:link-handoff",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/recovery/cases/{case_id}:complete",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/research",
+      "status": "202"
+    },
+    {
+      "method": "GET",
+      "path": "/api/local/research/{run_id}",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/research-agents",
+      "status": "202"
+    },
+    {
+      "method": "GET",
+      "path": "/api/local/research-agents/{run_id}",
+      "status": "200"
+    },
+    {
+      "method": "GET",
+      "path": "/api/local/research-native/runtime",
+      "status": "200"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local/research-native",
+      "status": "202"
+    },
+    {
+      "method": "GET",
+      "path": "/api/local/research-native/{run_id}",
+      "status": "200"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "status": "200"
+    }
+  ],
+  "not_evidence": "Only exact empty success JSON schema; excludes missing content and nonempty but weak contracts."
+}
