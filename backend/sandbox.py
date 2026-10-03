@@ -4,6 +4,7 @@ import os
 import re
 import selectors
 import shutil
+import sys
 import subprocess
 import tempfile
 import time
@@ -17,10 +18,22 @@ IMAGE_TAG = 'harnessagent-sandbox:0.1'
 PROFILE_VERSION = 'colima-stdlib-v1'
 
 
+def sandbox_backend():
+    backend = os.environ.get('HARNESS_SANDBOX_BACKEND', 'colima')
+    if backend not in {'colima', 'linux-docker'}:
+        raise Problem('SANDBOX_BACKEND_INVALID', '不支持的沙箱 backend。', 503)
+    if backend == 'linux-docker' and sys.platform != 'linux':
+        raise Problem('SANDBOX_BACKEND_INVALID', 'linux-docker 仅用于显式批准的 Linux 本机。', 503)
+    return backend
+
+
 def docker_command():
+    backend = sandbox_backend()
     executable = shutil.which('docker') or '/opt/homebrew/bin/docker'
     if not Path(executable).is_file():
         raise Problem('SANDBOX_UNAVAILABLE', 'Docker CLI 不可用。')
+    if backend == 'linux-docker':
+        return [executable, '--host', 'unix:///var/run/docker.sock']
     return [executable, '--context', 'colima']
 
 

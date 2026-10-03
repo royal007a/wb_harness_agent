@@ -2,6 +2,18 @@
 
 状态：ADR-0025 Proposed 的本地受限实现。此能力是受限 JSON 转换执行器，不是 Claude SDK、MCP、模型工具、通用插件市场或多租户生产沙箱。
 
+HA-0052 / [ADR-0052](../decisions/ADR-0052-external-skill-dual-deployment.md)
+补充双环境显式部署：默认代码开关仍关闭；批准的本地 plist 与远端 systemd
+drop-in 开启外部 Skill。`HARNESS_SANDBOX_BACKEND=colima` 使用本机 VM，
+`linux-docker` 显式使用 Linux 的 `/var/run/docker.sock`，禁止自动回退。
+后者共享宿主内核，不具备 Colima 的额外 VM 边界。
+
+公网只开放 `GET /api/local/external-skills/runtime` 状态（沿用现有 Basic
+认证），包列表/上传/执行只允许直接 loopback 或 SSH 隧道；nginx 与应用层
+都拒绝代理访问这些接口。没有新增 HTTP 身份系统或公网任意代码执行能力。
+远端使用方式：`ssh -N -L 18765:127.0.0.1:8765 root@118.196.123.132`，然后
+对 `http://127.0.0.1:18765/api/local/external-skills/` 发本机 API 请求。
+
 ## 可以做什么
 
 本机可信管理员可上传一个不超过 128 KiB 的 ZIP，再由工作台在一次性 Colima Docker 容器内运行其固定 `entry.py`。包必须只包含两个根文件：
@@ -30,6 +42,10 @@ manifest 固定为 `python-stdlib@3.12`、`entry.py`、`transform_json`；不接
 - CPU 0.25、内存/交换 128 MiB、24 个进程、64 文件描述符、1 MiB 文件输出、8 MiB 临时盘和最长 10 秒；
 - runner 只能加载 `/skill/entry.py`，只读取 JSON object，stdout 只能输出一个不超过 24 KiB 的 JSON object；第三方日志和堆栈不会回传 API；
 - 每次执行新建并强制删除容器，审计保存 package/input/output 摘要、镜像/profile 摘要、时长和清理状态。
+- Docker 日志驱动关闭，宿主流式捕获 stdout 上限 32 KiB（runner 合法 JSON
+  上限仍 24 KiB），stderr 不回传；每个服务最多一个执行，忙时 429，无无界队列。
+- runtime 返回 `backend`、`access_scope` 和 `max_concurrency`；执行审计增加
+  `backend`。SHA 固定到实际架构镜像，不复用其他机器的探针作验证证据。
 
 开发或镜像变更后，使用以下命令构建并运行真实 Colima 探针：
 
@@ -43,3 +59,7 @@ HARNESS_DOCKER_TESTS=1 .venv/bin/python -m pytest -q tests/test_external_skills.
 `HARNESS_EXTERNAL_SKILLS=enabled` 默认**未设置**。因此执行接口先返回 `EXTERNAL_SKILL_RUNTIME_DISABLED`，不会读取登记包或启动 Docker。注册包也不会执行包内代码。
 
 该运行时不允许 URL、Git、pip/npm、shell、任意宿主路径、网络、凭证、模型、MCP、真实资料或 Product Task/Run 自动接入。它的独立 audit 记录不假装为 Product Event；将来接入一个 Product Run 时，必须先定义 Task/Run/权限/预算/审批关联与新的 ADR。容器隔离是本机单用户 L3 探针，不等价于多租户、内核级或生产供应链认证。
+
+正常退出/异常/超时清理已测试；宿主强杀或断电后没有持久孤儿容器回收器，
+运维须核对标签 `local.harnessagent.external-skill=true` 的遗留实例，不能将
+这种场景当成已经实现的自动恢复。回滚先关闭开关，恢复部署备份，不删业务 DB。

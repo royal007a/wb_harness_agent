@@ -16,6 +16,10 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 
 外部 Skill 隔离运行时：`GET http://127.0.0.1:8765/api/local/external-skills/runtime` 显示严格 ZIP Skill 的隔离 profile 与门禁。包仅可登记为 `manifest.json + entry.py`，执行时使用一次性禁网非 root Colima 容器；默认 `HARNESS_EXTERNAL_SKILLS` 未启用，执行在读取包/启动 Docker 前拒绝。它不是 Claude/MCP/模型工具或通用插件市场，详见 [外部 Skill 隔离运行时](docs/harness/EXTERNAL_SKILL_RUNTIME.md)。
 
+HA-0052 增加显式 Linux Docker backend 和本机/132 的批准部署配置。开启后仍
+只允许直接 loopback/SSH 隧道上传和执行，公网仅查看 runtime 状态。实际是否
+启用以该接口为准；这不启用真实模型，也不是多租户生产沙箱。
+
 Memory Plane M1 + M2-A + M3-A + M3-B：`GET http://127.0.0.1:8765/api/local/memory/runtime` 显示本机来源优先记忆边界。M1 支持 Bank、显式 Source/Fact Retain、supersede/retract/delete 与无原始正文的 keyword/temporal Evidence Bundle；所有 Source-backed Fact 读路径都会以 `as_of` 同时过滤 Source/Facts 的发生时间与 Fact 有效期。M2-A 增加本地 FTS5 Fact Capsule、临时最近轮和目录到详情的二阶段回读；M3-A 只允许以 active Fact 支撑的显式 Entity/Relation 进行至多两跳的时间 Evidence Path；M3-B 以 canonical name/alias 的 casefold 精确匹配，返回 resolved/ambiguous/not_found 候选并要求调用方显式交接 `entity_id`。M2-B 的 semantic/vector/RRF 另有版本化 Admission Gate，当前固定 `not_admitted`、runtime disabled、模型/外部调用均为 0。它不自动保存聊天、不调用模型，也没有语义向量、自动实体消歧、自然语言 GraphQA、Reflect 或 Product Task/Run 集成。详见 [Memory Entity Catalog M3-B](docs/harness/MEMORY_ENTITY_CATALOG_M3B.md)。
 
 ```sh

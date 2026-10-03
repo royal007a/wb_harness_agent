@@ -1,6 +1,7 @@
 """HTTP transport for the trusted local-user workbench."""
 import asyncio
 import fcntl
+import ipaddress
 import json
 import os
 from contextlib import asynccontextmanager
@@ -10,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
 
 from .analysis import MAX_BYTES, Problem
 from .service import BUNDLE, CONTROL, ROOT, Service, local_task
@@ -56,6 +58,17 @@ def create_app(db_path=None, run_worker=True):
         host = request.headers.get('host', '')
         if host.split(':')[0] not in {'localhost', '127.0.0.1'}:
             return error('FORBIDDEN', '仅支持本地访问。', 403, request_id)
+        skill_path = request.url.path.startswith('/api/local/external-skills')
+        status_read = request.url.path == '/api/local/external-skills/runtime' and request.method == 'GET'
+        if skill_path and not status_read:
+            try:
+                local_peer = request.client is not None and ipaddress.ip_address(request.client.host).is_loopback
+            except ValueError:
+                local_peer = False
+            proxied = any(name in request.headers for name in (
+                'forwarded', 'x-forwarded-for', 'x-real-ip', 'x-forwarded-prefix', 'x-forwarded-proto'))
+            if not local_peer or proxied:
+                return error('EXTERNAL_SKILL_LOCAL_ONLY', '包与执行接口仅允许本机或 SSH 隧道直连。', 403, request_id)
         origin = request.headers.get('origin')
         if origin and origin != 'http://' + host:
             return error('FORBIDDEN', '不允许跨站访问本地工作台。', 403, request_id)
@@ -154,7 +167,7 @@ def create_app(db_path=None, run_worker=True):
 
     @app.post('/api/local/external-skills/packages/{package_id}:execute')
     async def external_skill_execute(package_id: str, request: Request):
-        return app.state.service.external_skills.execute(
+        return await run_in_threadpool(app.state.service.external_skills.execute,
             package_id, await json_body(request), request.headers.get('idempotency-key')
         )
 

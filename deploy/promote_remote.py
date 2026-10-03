@@ -50,7 +50,11 @@ def main():
     stage = Path(sys.argv[1]).resolve()
     commit = sys.argv[2]
     assert re.fullmatch('[a-f0-9]{40}', commit)
-    assert stage.parent == Path('/opt/harnessagent-releases') and stage.name == 'ha0051-' + commit[:12]
+    work_item = sys.argv[3] if len(sys.argv) > 3 else 'ha0051'
+    assert work_item in {'ha0051', 'ha0052'}
+    activate_skills = work_item == 'ha0052'
+    override = Path('/etc/systemd/system/harnessagent.service.d/external-skills.conf')
+    assert stage.parent == Path('/opt/harnessagent-releases') and stage.name == work_item + '-' + commit[:12]
     assert run('git', '-C', str(stage), 'rev-parse', 'HEAD') == commit
     assert not run('git', '-C', str(stage), 'status', '--porcelain')
     pid = int(run('systemctl', 'show', 'harnessagent', '--property=MainPID', '--value'))
@@ -72,11 +76,22 @@ def main():
     subprocess.run([str(preflight), '-m', 'pytest', '-q'], cwd=stage, check=True)
     subprocess.run([str(PYTHON), '-m', 'pytest', '-q', 'tests/test_frontend_paths.py',
                     'tests/test_workbench.py'], cwd=stage, check=True)
+    if activate_skills:
+        subprocess.run(['docker', '--host', 'unix:///var/run/docker.sock', 'build',
+                        '-f', 'sandbox/external-skill.Dockerfile', '-t', 'harnessagent-external-skill:0.1',
+                        'sandbox'], cwd=stage, check=True, timeout=240)
+        subprocess.run([str(PYTHON), '-m', 'pytest', '-q', 'tests/test_external_skills.py'], cwd=stage,
+                       env={**os.environ, 'HARNESS_SANDBOX_BACKEND': 'linux-docker',
+                            'HARNESS_EXTERNAL_SKILLS': 'disabled', 'HARNESS_DOCKER_TESTS': '1'},
+                       check=True, timeout=180)
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
-    backup = Path('/var/backups/harnessagent') / ('ha0051-' + stamp)
+    backup = Path('/var/backups/harnessagent') / (work_item + '-' + stamp)
     backup.mkdir(parents=True, mode=0o700)
     shutil.copy2(SNIPPET, backup / 'nginx-snippet.conf')
     shutil.copy2(SITE, backup / 'nginx-site.conf')
+    had_override = override.exists()
+    if had_override:
+        shutil.copy2(override, backup / 'external-skills.conf')
     subprocess.run(['tar', *['--exclude=./' + p.rstrip('/') for p in PRESERVE],
                     '-czf', str(backup / 'application.tar.gz'), '-C', str(LIVE), '.'], check=True)
     stopped = False
@@ -91,6 +106,10 @@ def main():
         (backup / 'harness.db').chmod(0o600)
         promoted = True  # also recover if rsync fails partway through
         sync(stage)
+        if activate_skills:
+            override.parent.mkdir(exist_ok=True)
+            shutil.copyfile(LIVE / 'deploy/external-skills.service.conf', override)
+            run('systemctl', 'daemon-reload')
         shutil.copyfile(LIVE / 'deploy/nginx-harnessagent.conf', SNIPPET)
         site = SITE.read_text()
         http_block, remainder = site.split('\nserver {', 1)
@@ -104,6 +123,11 @@ def main():
         run('systemctl', 'start', 'harnessagent')
         health = healthy()
         run('systemctl', 'reload', 'nginx')
+        if activate_skills:
+            with urllib.request.urlopen('http://127.0.0.1:8765/api/local/external-skills/runtime', timeout=10) as response:
+                skill_status = json.load(response)
+            assert skill_status['runtime_enabled'] is True and not skill_status['blockers']
+            assert skill_status['backend'] == 'linux-docker'
     except Exception:
         if promoted:
             rollback = backup / 'rollback'
@@ -112,6 +136,12 @@ def main():
             sync(rollback)
             shutil.copy2(backup / 'nginx-snippet.conf', SNIPPET)
             shutil.copy2(backup / 'nginx-site.conf', SITE)
+            if activate_skills:
+                if had_override:
+                    shutil.copy2(backup / 'external-skills.conf', override)
+                elif override.exists():
+                    override.unlink()
+                run('systemctl', 'daemon-reload')
             run('nginx', '-t')
             run('systemctl', 'reload', 'nginx')
         if stopped:
@@ -121,6 +151,8 @@ def main():
     result = dict(commit=commit, previous_commit=previous, deployed_at=stamp, database=str(db_path),
                   backup=str(backup), health=health, runtime_environment_preserved=True,
                   credentials_unchanged=True, public_url='http://118.196.123.132/harness/')
+    if activate_skills:
+        result['external_skills'] = skill_status
     (backup / 'deployment.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, indent=2))
 

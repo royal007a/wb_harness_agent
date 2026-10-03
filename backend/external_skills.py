@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import tempfile
+import threading
 import zipfile
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from jsonschema import Draft202012Validator
 
 from .analysis import Problem, digest
 from .external_skill_sandbox import ExternalSkillSandbox, PROFILE_VERSION, image_id
+from .sandbox import sandbox_backend
 from .store import dumps, now, uid
 
 
@@ -37,6 +39,7 @@ class ExternalSkillRuntime:
         self.store = store
         self._enabled = enabled
         self.sandbox_cls = sandbox_cls
+        self._execution_lock = threading.Lock()
 
     def enabled(self):
         return self._enabled if self._enabled is not None else os.getenv('HARNESS_EXTERNAL_SKILLS') == 'enabled'
@@ -103,6 +106,9 @@ class ExternalSkillRuntime:
         return {
             'mode': 'external-skill-runtime@1',
             'runtime_enabled': self.enabled(),
+            'backend': sandbox_backend(),
+            'access_scope': 'direct_loopback_or_ssh_tunnel',
+            'max_concurrency': 1,
             'isolation_profile': PROFILE_VERSION,
             'image_id': image,
             'package_sources': ['local_zip_upload_only'],
@@ -175,6 +181,14 @@ class ExternalSkillRuntime:
         return directory
 
     def execute(self, package_id, body, key):
+        if not self._execution_lock.acquire(blocking=False):
+            raise Problem('EXTERNAL_SKILL_BUSY', '已有一个外部 Skill 正在执行，请稍后重试。', 429)
+        try:
+            return self._execute(package_id, body, key)
+        finally:
+            self._execution_lock.release()
+
+    def _execute(self, package_id, body, key):
         validate_contract('execution_request', body)
         self._idempotency_key(key)
         request_digest = digest(dumps({'package_id': package_id, 'body': body}).encode())

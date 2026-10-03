@@ -35,9 +35,10 @@ def package(entry="def main(payload):\n    return {'echo': payload}\n", manifest
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
+    monkeypatch.delenv('HARNESS_EXTERNAL_SKILLS', raising=False)
     monkeypatch.setattr(external_skills, 'PACKAGE_ROOT', tmp_path / 'packages')
     app = create_app(tmp_path / 'external-skills.db', run_worker=False)
-    with TestClient(app, base_url='http://127.0.0.1') as value:
+    with TestClient(app, base_url='http://127.0.0.1', client=('127.0.0.1', 45001)) as value:
         yield value
 
 
@@ -108,7 +109,6 @@ def test_execution_rechecks_digest_and_persists_sanitized_audit(client, monkeypa
     assert len(calls) == 1
     stored = client.get('/api/local/external-skills/packages').json()['items'][0]
     assert stored['execution_count'] == 1
-
     entry = external_skills.PACKAGE_ROOT / created['content_sha256'] / 'entry.py'
     entry.chmod(0o644)
     entry.write_text("def main(payload): return {'tampered': True}\n")
@@ -116,6 +116,95 @@ def test_execution_rechecks_digest_and_persists_sanitized_audit(client, monkeypa
     assert tampered.status_code == 409
     assert tampered.json()['error']['code'] == 'EXTERNAL_SKILL_PACKAGE_TAMPERED'
     assert len(calls) == 1
+
+
+@pytest.mark.parametrize('header', ['forwarded', 'x-forwarded-for', 'x-real-ip', 'x-forwarded-prefix', 'x-forwarded-proto'])
+def test_proxy_cannot_register_or_execute_even_with_local_host(client, header):
+    headers = {header: '/harness' if header == 'x-forwarded-prefix' else '127.0.0.1'}
+    for path in ['/api/local/external-skills/packages', '/api/local/external-skills/packages/extpkg_x:execute']:
+        response = client.post(path, headers=headers)
+        assert response.status_code == 403
+        assert response.json()['error']['code'] == 'EXTERNAL_SKILL_LOCAL_ONLY'
+    assert client.get('/api/local/external-skills/runtime', headers=headers).status_code == 200
+
+
+def test_non_loopback_peer_cannot_spoof_host(tmp_path):
+    with TestClient(create_app(tmp_path / 'untrusted.db', run_worker=False),
+                    base_url='http://127.0.0.1', client=('203.0.113.4', 45100)) as remote:
+        assert remote.post('/api/local/external-skills/packages').status_code == 403
+
+
+def test_execution_limit_fails_closed(client):
+    runtime = client.app.state.service.external_skills
+    runtime._execution_lock.acquire()
+    try:
+        response = client.post('/api/local/external-skills/packages/extpkg_x:execute', json={'input': {}},
+                               headers={'Idempotency-Key': 'concurrent'})
+        assert response.status_code == 429
+        assert response.json()['error']['code'] == 'EXTERNAL_SKILL_BUSY'
+    finally:
+        runtime._execution_lock.release()
+
+
+def test_backend_explicit_selection_and_no_fallback(monkeypatch):
+    import sys
+    import backend.sandbox as sandbox
+    monkeypatch.setattr(sandbox.shutil, 'which', lambda name: sys.executable)
+    monkeypatch.delenv('HARNESS_SANDBOX_BACKEND', raising=False)
+    assert sandbox.docker_command()[1:] == ['--context', 'colima']
+    monkeypatch.setenv('HARNESS_SANDBOX_BACKEND', 'linux-docker')
+    monkeypatch.setattr(sandbox.sys, 'platform', 'linux')
+    monkeypatch.setenv('DOCKER_HOST', 'tcp://untrusted.invalid:2375')
+    assert sandbox.docker_command()[1:] == ['--host', 'unix:///var/run/docker.sock']
+    monkeypatch.setenv('HARNESS_SANDBOX_BACKEND', 'automatic')
+    with pytest.raises(Problem) as exc:
+        sandbox.docker_command()
+    assert exc.value.code == 'SANDBOX_BACKEND_INVALID'
+
+
+@pytest.mark.skipif(os.environ.get('HARNESS_DOCKER_TESTS') != '1', reason='explicit real container probe')
+@pytest.mark.parametrize('entry,expected', [
+    ("def main(payload):\n    while True: pass\n", 'EXTERNAL_SKILL_TIMEOUT'),
+    ("def main(payload):\n    import os\n    while True: os.write(1, b'x' * 4096)\n", 'EXTERNAL_SKILL_OUTPUT_LIMIT'),
+    ("def main(payload):\n    open('/inputs/request.json', 'w').write('changed')\n    return {}\n", 'EXTERNAL_SKILL_EXECUTION_FAILED'),
+    ("def main(payload):\n    open('/etc/forbidden', 'w').write('changed')\n    return {}\n", 'EXTERNAL_SKILL_EXECUTION_FAILED'),
+])
+def test_real_failures_cleanup_container_and_inputs(entry, expected):
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from backend.sandbox import docker
+
+    # Colima bind mounts must stay in its shared root; never execute entry on host.
+    root = external_skills.ROOT / '.local'
+    root.mkdir(exist_ok=True)
+    directory = Path(tempfile.mkdtemp(prefix='ha0052-probe-', dir=root))
+    directory.chmod(0o755)
+    (directory / 'entry.py').write_text(entry)
+    (directory / 'entry.py').chmod(0o444)
+    observed = []
+
+    class ObservedSandbox(ExternalSkillSandbox):
+        def _read_result(self, ident):
+            observed.append(ident)
+            config = json.loads(docker(['inspect', ident]).stdout)[0]
+            assert config['HostConfig']['LogConfig']['Type'] == 'none'
+            assert config['HostConfig']['NetworkMode'] == 'none'
+            assert config['HostConfig']['ReadonlyRootfs'] is True
+            assert config['Config']['User'] == '65532:65532'
+            return super()._read_result(ident)
+
+    try:
+        box = ObservedSandbox(directory, {'safe': True}, timeout_seconds=2)
+        with pytest.raises(Problem) as exc:
+            box.execute()
+        assert exc.value.code == expected
+        assert len(observed) == 1
+        assert box.container_id is None and box._input_directory is None
+        remaining = docker(['container', 'ls', '-aq', '--no-trunc', '--filter', 'id=' + observed[0]])
+        assert remaining.returncode == 0 and not remaining.stdout.strip()
+    finally:
+        shutil.rmtree(directory)
 
 
 @pytest.mark.skipif(os.environ.get('HARNESS_DOCKER_TESTS') != '1', reason='opt-in Colima external-Skill isolation probe')
@@ -142,7 +231,7 @@ def test_real_external_skill_container_isolation(client):
         network_denied = False
     return {
         'uid': os.getuid(),
-        'host_visible': os.path.exists('/Users/weberzhao'),
+        'host_visible': any(os.path.exists(p) for p in ['/Users/weberzhao', '/opt/harnessagent', '/root/.ssh']),
         'docker_socket': os.path.exists('/var/run/docker.sock'),
         'inherited_secret': bool(os.getenv('HARNESS_EXTERNAL_SKILL_TEST_SECRET')),
         'network_denied': network_denied,

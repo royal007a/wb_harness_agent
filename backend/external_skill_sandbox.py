@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import selectors
 import shutil
 import subprocess
 import tempfile
@@ -11,7 +12,7 @@ import time
 from pathlib import Path
 
 from .analysis import Problem, digest
-from .sandbox import docker, docker_command
+from .sandbox import docker, docker_command, sandbox_backend
 from .store import uid
 
 
@@ -32,6 +33,7 @@ def image_id():
 def profile_args(skill_dir, input_dir, name, image):
     return [
         'create', '--name', name, '--label', 'local.harnessagent.external-skill=true',
+        '--log-driver', 'none',
         '--network', 'none', '--read-only', '--user', '65532:65532', '--cap-drop', 'ALL',
         '--security-opt', 'no-new-privileges=true', '--cpus', '0.25', '--memory', '128m',
         '--memory-swap', '128m', '--pids-limit', '24', '--ulimit', 'nofile=64:64',
@@ -87,6 +89,42 @@ class ExternalSkillSandbox:
         if cleanup_error:
             raise cleanup_error
 
+    def _read_result(self, ident):
+        # Treat raw fd writes as hostile too: capture_output would accumulate
+        # unbounded bytes before checking the runner's output length.
+        process = subprocess.Popen(docker_command() + ['start', '--attach', ident],
+                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        deadline = time.monotonic() + self.timeout_seconds
+        output = bytearray()
+        try:
+            os.set_blocking(process.stdout.fileno(), False)
+            with selectors.DefaultSelector() as poll:
+                poll.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise Problem('EXTERNAL_SKILL_TIMEOUT', '外部 Skill 超过墙钟时间上限。', 408)
+                    if not poll.select(min(remaining, .1)):
+                        continue
+                    chunk = os.read(process.stdout.fileno(), 4096)
+                    if not chunk:
+                        break
+                    output.extend(chunk)
+                    if len(output) > MAX_PROTOCOL_BYTES:
+                        raise Problem('EXTERNAL_SKILL_OUTPUT_LIMIT', '外部 Skill 输出超过 32 KiB。', 413)
+            try:
+                code = process.wait(timeout=max(.001, deadline - time.monotonic()))
+            except subprocess.TimeoutExpired:
+                raise Problem('EXTERNAL_SKILL_TIMEOUT', '外部 Skill 超过墙钟时间上限。', 408) from None
+            if code:
+                raise Problem('EXTERNAL_SKILL_EXECUTION_FAILED', '外部 Skill 执行失败。', 422)
+            return bytes(output)
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+            process.stdout.close()
+
     def execute(self):
         if not self.skill_dir.is_dir():
             raise Problem('EXTERNAL_SKILL_PACKAGE_TAMPERED', '外部 Skill 受控包目录缺失。', 409)
@@ -106,26 +144,18 @@ class ExternalSkillSandbox:
             if created.returncode or not re.fullmatch(r'[a-f0-9]{64}', ident):
                 raise Problem('EXTERNAL_SKILL_START_FAILED', '隔离外部 Skill 容器创建失败。', 503)
             self.container_id = ident
+            raw_result = self._read_result(ident)
             try:
-                completed = subprocess.run(
-                    docker_command() + ['start', '--attach', ident], capture_output=True,
-                    timeout=self.timeout_seconds, check=False,
-                )
-            except subprocess.TimeoutExpired:
-                raise Problem('EXTERNAL_SKILL_TIMEOUT', '外部 Skill 超过墙钟时间上限。', 408) from None
-            if len(completed.stdout) > MAX_PROTOCOL_BYTES:
-                raise Problem('EXTERNAL_SKILL_OUTPUT_LIMIT', '外部 Skill 输出超过 32 KiB。', 413)
-            if completed.returncode:
-                raise Problem('EXTERNAL_SKILL_EXECUTION_FAILED', '外部 Skill 执行失败。', 422)
-            try:
-                result = json.loads(completed.stdout)
-            except (UnicodeDecodeError, json.JSONDecodeError):
+                result = json.loads(raw_result)
+                json.dumps(result, allow_nan=False)
+            except (UnicodeDecodeError, ValueError):
                 raise Problem('EXTERNAL_SKILL_PROTOCOL_ERROR', '外部 Skill 未返回单个 JSON 结果。', 422) from None
             if not isinstance(result, dict) or set(result) != {'output'} or not isinstance(result['output'], dict):
                 raise Problem('EXTERNAL_SKILL_PROTOCOL_ERROR', '外部 Skill 返回不符合受限协议。', 422)
             json.dumps(result['output'], ensure_ascii=False, allow_nan=False)
             return result['output'], {
                 'isolation_profile': PROFILE_VERSION,
+                'backend': sandbox_backend(),
                 'profile_sha256': profile_digest(),
                 'image_id': self.image,
                 'duration_ms': round((time.monotonic() - started) * 1000),

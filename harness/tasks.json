@@ -3,6 +3,21 @@
   "generated_at": "2026-09-22T07:07:30Z",
   "tasks": [
     {
+      "id": "HA-0052",
+      "title": "补齐并受限启用双环境外部 Skill 沙箱",
+      "status": "running",
+      "risk": "high",
+      "scope": ["显式 Linux Docker 与 Colima backend", "loopback-only 包及执行入口、有界输出和并发", "本机与 132 镜像、真实隔离验证和受限启用"],
+      "non_goals": ["公网任意代码执行", "真实模型/MCP/联网/凭据注入", "多租户安全认证或 Product Run 集成"],
+      "acceptance": ["两端真实容器的成功/超时/只读/断网/输出上限/清理验证", "代理执行拒绝、默认关闭、幂等与现有工作台回归", "版本、实际 DB 备份、镜像与健康 Evidence 可复核"],
+      "depends_on": ["HA-0028", "HA-0051"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0052-external-skill-deployment.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
+    {
       "id": "HA-0051",
       "title": "修复子路径前端资源并双环境重新部署",
       "status": "waiting_approval",
