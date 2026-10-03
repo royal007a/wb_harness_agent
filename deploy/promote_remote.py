@@ -18,6 +18,7 @@ from pathlib import Path
 
 LIVE = Path('/opt/harnessagent')
 PYTHON = LIVE / '.venv/bin/python'
+TEST_PYTHON = Path('/opt/harnessagent-test-env/bin/python')
 SNIPPET = Path('/etc/nginx/snippets/harnessagent.conf')
 SITE = Path('/etc/nginx/sites-available/workbench')
 PRESERVE = ['.venv/', '.local/', 'data/', 'node_modules/', '__pycache__/', 'evidence/']
@@ -65,7 +66,12 @@ def main():
     assert all(line.startswith(' D harness/evidence/') for line in changes.splitlines()), 'Unexpected live edits'
     assert (stage / 'requirements.txt').read_bytes() == (LIVE / 'requirements.txt').read_bytes(), 'Dependency changes need separate provisioning'
     run(str(PYTHON), '-m', 'pip', 'check')
-    subprocess.run([str(PYTHON), '-m', 'pytest', '-q'], cwd=stage, check=True)
+    # Optional SDK test dependencies stay outside the live runtime. Provision
+    # this separate environment from requirements-claude.txt before release.
+    preflight = TEST_PYTHON if TEST_PYTHON.is_file() else PYTHON
+    subprocess.run([str(preflight), '-m', 'pytest', '-q'], cwd=stage, check=True)
+    subprocess.run([str(PYTHON), '-m', 'pytest', '-q', 'tests/test_frontend_paths.py',
+                    'tests/test_workbench.py'], cwd=stage, check=True)
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     backup = Path('/var/backups/harnessagent') / ('ha0051-' + stamp)
     backup.mkdir(parents=True, mode=0o700)
