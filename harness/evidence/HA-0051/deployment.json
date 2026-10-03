@@ -1,0 +1,29 @@
+{
+  "task_id": "HA-0051",
+  "application_commit": "27ffdf6f7aa6592b60c129d9b14985c3476b38d3",
+  "local": {"url": "http://127.0.0.1:8765/", "health": "ok", "pytest_passed": 295, "pytest_skipped": 12},
+  "remote": {
+    "url": "http://118.196.123.132/harness/",
+    "previous_commit": "8ce252f6c5fc15b06b1c867860d2d213e038ad39",
+    "deployed_at": "2026-10-03T10:57:48Z",
+    "database": "/var/lib/harnessagent/harness.db",
+    "backup": "/var/backups/harnessagent/ha0051-20261003T105748Z",
+    "database_integrity": "ok",
+    "health": "ok",
+    "nginx_config_test": "passed",
+    "isolated_sdk_tests": {"passed": 289, "skipped": 18},
+    "live_dependency_targeted_tests": {"passed": 60},
+    "public_unauthenticated_http_status": 401,
+    "public_unauthenticated_https_status": 401,
+    "other_site_https_status": 200,
+    "browser_scope": "SSH tunnel to temporary loopback nginx reusing production snippet",
+    "browser_errors": [],
+    "browser_checks": ["css", "navigation", "sample_analysis", "artifacts", "download", "rerun", "sse", "mobile_layout"],
+    "temporary_probe_listener_and_tunnel_closed": true,
+    "public_password_login": "pending_user_confirmation"
+  },
+  "credentials_unchanged": true,
+  "runtime_environment_preserved": true,
+  "model_calls_enabled": false,
+  "semantic_retrieval_enabled": false
+}

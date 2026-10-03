@@ -5,7 +5,7 @@
     {
       "id": "HA-0051",
       "title": "修复子路径前端资源并双环境重新部署",
-      "status": "running",
+      "status": "waiting_approval",
       "risk": "high",
       "scope": ["统一 /harness 子路径的页面、API、下载与 SSE URL", "保留鉴权和运行时门禁的本地与 132 发布", "浏览器与路径回归"],
       "non_goals": ["改变 Basic 账号或密码", "抢占同机其他站点的 /api 或 /static", "启用真实模型或外部检索"],
@@ -15,7 +15,7 @@
       "plan": "exec-plans/active/HA-0051-proxy-paths.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": []
+      "evidence": ["harness/evidence/HA-0051/acceptance.md", "harness/evidence/HA-0051/deployment.json"]
     },
     {
       "id": "HA-0050",
