@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T20:55:09Z",
+  "generated_at": "2026-10-03T21:18:00Z",
   "tasks": [
+    {
+      "id": "HA-0063",
+      "title": "区分Team持久记录损坏与合法权限撤销",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["五类Foundation持久记录Schema和SQL键绑定", "Channel共享code/status过滤", "HTTP反例、合法inactive与失败回滚"],
+      "non_goals": ["修补正式数据或新增认证", "全库孤立引用扫描和时间真实性", "绕过本机先发132"],
+      "acceptance": ["旧版未知状态/错域/错误码组合反例按行为失败", "损坏明确500且合法权限语义保持", "定向全量verify和独立review证据", "兼容本机拓扑明确后先本机再132部署"],
+      "depends_on": ["HA-0060"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0063-team-state-integrity.md",
+      "blocked_reason": "旧18最终测试行为反例失败，新64/相关182通过，全量748 passed/16 skipped及verify exit0；固定提交独立review待完成。实际双部署仍等待HA-0056兼容本机拓扑决定。",
+      "recovery_condition": "固定提交独立Approved；本机兼容拓扑明确并验收后，先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0063/acceptance.md"]
+    },
     {
       "id": "HA-0062",
       "title": "对齐核心Product HTTP静态动态响应契约",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0062-product-http-contracts.md",
-      "blocked_reason": "旧19行为反例失败，新52/相关190通过，全量684 passed/16 skipped及verify exit0；固定提交独立review待完成。实际双部署仍等待HA-0056本机兼容拓扑决定。",
-      "recovery_condition": "固定提交独立Approved；用户明确本机兼容拓扑并验收后先本机再132发布，核验部署OpenAPI与实际响应。",
-      "evidence": ["harness/evidence/HA-0062/acceptance.md"]
+      "blocked_reason": "7ac1498已独立Approved，新52/相关190通过；4组Low已登记，before.xml的早期测试版本限制已纠正。实际双部署仍等待HA-0056本机兼容拓扑决定。",
+      "recovery_condition": "用户明确本机兼容拓扑并验收后先本机再132发布，核验部署OpenAPI与实际响应。",
+      "evidence": ["harness/evidence/HA-0062/acceptance.md", "harness/evidence/HA-0062/review.md"]
     },
     {
       "id": "HA-0061",

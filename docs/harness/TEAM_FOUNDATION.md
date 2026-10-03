@@ -40,6 +40,13 @@ clearance不足的Channel不得继续通过列表泄露ID/标题。身份目录�
 管理元数据，不承诺目标身份可调度；本项不增加认证或在线撤销API。
 HTTP验收见 [Team读可见性](../../specs/testing/TEAM_READ_VISIBILITY.md)。
 
+HA-0063 在读取Foundation行时增加结构/类型/枚举与SQL主键、关联键检查。
+损坏记录返回固定500/TEAM_STATE_CORRUPT，不再按撤销/归档静默隐藏，也不自动
+迁移或改数据；合法suspended/archived/revoked保留原有拒绝和目录语义。Channel
+列表改用共享(code,status)白名单。检查不是全库扫描、时间真实性验证或新身份认证；
+详见 [持久记录完整性](../../specs/testing/TEAM_STATE_INTEGRITY.md)。
+旧幂等键命中缓存后不重检当前资格的问题已另行复现，尚未在本轮修复。
+
 ## Team Task v2 与历史记录
 
 新建 Task 固化 `workspace_id`、`channel_id`、`created_by_id`。`team-task@2` 的授权检查发生在 create、read、claim、handoff、submit、close 和 Gate 前；Recovery Guard 通过既有 Task claim 检查一并受约束。

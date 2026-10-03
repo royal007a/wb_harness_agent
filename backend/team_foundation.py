@@ -28,6 +28,26 @@ LIST_VISIBILITY_DENIALS = frozenset({
     ('TEAM_CHANNEL_ARCHIVED', 409),
     ('TEAM_WORKSPACE_ARCHIVED', 409),
 })
+RECORD_VALIDATORS = {
+    name: Draft202012Validator({'$ref': '#/$defs/' + name, '$defs': CONTRACT['$defs']})
+    for name in ('agent_identity', 'workspace', 'workspace_membership', 'channel', 'channel_membership')
+}
+
+
+def persisted_record(kind, raw, **bindings):
+    """Check selected storage records, not request input or an authentication claim.
+
+    Format annotations do not prove timestamps here. Schema shape/enums and SQL
+    identity bindings do prevent corruption masquerading as an inactive record.
+    Never disclose the raw document or its validation error to the caller.
+    """
+    try:
+        record = json.loads(raw)
+        if RECORD_VALIDATORS[kind].is_valid(record) and all(record.get(k) == v for k, v in bindings.items()):
+            return record
+    except (ValueError, TypeError, RecursionError):
+        pass
+    raise Problem('TEAM_STATE_CORRUPT', 'Team 持久记录损坏，需人工核对。', 500)
 
 
 def is_list_visibility_denial(error: Problem, *, allow_legacy_task=False):
@@ -114,10 +134,16 @@ class TeamFoundation:
 
     @staticmethod
     def _row(db, table, ident, error_code, message):
-        row = db.execute(f'SELECT doc FROM {table} WHERE id=?', (ident,)).fetchone()
+        kind = {'team_agent_identities': 'agent_identity', 'team_workspaces': 'workspace',
+                'team_channels': 'channel'}[table]
+        columns = 'id,doc,workspace_id' if kind == 'channel' else 'id,doc'
+        row = db.execute(f'SELECT {columns} FROM {table} WHERE id=?', (ident,)).fetchone()
         if not row:
             raise Problem(error_code, message, 404)
-        return json.loads(row['doc'])
+        bindings = {'id': row['id']}
+        if kind == 'channel':
+            bindings['workspace_id'] = row['workspace_id']
+        return persisted_record(kind, row['doc'], **bindings)
 
     def _agent(self, db, agent_id):
         agent = self._row(db, 'team_agent_identities', agent_id, 'TEAM_AGENT_NOT_FOUND', 'Agent Identity 不存在。')
@@ -142,7 +168,7 @@ class TeamFoundation:
                          (workspace_id, agent_id)).fetchone()
         if not row:
             raise Problem('TEAM_WORKSPACE_ACCESS_DENIED', '该 Agent 没有此 Workspace 的访问资格。', 403)
-        membership = json.loads(row['doc'])
+        membership = persisted_record('workspace_membership', row['doc'], workspace_id=workspace_id, agent_id=agent_id)
         if membership['status'] != 'active':
             raise Problem('TEAM_WORKSPACE_ACCESS_DENIED', '该 Workspace membership 已撤销。', 403)
         return membership
@@ -152,7 +178,7 @@ class TeamFoundation:
                          (channel_id, agent_id)).fetchone()
         if not row:
             raise Problem('TEAM_CHANNEL_ACCESS_DENIED', '该 Agent 没有此 Channel 的访问资格。', 403)
-        membership = json.loads(row['doc'])
+        membership = persisted_record('channel_membership', row['doc'], channel_id=channel_id, agent_id=agent_id)
         if membership['status'] != 'active':
             raise Problem('TEAM_CHANNEL_ACCESS_DENIED', '该 Channel membership 已撤销。', 403)
         return membership
@@ -332,12 +358,14 @@ class TeamFoundation:
     def workspaces(self, actor_id):
         with self.store.transaction() as db:
             self._agent(db, actor_id)
-            rows = db.execute('SELECT w.doc AS workspace_doc,m.doc AS membership_doc FROM team_workspaces w '
+            rows = db.execute('SELECT w.id AS workspace_id,m.agent_id,w.doc AS workspace_doc,m.doc AS membership_doc FROM team_workspaces w '
                               'JOIN team_workspace_memberships m ON w.id=m.workspace_id WHERE m.agent_id=? '
                               'ORDER BY w.id', (actor_id,)).fetchall()
             items = []
             for row in rows:
-                workspace, membership = json.loads(row['workspace_doc']), json.loads(row['membership_doc'])
+                workspace = persisted_record('workspace', row['workspace_doc'], id=row['workspace_id'])
+                membership = persisted_record('workspace_membership', row['membership_doc'],
+                                              workspace_id=row['workspace_id'], agent_id=row['agent_id'])
                 if workspace['status'] == 'active' and membership['status'] == 'active':
                     items.append(workspace)
             return {'items': items, 'runtime': self.runtime_status()}
@@ -347,8 +375,9 @@ class TeamFoundation:
             self._agent(db, actor_id)
             workspace = self._workspace(db, workspace_id)
             self._workspace_membership(db, workspace_id, actor_id)
-            memberships = [json.loads(row['doc']) for row in db.execute(
-                'SELECT doc FROM team_workspace_memberships WHERE workspace_id=? ORDER BY rowid', (workspace_id,)).fetchall()]
+            memberships = [persisted_record('workspace_membership', row['doc'], workspace_id=workspace_id,
+                                            agent_id=row['agent_id']) for row in db.execute(
+                'SELECT agent_id,doc FROM team_workspace_memberships WHERE workspace_id=? ORDER BY rowid', (workspace_id,)).fetchall()]
             result = {'workspace': workspace, 'memberships': memberships}
             validate_contract('workspace_detail', result)
             return result
@@ -358,28 +387,36 @@ class TeamFoundation:
             self._agent(db, actor_id)
             self._workspace(db, workspace_id)
             self._workspace_membership(db, workspace_id, actor_id)
-            rows = db.execute('SELECT a.doc FROM team_agent_identities a JOIN team_workspace_memberships m '
+            rows = db.execute('SELECT a.id AS agent_id,a.doc AS agent_doc,m.doc AS membership_doc '
+                              'FROM team_agent_identities a JOIN team_workspace_memberships m '
                               'ON a.id=m.agent_id WHERE m.workspace_id=? ORDER BY a.id', (workspace_id,)).fetchall()
-            return {'items': [json.loads(row['doc']) for row in rows], 'runtime': self.runtime_status()}
+            items = []
+            for row in rows:
+                persisted_record('workspace_membership', row['membership_doc'], workspace_id=workspace_id,
+                                 agent_id=row['agent_id'])
+                # This is a management directory, not a schedulable active-agent list.
+                items.append(persisted_record('agent_identity', row['agent_doc'], id=row['agent_id']))
+            return {'items': items, 'runtime': self.runtime_status()}
 
     def channels(self, workspace_id, actor_id):
         with self.store.transaction() as db:
             self._agent(db, actor_id)
             self._workspace(db, workspace_id)
             self._workspace_membership(db, workspace_id, actor_id)
-            rows = db.execute('SELECT c.doc FROM team_channels c JOIN team_channel_memberships m '
+            rows = db.execute('SELECT c.id,c.workspace_id,c.doc AS channel_doc,m.agent_id,m.doc AS membership_doc '
+                              'FROM team_channels c JOIN team_channel_memberships m '
                               'ON c.id=m.channel_id WHERE c.workspace_id=? AND m.agent_id=? ORDER BY c.rowid DESC',
                               (workspace_id, actor_id)).fetchall()
             items = []
             for row in rows:
-                channel = json.loads(row['doc'])
+                channel = persisted_record('channel', row['channel_doc'], id=row['id'], workspace_id=row['workspace_id'])
+                persisted_record('channel_membership', row['membership_doc'], channel_id=row['id'], agent_id=row['agent_id'])
                 try:
                     self.assert_channel_access(db, channel['id'], actor_id)
                 except Problem as exc:
                     # A SQL membership join is not current authorization. Keep
                     # expected invisibility separate from unexpected failures.
-                    if exc.code not in {'TEAM_CHANNEL_ACCESS_DENIED', 'TEAM_DATA_CLEARANCE_DENIED',
-                                        'TEAM_CHANNEL_ARCHIVED'}:
+                    if not is_list_visibility_denial(exc):
                         raise
                     continue
                 items.append(channel)
@@ -388,8 +425,9 @@ class TeamFoundation:
     def channel_detail(self, channel_id, actor_id):
         with self.store.transaction() as db:
             _, channel, _, _ = self.assert_channel_access(db, channel_id, actor_id)
-            memberships = [json.loads(row['doc']) for row in db.execute(
-                'SELECT doc FROM team_channel_memberships WHERE channel_id=? ORDER BY rowid', (channel_id,)).fetchall()]
+            memberships = [persisted_record('channel_membership', row['doc'], channel_id=channel_id,
+                                            agent_id=row['agent_id']) for row in db.execute(
+                'SELECT agent_id,doc FROM team_channel_memberships WHERE channel_id=? ORDER BY rowid', (channel_id,)).fetchall()]
             result = {'channel': channel, 'memberships': memberships}
             validate_contract('channel_detail', result)
             return result

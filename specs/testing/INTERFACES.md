@@ -251,41 +251,41 @@ Agent/Skill/Tool 模拟；零模型、零网络
 
 metadata-only protocol actor，不是 HTTP 身份或自动委派
 
-必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；Workspace/Channel/clearance/role；claim lease/版本；父子依赖；Handoff 与 Gate digest；pass/reject/needs_human；HTTP创建/授予幂等与拒绝不变；Channel列表当前授权及重启后撤销。
+必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；Workspace/Channel/clearance/role；claim lease/版本；父子依赖；Handoff 与 Gate digest；pass/reject/needs_human；HTTP创建/授予幂等与拒绝不变；Channel列表当前授权及重启后撤销；Foundation持久记录结构/枚举/SQL键损坏500，不伪装撤销。
 
-规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/TEAM_FOUNDATION.md`、`docs/harness/TEAM_COORDINATION.md`、`specs/testing/TEAM_READ_VISIBILITY.md`
+规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/TEAM_FOUNDATION.md`、`docs/harness/TEAM_COORDINATION.md`、`specs/testing/TEAM_READ_VISIBILITY.md`、`specs/testing/TEAM_STATE_INTEGRITY.md`
 
-测试入口：`tests/test_team_list_failures.py`、`tests/test_team_foundation.py`、`tests/test_team_coordination.py`、`tests/test_team_read_visibility.py`
+测试入口：`tests/test_team_list_failures.py`、`tests/test_team_foundation.py`、`tests/test_team_coordination.py`、`tests/test_team_read_visibility.py`、`tests/test_team_state_integrity.py`
 
 ### attention：Inbox / freshness / work mark
 
 手工 metadata 输入，不唤醒模型
 
-必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；优先级/合并；lease/过期；已读与待办分离；freshness 原子拒绝。
+必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；优先级/合并；lease/过期；已读与待办分离；freshness 原子拒绝；Foundation持久记录结构/枚举/SQL键损坏500，不伪装撤销。
 
-规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/TEAM_ATTENTION.md`
+规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/TEAM_ATTENTION.md`、`specs/testing/TEAM_STATE_INTEGRITY.md`
 
-测试入口：`tests/test_team_list_failures.py`、`tests/test_team_attention.py`
+测试入口：`tests/test_team_list_failures.py`、`tests/test_team_attention.py`、`tests/test_team_state_integrity.py`
 
 ### continuity：Team Session 交接
 
 有界状态摘要；不是 Provider Session resume 或自动换代
 
-必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；scope/owner；单 active session；一次性继承/CAS；不复制正文、不改 Task/Attention；列表按主体/Channel/当前权限过滤且保留有权历史。
+必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；scope/owner；单 active session；一次性继承/CAS；不复制正文、不改 Task/Attention；列表按主体/Channel/当前权限过滤且保留有权历史；Foundation持久记录结构/枚举/SQL键损坏500，不伪装撤销。
 
-规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/TEAM_SESSION_CONTINUITY.md`、`specs/testing/TEAM_READ_VISIBILITY.md`
+规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/TEAM_SESSION_CONTINUITY.md`、`specs/testing/TEAM_READ_VISIBILITY.md`、`specs/testing/TEAM_STATE_INTEGRITY.md`
 
-测试入口：`tests/test_team_list_failures.py`、`tests/test_team_session_continuity.py`、`tests/test_team_read_visibility.py`
+测试入口：`tests/test_team_list_failures.py`、`tests/test_team_session_continuity.py`、`tests/test_team_read_visibility.py`、`tests/test_team_state_integrity.py`
 
 ### recovery：Error Contract / Recovery Loop Guard
 
 恢复决策旁路，Try/Confirm/Cancel 不执行工具
 
-必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；四个位置分离；Confirm 摘要；硬熔断/软提醒；取消与重复 operation；Handoff/Gate 后才能 resolved。
+必须验证：请求主体先校验；仅明确不可见项过滤；意外故障和事务回滚；四个位置分离；Confirm 摘要；硬熔断/软提醒；取消与重复 operation；Handoff/Gate 后才能 resolved；Foundation持久记录结构/枚举/SQL键损坏500，不伪装撤销。
 
-规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/RECOVERY_LOOP_GUARD.md`
+规格：`specs/testing/TEAM_LIST_FAILURES.md`、`docs/harness/RECOVERY_LOOP_GUARD.md`、`specs/testing/TEAM_STATE_INTEGRITY.md`
 
-测试入口：`tests/test_team_list_failures.py`、`tests/test_recovery_loop_guard.py`
+测试入口：`tests/test_team_list_failures.py`、`tests/test_recovery_loop_guard.py`、`tests/test_team_state_integrity.py`
 
 ### agent-lab：Agent Lab
 

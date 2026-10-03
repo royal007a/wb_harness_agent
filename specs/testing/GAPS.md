@@ -150,6 +150,13 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - **TEAM-READ-03 / Low**：非法status枚举（None/ACTIVE/actve）被当作非active
   静默过滤；现有损坏字段测试未覆盖此形态。应区分合法非active和未知状态。
   Channel列表仍未改用共享(code,status)规则；其持久列/JSON workspace分歧也仍在。
+  HA-0063候选已修复这些读路径：五类Foundation行结构/枚举+SQL键校验、共享过滤，
+  尚待独立review与实际部署；不是全库扫描或自动修补。
+- **TEAM-REPLAY-01**：HA-0063审查时用临时DB实测，Session创建首次201，Channel
+  归档后detail与新key均409，原key却返回201且与首次缓存body相同。
+  `_idempotent`在action当前资格检查之前返回缓存；应单独核对Team所有写路径
+  的重放授权，不把“没有重复写入”当作“允许返回旧数据”。未修复，非HA-0063
+  的新key写入拒绝证据范围；无正式DB变更或真实Provider验证。
 - **READ-SCHEMA-01**：health、resources列表与单项详情、Memory Bank列表、三种research列表的
   公开成功响应Schema缺失或为空占位。HA-0061字段断言只补行为验证，不冒充已经
   补齐公开机器契约。sample实际是text/csv，旧动态文档却声明application/json和
@@ -160,6 +167,20 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - **SCHEMA-FORMAT-01**：当前venv通用FormatChecker未安装可选date-time检查依赖。
   HA-0062显式校验本地服务实际UTC输出格式及非法日期；其他测试不能据仅传入
   FormatChecker就宣称已验证日期语义。未将本测试用UTC子集当通用RFC3339校验器。
+  HA-0062独立review另发现检查器自身缺naive/非UTC负例，仍待补回归。
+- **PRODUCT-CONTRACT-02 / Low**：HA-0062（7ac1498）已独立Approved，21突变杀死17个；
+  动态422信封绑定删除、Task详情required去掉runs、retryable放宽为boolean仍未
+  被测试杀死，应补精确负例。before.xml来自未单独保存源码的早期19项测试，不是
+  当前52项可原样复现的基线报告；acceptance/review已明确限制。
+- **PRODUCT-CURSOR-01 / Low**：事件after声明minimum=0却无SQLite整数上限；
+  after>=2^63会500，合法声明值和运行时不一致，待明确上限并回归边界/+1。
+- **PRODUCT-REF-01 / Low**：Event.run_id/task_id、Artifact.run_id缺格式约束；
+  可接受错误ID前缀。补格式仍不等于核对跨对象引用一致性。
+- **REQUEST-ID-01 / Low**：Problem/校验错误body request_id与X-Request-ID不一致，
+  middleware直接拒绝又缺该头；未有统一承诺。需先定义追踪合同再覆盖所有错误路径。
+- **EVIDENCE-PATH-01**：HA-0063收口时全量任务引用检查发现历史HA-0027仍引用
+  不存在且未被Git跟踪的harness/evidence/HA-0027/l3-admission-gate.json。
+  注册表Schema合法不等于所有历史证据可取回；未生成替代证据，待追查原记录。
 - HA-0061限定剩余11个读取入口的内容、状态、拒绝与持久性测试，不改业务实现。
   原生研究非空列表来自临时测试准入元数据，stream哨兵禁止执行SDK。PDF登记样本
   只有测试头部，不是完整PDF解析/真实研报证据；health是静态响应，不是release验证。

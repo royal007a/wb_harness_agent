@@ -1,7 +1,7 @@
 # HA-0062 核心 Product HTTP 契约对齐
 
 2026-10-04（北京时间），基线 d46f406。修正公开合同，不改变业务处理器返回值、
-持久化逻辑或准入门禁。当前：代码回归及完整verify通过；固定提交独立review待完成；
+持久化逻辑或准入门禁。当前：代码回归及完整verify通过；7ac1498已获独立Approved；
 双端尚未部署，不将本轮测试通过视作上线。
 
 ## 改动与旧版反例
@@ -16,9 +16,13 @@ sample=text/csv、artifact download=实际media_type（通配声明）。17个�
 产物列表/下载、CSV样本、PDF登记；rerun.reason可省略且允许自由文本≤2000字符。
 历史目标approval标明未实现，API.md区分当前响应与未来示意。
 
-`before.xml`在业务代码/静态动态Schema尚为d46f406时生成，19项全部失败：4项
+`before.xml`在业务代码/静态动态Schema尚为d46f406时，使用早期19项测试版本生成，
+19项全部失败：4项
 静态漂移（实际HTTP被错误文档错拒/状态或media缺失），15项动态空Schema接受空对象。
-均为行为断言失败，不是导入错误。后续52项包含这19项；不是52条旧版反例。
+该历史报告记录的均为行为断言失败，不是导入错误；不是52条旧版反例，也不能
+用当前52项测试原样复现该报告。早期测试源码未单独固化，证据可复现性不足。
+独立review将当前测试放回d46f406后，创建/详情两项先在测试helper读取`$ref`时
+KeyError，其余17项与历史报告一致；两项业务漂移由reviewer另行独立确认。
 before.xml 中pytest格式化失败文本产生的5行空白行尾做了机械清理，不改断言、
 结果、时间或计数；首次暂存检查才发现这些未跟踪报告的行尾，后续已单独复验。
 新增测试编写中曾出现缩进、错误码和rerun默认关系的预期错误，按现有代码修正；
@@ -60,5 +64,6 @@ env -u ARK_API_KEY bash harness/verify.sh
 - 未改变全局$ref投影literal-data Low；未把health静态字段当release/Provider状态。
 - HA-0061独立Approved及两条Low已记录：HEAD空正文仅传输层证据；sample与
   resource详情契约缺口由本轮修复。没有新增原始ASGI HEAD正文测试。
-- 独立复审与实际双部署未完成。本机Background/gui域阻塞仍在，必须用户明确兼容
+- 7ac1498已获独立Approved，4组Low及测试保护缺口见review.md；实际双部署未完成。
+  本机Background/gui域阻塞仍在，必须用户明确兼容
   拓扑后先本机、后132；不以文档变更为由静默切换launchd域。
