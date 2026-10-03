@@ -1,0 +1,14 @@
+{
+  "recorded_on": "2026-10-04 Asia/Shanghai",
+  "read_only": true,
+  "uid": 501,
+  "managername": "Background",
+  "gui_print_exit": 125,
+  "user_print_exit": 0,
+  "local_health": "unreachable",
+  "activation_attempted": false,
+  "not_evidence": [
+    "user domain visibility does not prove the HarnessAgent service can start there",
+    "no launchd topology changes or service restarts were performed"
+  ]
+}

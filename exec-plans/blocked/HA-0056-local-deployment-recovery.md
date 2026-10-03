@@ -12,3 +12,9 @@
 GUI domain 不可用阻塞。gui/501 返回 125，8765 离线；132 保持 1840639。
 待用户重新登录 weberzhao 图形会话，不绕过先本机后远端约束，也不擅自
 切换到 system/root daemon。参见 HA-0056 acceptance.md 的失败与复跑证据。
+
+独立 review 更正（2026-10-04）：上段“待用户重新登录”不是充分恢复条件。
+调用方 managername=Background 可能仍无法操作 gui 域；reviewer 实测 user/501
+配合 LimitLoadToSessionType=[Aqua,Background] 可用。该备选尚未在本项目采用。
+exit 5 也可能是会话类型不匹配或已加载。先修 bootout 前预检、端口释放与
+进程/发布身份绑定、结构化错误和恢复回执，不能只依靠重试；结论 Changes Requested。

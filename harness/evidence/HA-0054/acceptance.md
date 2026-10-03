@@ -56,3 +56,15 @@ EXECUTION_FAILED；详见 sandbox-deadline-diagnosis.json。
 - nginx -t 通过；同机原有 workbench 配置重复 text/html MIME warning 未改动。
 - 已向 mymacclaude 提交 b639b8b / 912faca 复审，尚未收到本项结论。
   整体 12 小时目标继续；这不是全部功能/API 已验收。
+
+## 独立 review 收口（2026-10-04）
+
+mymacclaude 对 b639b8b：Approved。来源消息
+`om_x100b6327ff49acacc10cede2983839e`。reviewer 的独立合成结果：60 轮并发
+消费者每轮 Provider 和 close 各一次；30 轮混入取消，60 轮终态合计 55 succeeded /
+5 cancelled，没有取消后 assistant/done、重复 assistant 或成功缺消息；真实
+loopback uvicorn 断线后 cancelled、closed=1，后续新键 200。重启失败重放
+不访问凭据/Provider；其 worktree 全量 320 passed / 22 skipped。
+未核验真实模型、容器和远端，以上不能替代真实 Provider 计费/取消证据。
+残余待研究：anyio 重复取消中的 aclose、每次 anext 独立 task 对自定义 Adapter
+的限制，以及 queued 无消费者的兜底；未复现问题不写成已修。UI 返工属 HA-0055。

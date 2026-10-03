@@ -53,6 +53,14 @@ HA-0056 已实现有限重试及健康恢复，冻结392e103全量356 passed/16 
 真实发布前本机 GUI domain 不可用（125）且8765离线，等待用户恢复图形会话；
 132 保持1840639。代码通过不等于两端发布完成，故本问题仍开放。
 
+2026-10-04 独立复核更正：HA-0053/0054 Approved；HA-0055/0056 Changes Requested。
+0055 待补流中停止的有界回查与停止按钮 Session 归属；0056 的 exit 5 不必然
+暂态，必须在 bootout 前预检会话域并在健康检查绑定进程/发布身份。调用方
+Background 是 125 候选根因，不能要求用户重新登录后就保证恢复；同 uid user
+域加 Aqua/Background plist 是尚未采用的备选，不能静默换 system/root。
+HA-0053 的 Low：清单生成器在符号链接 PYTHONPATH 下 relative_to 可失败；
+observed 仍包含拒绝的 4xx，不等于 observed_2xx_passing 或业务成功。
+
 继续文档对照时需处理 `CURRENT_ARCHITECTURE.md` 重复的 Memory 段落，以及
 “尚未具备”列表与文首已实现离线 Adapter 的粒度冲突；用逐能力状态替代笼统
 未实现。部分评测的 `external_execution_calls=1.0` 是通过分数而非调用次数，

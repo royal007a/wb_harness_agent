@@ -7,11 +7,11 @@ switch_session = False
         first = session(runtime, agent, 'stop origin')
         second = session(runtime, agent, 'stop destination')
         release, closed = threading.Event(), threading.Event()
-    
+
         class Adapter:
             def require(self, _):
                 return self
-    
+
             async def stream(self, _):
                 try:
                     yield '合成流已抵达浏览器'
@@ -19,11 +19,11 @@ switch_session = False
                         await asyncio.sleep(.01)
                 finally:
                     closed.set()
-    
+
         class Credential:
             def resolve(self, _):
                 return 'synthetic'
-    
+
         runtime.adapters, runtime.credentials = Adapter(), Credential()
         runtime._runtime_enabled = True
         reads = []
@@ -47,12 +47,12 @@ switch_session = False
                 assert runtime.session_detail(first['id'])['exchanges'][0]['status'] == 'streaming'
                 select(page, first['id'])
                 pw.expect(page.locator('#stop')).to_be_visible()
-    
+
             def late_detail(route):
                 reads.append(time.monotonic())
                 # Deterministically hold the first read at a pre-finally snapshot.
                 route.fulfill(json=active if len(reads) == 1 else runtime.session_detail(first['id']))
-    
+
             page.route('**/sessions/' + first['id'], late_detail)
             page.locator('#stop').click()
             pw.expect(page.locator('#send')).to_be_enabled(timeout=10_000)
@@ -71,11 +71,11 @@ switch_session = True
         first = session(runtime, agent, 'stop origin')
         second = session(runtime, agent, 'stop destination')
         release, closed = threading.Event(), threading.Event()
-    
+
         class Adapter:
             def require(self, _):
                 return self
-    
+
             async def stream(self, _):
                 try:
                     yield '合成流已抵达浏览器'
@@ -83,11 +83,11 @@ switch_session = True
                         await asyncio.sleep(.01)
                 finally:
                     closed.set()
-    
+
         class Credential:
             def resolve(self, _):
                 return 'synthetic'
-    
+
         runtime.adapters, runtime.credentials = Adapter(), Credential()
         runtime._runtime_enabled = True
         reads = []
@@ -103,13 +103,13 @@ switch_session = True
                 select(page, second['id'])
 &gt;               pw.expect(page.locator('#stop')).to_be_hidden()
 E               AssertionError: Locator expected to be hidden
-E               Actual value: visible 
+E               Actual value: visible
 E               Call log:
 E                 - Expect "to_be_hidden" with timeout 5000ms
 E                 - waiting for locator("#stop")
 E                   14 × locator resolved to &lt;button id="stop" type="button" class="secondary"&gt;停止显示&lt;/button&gt;
 E                      - unexpected value "visible"
-E               
+E
 E               Aria snapshot:
 E               - button "停止显示"
 
@@ -133,13 +133,13 @@ tests/test_agent_runtime_ui.py:349: AssertionError</failure></testcase><testcase
         pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
 &gt;       pw.expect(page.locator('.transient')).to_contain_text('尚未确认终态')
 E       AssertionError: Locator expected to contain text '尚未确认终态'
-E       Actual value: 传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。 
+E       Actual value: 传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。
 E       Call log:
 E         - Expect "to_contain_text" with timeout 5000ms
 E         - waiting for locator(".transient")
 E           14 × locator resolved to &lt;article role="status" class="exchange-status transient"&gt;传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。&lt;/article&gt;
 E              - unexpected value "传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。"
-E       
+E
 E       Aria snapshot:
 E       - status: 传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。
 

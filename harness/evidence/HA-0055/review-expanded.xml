@@ -10,12 +10,12 @@ reselect = False
         select(page, created['id'])
         pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
         held = []
-    
+
         def detail(route):
             held.append(route)
             if len(held) &gt; 1:
                 route.fulfill(json=runtime.session_detail(created['id']))
-    
+
         page.route('**/sessions/' + created['id'], detail)
         page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
             status=200, content_type='text/event-stream', body=''))
@@ -23,8 +23,8 @@ reselect = False
         page.locator('#send').click()
 &gt;       page.wait_for_function('state.pendingSelectionCount === 1')
 
-tests/test_agent_runtime_ui.py:422: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_agent_runtime_ui.py:422:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 .venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
     self._sync(
 .venv/lib/python3.14/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
@@ -34,7 +34,7 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     await self._channel.send("waitForFunction", self._timeout, params)
 .venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
     return await self._connection.wrap_api_call(
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 self = &lt;playwright._impl._connection.Connection object at 0x10aada510&gt;
 cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x10e7c1430&gt;
@@ -57,7 +57,7 @@ is_internal = False, title = None
         except Exception as error:
 &gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
 E           playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'".
-E           
+E
 E               at eval (&lt;anonymous&gt;)
 E               at predicate (eval at evaluate (:311:30), &lt;anonymous&gt;:4:60)
 E               at next (eval at evaluate (:311:30), &lt;anonymous&gt;:29:33)
@@ -74,12 +74,12 @@ reselect = True
         select(page, created['id'])
         pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
         held = []
-    
+
         def detail(route):
             held.append(route)
             if len(held) &gt; 1:
                 route.fulfill(json=runtime.session_detail(created['id']))
-    
+
         page.route('**/sessions/' + created['id'], detail)
         page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
             status=200, content_type='text/event-stream', body=''))
@@ -87,8 +87,8 @@ reselect = True
         page.locator('#send').click()
 &gt;       page.wait_for_function('state.pendingSelectionCount === 1')
 
-tests/test_agent_runtime_ui.py:422: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_agent_runtime_ui.py:422:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 .venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
     self._sync(
 .venv/lib/python3.14/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
@@ -98,7 +98,7 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     await self._channel.send("waitForFunction", self._timeout, params)
 .venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
     return await self._connection.wrap_api_call(
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 self = &lt;playwright._impl._connection.Connection object at 0x10aada510&gt;
 cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x10e480930&gt;
@@ -121,7 +121,7 @@ is_internal = False, title = None
         except Exception as error:
 &gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
 E           playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'".
-E           
+E
 E               at eval (&lt;anonymous&gt;)
 E               at predicate (eval at evaluate (:311:30), &lt;anonymous&gt;:4:60)
 E               at next (eval at evaluate (:311:30), &lt;anonymous&gt;:29:33)

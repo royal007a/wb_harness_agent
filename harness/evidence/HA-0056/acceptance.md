@@ -54,3 +54,13 @@
 model_calls_enabled=false。不能将代码验证通过表述为已部署或恢复验证通过。
 
 独立代码 review 可先进行；真实发布验收仍未完成。
+
+## 独立复核更正（2026-10-04）
+
+392e103 为 Changes Requested，不再称“代码验收通过”。16 个 mock 用例通过
+但未覆盖 OS 会话类型；reviewer 指出并实测 Background 调用方可能导致 gui 域
+125，且 exit 5 可为不兼容/已加载的确定性失败。上文“重新登录 GUI 后恢复”
+并非已证实的充分条件。user/501 加 Aqua/Background plist 为备选，尚未采用。
+待修：bootout 前预检；旧端口退出/新发布进程身份绑定；错误码、attempt 与
+deadline 的结构化回执；恢复 bootout 结果核对、中断回执；明确恢复仍用新代码。
+旧全量和 staging 通过保留为测试事实，不代表新部署已执行或安全恢复已验收。

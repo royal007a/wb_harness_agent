@@ -11,3 +11,6 @@
 
 非目标：启用模型、通用 Agent Loop、Skill/Product Run 桥接、身份体系、自动
 重试 Provider。合成验证不是模型在线成功证据。
+
+2026-10-04 mymacclaude Approved；双部署证据与 review 边界见 HA-0054 acceptance.md。
+UI、OpenAPI、上游 EOF 等剩余问题单独跟踪，不因生命周期批准而一并视为通过。

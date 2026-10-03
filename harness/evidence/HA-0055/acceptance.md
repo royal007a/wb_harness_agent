@@ -122,3 +122,6 @@ mymacclaude 对 1840639 给出 Changes Requested：流中停止只回读一次�
 `ddfa88683f3af9d78bd9bfa74016f6b8d9c6e073b30b439e6b5db37a97ad3bde`；
 `tests/test_agent_runtime_ui.py` SHA-256
 `6e43cc20d6a16b167edcea8a7ae56ef52500d3235e7cbc3fd49c43748eaa7a06`。
+
+返工代码提交 2f8a30c。JUnit 失败 traceback 的行尾空白后续机械归一化，
+用例、失败消息和结果未改变；截图显式保留手机消息区、桌面聊天与工作台手机页。

@@ -32,3 +32,14 @@
 执行通过。该次 pytest 收集时 observer 仍为 4 项测试；新增第 5 项参数脱敏
 测试另跑 5 passed（`observer-self-tests.json`），不把两次计数相加。
 本阶段提交 b9c1917；完整功能验收、运行时缺陷与独立 review 仍未完成。
+
+## 独立 review 收口（2026-10-04）
+
+mymacclaude 对 b9c1917 / 07b566e / 912faca：Approved。
+来源消息 `om_x100b6327ff49acacc10cede2983839e`。以下为 reviewer 提供的独立
+结果，不冒称本轮再次执行：146 个注册方法/路径无漏项，加 StaticFiles 合成
+GET/HEAD 共 148；observer 敏感标记检查 0 命中；Checkpoint 串行 30/30、
+与 lifecycle 并行 20/20 通过。未操作 8765/远端。
+两个 Low 保留：符号链接 PYTHONPATH 的 relative_to 失败；observed 包含被
+中间件拒绝的 4xx，后续可拆 observed_2xx_passing。本项只完成清单/基线范围，
+26 未观测入口、完整行为验收和后续修复仍在整体目标内。
