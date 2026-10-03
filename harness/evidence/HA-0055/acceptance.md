@@ -83,3 +83,42 @@ testcase 名中的原始夹具已机械替换为 SHA-256，避免保存超长输
   密码登录公网浏览器；隧道验收不替代该认证 E2E，也不放宽 loopback-only Skill。
 - 已请求 mymacclaude 对 1840639 只读 review；尚未收到结论。HA-0055 进入
   waiting_approval，不代表完整 12 小时目标或全部接口验收完成。
+
+## 独立复核返工（2026-10-04，未发布）
+
+mymacclaude 对 1840639 给出 Changes Requested：流中停止只回读一次，可能
+永远停在 streaming；在 B 可取消正在发送的 A；重选可能擦掉传输警告。
+
+- `review-before.xml`：新增三个反例在旧 JS 上全部失败。实际 SSE 中途停止，
+  将第一次 detail 固定为取消前的 streaming 快照；另覆盖 B 停止按钮和轮询上限。
+- 修复按发送 Session 绑定 controller；隐藏和事件处理器双重核验停止作用域。
+  当前页面一次一个发送流（不是后端全局单并发），B 上明确显示原因。
+- 停止/异常断流回读最多 6 次、500ms 间隔、总计 5s（含请求）deadline；
+  切换选择中止旧回读。保留已知状态，超时提示未确认，不自行写 cancelled。
+  传输提示按 Session 页面内保存，重选保留，新发送清除。
+- `review-first-fix.xml`：17 passed。`review-expanded.xml` 为 17 passed /
+  2 failed；两例因测试的字符串 wait_for_function 触及 CSP unsafe-eval，
+  改为函数形式，没有放宽 CSP。`review-final.xml`：19 passed，包含挂起
+  detail 的硬时限、重选抢占、无 assistant 伪造和持久提示。
+- `review-verify.log`：361 passed / 16 skipped，完整 verify exit 0。
+  后续补清除新发送前的旧传输 DOM 提示，最终完整验证另存
+  `review-verify-final.log`；最终结果以该文件为准，不用前一次结果替代。
+- 临时 SQLite/随机 loopback 的 browser_smoke 页面检查通过，首次驱动脚本
+  在服务清理的 15s 等待断言失败，不能将其算成整次命令成功；截图与页面
+  回执保留在 `review-isolated-workbench/`。再次隔离时禁用 Keychain 读取，
+  工作台页面成功（`review-isolated-workbench-final/`），接续 Runtime 脚本
+  因测试 URL 尾斜杠造成 `//agent-runtime` 404 失败。修正调用参数及 Evidence
+  环境变量后，Runtime 重跑通过，临时服务退出也通过，见
+  `review-isolated-runtime-final/`；手机消息截图人工查看，无裁切、无假回答。
+  这些不是 8765 或 132 的发布回执。旧 `local-deployment.json` 的 runtime
+  enabled 指 external-skill，Agent Runtime 模型门禁仍关闭，两者不能混读。
+
+代码验证范围不包含真实 Provider、外部网络、132 新部署、launchd 恢复。
+本次修复等待独立复审及 HA-0056 解除部署阻塞，不能称为双端已完成。
+
+最终 `review-verify-final.log`：完整 verify exit 0，361 passed / 16 skipped，
+确定性评测、两类准入拒绝、JS 语法与 diff 检查通过。代码摘要：
+`frontend/agent-runtime.js` SHA-256
+`ddfa88683f3af9d78bd9bfa74016f6b8d9c6e073b30b439e6b5db37a97ad3bde`；
+`tests/test_agent_runtime_ui.py` SHA-256
+`6e43cc20d6a16b167edcea8a7ae56ef52500d3235e7cbc3fd49c43748eaa7a06`。

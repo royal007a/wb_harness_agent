@@ -2,6 +2,7 @@
 const API = "/api/local/agent-runtime";
 const $ = (value) => document.querySelector(value);
 const state = { providers: [], models: [], agents: [], sessions: [], session: null, controller: null,
+  sendingSessionId: null, detailController: null, transportIssues: new Map(),
   selectedSessionId: null, selectionGeneration: 0, pendingSelectionCount: 0 };
 let noticeTimer;
 
@@ -46,32 +47,65 @@ function renderMessages(messages, exchanges) {
   });
   // Legacy/incomplete history must not silently hide an unassociated Exchange.
   exchanges.filter((exchange) => !rendered.has(exchange.id)).forEach((exchange) => box.append(exchangeStatus(exchange)));
+  const issue = state.transportIssues.get(state.selectedSessionId);
+  if (issue) box.append(transportStatus(issue));
   box.scrollTop = box.scrollHeight;
 }
 function updateComposer() {
   $("#send").disabled = !state.session || !!state.controller;
-  $("#stop").hidden = !state.controller;
+  const ownsStream = state.controller && state.selectedSessionId === state.sendingSessionId;
+  $("#stop").hidden = !ownsStream || state.controller.signal.aborted;
+  let hint = $("#composer-status");
+  if (!hint) {
+    hint = document.createElement("small"); hint.id = "composer-status";
+    hint.setAttribute("role", "status"); $("#chat-form").prepend(hint);
+  }
+  hint.textContent = state.controller && !ownsStream
+    ? "另一个会话正在发送或核对终态；当前页面一次只发送一条，请返回原会话操作停止。" : "";
 }
 async function chooseSession(id) {
+  const retainHistory = id === state.selectedSessionId;
+  state.detailController?.abort();
+  const detailController = new AbortController();
+  state.detailController = detailController;
   const generation = ++state.selectionGeneration;
+  const isCurrent = () => generation === state.selectionGeneration && id === state.selectedSessionId;
+  const deadline = performance.now() + 5000;
+  const timer = setTimeout(() => detailController.abort(), 5000);
   state.pendingSelectionCount += 1;
   state.selectedSessionId = id;
   state.session = null;
   renderSessions();
-  $("#messages").replaceChildren();
+  if (!retainHistory) $("#messages").replaceChildren();
   $("#messages").hidden = false;
   $("#empty").hidden = true;
   $("#chat-form").hidden = false;
   $("#messages").setAttribute("aria-busy", "true");
   updateComposer();
   try {
-    const detail = await api(`/sessions/${encodeURIComponent(id)}`);
-    if (generation !== state.selectionGeneration || id !== state.selectedSessionId) return;
-    state.session = detail.session;
-    renderMessages(detail.messages, detail.exchanges);
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      const detail = await api(`/sessions/${encodeURIComponent(id)}`, { signal: detailController.signal });
+      if (!isCurrent()) return;
+      state.session = detail.session;
+      renderMessages(detail.messages, detail.exchanges);
+      const active = detail.exchanges.some((item) => ["queued", "streaming"].includes(item.status));
+      if (!active || !state.transportIssues.has(id)) return;
+      if (attempt === 5 || performance.now() + 500 >= deadline) {
+        state.transportIssues.set(id, "尚未确认终态；保留最后读取的持久状态，请稍后重新选择会话核对。");
+        renderMessages(detail.messages, detail.exchanges);
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (!isCurrent()) return;
+    }
   } catch (error) {
-    if (generation === state.selectionGeneration) throw error;
+    if (isCurrent()) {
+      if (error.name === "AbortError") throw new Error("详情读取超时，尚未确认终态，请重新选择会话核对。");
+      throw error;
+    }
   } finally {
+    clearTimeout(timer);
+    if (state.detailController === detailController) state.detailController = null;
     state.pendingSelectionCount -= 1;
     if (generation === state.selectionGeneration) $("#messages").setAttribute("aria-busy", "false");
     updateComposer();
@@ -96,6 +130,9 @@ async function sendMessage(event) {
   const sessionId = state.session.id, box = $("#messages");
   const controller = new AbortController();
   state.controller = controller;
+  state.sendingSessionId = sessionId;
+  state.transportIssues.delete(sessionId);
+  box.querySelectorAll(".transient").forEach((node) => node.remove());
   updateComposer();
   input.value = "";
   box.append(bubble({ role: "user", content }));
@@ -138,8 +175,9 @@ async function sendMessage(event) {
     if (!terminal) throw new Error("连接提前结束，未收到完成状态；不能确认回答已保存。");
   } catch (error) {
     transportIssue = error.name === "AbortError"
-      ? "浏览器已停止显示；不代表服务端已确认取消，请重新选择会话核对持久状态。"
+      ? "浏览器已停止显示；不代表服务端已确认取消，正在核对持久状态。"
       : `传输失败：${error.message}`;
+    state.transportIssues.set(sessionId, transportIssue);
     preview.textContent = transportIssue;
     notice(transportIssue, true);
   } finally {
@@ -151,17 +189,26 @@ async function sendMessage(event) {
     try {
       if (state.selectedSessionId === sessionId) {
         await chooseSession(sessionId);
-        if (state.selectedSessionId === sessionId && transportIssue) box.append(transportStatus(transportIssue));
       }
     } catch (error) {
-      if (state.selectedSessionId === sessionId) box.append(transportStatus(`持久状态读取失败：${error.message}`));
+      state.transportIssues.set(sessionId, `持久状态读取失败：${error.message}`);
+      if (state.selectedSessionId === sessionId) {
+        box.querySelectorAll(".transient").forEach((node) => node.remove());
+        box.append(transportStatus(state.transportIssues.get(sessionId)));
+      }
       notice("无法核对持久记录，请重新选择会话。", true);
     } finally {
       state.controller = null;
+      state.sendingSessionId = null;
       updateComposer();
       if (state.selectedSessionId === sessionId) input.focus();
     }
   }
 }
+function stopSelectedStream() {
+  if (state.selectedSessionId !== state.sendingSessionId) return;
+  state.controller?.abort();
+  updateComposer();
+}
 function guard(handler) { return async (event) => { try { await handler(event); } catch (error) { notice(error.message || "操作失败", true); } }; }
-$("#provider-form").addEventListener("submit", guard((event) => submitProfile(event, "/providers"))); $("#model-form").addEventListener("submit", guard((event) => submitProfile(event, "/models"))); $("#agent-form").addEventListener("submit", guard((event) => submitProfile(event, "/agents"))); $("#new-session").addEventListener("click", guard(async () => { const agent_profile_id = $("#session-agent").value; if (!agent_profile_id) throw new Error("请先选择 Agent。"); const response = await post("/sessions", { agent_profile_id }); if (!response.ok) { const body = await response.json(); throw new Error(body?.error?.message || "创建会话失败"); } const session = await response.json(); await refresh(); await chooseSession(session.id); notice("会话已创建。"); })); $("#session-list").addEventListener("click", guard(async (event) => { const button = event.target.closest("[data-session]"); if (button) await chooseSession(button.dataset.session); })); $("#chat-form").addEventListener("submit", guard(sendMessage)); $("#stop").addEventListener("click", () => state.controller?.abort()); refresh().catch((error) => { $("#connection").textContent = "连接中断"; notice(error.message, true); });
+$("#provider-form").addEventListener("submit", guard((event) => submitProfile(event, "/providers"))); $("#model-form").addEventListener("submit", guard((event) => submitProfile(event, "/models"))); $("#agent-form").addEventListener("submit", guard((event) => submitProfile(event, "/agents"))); $("#new-session").addEventListener("click", guard(async () => { const agent_profile_id = $("#session-agent").value; if (!agent_profile_id) throw new Error("请先选择 Agent。"); const response = await post("/sessions", { agent_profile_id }); if (!response.ok) { const body = await response.json(); throw new Error(body?.error?.message || "创建会话失败"); } const session = await response.json(); await refresh(); await chooseSession(session.id); notice("会话已创建。"); })); $("#session-list").addEventListener("click", guard(async (event) => { const button = event.target.closest("[data-session]"); if (button) await chooseSession(button.dataset.session); })); $("#chat-form").addEventListener("submit", guard(sendMessage)); $("#stop").addEventListener("click", stopSelectedStream); refresh().catch((error) => { $("#connection").textContent = "连接中断"; notice(error.message, true); });

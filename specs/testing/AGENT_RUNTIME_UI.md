@@ -18,6 +18,15 @@
    必须检查消息列实际 left/right 均在视口内，scrollWidth 不超过 clientWidth；
    只检查 document.scrollWidth 会漏掉 overflow:hidden 隐藏的内部列裁切。
    多会话横向列表选择可能滚动外层容器，所以只检查 right 也不够。
+7. 当前页面最多持有一个发送流（不是服务端全局单并发）。A 发送时 B 仍可浏览，
+   但发送按钮禁用并解释原因；停止按钮只在选中 A 时可见，事件处理器也必须
+   再检查所属 Session，隐藏按钮的程序触发不得取消 A。
+8. 浏览器停止或异常断流后，对原会话 queued/streaming 做有界只读回查：
+   最多 6 次、间隔 500ms、整次详情读取含网络共用 5 秒 deadline。实际详情
+   确认 cancelled/failed/succeeded 才显示对应终态；超限保留最后已知状态和
+   “尚未确认终态”提示，不能自己写 cancelled。切换选择会中止旧详情回查。
+9. 传输提示按 Session 保存在当前页面内，重选同一 Session 不会擦掉；新的
+   发送清除该 Session 的旧传输提示。它不是数据库状态，页面刷新不保留。
 
 ## 验证
 

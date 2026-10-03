@@ -308,3 +308,129 @@ def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
     assert page.locator('#messages').evaluate('(node) => { const r = node.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; }'), 'four-session history is clipped despite no document overflow'
     assert page.locator('#messages').evaluate('(node) => node.scrollWidth <= node.clientWidth')
+
+
+@pytest.mark.parametrize('switch_session', [False, True])
+def test_stop_is_owned_by_sending_session_and_reconciles_late_cancel(ui, switch_session):
+    page, runtime, agent, base = ui
+    first = session(runtime, agent, 'stop origin')
+    second = session(runtime, agent, 'stop destination')
+    release, closed = threading.Event(), threading.Event()
+
+    class Adapter:
+        def require(self, _):
+            return self
+
+        async def stream(self, _):
+            try:
+                yield '合成流已抵达浏览器'
+                while not release.is_set():
+                    await asyncio.sleep(.01)
+            finally:
+                closed.set()
+
+    class Credential:
+        def resolve(self, _):
+            return 'synthetic'
+
+    runtime.adapters, runtime.credentials = Adapter(), Credential()
+    runtime._runtime_enabled = True
+    reads = []
+    try:
+        page.goto(base + '/agent-runtime')
+        select(page, first['id'])
+        page.locator('#chat-input').fill('流中停止回归')
+        page.locator('#send').click()
+        pw.expect(page.locator('.transient')).to_contain_text('合成流已抵达浏览器')
+        active = runtime.session_detail(first['id'])
+        assert active['exchanges'][0]['status'] == 'streaming'
+        if switch_session:
+            select(page, second['id'])
+            pw.expect(page.locator('#stop')).to_be_hidden()
+            pw.expect(page.locator('#send')).to_be_disabled()
+            pw.expect(page.locator('#composer-status')).to_contain_text('另一个会话')
+            # Hiding the button is insufficient: its handler must check ownership.
+            page.locator('#stop').dispatch_event('click')
+            page.wait_for_timeout(200)
+            assert not closed.is_set()
+            assert runtime.session_detail(first['id'])['exchanges'][0]['status'] == 'streaming'
+            select(page, first['id'])
+            pw.expect(page.locator('#stop')).to_be_visible()
+
+        def late_detail(route):
+            reads.append(time.monotonic())
+            # Deterministically hold the first read at a pre-finally snapshot.
+            route.fulfill(json=active if len(reads) == 1 else runtime.session_detail(first['id']))
+
+        page.route('**/sessions/' + first['id'], late_detail)
+        page.locator('#stop').click()
+        pw.expect(page.locator('#send')).to_be_enabled(timeout=10_000)
+        assert closed.is_set()
+        assert len(reads) >= 2, 'must re-read when first snapshot is still streaming'
+        pw.expect(page.locator('.exchange-status[data-status="cancelled"]')).to_have_count(1)
+        pw.expect(page.locator('.bubble.assistant')).to_have_count(0)
+        select(page, first['id'])
+        pw.expect(page.locator('.transient')).to_contain_text('浏览器已停止显示')
+    finally:
+        release.set()
+        runtime._runtime_enabled = False
+
+
+def test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation(ui):
+    page, runtime, agent, base = ui
+    created, exchange = session(runtime, agent, 'pending forever', 'pending')
+    runtime._claim(exchange['id'])
+    reads = []
+    page.route('**/sessions/' + created['id'], lambda route: (
+        reads.append(1), route.fulfill(json=runtime.session_detail(created['id']))))
+    page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
+        status=200, content_type='text/event-stream', body=''))
+    page.goto(base + '/agent-runtime')
+    select(page, created['id'])
+    page.locator('#chat-input').fill('transport ends before terminal')
+    page.locator('#send').click()
+    pw.expect(page.locator('#send')).to_be_enabled(timeout=10_000)
+    assert 2 <= len(reads) <= 7, 'one initial read plus at most six reconciliation reads'
+    pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
+    pw.expect(page.locator('.transient')).to_contain_text('尚未确认终态')
+    pw.expect(page.locator('.exchange-status[data-status="cancelled"]')).to_have_count(0)
+    count = len(reads)
+    page.wait_for_timeout(700)
+    assert len(reads) == count, 'polling must stop at its bound'
+
+
+@pytest.mark.parametrize('reselect', [False, True])
+def test_reconciliation_pending_read_has_deadline_and_survives_reselection(ui, reselect):
+    page, runtime, agent, base = ui
+    created, exchange = session(runtime, agent, 'slow reconcile', 'last known message')
+    runtime._claim(exchange['id'])
+    page.goto(base + '/agent-runtime')
+    select(page, created['id'])
+    pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
+    held = []
+
+    def detail(route):
+        held.append(route)
+        if len(held) > 1:
+            route.fulfill(json=runtime.session_detail(created['id']))
+
+    page.route('**/sessions/' + created['id'], detail)
+    page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
+        status=200, content_type='text/event-stream', body=''))
+    page.locator('#chat-input').fill('synthetic truncated transport')
+    page.locator('#send').click()
+    page.wait_for_function('() => state.pendingSelectionCount === 1')
+    assert held
+    if reselect:
+        runtime.cancel_exchange(exchange['id'])
+        select(page, created['id'])
+        page.wait_for_function('() => state.pendingSelectionCount === 0 && state.controller === null')
+        pw.expect(page.locator('.exchange-status[data-status="cancelled"]')).to_have_count(1)
+        pw.expect(page.locator('.transient')).to_contain_text('连接提前结束')
+    else:
+        page.wait_for_function('() => state.pendingSelectionCount === 0 && state.controller === null', timeout=8000)
+        pw.expect(page.locator('.transient')).to_have_count(1)
+        pw.expect(page.locator('.transient')).to_contain_text('尚未确认终态')
+        pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
+        pw.expect(page.locator('#messages')).to_contain_text('last known message')
+        assert len(held) == 1

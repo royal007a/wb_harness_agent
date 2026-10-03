@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="14.599" timestamp="2026-10-04T01:35:15.089539+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_ui" name="test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False]" time="2.191"><failure message="AssertionError: must re-read when first snapshot is still streaming&#10;assert 1 &gt;= 2&#10; +  where 1 = len([1306634.768386291])">ui = (&lt;Page url='http://127.0.0.1:54735/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10c4f3b60&gt;, {'id':...aa9fde1bed8f153b', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54735')
+switch_session = False
+
+    @pytest.mark.parametrize('switch_session', [False, True])
+    def test_stop_is_owned_by_sending_session_and_reconciles_late_cancel(ui, switch_session):
+        page, runtime, agent, base = ui
+        first = session(runtime, agent, 'stop origin')
+        second = session(runtime, agent, 'stop destination')
+        release, closed = threading.Event(), threading.Event()
+    
+        class Adapter:
+            def require(self, _):
+                return self
+    
+            async def stream(self, _):
+                try:
+                    yield '合成流已抵达浏览器'
+                    while not release.is_set():
+                        await asyncio.sleep(.01)
+                finally:
+                    closed.set()
+    
+        class Credential:
+            def resolve(self, _):
+                return 'synthetic'
+    
+        runtime.adapters, runtime.credentials = Adapter(), Credential()
+        runtime._runtime_enabled = True
+        reads = []
+        try:
+            page.goto(base + '/agent-runtime')
+            select(page, first['id'])
+            page.locator('#chat-input').fill('流中停止回归')
+            page.locator('#send').click()
+            pw.expect(page.locator('.transient')).to_contain_text('合成流已抵达浏览器')
+            active = runtime.session_detail(first['id'])
+            assert active['exchanges'][0]['status'] == 'streaming'
+            if switch_session:
+                select(page, second['id'])
+                pw.expect(page.locator('#stop')).to_be_hidden()
+                pw.expect(page.locator('#send')).to_be_disabled()
+                pw.expect(page.locator('#composer-status')).to_contain_text('另一个会话')
+                # Hiding the button is insufficient: its handler must check ownership.
+                page.locator('#stop').dispatch_event('click')
+                page.wait_for_timeout(200)
+                assert not closed.is_set()
+                assert runtime.session_detail(first['id'])['exchanges'][0]['status'] == 'streaming'
+                select(page, first['id'])
+                pw.expect(page.locator('#stop')).to_be_visible()
+    
+            def late_detail(route):
+                reads.append(time.monotonic())
+                # Deterministically hold the first read at a pre-finally snapshot.
+                route.fulfill(json=active if len(reads) == 1 else runtime.session_detail(first['id']))
+    
+            page.route('**/sessions/' + first['id'], late_detail)
+            page.locator('#stop').click()
+            pw.expect(page.locator('#send')).to_be_enabled(timeout=10_000)
+            assert closed.is_set()
+&gt;           assert len(reads) &gt;= 2, 'must re-read when first snapshot is still streaming'
+E           AssertionError: must re-read when first snapshot is still streaming
+E           assert 1 &gt;= 2
+E            +  where 1 = len([1306634.768386291])
+
+tests/test_agent_runtime_ui.py:369: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True]" time="5.992"><failure message="AssertionError: Locator expected to be hidden&#10;Actual value: visible &#10;Call log:&#10;  - Expect &quot;to_be_hidden&quot; with timeout 5000ms&#10;  - waiting for locator(&quot;#stop&quot;)&#10;    14 × locator resolved to &lt;button id=&quot;stop&quot; type=&quot;button&quot; class=&quot;secondary&quot;&gt;停止显示&lt;/button&gt;&#10;       - unexpected value &quot;visible&quot;&#10;&#10;Aria snapshot:&#10;- button &quot;停止显示&quot;">ui = (&lt;Page url='http://127.0.0.1:54748/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10d510190&gt;, {'id':...ba5f5d74155d46a3', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54748')
+switch_session = True
+
+    @pytest.mark.parametrize('switch_session', [False, True])
+    def test_stop_is_owned_by_sending_session_and_reconciles_late_cancel(ui, switch_session):
+        page, runtime, agent, base = ui
+        first = session(runtime, agent, 'stop origin')
+        second = session(runtime, agent, 'stop destination')
+        release, closed = threading.Event(), threading.Event()
+    
+        class Adapter:
+            def require(self, _):
+                return self
+    
+            async def stream(self, _):
+                try:
+                    yield '合成流已抵达浏览器'
+                    while not release.is_set():
+                        await asyncio.sleep(.01)
+                finally:
+                    closed.set()
+    
+        class Credential:
+            def resolve(self, _):
+                return 'synthetic'
+    
+        runtime.adapters, runtime.credentials = Adapter(), Credential()
+        runtime._runtime_enabled = True
+        reads = []
+        try:
+            page.goto(base + '/agent-runtime')
+            select(page, first['id'])
+            page.locator('#chat-input').fill('流中停止回归')
+            page.locator('#send').click()
+            pw.expect(page.locator('.transient')).to_contain_text('合成流已抵达浏览器')
+            active = runtime.session_detail(first['id'])
+            assert active['exchanges'][0]['status'] == 'streaming'
+            if switch_session:
+                select(page, second['id'])
+&gt;               pw.expect(page.locator('#stop')).to_be_hidden()
+E               AssertionError: Locator expected to be hidden
+E               Actual value: visible 
+E               Call log:
+E                 - Expect "to_be_hidden" with timeout 5000ms
+E                 - waiting for locator("#stop")
+E                   14 × locator resolved to &lt;button id="stop" type="button" class="secondary"&gt;停止显示&lt;/button&gt;
+E                      - unexpected value "visible"
+E               
+E               Aria snapshot:
+E               - button "停止显示"
+
+tests/test_agent_runtime_ui.py:349: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation" time="6.099"><failure message="AssertionError: Locator expected to contain text '尚未确认终态'&#10;Actual value: 传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。 &#10;Call log:&#10;  - Expect &quot;to_contain_text&quot; with timeout 5000ms&#10;  - waiting for locator(&quot;.transient&quot;)&#10;    14 × locator resolved to &lt;article role=&quot;status&quot; class=&quot;exchange-status transient&quot;&gt;传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。&lt;/article&gt;&#10;       - unexpected value &quot;传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。&quot;&#10;&#10;Aria snapshot:&#10;- status: 传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。">ui = (&lt;Page url='http://127.0.0.1:54781/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10d388690&gt;, {'id':...be84d8b01b5147d3', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54781')
+
+    def test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation(ui):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'pending forever', 'pending')
+        runtime._claim(exchange['id'])
+        reads = []
+        page.route('**/sessions/' + created['id'], lambda route: (
+            reads.append(1), route.fulfill(json=runtime.session_detail(created['id']))))
+        page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
+            status=200, content_type='text/event-stream', body=''))
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+        page.locator('#chat-input').fill('transport ends before terminal')
+        page.locator('#send').click()
+        pw.expect(page.locator('#send')).to_be_enabled(timeout=10_000)
+        assert 2 &lt;= len(reads) &lt;= 7, 'one initial read plus at most six reconciliation reads'
+        pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
+&gt;       pw.expect(page.locator('.transient')).to_contain_text('尚未确认终态')
+E       AssertionError: Locator expected to contain text '尚未确认终态'
+E       Actual value: 传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。 
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator(".transient")
+E           14 × locator resolved to &lt;article role="status" class="exchange-status transient"&gt;传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。&lt;/article&gt;
+E              - unexpected value "传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。"
+E       
+E       Aria snapshot:
+E       - status: 传输失败：连接提前结束，未收到完成状态；不能确认回答已保存。
+
+tests/test_agent_runtime_ui.py:395: AssertionError</failure></testcase></testsuite></testsuites>

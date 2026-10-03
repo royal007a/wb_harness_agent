@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="19" time="24.398" timestamp="2026-10-04T01:39:35.361458+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_ui" name="test_failed_send_remains_visible_after_completion_reselection_and_reload" time="2.977" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d]" time="0.644" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d]" time="0.669" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88]" time="0.747" /><testcase classname="tests.test_agent_runtime_ui" name="test_successful_message_is_not_duplicated_by_exchange_card" time="0.645" /><testcase classname="tests.test_agent_runtime_ui" name="test_exchange_and_user_text_do_not_inject_html" time="0.539" /><testcase classname="tests.test_agent_runtime_ui" name="test_slow_old_session_detail_cannot_replace_new_selection" time="0.943" /><testcase classname="tests.test_agent_runtime_ui" name="test_stream_completion_does_not_refetch_or_replace_other_session" time="1.153" /><testcase classname="tests.test_agent_runtime_ui" name="test_exchange_without_visible_user_message_is_not_lost" time="0.646" /><testcase classname="tests.test_agent_runtime_ui" name="test_early_stream_eof_never_commits_preview_as_answer" time="0.743" /><testcase classname="tests.test_agent_runtime_ui" name="test_stop_display_does_not_claim_server_cancelled" time="1.051" /><testcase classname="tests.test_agent_runtime_ui" name="test_live_synthetic_stream_is_only_preview_until_persisted" time="0.846" /><testcase classname="tests.test_agent_runtime_ui" name="test_multiple_sessions_do_not_clip_mobile_history[Mobile session]" time="0.543" /><testcase classname="tests.test_agent_runtime_ui" name="test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd]" time="0.746" /><testcase classname="tests.test_agent_runtime_ui" name="test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False]" time="1.757" /><testcase classname="tests.test_agent_runtime_ui" name="test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True]" time="2.263" /><testcase classname="tests.test_agent_runtime_ui" name="test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation" time="5.063" /><testcase classname="tests.test_agent_runtime_ui" name="test_reconciliation_pending_read_has_deadline_and_survives_reselection[False]" time="0.941"><failure message="playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'&quot;.&#10;&#10;    at eval (&lt;anonymous&gt;)&#10;    at predicate (eval at evaluate (:311:30), &lt;anonymous&gt;:4:60)&#10;    at next (eval at evaluate (:311:30), &lt;anonymous&gt;:29:33)">ui = (&lt;Page url='http://127.0.0.1:58874/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10ce04050&gt;, {'id':...88f73d3af6b23f56', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:58874')
+reselect = False
+
+    @pytest.mark.parametrize('reselect', [False, True])
+    def test_reconciliation_pending_read_has_deadline_and_survives_reselection(ui, reselect):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'slow reconcile', 'last known message')
+        runtime._claim(exchange['id'])
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+        pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
+        held = []
+    
+        def detail(route):
+            held.append(route)
+            if len(held) &gt; 1:
+                route.fulfill(json=runtime.session_detail(created['id']))
+    
+        page.route('**/sessions/' + created['id'], detail)
+        page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
+            status=200, content_type='text/event-stream', body=''))
+        page.locator('#chat-input').fill('synthetic truncated transport')
+        page.locator('#send').click()
+&gt;       page.wait_for_function('state.pendingSelectionCount === 1')
+
+tests/test_agent_runtime_ui.py:422: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x10aada510&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x10e7c1430&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'".
+E           
+E               at eval (&lt;anonymous&gt;)
+E               at predicate (eval at evaluate (:311:30), &lt;anonymous&gt;:4:60)
+E               at next (eval at evaluate (:311:30), &lt;anonymous&gt;:29:33)
+
+.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: Error</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_reconciliation_pending_read_has_deadline_and_survives_reselection[True]" time="0.987"><failure message="playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'&quot;.&#10;&#10;    at eval (&lt;anonymous&gt;)&#10;    at predicate (eval at evaluate (:311:30), &lt;anonymous&gt;:4:60)&#10;    at next (eval at evaluate (:311:30), &lt;anonymous&gt;:29:33)">ui = (&lt;Page url='http://127.0.0.1:58881/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10e530520&gt;, {'id':...a620ede06ae29eaf', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:58881')
+reselect = True
+
+    @pytest.mark.parametrize('reselect', [False, True])
+    def test_reconciliation_pending_read_has_deadline_and_survives_reselection(ui, reselect):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'slow reconcile', 'last known message')
+        runtime._claim(exchange['id'])
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+        pw.expect(page.locator('.exchange-status[data-status="streaming"]')).to_have_count(1)
+        held = []
+    
+        def detail(route):
+            held.append(route)
+            if len(held) &gt; 1:
+                route.fulfill(json=runtime.session_detail(created['id']))
+    
+        page.route('**/sessions/' + created['id'], detail)
+        page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
+            status=200, content_type='text/event-stream', body=''))
+        page.locator('#chat-input').fill('synthetic truncated transport')
+        page.locator('#send').click()
+&gt;       page.wait_for_function('state.pendingSelectionCount === 1')
+
+tests/test_agent_runtime_ui.py:422: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x10aada510&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x10e480930&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'".
+E           
+E               at eval (&lt;anonymous&gt;)
+E               at predicate (eval at evaluate (:311:30), &lt;anonymous&gt;:4:60)
+E               at next (eval at evaluate (:311:30), &lt;anonymous&gt;:29:33)
+
+.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: Error</failure></testcase></testsuite></testsuites>
