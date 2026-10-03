@@ -3,9 +3,9 @@
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
   "active_task_id": "HA-0056",
-  "active_plan": "exec-plans/active/HA-0056-local-deployment-recovery.md",
-  "last_checkpoint": "双端应用仍 1840639；HA-0055 独立 review 待收。HA-0056 有界 launchd 恢复故障注入 16 passed，旧两项反例失败。首轮全量 353 passed/1 failed/16 skipped：意图评测 CLI 超出既有 5s；待原样复跑及冻结代码全量验证，不宣称全部通过或已发布。",
-  "last_updated_at": "2026-10-03T17:06:00Z",
-  "next_action": "完成 HA-0056 最终验证、先本机再132发布与独立 review；继续 OpenAPI 同名 Schema 覆盖、Provider 上游 EOF、26 未观测接口及全部功能验收，纠正文档与指标口径。保留完整12小时目标和默认模型门禁，不把独立沙箱称为 Product Run 桥接。",
+  "active_plan": "exec-plans/blocked/HA-0056-local-deployment-recovery.md",
+  "last_checkpoint": "HA-0056 冻结392e103全量356 passed/16 skipped，故障注入16 passed；两次早先超时失败及原样复跑均保留。发布前发现本机GUI domain125/8765离线，132仍1840639健康；未切新版本。需恢复本机图形会话，独立review待收。",
+  "last_updated_at": "2026-10-03T17:16:58Z",
+  "next_action": "待用户恢复gui/501后完成HA-0056本机及132发布；不擅自迁移到system/root服务。独立review及OpenAPI/Provider EOF/26接口审计仍待处理，完整目标未完成。Product Run/Skill桥接尚未实现，模型门禁保持关闭。",
   "release": "0.1.0-local"
 }

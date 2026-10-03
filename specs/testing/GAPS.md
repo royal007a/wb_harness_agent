@@ -28,8 +28,10 @@ error，reload 后只验证 Session 存在，所以脚本绿灯漏掉了持久�
 后续必须单独显示 Exchange 状态（不能伪造 assistant），并在发送完成、重新
 选择会话及刷新后验证错误仍可见，不能只等到瞬时文本出现就通过。
 
-待补探针：OpenAI-compatible Adapter 对无 `[DONE]` 的断流是否错误当作成功
-（当前仅源码风险，尚未作协议层反例验证）；真实 Provider 继续不准入。
+**PROVIDER-01**：2026-10-03 用 httpx.MockTransport 只发一段 delta 后 EOF，
+不发送 `[DONE]` 或 finish_reason。Adapter 产出 1 个片段后正常结束，未报错；
+已从源码风险升级为协议层复现，但尚未验证 Product Run/Exchange 最终发布路径。
+没有真实外部请求，真实 Provider 继续不准入。需独立规范和回归修复。
 
 ### HA-0055 跟进
 
@@ -46,6 +48,10 @@ skipped，正式发布 Evidence 继续记录。
 返回 5；同样的自动 plist 回退也失败，后续手动 bootstrap 才恢复。数据库备份
 完整，health 和 gate 已复核；不能宣称自动恢复通过。需用有界 teardown/
 bootstrap 重试和失败注入测试修复发布助手（不擅自强杀其他服务或回滚 DB）。
+
+HA-0056 已实现有限重试及健康恢复，冻结392e103全量356 passed/16 skipped。
+真实发布前本机 GUI domain 不可用（125）且8765离线，等待用户恢复图形会话；
+132 保持1840639。代码通过不等于两端发布完成，故本问题仍开放。
 
 继续文档对照时需处理 `CURRENT_ARCHITECTURE.md` 重复的 Memory 段落，以及
 “尚未具备”列表与文首已实现离线 Adapter 的粒度冲突；用逐能力状态替代笼统

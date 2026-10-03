@@ -1,0 +1,8 @@
+......................                                                   [100%]
+=============================== warnings summary ===============================
+harness/pytest_interface_evidence.py:19
+  /opt/harnessagent-releases/ha0056-392e10356ad9/harness/pytest_interface_evidence.py:19: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import _TestClientTransport
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+22 passed, 1 warning in 1.78s

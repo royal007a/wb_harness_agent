@@ -5,16 +5,16 @@
     {
       "id": "HA-0056",
       "title": "修复 launchd 发布的有界重试和恢复证据",
-      "status": "running",
+      "status": "blocked",
       "risk": "medium",
       "scope": ["暂态 bootstrap 重试及绝对超时", "正向/回退健康验证和失败回执", "故障注入、双端发布与独立 review"],
       "non_goals": ["自动回滚数据库或应用代码", "强杀其他服务", "开启模型或改变沙箱权限"],
       "acceptance": ["暂态 5 可恢复，永久错误和超时有界退出", "回退未经健康验证不得称成功，失败发布不得写成功回执", "旧缺陷反例、新回归、双端固定版本 Evidence 可复核"],
       "depends_on": [],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0056-local-deployment-recovery.md",
-      "blocked_reason": null,
-      "recovery_condition": null,
+      "plan": "exec-plans/blocked/HA-0056-local-deployment-recovery.md",
+      "blocked_reason": "本机 gui/501 当前不可用（launchctl exit 125，控制台属主 root），8765 离线；双端规则禁止跳过本机直接发布132。代码冻结验证356 passed/16 skipped，未执行新发布。",
+      "recovery_condition": "用户重新登录 weberzhao 图形会话，确认 gui/501 可用；恢复同一 label 后按先本机再132发布并记录证据。",
       "evidence": ["harness/evidence/HA-0056/acceptance.md"]
     },
     {
