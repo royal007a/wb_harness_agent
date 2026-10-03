@@ -1,0 +1,1187 @@
+{
+  "version": "http-observations@1",
+  "routes": [
+    {
+      "id": "DELETE /api/local/memory/sources/{source_id}",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /agent-lab",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /agent-runtime",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-lab/agents",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-lab/models",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-lab/providers",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-lab/runtime",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-lab/sessions",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-lab/sessions/{session_id}",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-runtime/agents",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-runtime/models",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-runtime/providers",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-runtime/providers/{provider_id}/readiness",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-runtime/runtime",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-runtime/sessions",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/agent-runtime/sessions/{session_id}",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/connectors/baidu-netdisk",
+      "feature": "baidu",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/connectors/baidu-netdisk/callback",
+      "feature": "baidu",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/external-skills/packages",
+      "feature": "external-skills",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/external-skills/runtime",
+      "feature": "external-skills",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/memory/banks",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/memory/banks/{bank_id}",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/memory/runtime",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/pi-contract-review",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/pi-contract-review/{run_id}",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/pi-contract-review/{run_id}/events",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/pi/runtime",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/recovery/cases",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/recovery/cases/{case_id}",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/recovery/runtime",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/research",
+      "feature": "research",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/research-agents",
+      "feature": "research-agents",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/research-agents/{run_id}",
+      "feature": "research-agents",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/research-native",
+      "feature": "research-native",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/research-native/runtime",
+      "feature": "research-native",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/research-native/{run_id}",
+      "feature": "research-native",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/research/{run_id}",
+      "feature": "research",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/runs/{run_id}/restore",
+      "feature": "replan",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/sample",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/attention/runtime",
+      "feature": "attention",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/channels/{channel_id}",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/foundation/runtime",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/inbox",
+      "feature": "attention",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/runtime",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/sessions",
+      "feature": "continuity",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/sessions/runtime",
+      "feature": "continuity",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/sessions/{session_id}",
+      "feature": "continuity",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/tasks",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/tasks/{task_id}",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/workspaces",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/workspaces/{workspace_id}",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/workspaces/{workspace_id}/agents",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/local/team/workspaces/{workspace_id}/channels",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/artifacts/{artifact_id}/content",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/engines",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/frameworks",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/health",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/readiness",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/replans/{replan_id}",
+      "feature": "replan",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/resources",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/resources/{resource_id}",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}/artifacts",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}/events",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/runs/{run_id}/replans",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/tasks",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/tasks/{task_id}",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /api/v1/tasks/{task_id}/artifacts",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /connectors/baidu-netdisk",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /docs",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /openapi.json",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /research",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /research-agents",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "GET /static/{path:path}",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "HEAD /openapi.json",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "HEAD /static/{path:path}",
+      "feature": "web",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-lab/agents",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-lab/models",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-lab/providers",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-lab/sessions",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-lab/sessions/{session_id}/messages",
+      "feature": "agent-lab",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-runtime/agents",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-runtime/models",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-runtime/providers",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-runtime/sessions",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/agent-runtime/sessions/{session_id}/messages",
+      "feature": "agent-runtime",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/connectors/baidu-netdisk/authorization",
+      "feature": "baidu",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/connectors/baidu-netdisk:disconnect",
+      "feature": "baidu",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/external-skills/packages",
+      "feature": "external-skills",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/external-skills/packages/{package_id}:execute",
+      "feature": "external-skills",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/intents:interpret",
+      "feature": "intent",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}/entities",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}/relations",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}/retain",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:context",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:fact-lineage",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:graph-recall",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:recall",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:recall-details",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/banks/{bank_id}:resolve-entity",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/memory/sources/{source_id}:retract",
+      "feature": "memory",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/preview",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/review",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/review-stream",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/pi-contract-pipeline/security-check",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/pi-contract-review",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/pi-contract-review/{run_id}:gate",
+      "feature": "pi",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/recovery/cases",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}/observations",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:cancel",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:complete",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:confirm",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:link-handoff",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/recovery/cases/{case_id}:try",
+      "feature": "recovery",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/research",
+      "feature": "research",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/research-agents",
+      "feature": "research-agents",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/research-native",
+      "feature": "research-native",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/research-native/documents",
+      "feature": "research-native",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/runs/{run_id}:restore",
+      "feature": "replan",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/tasks",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/attention/items",
+      "feature": "attention",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/attention/items/{item_id}:claim",
+      "feature": "attention",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/attention/items/{item_id}:complete",
+      "feature": "attention",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/attention/items/{item_id}:release",
+      "feature": "attention",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/channels/{channel_id}/memberships",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/channels/{channel_id}/threads/{thread_id}:read",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/sessions",
+      "feature": "continuity",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/sessions/{session_id}:handoff",
+      "feature": "continuity",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/tasks",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}/gate-decisions",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}/handoffs",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}:claim",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}:close",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/tasks/{task_id}:submit",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/workspaces",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/workspaces/{workspace_id}/agents",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/workspaces/{workspace_id}/channels",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/local/team/workspaces/{workspace_id}/memberships",
+      "feature": "team",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/replans/{replan_id}:cancel",
+      "feature": "replan",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/replans/{replan_id}:confirm",
+      "feature": "replan",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/replans/{replan_id}:try",
+      "feature": "replan",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/resources",
+      "feature": "platform",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/runs/{run_id}/replans",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/runs/{run_id}:cancel",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/tasks",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    },
+    {
+      "id": "POST /api/v1/tasks/{task_id}/runs",
+      "feature": "product",
+      "observation": "not_observed",
+      "acceptance": "not_determined_by_observer",
+      "tests": []
+    }
+  ],
+  "unmatched_request_count": 0,
+  "summary": {
+    "total": 148,
+    "observed": 0,
+    "not_observed": 148
+  },
+  "not_evidence": [
+    "Route matching is not handler/branch/assertion coverage.",
+    "2xx does not prove business success, SSE completion or real external calls.",
+    "Includes mocked transports and middleware rejections; review tests separately."
+  ],
+  "finished_at": "2026-10-03T14:44:54.138265+00:00",
+  "git_head": "b51dce6142fb434837a1849c70430c11cecf7a6b",
+  "working_tree_dirty": true,
+  "pytest_exitstatus": 0,
+  "source_sha256": {
+    "adapters/__init__.py": "733588e58632d580d22773a519074d84cef4614dbceb15ac7d9f83353053e2ec",
+    "adapters/claude_config.py": "99238874d12bdd03db5960716f7056f88f8d8f4d1cb85d6434823d7ef0b1a895",
+    "adapters/claude_research.py": "b9abcffab625326a2ccc4fb8afe1fad5ac3f01430edffa8e7508e9df3fba10f2",
+    "adapters/contracts.py": "ef3ea69644e19542f3239837be7b4423c2abc5e2ab4cee092f3a5cc76ca944f7",
+    "adapters/local.py": "26eb3647726abeac925bb74fcf96ec40b78029c2499a6d45ac41bc7abcc4a19e",
+    "adapters/pi_contract_review.py": "897f8c0ce7dd48348f2f0c219e3bf15d04d10b61cc65fd5f8f22965bdf0ba56c",
+    "adapters/pi_sidecar.py": "1c300a246f8015ef81d00fcf89a50d278aecb31299fdaac578b1d525e96ae1f8",
+    "adapters/research_demo.py": "0ea55b16964a368010a1ad73e8f41eaa6cc19680192457282f7164498172d40d",
+    "adapters/smolagents_probe.py": "0681bb98e9d720ce7c5fa43a9f5444d2eccbbd9c97719373d1437424f06a5165",
+    "backend/__init__.py": "c6effc20f2ea052bebd0fc453f6270b32e7f62b81963ac677b969b841e8951fd",
+    "backend/adaptive_retrieval.py": "f75dc2c61fcacb4a9e6896d221bb7a47e37917b5f270af8e6975950c5e5c215f",
+    "backend/agent_lab.py": "7f3fba32b9b06efb15c8c7995d2e41c2471e2a723ed8a88af6f44740ad86dc76",
+    "backend/agent_runtime.py": "d5ae076daa39ea1f20c0b7894cca2ea0e3fc9da62498ce29c90557edaf078223",
+    "backend/analysis.py": "27a422f7bbceae60d913393f2a3082a22b2d2b4473b0f1bb9cad10f583de31d8",
+    "backend/app.py": "a5cf05390c0e8b4cd1da1c73a6a28e53620fce2c5fa89b277776a0433498c9e4",
+    "backend/baidu_netdisk.py": "d17fa70b8978aaa9d438e50304780ab3e2e346ac25c434c1fbef35247def72f3",
+    "backend/claude_research_admission.py": "52383eeac0e5f8958c2dbde637d657a5c63f533e9cf55d2bb3d1d81da8e87cc2",
+    "backend/execution_control.py": "927ebe1bd805bc1644056ebda70b27beb746247a9875b3eaa44ed14fd965f55c",
+    "backend/external_skill_sandbox.py": "2aa001a2bf3ded2d0a5d4510c3025cd908d3a8bb76c82208c36262419fa355e9",
+    "backend/external_skills.py": "5dd71bcc6adaa026812f80b0cf9387dcaf03fd6178d0994c9774fcd6abaebda9",
+    "backend/framework_catalog.py": "a25ba4d9cc9f985c90ac4de96935d379d0fcbfed0861f5cd15381e1b6e5ba034",
+    "backend/frontend.py": "c76faf89e1dfb3bc258c7af2947b77fec0b76cdd04b00197c9ab4ff6d4b9f1f8",
+    "backend/intent.py": "dc849a1938b8f1032976fb77461957a301c8750ca92ff47560bb317f13f12143",
+    "backend/memory.py": "cce3595d4abfef7165179c04efaf3e56d9fd1190577d3954bfaeaa96ddbcb79d",
+    "backend/pi_admission.py": "ff514c9b21a0873d92e5559d73280da0c9c3658983864ec28f1725f46e3244f8",
+    "backend/pi_contract_pipeline.py": "de0f2de29725340e10a62da8e0cabe629ed59f439b6241d6e49e7160d8a55885",
+    "backend/pi_contract_review.py": "8cd7afb2efe64b11e3c4455105cc6f21b0a525f75be0419ef75bba1b314985f2",
+    "backend/pi_security_guard.py": "c888a9b887a404b3086ec9f41f8c37867c427ea3739ee069966321f288824d6f",
+    "backend/provider_adapters.py": "54d676291dd2dc59b4cbc90c48c86a2d2ee5df14aa2d71bdd962be4e848622ad",
+    "backend/readiness.py": "fbd36a4f55d905a09fe7e167697e2f0f8f89b390c1d64a7b71cca1620509ef34",
+    "backend/recovery_loop_guard.py": "6224decf417586fe19af1c02c7392dca54973c9a9f601a57b27ec7926a375211",
+    "backend/research.py": "7ce834c941b3d43c54ba298187a30acb91d99f54995710d528605cc7b5d09313",
+    "backend/research_agents.py": "4b31f69429fd62affe5f0c76951c78b374064e77e824f33be62a9fc56981eb8b",
+    "backend/research_native.py": "8233a87f53fb04057c2fdc492d0a6d10eab33dce1f9a7a6893fcda529e7d5a42",
+    "backend/research_sources.py": "4ac659815e1ca99b4b89a9d69b4a5d3e6c35a09794b6a3ca9db775291ef7078e",
+    "backend/sandbox.py": "8210b171bc9030bd79476b3151fbd13bce94cfa9dac31cf5b1dd7e58b3ff898c",
+    "backend/service.py": "66c58d0dd28ee514775898b201b5b38ad65cf30bf1765fbcc18167a10491ad5a",
+    "backend/store.py": "da1db8f8c380bb5ab70a8c7cd4c9d981be6e10336fb5c97f6b01045964e1e942",
+    "backend/team_attention.py": "40a81be9ea7b5f92723c3d11cf051c684d56e9082c69d352d9ac58251b85b03a",
+    "backend/team_coordination.py": "b2ba8c48d114e6493ac80a0f86bde18aa66666becb876120c884912096a1aa82",
+    "backend/team_foundation.py": "79dff8d2ba00187e33b061251dca584e80240caf292df0449f5492174d605bdc",
+    "backend/team_security.py": "1aa2b76bec5e164f09ff7cd2422b952b9380483ae5ad818828f21383cbec0b37",
+    "backend/team_session_continuity.py": "810e86f1ab107a10778962474327b656331b93ff2d759bf40c8bc524dc008c9b",
+    "harness/interface_inventory.py": "53488fc8b4cbd6bad5d88ff15c0e8875472ee271601d862ec033dc9fe6f540ce",
+    "harness/pytest_interface_evidence.py": "6af6c26c74fd1ff2687464d728548219df263d643c95674dc12790c673d4cf2e",
+    "specs/testing/features.json": "fd717eea39ca1c0ddeae4246925a25259280150c7b99f2242e85926da9a17a3b",
+    "specs/v1/adaptive-chunk.schema.json": "de83da48ad55dfcf8af3b0dfb6ec40be5ea3dac413a463e1c20adc55b4857ffe",
+    "specs/v1/agent-runtime.schema.json": "9f6b6f61021c46c97dce193fe3cc88608610c58eb3e6ef2f07b4af2a3f75a2bc",
+    "specs/v1/baidu-netdisk-connector.schema.json": "ed3ea4fe6a7050690d1c31a1d984cda546d5be7fc029b9265f228c81db9a8898",
+    "specs/v1/claude-research-admission.schema.json": "4a6f7cdd83760af085847069e0bc1e714712aa8dde469e74f4a8fe132a0be6e9",
+    "specs/v1/claude-research-runtime.schema.json": "c19771859d5700a910361ea9e97deac955e37f5f0acf2f9c64b92fff3cc83a75",
+    "specs/v1/core-contracts.schema.json": "ff7e3cedfadab120325bd4d63c7f88172d7cb7bce6df45b20834f771b061fe12",
+    "specs/v1/execution-control.schema.json": "7fca554866d0c1562277a0700932cedfe69e4058991930756321b3bb40cfd3ae",
+    "specs/v1/external-skill-runtime.schema.json": "6c0b128e822fea107c27204db1966436447125d5bec50e05929a4a1fa418b896",
+    "specs/v1/framework-catalog.schema.json": "2fc2d89cff10f6fc8fdb0969c3eecdde59e4f97db15362d46404bc36ce24b33b",
+    "specs/v1/intent-contract.schema.json": "3dbde1e596e66d551dd98e656d638e027614438a59067c976a5b3b9819b2846b",
+    "specs/v1/intent-evaluation.schema.json": "ca702197170088d6fd990494cfb77431b3ea7cb8ed75968178398911fcffb96c",
+    "specs/v1/local-agent-lab.schema.json": "d9712ae5379857ed4e538171339b103e6a79a744384f8b4b2aaef0ee2e2fbc14",
+    "specs/v1/local-checkpoint-restore.schema.json": "713e47a992ba5156591c7d4e109d6eeed63b81593c0e5062191616126e37f2d7",
+    "specs/v1/local-replan.schema.json": "472a91817a1045debae65097fd3fb566db81c2fb080878a65efb5304f84e31d2",
+    "specs/v1/memory-context.schema.json": "2fe9299696ffd04fe0afab8d7f6751dae4d8dffdd7ee39adf4419774e6228f99",
+    "specs/v1/memory-entity-catalog.schema.json": "3a86483680749b27d3060c423ec415e63b2d0f4162137a6618716f63a4ccf24f",
+    "specs/v1/memory-fact-lineage.schema.json": "388f2b9b4a0a7b0e1edcaf2b1e761e3d407334476a9c8609d1a57d837addaccd",
+    "specs/v1/memory-graph.schema.json": "852741597b890fc90adac573b246268d32e4de0a57b74df11c0817b7a2cb43d6",
+    "specs/v1/memory-plane.schema.json": "4501154218272e02d7f48f244427bd640efc862c796cd257e859edd38f62e188",
+    "specs/v1/memory-semantic-admission.schema.json": "306f134316bf810b4ecbefd1dd3527b81eb63a75770074e5a1b688c0c98d4372",
+    "specs/v1/openapi.yaml": "1edb282237193df19933f886e7a34bc477cf5899910817ab4ce6d7335cef561b",
+    "specs/v1/pi-admission.schema.json": "e4f45d40223075bfe0eef684fee7947db4750fc7d943579f47b4e621f2ca4840",
+    "specs/v1/pi-contract-pipeline.schema.json": "afff2a1f5b9e28ad8111cd667af08011dab4b213e435fe735132d21e5b451c60",
+    "specs/v1/pi-contract-review-runtime.schema.json": "4f9037dbf2c55d12b1fb961e50b883154b7f0dc9caa14a322b988f1f2603e846",
+    "specs/v1/pi-contract-review.schema.json": "9c07ba014efe21927bef1129f8f0ac5120c2d6be0dc6d0d9506448715e1ec907",
+    "specs/v1/pi-security-guard.schema.json": "af78aa02cd00c0574e0857907adcc75c981d53eb63bbb5c02961bb974db979db",
+    "specs/v1/policy-profile.schema.json": "c28ef5e70cfeca373b3938f32c5b40908cde80499ea36b034e6f5623fbee7603",
+    "specs/v1/recovery-loop-guard.schema.json": "9bd11288783cde39db4b4718953462bd4348cbd489f55db849412507efbaf2cb",
+    "specs/v1/research-agent-runtime.schema.json": "3fe98c7e1e35034e451a2d5575c416145970d3e2df3c3a13c729a1604b3cc891",
+    "specs/v1/research-request.schema.json": "517d9824170e4c86e78087638e6e0075236984e212d6dbcdbdedaba140d04f50",
+    "specs/v1/retrieval-state-v2.schema.json": "a91ac275e9059f330eefb114c3c3249f4efb47f48f6c2df2a76a889097969163",
+    "specs/v1/retrieval-state.schema.json": "4ccfea7359bb6a3eb6fe82a7c552a364e46f07b8b508e42d8be42c783c79eb40",
+    "specs/v1/team-attention.schema.json": "49ffc5e424f172a4f29b7d60d19c696a23b693afc90bd7dcb159e06674ded113",
+    "specs/v1/team-coordination.schema.json": "2d1066db88cbac351dea659f4b63e02a1030f33a0e1bf094276d4fd6af38257e",
+    "specs/v1/team-foundation.schema.json": "ff54d690996e49b525ce834c929019842a36dceaeee183000b41f1828513084a",
+    "specs/v1/team-session-continuity.schema.json": "103599c3af9fa72a5b7ce5195319155f2139320f3407d570523735a7e4337411",
+    "tests/test_adaptive_retrieval.py": "a2bcdb109f6d73ab1e1af6e6870f829adc11da9753e5cda41bd180967f08db59",
+    "tests/test_agent_lab.py": "1e820c1732698de4f694fd4258bb2646b75bf14fe8950aa60e0ba2a9e3a1979c",
+    "tests/test_agent_runtime.py": "7dd6158881b699161fd5840554568f286e00be29d29d03759da27c8a7da88651",
+    "tests/test_agentic_rag_state.py": "20142b8a09949357cb985942861d2c664cf9cdcd236140275552beb887f4fd04",
+    "tests/test_baidu_netdisk.py": "38e6a069334bd85b6687809a44a515d71035036f6614ae3f761e27605a512df3",
+    "tests/test_baidu_netdisk_configuration.py": "5ac78c5eb2a2d75b4b08ad8f6f1ec4f366896ad9eb9684a6040d12efb3604889",
+    "tests/test_baidu_netdisk_live_refresh.py": "38193880da3cb2b0d2542a9e57364709a159d0bb0f0d8b0f4db379fafab51df4",
+    "tests/test_baidu_share_handoff.py": "bd29d01d641e74b902c13ea591425547dca8ea8fd22e6c6dfcaeb409d3ca0a88",
+    "tests/test_claude_config.py": "6f61572787b13a2bc9f8ee781e13ad2bb64a98da4ab86599fbb9f5d37aaa9f1e",
+    "tests/test_claude_research_admission.py": "6cb5569c8c8d3757601a36873f65127df56dff67540769bf885f0bcddbd32db6",
+    "tests/test_claude_research_runtime.py": "1d6ee5d617d0cdeb07929170d66f7011c05cd327b5afb6a9f42b2a6acd4db555",
+    "tests/test_contract_risk_skill.py": "40db7c7638a8f358bd18c89caa8bc76caad500621f738d56d3178ec141848fb0",
+    "tests/test_execution_control.py": "ba2e25e8dd32f4083ab2bec7cf7706c904fb5d3aa455151484ddc2f093adb004",
+    "tests/test_external_skills.py": "03d0998ad16138940d6968e56befadc7d7cdd0c647f856de7601898c48148283",
+    "tests/test_framework_catalog.py": "6851a9f1d2d59ec932918928c0ae8d6cbb2da72e611ece60074f9be8bb2815cd",
+    "tests/test_frontend_paths.py": "4449825b739e3b8c84fc0fb2740467e46660af835f19898945bbd76f8403e8d4",
+    "tests/test_intent.py": "2d08c54d3132716d1e0bb5e32edbb6bfda92a4f87eba27b77c632ee5502f5184",
+    "tests/test_interface_inventory.py": "dcc6c062a1581f28e36ada73f00b60a1e0ea870494570b527e2962e069ea5cc9",
+    "tests/test_memory_context.py": "1465239ffaa58773d268477b0bd88698c30f511bd356dff8c0a341a3b536f105",
+    "tests/test_memory_context_evaluation.py": "b07d225103cbee6e6fb6438018bc17630a09b26298d21d89bae3b8435d2298e1",
+    "tests/test_memory_entity_catalog.py": "789f2c07001c6431107857c6a665597c5f1ffcbe53a9fa12b122882aa199b607",
+    "tests/test_memory_fact_lineage.py": "b23cb3cc1dd48c72939afef2d614633e0c2a2ddc99f9081c4dc55b729c4eb0f1",
+    "tests/test_memory_graph.py": "0dcfda136fd1b2cf19708e0240ded8942a4b5dc7b23f9cfae73710c91f1b7290",
+    "tests/test_memory_graph_evaluation.py": "cfab10fa1c05b7fabe1bfc5b4bc37a5ca44ff4ea0a031cfcb2800f6f69b2a606",
+    "tests/test_memory_plane.py": "a7d8236aa2b74cf3e0aa73cd2dcd92c59f490a9aabf372776776a6172874589d",
+    "tests/test_memory_temporal_read_safety.py": "9bce6b60f4396e143a5ce1926ddb2370856376d56ec3d0ed0fc95fa2f32b6cdb",
+    "tests/test_pi_admission.py": "47d214abe48e64656b89a561ea375ff7c54c13107301c6683fae1f51e77eef25",
+    "tests/test_pi_contract_pipeline.py": "945344b0901b206037848dc790c4b04d2c7e7588569baa0a98469622373f50b8",
+    "tests/test_pi_contract_review_adapter.py": "ea16cf34344ab2ebc09ade1b1000b2c32a37262d0c8947d9f4c7007da0573c4c",
+    "tests/test_pi_contract_review_runtime.py": "c354551264f7061c434a6fb7039e5e0b0142687532021eb9f7b08187d1e81f35",
+    "tests/test_pi_contract_tui.py": "054e97e1238b1f09ab17207d1cc7f92a11a73f2da754ab37cf91e89fbdc8c30b",
+    "tests/test_pi_security_guard.py": "5122d9718a2f0cdb1fd1746a4a11c5f43732af230bc4e28bc3acca6031c75102",
+    "tests/test_pi_sidecar.py": "1fb1190fdddb50fcebfa4f5a119b6ea1e9a981df0decb413d959697c04bf1b44",
+    "tests/test_recovery_loop_guard.py": "67af8f403ded0aeafc001c0cf751117015c7e4ef3e41a357158fae662b314445",
+    "tests/test_research.py": "043bfe00d902321b825ed59228d6c23893a04322b05672c151ec74bcabec2e9c",
+    "tests/test_research_agents.py": "4e01a247bbaedb4d4d831ec73767d406060a669d45e13b9eee6b4aa7d47317bd",
+    "tests/test_retrieval_state.py": "b921593e97bfebcc54506444ecc947fcd322e1eceffc06747feedc3de5c24ef4",
+    "tests/test_sandbox.py": "319680aefe8ba33c5b2745c54eefe34e7fdad167f6bdfb842445e4c39bf98fa6",
+    "tests/test_semantic_retrieval_admission.py": "0d29a0cbd68880ef76b13be328ccee19e6b8d86c74e3c7c29dd9abe5925ef445",
+    "tests/test_skill_script.py": "57b4c681d7e4b2e1bba33cce225c2ec8d3e0c0cab922f96536949161e15c453c",
+    "tests/test_team_attention.py": "9b4d5cda2fe6c72e615e2bdc01b59736c51bff945e117d9a4ef42a744f0b04c1",
+    "tests/test_team_coordination.py": "36e2c075dba3a45e8e2d1ea82cb1c6008290ad0c26e9bd65d69590d2df1014a0",
+    "tests/test_team_foundation.py": "c5f4b7f615ad25eddf88c998f0672d26d5db7ff3b2155717fa3cdce8d077657d",
+    "tests/test_team_session_continuity.py": "119302534d0461c5aa8f6625e3103adf9d3152da0c3dff02c84ecdb9dbd023f9",
+    "tests/test_workbench.py": "db177ec99902ec4c607fe1272e35a2194de17a9fe0d0a0430b8ce861b39ddd38"
+  },
+  "sources_unchanged_during_run": true,
+  "docker_tests_requested": false
+}

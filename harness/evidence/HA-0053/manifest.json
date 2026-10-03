@@ -4,6 +4,7 @@
   "scope": "system inventory and baseline, not full-system acceptance",
   "initial_head": "b51dce6",
   "commands": [
+    {"command":"bash harness/verify.sh","attempt":"after_baseline_test_fix","result":"passed","exit_code":0,"pytest":{"passed":307,"skipped":16,"failed":0},"note":"All subsequent deterministic evaluations, admission checks and JS syntax checks passed; fifth observer test added after collection was separately verified"},
     {"command":"bash harness/verify.sh","attempt":"initial","result":"failed","pytest":{"passed":302,"skipped":16,"failed":1},"reason":"Checkpoint test races manual execution against background worker; later commands not run"},
     {"command":".venv/bin/python -m pytest -q -p harness.pytest_interface_evidence --interface-evidence=harness/evidence/HA-0053/http-observations.json --junitxml=harness/evidence/HA-0053/baseline-tests.xml","result":"passed","pytest":{"passed":307,"skipped":16,"failed":0},"evidence":["http-observations.json","baseline-tests.xml"]},
     {"command":".venv/bin/python -m pytest -q tests/test_interface_inventory.py","result":"passed","pytest":{"passed":5,"skipped":0,"failed":0},"note":"Includes added parameter-ID redaction regression after baseline collection"}

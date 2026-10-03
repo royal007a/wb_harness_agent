@@ -24,3 +24,11 @@
   以及 Lab/Runtime OpenAPI Schema 覆盖。已登记 `specs/testing/GAPS.md`，
   将进入原子运行时修复，未将这些问题算作通过。
 - 本阶段只改测试/规格/治理，尚无应用发布。双端修复部署属于后续待办。
+
+## 完整 verify 重跑
+
+修复后 `bash harness/verify.sh` exit 0：pytest 307 passed、16 skipped，
+随后检索、Memory、Recovery、Team、Claude admission 评测及 JS 语法检查全部
+执行通过。该次 pytest 收集时 observer 仍为 4 项测试；新增第 5 项参数脱敏
+测试另跑 5 passed（`observer-self-tests.json`），不把两次计数相加。
+本阶段提交 b9c1917；完整功能验收、运行时缺陷与独立 review 仍未完成。
