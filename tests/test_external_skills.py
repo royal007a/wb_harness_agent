@@ -209,13 +209,9 @@ def test_real_failures_cleanup_container_and_inputs(entry, expected):
 
 @pytest.mark.skipif(os.environ.get('HARNESS_DOCKER_TESTS') != '1', reason='opt-in Colima external-Skill isolation probe')
 def test_real_external_skill_container_isolation(client):
-    from backend.sandbox import docker, docker_command
-    import subprocess
-
-    built = subprocess.run(docker_command() + [
-        'build', '-f', 'sandbox/external-skill.Dockerfile', '-t', 'harnessagent-external-skill:0.1', 'sandbox',
-    ], cwd=str(external_skills.ROOT), capture_output=True, timeout=120, check=False)
-    assert built.returncode == 0, built.stderr.decode()
+    # Provision the pinned image before the probe (build or verified SSH image
+    # transfer). The test must not require registry access on an offline host.
+    assert external_skills.image_id().startswith('sha256:')
     profile = profile_args('/skill', '/inputs', 'probe', 'sha256:' + 'a' * 64)
     assert '--network' in profile and profile[profile.index('--network') + 1] == 'none'
     assert '--read-only' in profile and '--cap-drop' in profile and '--user' in profile

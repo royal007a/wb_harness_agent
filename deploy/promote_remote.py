@@ -77,9 +77,19 @@ def main():
     subprocess.run([str(PYTHON), '-m', 'pytest', '-q', 'tests/test_frontend_paths.py',
                     'tests/test_workbench.py'], cwd=stage, check=True)
     if activate_skills:
-        subprocess.run(['docker', '--host', 'unix:///var/run/docker.sock', 'build',
-                        '-f', 'sandbox/external-skill.Dockerfile', '-t', 'harnessagent-external-skill:0.1',
-                        'sandbox'], cwd=stage, check=True, timeout=240)
+        prebuilt = os.environ.get('HARNESS_PREBUILT_EXTERNAL_IMAGE')
+        if prebuilt:
+            # Explicit operator handoff for hosts unable to reach the registry.
+            # Transfer a locally built linux/amd64 image via SSH, verify its
+            # immutable ID, and still run the real isolation probes on this host.
+            assert re.fullmatch('sha256:[a-f0-9]{64}', prebuilt)
+            image = json.loads(run('docker', '--host', 'unix:///var/run/docker.sock',
+                                  'image', 'inspect', 'harnessagent-external-skill:0.1'))[0]
+            assert image['Id'] == prebuilt and image['Architecture'] == 'amd64' and image['Os'] == 'linux'
+        else:
+            subprocess.run(['docker', '--host', 'unix:///var/run/docker.sock', 'build',
+                            '-f', 'sandbox/external-skill.Dockerfile', '-t', 'harnessagent-external-skill:0.1',
+                            'sandbox'], cwd=stage, check=True, timeout=240)
         subprocess.run([str(PYTHON), '-m', 'pytest', '-q', 'tests/test_external_skills.py'], cwd=stage,
                        env={**os.environ, 'HARNESS_SANDBOX_BACKEND': 'linux-docker',
                             'HARNESS_EXTERNAL_SKILLS': 'disabled', 'HARNESS_DOCKER_TESTS': '1'},

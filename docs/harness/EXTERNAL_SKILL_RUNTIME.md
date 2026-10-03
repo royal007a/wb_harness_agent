@@ -63,3 +63,9 @@ HARNESS_DOCKER_TESTS=1 .venv/bin/python -m pytest -q tests/test_external_skills.
 正常退出/异常/超时清理已测试；宿主强杀或断电后没有持久孤儿容器回收器，
 运维须核对标签 `local.harnessagent.external-skill=true` 的遗留实例，不能将
 这种场景当成已经实现的自动恢复。回滚先关闭开关，恢复部署备份，不删业务 DB。
+
+远端不能访问 Docker Hub 时，可在本机用同一 Dockerfile/base digest 构建
+`--platform linux/amd64`，通过 `docker save` → SSH → `docker load` 传输。
+发布脚本的显式 `HARNESS_PREBUILT_EXTERNAL_IMAGE=sha256:...` 要求远端 tag
+解析的镜像 ID 和 Linux/amd64 架构匹配；仍在远端重跑真实隔离测试，不能用
+本机测试代替。普通发布未提供该值时仍按固定 Dockerfile 构建。
