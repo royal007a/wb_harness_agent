@@ -40,6 +40,11 @@ OpenAI-compatible Chat Completions SSE is implemented as a protocol adapter. Ant
 The provider request is assembled from one system prompt and the most recent `2 × max_context_turns` persisted user/assistant messages. The complete provider output is persisted as an assistant message only after a successful stream. A model error, credential error, empty response or cancellation never becomes a synthetic assistant answer.
 
 Browsers use `fetch` with `POST` and parse SSE `delta`, `done` and `error` events.
+The UI displays persisted Exchange status separately from assistant messages;
+failed or cancelled sends remain visible on detail reload, and partial streaming
+output is explicitly uncommitted. Session selection uses a generation guard so
+an older detail response cannot replace the current conversation. See
+[UI acceptance cases](../../specs/testing/AGENT_RUNTIME_UI.md).
 ADR-0054 specifies unique Exchange ownership, terminal-state protection, bounded
 Provider streaming, and startup recovery. Only the stream owner can cancel its
 in-flight work on disconnect; duplicate consumers cannot cancel another owner.

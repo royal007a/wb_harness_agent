@@ -44,19 +44,29 @@ with sync_playwright() as playwright:
     expect(page.locator('#chat-form')).to_be_visible()
     page.locator('#chat-input').fill('不应生成演示回答。')
     page.get_by_role('button', name='发送').click()
-    expect(page.locator('.bubble.assistant').last).to_contain_text('MODEL_RUNTIME_DISABLED', timeout=10000)
+    expect(page.locator('#send')).to_be_enabled(timeout=10000)
+    expect(page.locator('.exchange-status[data-status="failed"]')).to_contain_text('MODEL_RUNTIME_DISABLED')
+    expect(page.locator('.bubble.assistant')).to_have_count(0)
+    selected_id = page.locator('#session-list button.selected').get_attribute('data-session')
+    page.locator(f'button[data-session="{selected_id}"]').click()
+    expect(page.locator('.exchange-status[data-status="failed"]')).to_contain_text('MODEL_RUNTIME_DISABLED')
     page.screenshot(path=str(OUTPUT / 'agent-runtime-desktop.png'), full_page=True)
+    page.locator('.chat').screenshot(path=str(OUTPUT / 'agent-runtime-chat-desktop.png'))
     page.reload()
     expect(page.locator('#session-list')).to_contain_text('Runtime Agent ' + suffix)
+    page.locator(f'button[data-session="{selected_id}"]').click()
+    expect(page.locator('.exchange-status[data-status="failed"]')).to_contain_text('MODEL_RUNTIME_DISABLED')
+    expect(page.locator('.bubble.assistant')).to_have_count(0)
     page.set_viewport_size({'width': 390, 'height': 844})
     expect(page.locator('#new-session')).to_be_visible()
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Mobile horizontal overflow'
     page.screenshot(path=str(OUTPUT / 'agent-runtime-mobile.png'), full_page=True)
+    page.locator('#messages').screenshot(path=str(OUTPUT / 'agent-runtime-messages-mobile.png'))
     assert not errors, errors
     report = {
         'browser': browser.version,
         'errors': errors,
-        'checks': ['default_runtime_gate', 'provider_readiness_zero_network', 'profile_chain', 'session', 'post_sse_error', 'no_synthetic_answer', 'persistent_exchange', 'mobile_layout'],
+        'checks': ['default_runtime_gate', 'provider_readiness_zero_network', 'profile_chain', 'session', 'post_sse_error_after_send_finished', 'no_synthetic_answer', 'persistent_exchange_after_reselect_and_reload', 'mobile_layout'],
     }
     (OUTPUT / 'browser-agent-runtime.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(report, ensure_ascii=False))

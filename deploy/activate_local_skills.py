@@ -24,7 +24,7 @@ def main():
     previous = sys.argv[1]
     assert re.fullmatch('[a-f0-9]{40}', previous)
     work_item = sys.argv[2] if len(sys.argv) > 2 else 'ha0052'
-    assert work_item in {'ha0052', 'ha0054'}
+    assert work_item in {'ha0052', 'ha0054', 'ha0055'}
     commit = run('git', 'rev-parse', 'HEAD')
     assert not run('git', 'status', '--porcelain')
     config = ROOT / 'deploy/local.macos.plist'

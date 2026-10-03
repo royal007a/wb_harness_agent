@@ -31,6 +31,18 @@ error，reload 后只验证 Session 存在，所以脚本绿灯漏掉了持久�
 待补探针：OpenAI-compatible Adapter 对无 `[DONE]` 的断流是否错误当作成功
 （当前仅源码风险，尚未作协议层反例验证）；真实 Provider 继续不准入。
 
+### HA-0055 跟进
+
+UI-RUNTIME-01 的旧浏览器稳定断言已失败复现；Exchange 独立状态卡、选择代次
+和发送所属 Session 已补齐。全量验证 337 passed / 16 skipped；新增流中预览
+断言后的补充浏览器回归及双端部署记录以 HA-0055 Evidence 为准。独立 review
+未通过前不将本条标为最终验收。此处没有修复 Provider 上游 EOF 或 OpenAPI。
+
+继续文档对照时需处理 `CURRENT_ARCHITECTURE.md` 重复的 Memory 段落，以及
+“尚未具备”列表与文首已实现离线 Adapter 的粒度冲突；用逐能力状态替代笼统
+未实现。部分评测的 `external_execution_calls=1.0` 是通过分数而非调用次数，
+需明确指标命名/口径，避免与顶层 `external_calls=0` 混淆。
+
 ## 接口基线
 
 148 个方法/路径组合（包含 HEAD、页面、静态 mount），22 类功能。

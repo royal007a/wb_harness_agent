@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0054",
-  "active_plan": "exec-plans/active/HA-0054-runtime-lifecycle.md",
-  "last_checkpoint": "HA-0054 已双端发布 912faca，保留两次首次验证失败及修复证据。远端 staging 320 passed/22 skipped，live 60 passed，发布后 Runtime+真实沙箱 37 passed。模型仍 disabled；HA-0053/54 等独立 review。视觉检查发现 UI-RUNTIME-01：刷新消息后错误消失，已登记，不能用浏览器瞬时绿灯替代验收。",
-  "last_updated_at": "2026-10-03T15:23:37Z",
-  "next_action": "继续 12 小时完整目标：下一原子任务修复 UI-RUNTIME-01（持久 Exchange 状态展示及稳定浏览器断言），再修 OpenAPI 同名 Schema 覆盖、26 未观测接口及全部功能验收。保持双端发布、独立 review 与真实模型门禁；不把独立 Skill 沙箱称为 Product Run 桥接。",
+  "active_task_id": "HA-0055",
+  "active_plan": "exec-plans/active/HA-0055-runtime-status-ui.md",
+  "last_checkpoint": "HA-0055 修复持久 Exchange UI 与旧详情/流响应竞态。旧浏览器稳定断言复现错误丢失；完整 verify 337 passed/16 skipped；追加中间态后的 UI 12 passed、后端回归 80 passed。两端服务仍需本轮固定版本发布及真实部署浏览器验收，独立 review 待收。",
+  "last_updated_at": "2026-10-03T16:13:37Z",
+  "next_action": "完成 HA-0055 本机→132 发布与 review 交接；继续 OpenAPI 同名 Schema 覆盖、Provider 上游 EOF、26 未观测接口及全部功能验收，纠正文档与指标口径。保留完整 12 小时目标和默认模型门禁，不把独立沙箱称为 Product Run 桥接。",
   "release": "0.1.0-local"
 }

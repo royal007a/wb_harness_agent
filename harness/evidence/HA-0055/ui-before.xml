@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="3" skipped="0" tests="4" time="203.900" timestamp="2026-10-03T23:35:00.870377+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_ui" name="test_failed_send_remains_visible_after_completion_reselection_and_reload" time="39.484"><error message="failed on setup with &quot;AssertionError: isolated test server did not start&#10;assert False&#10; +  where False = &lt;uvicorn.server.Server object at 0x10d630440&gt;.started&quot;">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-514/test_failed_send_remains_visib0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ccee650&gt;
+browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/Users/weberzhao/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing&gt; version=151.0.7922.34&gt;
+
+    @pytest.fixture
+    def ui(tmp_path, monkeypatch, browser):
+        monkeypatch.delenv('HARNESS_AGENT_RUNTIME', raising=False)
+        app = create_app(tmp_path / 'ui.db', run_worker=False)
+        listener = socket.socket()
+        listener.bind(('127.0.0.1', 0))
+        port = listener.getsockname()[1]
+        server = uvicorn.Server(uvicorn.Config(app, log_level='error', access_log=False))
+        thread = threading.Thread(target=server.run, kwargs={'sockets': [listener]}, daemon=True)
+        thread.start()
+        try:
+            deadline = time.monotonic() + 10
+            while not server.started and thread.is_alive() and time.monotonic() &lt; deadline:
+                time.sleep(.01)
+&gt;           assert server.started, 'isolated test server did not start'
+E           AssertionError: isolated test server did not start
+E           assert False
+E            +  where False = &lt;uvicorn.server.Server object at 0x10d630440&gt;.started
+
+tests/test_agent_runtime_ui.py:42: AssertionError</error></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d]" time="47.742"><failure message="AssertionError: Locator expected to contain text '排队中'&#10;Actual value: 你用户问题 &#10;Call log:&#10;  - Expect &quot;to_contain_text&quot; with timeout 5000ms&#10;  - waiting for locator(&quot;#messages&quot;)&#10;    13 × locator resolved to &lt;div id=&quot;messages&quot; class=&quot;messages&quot; aria-live=&quot;polite&quot;&gt;…&lt;/div&gt;&#10;       - unexpected value &quot;你用户问题&quot;&#10;&#10;Aria snapshot:&#10;- article: 你 用户问题">ui = (&lt;Page url='http://127.0.0.1:62927/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10f3e9450&gt;, {'id':...94a099702f465771', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:62927')
+status = 'queued', label = '排队中'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+&gt;       pw.expect(page.locator('#messages')).to_contain_text(label)
+E       AssertionError: Locator expected to contain text '排队中'
+E       Actual value: 你用户问题 
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator("#messages")
+E           13 × locator resolved to &lt;div id="messages" class="messages" aria-live="polite"&gt;…&lt;/div&gt;
+E              - unexpected value "你用户问题"
+E       
+E       Aria snapshot:
+E       - article: 你 用户问题
+
+tests/test_agent_runtime_ui.py:108: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d]" time="65.028"><failure message="AssertionError: Locator expected to contain text '生成中'&#10;Actual value: 你用户问题 &#10;Call log:&#10;  - Expect &quot;to_contain_text&quot; with timeout 5000ms&#10;  - waiting for locator(&quot;#messages&quot;)&#10;    11 × locator resolved to &lt;div id=&quot;messages&quot; class=&quot;messages&quot; aria-live=&quot;polite&quot;&gt;…&lt;/div&gt;&#10;       - unexpected value &quot;你用户问题&quot;&#10;&#10;Aria snapshot:&#10;- article: 你 用户问题">ui = (&lt;Page url='http://127.0.0.1:63241/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10f360a50&gt;, {'id':...b128d05877dd8e34', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:63241')
+status = 'streaming', label = '生成中'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+&gt;       pw.expect(page.locator('#messages')).to_contain_text(label)
+E       AssertionError: Locator expected to contain text '生成中'
+E       Actual value: 你用户问题 
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator("#messages")
+E           11 × locator resolved to &lt;div id="messages" class="messages" aria-live="polite"&gt;…&lt;/div&gt;
+E              - unexpected value "你用户问题"
+E       
+E       Aria snapshot:
+E       - article: 你 用户问题
+
+tests/test_agent_runtime_ui.py:108: AssertionError</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88]" time="35.037"><failure message="AssertionError: Locator expected to contain text '已取消'&#10;Actual value: 你用户问题 &#10;Call log:&#10;  - Expect &quot;to_contain_text&quot; with timeout 5000ms&#10;  - waiting for locator(&quot;#messages&quot;)&#10;    12 × locator resolved to &lt;div id=&quot;messages&quot; class=&quot;messages&quot; aria-live=&quot;polite&quot;&gt;…&lt;/div&gt;&#10;       - unexpected value &quot;你用户问题&quot;&#10;&#10;Aria snapshot:&#10;- article: 你 用户问题">ui = (&lt;Page url='http://127.0.0.1:63520/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10f5976f0&gt;, {'id':...94c1d017a571904b', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:63520')
+status = 'cancelled', label = '已取消'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+&gt;       pw.expect(page.locator('#messages')).to_contain_text(label)
+E       AssertionError: Locator expected to contain text '已取消'
+E       Actual value: 你用户问题 
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator("#messages")
+E           12 × locator resolved to &lt;div id="messages" class="messages" aria-live="polite"&gt;…&lt;/div&gt;
+E              - unexpected value "你用户问题"
+E       
+E       Aria snapshot:
+E       - article: 你 用户问题
+
+tests/test_agent_runtime_ui.py:108: AssertionError</failure></testcase></testsuite></testsuites>

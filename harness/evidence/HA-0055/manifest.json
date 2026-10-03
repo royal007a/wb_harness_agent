@@ -1,0 +1,25 @@
+{
+  "work_item": "HA-0055",
+  "baseline": "4eddb8d",
+  "scope": "persistent Exchange UI and conversation selection isolation",
+  "commands": [
+    {"evidence": "ui-before.xml", "passed": 0, "failed": 3, "errors": 1, "note": "old UI; startup error is not defect evidence"},
+    {"evidence": "failed-send-before.xml", "passed": 0, "failed": 1, "note": "old UI after waiting for send completion"},
+    {"evidence": "ui-first-fix.xml", "passed": 10, "failed": 1, "note": "synthetic success fixture nested an event loop; fixed to use HTTP"},
+    {"evidence": "backend-regression.xml", "passed": 80, "failed": 0, "note": "parameterized names mechanically SHA-256 redacted"},
+    {"evidence": "verify.log", "exit_code": 0, "passed": 337, "skipped": 16, "note": "full suite with first 11 UI cases; evaluations and static checks passed"},
+    {"evidence": "ui-after.xml", "passed": 12, "failed": 0, "note": "final UI test file including live synthetic HTTP SSE intermediate state"}
+  ],
+  "source_sha256": {
+    "frontend/agent-runtime.js": "453b8b7975ec3adb563e0ab1d0512f24dd87d17f66cffe794cdb0eda295a80f2",
+    "frontend/agent-runtime.css": "be028e12b56a5a1e51abbb6f3a24c12a237119a7be920a63d58c6ae5faa65514",
+    "tests/test_agent_runtime_ui.py": "5cb33ad86f9732a688dd4eddc8459e50b23ea539ee7fa822349fbaccc468918c",
+    "tests/browser_agent_runtime.py": "3c696140cb068cc452f8b673f5af09b578e75154bc07ad5fd51a5514d68c3832"
+  },
+  "real_external_model_calls": 0,
+  "runtime_gate_changed": false,
+  "product_run_bridge_implemented": false,
+  "deployment": "pending",
+  "independent_review": "pending",
+  "whole_system_acceptance": false
+}

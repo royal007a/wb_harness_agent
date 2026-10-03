@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="123.332" timestamp="2026-10-03T23:45:29.388629+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_ui" name="test_failed_send_remains_visible_after_completion_reselection_and_reload" time="103.690"><failure message="AssertionError: Locator expected to contain text 'MODEL_RUNTIME_DISABLED'&#10;Actual value: 你默认门禁应拒绝，不应消失。 &#10;Call log:&#10;  - Expect &quot;to_contain_text&quot; with timeout 5000ms&#10;  - waiting for locator(&quot;#messages&quot;)&#10;    8 × locator resolved to &lt;div id=&quot;messages&quot; class=&quot;messages&quot; aria-live=&quot;polite&quot;&gt;…&lt;/div&gt;&#10;      - unexpected value &quot;你默认门禁应拒绝，不应消失。&quot;&#10;&#10;Aria snapshot:&#10;- article: 你 默认门禁应拒绝，不应消失。">ui = (&lt;Page url='http://127.0.0.1:49956/agent-runtime'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10be7fa10&gt;, {'id':...9c74ca14d80f52f8', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:49956')
+
+    def test_failed_send_remains_visible_after_completion_reselection_and_reload(ui):
+        page, runtime, agent, base = ui
+        created = session(runtime, agent, 'failure case')
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+        page.locator('#chat-input').fill('默认门禁应拒绝，不应消失。')
+        page.locator('#send').click()
+        pw.expect(page.locator('#send')).to_be_enabled()
+&gt;       pw.expect(page.locator('#messages')).to_contain_text('MODEL_RUNTIME_DISABLED')
+E       AssertionError: Locator expected to contain text 'MODEL_RUNTIME_DISABLED'
+E       Actual value: 你默认门禁应拒绝，不应消失。 
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator("#messages")
+E           8 × locator resolved to &lt;div id="messages" class="messages" aria-live="polite"&gt;…&lt;/div&gt;
+E             - unexpected value "你默认门禁应拒绝，不应消失。"
+E       
+E       Aria snapshot:
+E       - article: 你 默认门禁应拒绝，不应消失。
+
+tests/test_agent_runtime_ui.py:83: AssertionError</failure></testcase></testsuite></testsuites>

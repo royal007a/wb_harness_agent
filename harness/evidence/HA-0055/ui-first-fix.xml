@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="11" time="300.666" timestamp="2026-10-03T23:53:00.720100+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_ui" name="test_failed_send_remains_visible_after_completion_reselection_and_reload" time="73.201" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d]" time="34.971" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d]" time="47.927" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88]" time="28.172" /><testcase classname="tests.test_agent_runtime_ui" name="test_successful_message_is_not_duplicated_by_exchange_card" time="11.489"><failure message="RuntimeError: asyncio.run() cannot be called from a running event loop">ui = (&lt;Page url='about:blank'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10bac42b0&gt;, {'id': 'rta_5833f4433cac4b8c9b811ecaf08e88a2', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:53304')
+
+    def test_successful_message_is_not_duplicated_by_exchange_card(ui):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'success', 'synthetic input')
+    
+        class SyntheticAdapter:
+            def require(self, _):
+                return self
+    
+            async def stream(self, _):
+                yield '合成验证输出，不是真实模型。'
+    
+        class SyntheticCredential:
+            def resolve(self, _):
+                return 'synthetic'
+    
+        runtime.adapters, runtime.credentials = SyntheticAdapter(), SyntheticCredential()
+        runtime._runtime_enabled = True
+    
+        async def run():
+            return [event async for event in runtime.stream_exchange(exchange['id'])]
+    
+&gt;       assert asyncio.run(run())[-1]['type'] == 'done'
+               ^^^^^^^^^^^^^^^^^^
+
+tests/test_agent_runtime_ui.py:134: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+main = &lt;coroutine object test_successful_message_is_not_duplicated_by_exchange_card.&lt;locals&gt;.run at 0x10b708a90&gt;
+debug = None, loop_factory = None
+
+    def run(main, *, debug=None, loop_factory=None):
+        """Execute the coroutine and return the result.
+    
+        This function runs the passed coroutine, taking care of
+        managing the asyncio event loop, finalizing asynchronous
+        generators and closing the default executor.
+    
+        This function cannot be called when another asyncio event loop is
+        running in the same thread.
+    
+        If debug is True, the event loop will be run in debug mode.
+        If loop_factory is passed, it is used for new event loop creation.
+    
+        This function always creates a new event loop and closes it at the end.
+        It should be used as a main entry point for asyncio programs, and should
+        ideally only be called once.
+    
+        The executor is given a timeout duration of 5 minutes to shutdown.
+        If the executor hasn't finished within that duration, a warning is
+        emitted and the executor is closed.
+    
+        Example:
+    
+            async def main():
+                await asyncio.sleep(1)
+                print('hello')
+    
+            asyncio.run(main())
+        """
+        if events._get_running_loop() is not None:
+            # fail fast with short traceback
+&gt;           raise RuntimeError(
+                "asyncio.run() cannot be called from a running event loop")
+E           RuntimeError: asyncio.run() cannot be called from a running event loop
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py:201: RuntimeError</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_exchange_and_user_text_do_not_inject_html" time="30.345" /><testcase classname="tests.test_agent_runtime_ui" name="test_slow_old_session_detail_cannot_replace_new_selection" time="18.761" /><testcase classname="tests.test_agent_runtime_ui" name="test_stream_completion_does_not_refetch_or_replace_other_session" time="16.529" /><testcase classname="tests.test_agent_runtime_ui" name="test_exchange_without_visible_user_message_is_not_lost" time="11.123" /><testcase classname="tests.test_agent_runtime_ui" name="test_early_stream_eof_never_commits_preview_as_answer" time="6.445" /><testcase classname="tests.test_agent_runtime_ui" name="test_stop_display_does_not_claim_server_cancelled" time="6.912" /></testsuite></testsuites>

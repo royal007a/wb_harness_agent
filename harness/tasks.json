@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0055",
+      "title": "修复 Runtime 持久错误展示与会话选择竞态",
+      "status": "running",
+      "risk": "medium",
+      "scope": ["Exchange 持久状态与模型回答分开呈现", "SSE 结束回读和会话异步选择隔离", "稳定浏览器回归与双端部署"],
+      "non_goals": ["启用真实 Provider 或工具", "修改后端生命周期/身份体系", "Product Run 桥接"],
+      "acceptance": ["发送结束/重选/刷新后三种路径失败与取消状态仍可见", "成功回答不重复，未持久化输出不假报成功，无 HTML 注入", "旧详情/流响应不覆盖新选择，390px 与相关回归通过", "本机与 132 发布、可复核证据和独立 review"],
+      "depends_on": [],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0055-runtime-status-ui.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0055/acceptance.md"]
+    },
+    {
       "id": "HA-0054",
       "title": "修复 Agent Runtime 唯一执行权和取消终态",
       "status": "waiting_approval",
