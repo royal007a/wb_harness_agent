@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="0.605" timestamp="2026-10-04T02:35:36.145439+08:00" hostname="192.168.31.117"><testcase classname="tests.test_provider_stream" name="test_protocol_failure_never_publishes_or_retries[-MODEL_PROVIDER_INCOMPLETE_STREAM]" time="0.019"><failure message="AssertionError: assert ['delta', 'done'] == ['delta', 'error']&#10;  &#10;  At index 1 diff: 'done' != 'error'&#10;  Use -v to get more diff">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-751/test_protocol_failure_never_pu0')
+wire = &lt;function wire.&lt;locals&gt;.install at 0x109272b90&gt;, ending = b''
+expected = 'MODEL_PROVIDER_INCOMPLETE_STREAM'
+
+    @pytest.mark.parametrize('ending,expected', [
+        (b'', 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (DONE, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (STOP, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (frame(chunk(finish='length')) + DONE, 'MODEL_OUTPUT_TRUNCATED'),
+    ])
+    def test_protocol_failure_never_publishes_or_retries(tmp_path, wire, ending, expected):
+        record = wire(DELTA + ending)
+        store = Store(tmp_path / 'protocol.db')
+        try:
+            runtime, credentials, session = make_runtime(store)
+            exchange = runtime.prepare_exchange(session['id'], {'content': 'question'}, 'send')
+            events = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+&gt;           assert [event['type'] for event in events] == ['delta', 'error']
+E           AssertionError: assert ['delta', 'done'] == ['delta', 'error']
+E
+E             At index 1 diff: 'done' != 'error'
+E             Use -v to get more diff
+
+tests/test_provider_stream.py:92: AssertionError</failure></testcase><testcase classname="tests.test_provider_stream" name="test_protocol_failure_never_publishes_or_retries[data: [DONE]\n\n-MODEL_PROVIDER_INCOMPLETE_STREAM]" time="0.011"><failure message="AssertionError: assert ['delta', 'done'] == ['delta', 'error']&#10;  &#10;  At index 1 diff: 'done' != 'error'&#10;  Use -v to get more diff">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-751/test_protocol_failure_never_pu1')
+wire = &lt;function wire.&lt;locals&gt;.install at 0x109272da0&gt;
+ending = b'data: [DONE]\n\n', expected = 'MODEL_PROVIDER_INCOMPLETE_STREAM'
+
+    @pytest.mark.parametrize('ending,expected', [
+        (b'', 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (DONE, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (STOP, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (frame(chunk(finish='length')) + DONE, 'MODEL_OUTPUT_TRUNCATED'),
+    ])
+    def test_protocol_failure_never_publishes_or_retries(tmp_path, wire, ending, expected):
+        record = wire(DELTA + ending)
+        store = Store(tmp_path / 'protocol.db')
+        try:
+            runtime, credentials, session = make_runtime(store)
+            exchange = runtime.prepare_exchange(session['id'], {'content': 'question'}, 'send')
+            events = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+&gt;           assert [event['type'] for event in events] == ['delta', 'error']
+E           AssertionError: assert ['delta', 'done'] == ['delta', 'error']
+E
+E             At index 1 diff: 'done' != 'error'
+E             Use -v to get more diff
+
+tests/test_provider_stream.py:92: AssertionError</failure></testcase><testcase classname="tests.test_provider_stream" name="test_protocol_failure_never_publishes_or_retries[data: {&quot;id&quot;: &quot;chatcmpl-fixture&quot;, &quot;object&quot;: &quot;chat.completion.chunk&quot;, &quot;choices&quot;: [{&quot;index&quot;: 0, &quot;delta&quot;: {&quot;content&quot;: null}, &quot;finish_reason&quot;: &quot;stop&quot;}]}\n\n-MODEL_PROVIDER_INCOMPLETE_STREAM]" time="0.010"><failure message="AssertionError: assert ['delta', 'done'] == ['delta', 'error']&#10;  &#10;  At index 1 diff: 'done' != 'error'&#10;  Use -v to get more diff">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-751/test_protocol_failure_never_pu2')
+wire = &lt;function wire.&lt;locals&gt;.install at 0x109271850&gt;
+ending = b'data: {"id": "chatcmpl-fixture", "object": "chat.completion.chunk", "choices": [{"index": 0, "delta": {"content": null}, "finish_reason": "stop"}]}\n\n'
+expected = 'MODEL_PROVIDER_INCOMPLETE_STREAM'
+
+    @pytest.mark.parametrize('ending,expected', [
+        (b'', 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (DONE, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (STOP, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (frame(chunk(finish='length')) + DONE, 'MODEL_OUTPUT_TRUNCATED'),
+    ])
+    def test_protocol_failure_never_publishes_or_retries(tmp_path, wire, ending, expected):
+        record = wire(DELTA + ending)
+        store = Store(tmp_path / 'protocol.db')
+        try:
+            runtime, credentials, session = make_runtime(store)
+            exchange = runtime.prepare_exchange(session['id'], {'content': 'question'}, 'send')
+            events = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+&gt;           assert [event['type'] for event in events] == ['delta', 'error']
+E           AssertionError: assert ['delta', 'done'] == ['delta', 'error']
+E
+E             At index 1 diff: 'done' != 'error'
+E             Use -v to get more diff
+
+tests/test_provider_stream.py:92: AssertionError</failure></testcase><testcase classname="tests.test_provider_stream" name="test_protocol_failure_never_publishes_or_retries[data: {&quot;id&quot;: &quot;chatcmpl-fixture&quot;, &quot;object&quot;: &quot;chat.completion.chunk&quot;, &quot;choices&quot;: [{&quot;index&quot;: 0, &quot;delta&quot;: {&quot;content&quot;: null}, &quot;finish_reason&quot;: &quot;length&quot;}]}\n\ndata: [DONE]\n\n-MODEL_OUTPUT_TRUNCATED]" time="0.010"><failure message="AssertionError: assert ['delta', 'done'] == ['delta', 'error']&#10;  &#10;  At index 1 diff: 'done' != 'error'&#10;  Use -v to get more diff">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-751/test_protocol_failure_never_pu3')
+wire = &lt;function wire.&lt;locals&gt;.install at 0x1092716f0&gt;
+ending = b'data: {"id": "chatcmpl-fixture", "object": "chat.completion.chunk", "choices": [{"index": 0, "delta": {"content": null}, "finish_reason": "length"}]}\n\ndata: [DONE]\n\n'
+expected = 'MODEL_OUTPUT_TRUNCATED'
+
+    @pytest.mark.parametrize('ending,expected', [
+        (b'', 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (DONE, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (STOP, 'MODEL_PROVIDER_INCOMPLETE_STREAM'),
+        (frame(chunk(finish='length')) + DONE, 'MODEL_OUTPUT_TRUNCATED'),
+    ])
+    def test_protocol_failure_never_publishes_or_retries(tmp_path, wire, ending, expected):
+        record = wire(DELTA + ending)
+        store = Store(tmp_path / 'protocol.db')
+        try:
+            runtime, credentials, session = make_runtime(store)
+            exchange = runtime.prepare_exchange(session['id'], {'content': 'question'}, 'send')
+            events = asyncio.run(collect(runtime.stream_exchange(exchange['id'])))
+&gt;           assert [event['type'] for event in events] == ['delta', 'error']
+E           AssertionError: assert ['delta', 'done'] == ['delta', 'error']
+E
+E             At index 1 diff: 'done' != 'error'
+E             Use -v to get more diff
+
+tests/test_provider_stream.py:92: AssertionError</failure></testcase></testsuite></testsuites>

@@ -35,6 +35,14 @@ The current default deployment intentionally fails the message Exchange with `MO
 
 OpenAI-compatible Chat Completions SSE is implemented as a protocol adapter. Anthropic and Ollama Profiles may be documented but return `PROVIDER_ADAPTER_NOT_IMPLEMENTED` until their separate adapter work is accepted. There is no fallback.
 
+ADR-0057 narrows the implemented protocol to one text choice (index 0), stable
+completion ID and explicit `finish_reason=stop` followed by a complete `[DONE]`
+frame. EOF or `length` does not certify success; errors, tool/refusal output,
+malformed frames and bounded-response overruns fail without an assistant message.
+See [Provider stream acceptance](../../specs/testing/PROVIDER_STREAM.md).
+`supported` describes implemented translation, not tested third-party compatibility
+or admission for real calls. Usage metadata is not a cost ledger.
+
 ## Context, streaming and cancellation
 
 The provider request is assembled from one system prompt and the most recent `2 × max_context_turns` persisted user/assistant messages. The complete provider output is persisted as an assistant message only after a successful stream. A model error, credential error, empty response or cancellation never becomes a synthetic assistant answer.

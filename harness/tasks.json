@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0057",
+      "title": "修复 Provider 流截断和 EOF 被误判成功",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["有界 text-only SSE 协议和显式终止判定", "真实 Adapter 到 Runtime/HTTP 的离线失败回归", "错误契约、全量证据、独立 review 与双环境发布"],
+      "non_goals": ["真实模型准入或费用保证", "自动重试或 Provider fallback", "Product Run/Skill 桥接"],
+      "acceptance": ["EOF/length/上游错误不发布 assistant 或 done", "正常帧和 usage 可用，异常帧有界失败且不泄漏上游秘密", "重放和取消保持唯一执行权，旧反例、新回归和全量通过", "固定提交独立 review 与先本机后132部署证据"],
+      "depends_on": ["HA-0054"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0057-provider-stream-integrity.md",
+      "blocked_reason": "协议56项与全量446 passed/16 skipped通过，待固定提交独立review；实际部署仍需HA-0056兼容调用拓扑决定，未启用真实模型。",
+      "recovery_condition": "代码独立复核，HA-0056本机拓扑确认并验证后，先本机再132固定版本发布。",
+      "evidence": ["harness/evidence/HA-0057/acceptance.md"]
+    },
+    {
       "id": "HA-0056",
       "title": "修复 launchd 发布预检、身份绑定和恢复证据",
       "status": "blocked",
@@ -13,7 +28,7 @@
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0056-local-deployment-recovery.md",
-      "blocked_reason": "0f5d6a7复审慢退出问题已返工，45项定向及全量390 passed/16 skipped通过，待新固定提交独立复核。当前Background调用方被预检安全拒绝，8765尚未恢复，实际双部署未执行。",
+      "blocked_reason": "ce490c5代码已获独立Approved，45项定向及全量390 passed/16 skipped通过，Low已记录；本机兼容调用拓扑未明确，实际双部署未执行。",
       "recovery_condition": "固定代码独立复核；取得兼容Aqua调用环境，或由用户明确批准同uid user/501 + Aqua/Background备选并补规格实现验证后，先本机再132部署。",
       "evidence": ["harness/evidence/HA-0056/acceptance.md"]
     },

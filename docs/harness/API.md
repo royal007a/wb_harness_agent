@@ -192,6 +192,11 @@
 
 请求/响应以 [`agent-runtime.schema.json`](../../specs/v1/agent-runtime.schema.json) 为准。Provider Adapter 仅翻译协议；外部请求还要求环境开关、可用引用与 Keychain 解析，详见 [Agent Runtime](AGENT_RUNTIME.md)。该路径不读写 Product Task/Run/Plan/Evidence/Checkpoint。
 
+HA-0057：上游流必须有正常 stop 与完整 DONE，才可能发送下游 done。EOF、不完整
+终止、length 截断、过滤/工具/拒绝输出及畸形协议通过既有 SSE error.error_code 返回，
+并持久化 failed；已发 delta 仍只是预览，不写 assistant。错误码和协议限额见
+[PROVIDER_STREAM](../../specs/testing/PROVIDER_STREAM.md)，没有新增端点或放宽运行门禁。
+
 ## External Skill Runtime（ADR-0025，默认关闭）
 
 - `GET /api/local/external-skills/runtime`：返回 `external-skill-runtime@1` 状态、固定隔离 profile、镜像是否就绪和 blocker；不会读包或创建容器。

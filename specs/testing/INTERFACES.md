@@ -301,11 +301,11 @@ metadata-only protocol actor，不是 HTTP 身份或自动委派
 
 默认关闭的文本 SSE；工具数 0，未接 Product Run
 
-必须验证：Keychain 延迟解析；门禁/协议/上下文；流错误、取消、终态与并发；失败不伪造 assistant；持久 Exchange UI/重选刷新/过时响应/未提交预览；真实外发证据单列。
+必须验证：Keychain 延迟解析；门禁/协议/上下文；流错误、取消、终态与并发；上游stop+DONE完整性与有界SSE解码；失败不伪造 assistant；持久 Exchange UI/重选刷新/过时响应/未提交预览；真实外发证据单列。
 
-规格：`docs/harness/AGENT_RUNTIME.md`、`specs/testing/AGENT_RUNTIME_LIFECYCLE.md`、`specs/testing/AGENT_RUNTIME_UI.md`
+规格：`docs/harness/AGENT_RUNTIME.md`、`specs/testing/AGENT_RUNTIME_LIFECYCLE.md`、`specs/testing/AGENT_RUNTIME_UI.md`、`specs/testing/PROVIDER_STREAM.md`
 
-测试入口：`tests/test_agent_runtime.py`、`tests/test_agent_runtime_lifecycle.py`、`tests/test_agent_runtime_ui.py`
+测试入口：`tests/test_agent_runtime.py`、`tests/test_agent_runtime_lifecycle.py`、`tests/test_agent_runtime_ui.py`、`tests/test_provider_stream.py`
 
 ### baidu：百度网盘 OAuth / 分享交接
 

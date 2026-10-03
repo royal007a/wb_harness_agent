@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.348" timestamp="2026-10-04T02:38:16.871952+08:00" hostname="192.168.31.117"><testcase classname="" name="tests.test_provider_stream" time="0.000"><error message="collection failure">tests/test_provider_stream.py:237: in &lt;module&gt;
+    (DELTA + frame(chunk(content='\ud800')), 'MODEL_PROVIDER_INVALID_RESPONSE'),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_provider_stream.py:17: in frame
+    return ('data: ' + json.dumps(value, ensure_ascii=False) + '\n\n').encode()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeEncodeError: 'utf-8' codec can't encode character '\ud800' in position 115: surrogates not allowed</error></testcase></testsuite></testsuites>
