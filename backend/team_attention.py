@@ -14,7 +14,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
-from .team_foundation import TeamFoundation
+from .team_foundation import TeamFoundation, is_list_visibility_denial
 from .team_security import reject_sensitive
 
 
@@ -271,7 +271,9 @@ class TeamAttention:
                 item = self._expire_item_lease(db, json.loads(row['doc']))
                 try:
                     self._assert_target_access(db, item, actor_id)
-                except Problem:
+                except Problem as exc:
+                    if not is_list_visibility_denial(exc):
+                        raise
                     continue
                 mark = self._mark(db, item['id'], actor_id)
                 conversation = self._conversation(db, item['workspace_id'], item['channel_id'], item['thread_id'])

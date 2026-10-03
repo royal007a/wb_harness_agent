@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0059",
-  "active_plan": "exec-plans/blocked/HA-0059-team-read-visibility.md",
-  "last_checkpoint": "0058 2bd4af8待独立复审。0059修复撤销/归档/clearance后的Channel列表泄露，旧3反例失败，新18项、相关44项、全量501 passed/16 skipped。观测136/148非业务验收；未真实激活或双部署。",
-  "last_updated_at": "2026-10-03T19:40:00Z",
-  "next_action": "0059固定提交交mymacclaude只读复审；继续12个非Team未观测入口与架构声明审查。发布仍等待兼容本机拓扑选择，先本机再132，不调用真实模型。",
+  "active_task_id": "HA-0060",
+  "active_plan": "exec-plans/blocked/HA-0060-team-list-errors.md",
+  "last_checkpoint": "0059独立Approved；0060统一四列表/Snapshot故障分类，旧5反例失败，新74、相关174、全量575 passed/16 skipped，verify通过。观测137/148不是功能验收；未双部署。",
+  "last_updated_at": "2026-10-03T20:06:00Z",
+  "next_action": "0060固定提交交mymacclaude只读复审；继续11个未观测入口与架构声明审查。部署仍等待兼容本机拓扑选择，先本机再132；模型门禁不变。",
   "release": "0.1.0-local"
 }

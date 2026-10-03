@@ -18,6 +18,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from .analysis import Problem, digest
 from .store import dumps, now, uid
 from .team_coordination import TeamCoordination, iso_now, parse_time, reject_sensitive
+from .team_foundation import is_list_visibility_denial
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -259,13 +260,16 @@ class RecoveryLoopGuard:
 
     def cases(self, actor_id):
         with self.store.transaction() as db:
+            self.team.foundation._agent(db, actor_id)
             items = []
             for row in db.execute('SELECT doc FROM recovery_cases ORDER BY rowid DESC').fetchall():
                 case = self._expire_if_needed(db, json.loads(row['doc']))
                 task = self.team._expire_lease(db, self.team._row_task(db, case['team_task_id']))
                 try:
                     self.team.foundation.assert_task_access(db, task, actor_id)
-                except Problem:
+                except Problem as exc:
+                    if not is_list_visibility_denial(exc, allow_legacy_task=True):
+                        raise
                     continue
                 items.append(case)
             result = {'items': items, 'runtime': self.runtime_status()}

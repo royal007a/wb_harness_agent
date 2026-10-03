@@ -116,6 +116,19 @@ Session owner/channel过滤、历史与撤销重启，不新增身份认证或�
 Bank/Recovery/三类Research列表、sample、health、resources列表/详情、Run
 replans、OpenAPI/静态HEAD。它们继续待做，完整功能/错误路径也仍需逐项核对。
 
+### HA-0060 检查点（2026-10-04）
+
+HA-0059已独立Approved；复审发现既有 **TEAM-READ-02**：Session/Task/Inbox/
+Recovery列表把503吞成空列表；同类问题也在Session Task snapshot中。
+HA-0060按明确(code,status)白名单修复，Recovery扫描前校验actor。旧5个行为
+反例失败，新增74项、相关174项、全量575 passed/16 skipped，verify通过。
+覆盖内部DB/字段故障、合法不可见状态、未知/暂停主体、scope错误和事务回滚；
+不是身份认证，也不改变GET既有惰性过期机制。待固定提交独立review与双部署。
+
+观察器137/148且有passing-test 2xx的入口137个；11未观测：Memory Bank、
+三类Research列表、sample、health、resources列表/详情、Run replans、
+OpenAPI/静态HEAD。Channel持久列/JSON Workspace不一致的Low另待处理。
+
 ## 尚未完成的端到端验证
 
 - 所有公开请求/响应与实际 OpenAPI/静态 OpenAPI/JSON Schema 一致性。

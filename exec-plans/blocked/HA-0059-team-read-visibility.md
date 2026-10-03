@@ -13,4 +13,5 @@
 完整verify为501 passed/16 skipped。148入口中136 observed且都有passing-test
 2xx，12个尚未观测；不将其称为业务验收率。证据见HA-0059 acceptance。
 
-代码待固定提交交mymacclaude复审；双部署仍待HA-0056本机拓扑选择，未执行。
+8a7e840已获mymacclaude代码Approved；其他列表吞故障的既有Medium交HA-0060。
+双部署仍待HA-0056本机拓扑选择，未执行。

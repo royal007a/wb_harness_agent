@@ -1,6 +1,6 @@
 # ADR-0059：Channel 列表复用当前详情可见性
 
-状态：代码与离线回归完成，待独立 review；真实双部署仍阻塞。
+状态：8a7e840获独立代码Approved；真实双部署仍阻塞。
 HA-0059，基线2bd4af8；证据见 harness/evidence/HA-0059/acceptance.md。
 
 ## 实测问题
@@ -18,3 +18,6 @@ Workspace channels 列表仍返回被撤销 Channel 的 ID、标题与元数据�
 
 用已登记状态故障注入验证撤销、归档、clearance下降，并补 Workspace写路径、
 成员/Session读路径的HTTP证据。见 specs/testing/TEAM_READ_VISIBILITY.md。
+
+独立复审指出其他列表和Session snapshot仍可能吞掉Problem，HA-0059没有修复
+这部分；由ADR-0060另行定义一致的错误分类和HTTP故障验证。

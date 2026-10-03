@@ -1,6 +1,6 @@
 # HA-0059 Team 列表当前可见性与 HTTP 缺口
 
-2026-10-04（北京时间）。基线2bd4af8，代码与离线验证完成，待独立review。
+2026-10-04（北京时间）。基线2bd4af8，8a7e840已获mymacclaude独立代码Approved。
 真实本机/132发布仍阻塞；本轮没有操作launchctl、8765、132、正式DB或Provider。
 
 ## 旧反例与修复
@@ -34,7 +34,9 @@ bash harness/verify.sh
 新增验证包括：授权后的Channel详情200、空与非空列表、跨Workspace拒绝、
 Workspace创建/成员授予幂等与冲突、缺Key/无效请求/不存在目标拒绝且状态不变、
 无效/暂停actor、归档Workspace、Session跨主体/Channel过滤和retired历史、
-重启后撤销继续生效（非全局删除）、意外503不吞成空列表、runtime零调用声明。
+重启后撤销继续生效（非全局删除）、runtime零调用声明。
+意外503不吞成空列表的测试仅针对Channel列表，且替换整个访问函数；
+不证明Session/Task/Inbox/Recovery均不吞故障，也不涵盖内部DB故障。
 有动态响应合同的读取/Workspace创建实例均验证合同，未知字段反例被拒；
 没有声称所有Team写响应已补动态Schema（其他缺失合同仍须后续审查）。
 
@@ -51,5 +53,7 @@ Workspace创建/成员授予幂等与冲突、缺Key/无效请求/不存在目�
   仍需独立证据。不能把本轮通过当作完整12小时目标完成。
 - HA-0056本机拓扑未定，不静默更换到user/root/system域，也不跳过本机部署132。
 
-复审要求：固定提交、只读，重跑旧3反例/新18项及相关回归，挑战过滤是否误吞错误、
-主体/Workspace/Channel/Session边界与证据口径，给Approved或Changes Requested。
+独立复审记录：18项通过；旧三反例失败（完整文件旧版另有2个失败，未计入before）。
+复审在Channel访问函数内部注入DB/字段/503故障，均未被吞掉；Session/Task/Inbox/
+Recovery仍宽泛捕获Problem，作为既有Medium交HA-0060。另有Low：持久列与JSON
+workspace不一致时列表归属异常，需独立处理；本轮不能称双端已发布。

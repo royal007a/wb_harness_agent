@@ -16,7 +16,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
-from .team_foundation import TeamFoundation
+from .team_foundation import TeamFoundation, is_list_visibility_denial
 from .team_security import reject_sensitive
 
 
@@ -160,7 +160,9 @@ class TeamSessionContinuity:
                 continue
             try:
                 self.foundation.assert_task_access(db, task, session['agent_id'])
-            except Problem:
+            except Problem as exc:
+                if not is_list_visibility_denial(exc, allow_legacy_task=True):
+                    raise
                 continue
             tasks.append(task)
         tasks.sort(key=lambda task: task['id'])
@@ -249,7 +251,9 @@ class TeamSessionContinuity:
                 session = json.loads(row['doc'])
                 try:
                     self._assert_session_access(db, session, actor_id)
-                except Problem:
+                except Problem as exc:
+                    if not is_list_visibility_denial(exc):
+                        raise
                     continue
                 items.append(session)
             result = {'items': items, 'runtime': self.runtime_status()}

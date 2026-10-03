@@ -21,6 +21,24 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = json.loads((ROOT / 'specs/v1/team-foundation.schema.json').read_text())
 CLASS_RANK = {'Public': 0, 'Internal': 1, 'Restricted': 2}
 ADMIN_ROLES = {'owner', 'admin'}
+LIST_VISIBILITY_DENIALS = frozenset({
+    ('TEAM_CHANNEL_ACCESS_DENIED', 403),
+    ('TEAM_WORKSPACE_ACCESS_DENIED', 403),
+    ('TEAM_DATA_CLEARANCE_DENIED', 403),
+    ('TEAM_CHANNEL_ARCHIVED', 409),
+    ('TEAM_WORKSPACE_ARCHIVED', 409),
+})
+
+
+def is_list_visibility_denial(error: Problem, *, allow_legacy_task=False):
+    """Expected per-item invisibility, never a request-level identity check.
+
+    Both code and HTTP status must agree. Corruption, missing referenced
+    records and service failures must remain errors, not successful omissions.
+    """
+    identity = (error.code, error.status)
+    return identity in LIST_VISIBILITY_DENIALS or (
+        allow_legacy_task and identity == ('TEAM_TASK_LEGACY_UNBOUND', 409))
 
 
 def validate_contract(name, value):

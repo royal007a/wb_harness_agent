@@ -3,6 +3,21 @@
   "generated_at": "2026-10-03T12:06:02Z",
   "tasks": [
     {
+      "id": "HA-0060",
+      "title": "统一 Team 列表与 Snapshot 的可见性拒绝和故障语义",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["四类列表与Session Task snapshot不吞故障", "Recovery扫描前协议主体检查", "HTTP故障与事务回归、证据和独立review"],
+      "non_goals": ["新认证或运行时准入", "修改Snapshot业务范围或修复既有损坏数据", "跳过本机部署132"],
+      "acceptance": ["旧四类列表503反例行为失败", "仅已列明不可见错误可过滤且其他错误如实返回", "有效过滤、数据故障、事务回滚、相关与全量验证通过", "固定提交独立review及本机先于132部署证据"],
+      "depends_on": ["HA-0053"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0060-team-list-errors.md",
+      "blocked_reason": "代码和离线验证完成：旧5反例失败，新增74、相关174、全量575 passed/16 skipped；待独立review。双部署仍等待HA-0056本机拓扑决定。",
+      "recovery_condition": "固定提交独立复核；兼容本机调用拓扑明确并验证后，先本机再132部署。",
+      "evidence": ["harness/evidence/HA-0060/acceptance.md"]
+    },
+    {
       "id": "HA-0059",
       "title": "补 Team HTTP 读写验证并修复 Channel 列表可见性",
       "status": "blocked",
@@ -13,7 +28,7 @@
       "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0059-team-read-visibility.md",
-      "blocked_reason": "旧3反例失败；新增18项、相关44项、全量501 passed/16 skipped通过，待独立review。实际双部署仍等待HA-0056本机拓扑决定。",
+      "blocked_reason": "8a7e840已获独立Approved；18项通过、旧3反例重跑失败。既有列表吞故障由HA-0060跟进；实际双部署仍等待HA-0056本机拓扑决定。",
       "recovery_condition": "固定提交独立复审通过；本机兼容拓扑明确后先本机再132发布并核对实际HTTP行为。",
       "evidence": ["harness/evidence/HA-0059/acceptance.md"]
     },
