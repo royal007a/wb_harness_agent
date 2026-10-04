@@ -1,0 +1,36 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________ test_delete_does_not_run_startup_cleanup_for_another_bank ___________
+
+client = <starlette.testclient.TestClient object at 0x10af26f90>
+
+    def test_delete_does_not_run_startup_cleanup_for_another_bank(client):
+        w = world(client)
+        extra = post_bank(client, 'legacy-other70', 'legacy-bank70')
+        path = '/api/local/memory/banks/' + extra['id'] + '/retain'
+        retained = post(client, path, body('other-orphan70'), 'legacy70')
+        pair = ('memory:retain:' + extra['id'], 'legacy70')
+        original = rows(client)[pair]
+        assert client.delete('/api/local/memory/sources/' + retained['source']['id'],
+                             headers={'Idempotency-Key': 'legacy-delete70'}).status_code == 200
+        store = client.app.state.service.store
+        store.db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?', (original['response'], *pair))
+        assert delete(client, w).status_code == 200
+>       assert rows(client)[pair] == original
+E       assert {'scope': 'me...ombstone@1"}'} == {'scope': 'me...: "active"}}'}
+E
+E         Omitting 3 identical items, use -vv to show
+E         Differing items:
+E         {'response': '{"receipt_status": "unavailable", "schema_version": "memory-receipt-tombstone@1"}'} != {'response': '{"audit_id": "memaudit_90f46af4a5704a7a8615637fb87fec47", "deduplicated": false, "facts": [{"bank_id": "...t": "2026-10-04T00:21:10.422441Z", "retracted_at": null, "source_ref": "fixture:other-orphan70", "status": "active"}}'}
+E         Use -v to get more diff
+
+tests/test_memory_receipt_deletion.py:286: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_delete_does_not_run_startup_cleanup_for_another_bank
+1 failed, 31 deselected, 1 warning in 0.33s

@@ -1,0 +1,42 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_failure_rolls_back_canonical_and_receipt_payloads[audit] _________
+
+client = <starlette.testclient.TestClient object at 0x10af76e40>
+stage = 'audit'
+
+    @pytest.mark.parametrize('stage', ['redaction', 'audit', 'receipt'])
+    def test_failure_rolls_back_canonical_and_receipt_payloads(client, stage):
+        w = world(client)
+        store = client.app.state.service.store
+        trigger = {
+            'redaction': "BEFORE UPDATE OF response ON idempotency WHEN OLD.scope LIKE 'memory:relations:%'",
+            'audit': "BEFORE INSERT ON memory_audit WHEN json_extract(NEW.doc, '$.event_type')='memory.source.deleted'",
+            'receipt': "BEFORE INSERT ON idempotency WHEN NEW.scope LIKE 'memory:delete:%'",
+        }[stage]
+        store.db.execute("CREATE TEMP TRIGGER fail70 " + trigger + " BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        response = delete(client, w)
+        assert response.status_code == 500
+        assert 'SENTINEL70' not in response.text
+>       assert snapshot(client)[1] == before
+E       assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}
+E
+E         Omitting 49 identical items, use -vv to show
+E         Differing items:
+E         {'memory_entities': [('mement_cd39fbdd93f44931a031086afd2b4e7b', 'membank_69b31cca05174642aff4bf0544e409ff', 'system:e...us": "active", "support_fact_id": "memfact_b753cd77b58d49c79fe886efe0e42d09", "valid_from": null, "valid_to": null}')]} != {'memory_entities': [('mement_840d51ba02504ea4ac0c8e8f66d3a1d7', 'membank_69b31cca05174642aff4bf0544e409ff', 'system:e...us": "active", "support_fact_id": "memfact_b753cd77b58d49c79fe886efe0e42d09", "valid_from": null, "valid_to": null}')]}
+E         {'memory_fact_fts_data': [(1, b'...
+E
+E         ...Full output truncated (10 lines hidden), use '-vv' to show
+
+tests/test_memory_receipt_deletion.py:189: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_failure_rolls_back_canonical_and_receipt_payloads[audit]
+1 failed, 31 deselected, 1 warning in 0.32s

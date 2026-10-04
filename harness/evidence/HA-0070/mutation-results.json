@@ -1,0 +1,101 @@
+{
+  "mutations": [
+    {
+      "id": "skip-delete-redaction",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "delete-key-instead-of-payload",
+      "tests": 8,
+      "failures": 8,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "destroy-digest",
+      "tests": 8,
+      "failures": 8,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "marker-replay-allowed",
+      "tests": 8,
+      "failures": 8,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "skip-startup-cleanup",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "skip-canonical-check",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "indirect-relation-not-deleted",
+      "tests": 2,
+      "failures": 2,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "delete-cleans-other-bank",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "skip-bank-binding",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "split-replay-transaction",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "early-delete-commit",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    },
+    {
+      "id": "marker-allows-old-response",
+      "tests": 4,
+      "failures": 1,
+      "errors": 0,
+      "killed": true,
+      "restored_and_cmp": true
+    }
+  ],
+  "test_sha256": "ffb48dfe4c17338a19d6057d74a87c021c28e546dc6d2c8d0fedd821885300f3"
+}

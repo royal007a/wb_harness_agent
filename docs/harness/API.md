@@ -450,5 +450,8 @@ Retain（201）、Source retract（200）和DELETE（200）现按memory-plane源
 公开local_http_memory_*响应，静态与动态都使用当前local_http_error信封。
 Retain去重与首次写入、重复撤回与首次撤回的字段分支以Schema为准。
 DELETE拒绝非空请求体（含分块），幂等键均1–128字符。
-回放是历史收据；删除canonical不抹掉旧Retain/Entity幂等回执，不宣称隐私擦除。
-详见specs/testing/MEMORY_WRITE_CONTRACTS.md。
+回放是历史收据；HA-0070在删除后使相关Retain/Entity/Relation内容回执失效，
+旧key同请求返回409 MEMORY_RECEIPT_UNAVAILABLE，异请求仍409 CONFLICT。
+启动会清理旧库孤儿内容收据，保留key/digest防止重试复活；删除/撤回收据不变。
+不宣称磁盘/WAL/备份或其他独立副本擦除。详见specs/testing/MEMORY_WRITE_CONTRACTS.md
+与specs/testing/MEMORY_RECEIPT_DELETION.md。

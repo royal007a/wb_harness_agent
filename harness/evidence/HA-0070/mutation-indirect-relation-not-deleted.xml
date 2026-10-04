@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.393" timestamp="2026-10-04T08:21:09.412451+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=87272c076fb49d06a2f92a65d942286b2dbe1cdb609746b7499fcc56346daada]" time="0.127"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_be8a2b00d9d14e71bd3311b05828b683&quot;,&quot;deduplicated&quot;:false,&quot;relation&quot;:{&quot;bank_id&quot;:&quot;membank_13e4fb9c5f87401ea45340199e276501&quot;,&quot;confidence&quot;:1,&quot;id&quot;:&quot;memrel_1b4f42e1dfbd4fd880e3722cdcaa3615&quot;,&quot;object_entity_id&quot;:&quot;mement_3b841af14b6b4a1eb26cf2bbfa7126fb&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:09.708196Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;subject_entity_id&quot;:&quot;mement_efa1d76061094a1399125ae399cf2d1a&quot;,&quot;support_fact_id&quot;:&quot;memfact_f64160e300ed447c9662ee789149ea86&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x1097d6e40&gt;
+key = 'indirect'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_be8a2b00d9d14e71bd3311b05828b683","deduplicated":false,"relation":{"bank_id":"membank_13e4fb9c5f87401ea45340199e276501","confidence":1,"id":"memrel_1b4f42e1dfbd4fd880e3722cdcaa3615","object_entity_id":"mement_3b841af14b6b4a1eb26cf2bbfa7126fb","occurred_at":"2026-01-01T00:00:00Z","predicate":"depends_on","recorded_at":"2026-10-04T00:21:09.708196Z","status":"active","subject_entity_id":"mement_efa1d76061094a1399125ae399cf2d1a","support_fact_id":"memfact_f64160e300ed447c9662ee789149ea86","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=c3a4181350be4a0775ea4d397a290228d1d5a86dbfea3c2d24a7e096bfd79afa]" time="0.059"><failure message="AssertionError: {&quot;audit_id&quot;:null,&quot;deduplicated&quot;:true,&quot;relation&quot;:{&quot;bank_id&quot;:&quot;membank_24336c9b92af4666b40f5abe1aadf108&quot;,&quot;confidence&quot;:1,&quot;id&quot;:&quot;memrel_45de367be3894ffda9a30930bef1e4fa&quot;,&quot;object_entity_id&quot;:&quot;mement_afbe6a86eae044fbbb2219376b4e821c&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:09.789389Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;subject_entity_id&quot;:&quot;mement_06794970c73841d9907300e64a31ff1e&quot;,&quot;support_fact_id&quot;:&quot;memfact_01f6cdbeba764cd6834b73bee360fc87&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b2fce10&gt;
+key = 'indirect-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":null,"deduplicated":true,"relation":{"bank_id":"membank_24336c9b92af4666b40f5abe1aadf108","confidence":1,"id":"memrel_45de367be3894ffda9a30930bef1e4fa","object_entity_id":"mement_afbe6a86eae044fbbb2219376b4e821c","occurred_at":"2026-01-01T00:00:00Z","predicate":"depends_on","recorded_at":"2026-10-04T00:21:09.789389Z","status":"active","subject_entity_id":"mement_06794970c73841d9907300e64a31ff1e","support_fact_id":"memfact_01f6cdbeba764cd6834b73bee360fc87","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase></testsuite></testsuites>

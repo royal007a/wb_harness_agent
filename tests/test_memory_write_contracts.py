@@ -140,12 +140,13 @@ def test_actual_write_lifecycle_receipts_and_replay(client):
     before = snapshot(client)
     assert client.delete(source_path, headers={'Idempotency-Key': 'delete69'}).json() == deleted.json()
     assert client.post(source_path + ':retract', json={}, headers={'Idempotency-Key': 'retract69'}).json() == first.json()
-    assert client.post(path, json=request, headers={'Idempotency-Key': 'retain69'}).json() == retained
+    old = client.post(path, json=request, headers={'Idempotency-Key': 'retain69'})
+    assert old.status_code == 409 and old.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE'
     assert snapshot(client) == before
     counts = client.get('/api/local/memory/banks/' + bank['id']).json()['counts']
     assert counts == {'sources': 0, 'facts': 0}
-    # This is canonical deletion, NOT erasure of historical idempotency receipts.
-    assert any('Fact 69' in str(row) for row in before[1]['idempotency'])
+    # ADR-0070 now removes the content payload but preserves the key/digest.
+    assert not any('Fact 69' in str(row) for row in before[1]['idempotency'])
     missing = client.delete(source_path, headers={'Idempotency-Key': 'delete69-new'})
     assert missing.status_code == 404
     check(client, OPERATIONS[2], missing.json(), '404')
@@ -336,7 +337,8 @@ def test_historical_receipts_persist_across_new_app(client):
     with TestClient(create_app(database, False), base_url='http://127.0.0.1') as restarted:
         before = snapshot(restarted)
         assert restarted.delete(source_path, headers={'Idempotency-Key': 'restart-delete69'}).json() == response.json()
-        assert restarted.post(path, json=request, headers={'Idempotency-Key': 'retain69'}).json() == retained
+        old = restarted.post(path, json=request, headers={'Idempotency-Key': 'retain69'})
+        assert old.status_code == 409 and old.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE'
         assert snapshot(restarted) == before
 
 

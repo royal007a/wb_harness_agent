@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.330" timestamp="2026-10-04T08:21:10.761296+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_startup_cleanup_does_not_hide_fault_or_partially_scrub[case_sha256=b854dc8ec1dd6ca5d49c0f0191d1da8bbc8cb342140125958b4a75669c7b6a8d]" time="0.130"><failure message="Failed: DID NOT RAISE Exception">client = &lt;starlette.testclient.TestClient object at 0x10cdd2e40&gt;
+bad = 'binding'
+
+    @pytest.mark.parametrize('bad', ['json', 'binding', 'db'])
+    def test_startup_cleanup_does_not_hide_fault_or_partially_scrub(client, bad):
+        w = legacy_orphans(client)
+        store = client.app.state.service.store
+        if bad != 'db':
+            mismatched = copy.deepcopy(w['receipts']['b'])
+            mismatched['source']['bank_id'] = 'membank_' + '0' * 32
+            payload = '{invalid JSON' if bad == 'json' else dumps(mismatched)
+            store.db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',
+                             (payload, 'memory:retain:' + w['bank']['id'], 'b'))
+        else:
+            store.db.execute("CREATE TEMP TRIGGER fail_cleanup70 BEFORE UPDATE OF response ON idempotency "
+                             "WHEN OLD.scope LIKE 'memory:relations:%' BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+&gt;       with pytest.raises(Exception) as exc:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+tests/test_memory_receipt_deletion.py:252: Failed</failure></testcase></testsuite></testsuites>

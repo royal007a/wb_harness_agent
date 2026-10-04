@@ -1,0 +1,35 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_receipt_authorization_and_purge_share_one_immediate_transaction[replay] _
+
+client = <starlette.testclient.TestClient object at 0x10ce1ee40>
+operation = 'replay'
+
+    @pytest.mark.parametrize('operation', ['replay', 'delete'])
+    def test_receipt_authorization_and_purge_share_one_immediate_transaction(client, operation):
+        w = world(client)
+        store = client.app.state.service.store
+        statements = []
+        store.db.set_trace_callback(statements.append)
+        try:
+            response = replay(client, w, 'a') if operation == 'replay' else delete(client, w)
+        finally:
+            store.db.set_trace_callback(None)
+        assert response.status_code == (201 if operation == 'replay' else 200)
+        boundaries = [sql for sql in statements if sql in ['BEGIN', 'BEGIN IMMEDIATE', 'COMMIT', 'ROLLBACK']]
+>       assert boundaries == ['BEGIN IMMEDIATE', 'COMMIT']
+E       AssertionError: assert ['BEGIN IMMED...TE', 'COMMIT'] == ['BEGIN IMMEDIATE', 'COMMIT']
+E
+E         Left contains 2 more items, first extra item: 'BEGIN IMMEDIATE'
+E         Use -v to get more diff
+
+tests/test_memory_receipt_deletion.py:337: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_receipt_authorization_and_purge_share_one_immediate_transaction[replay]
+1 failed, 31 deselected, 1 warning in 0.33s

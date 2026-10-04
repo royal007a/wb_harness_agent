@@ -1,0 +1,215 @@
+FFFFFFFF                                                                 [100%]
+=================================== FAILURES ===================================
+____________ test_deleted_content_receipt_cannot_replay_or_write[a] ____________
+
+client = <starlette.testclient.TestClient object at 0x10d062e40>, key = 'a'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+_________ test_deleted_content_receipt_cannot_replay_or_write[a-dedup] _________
+
+client = <starlette.testclient.TestClient object at 0x10eb78e10>
+key = 'a-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+___________ test_deleted_content_receipt_cannot_replay_or_write[ea] ____________
+
+client = <starlette.testclient.TestClient object at 0x10dd5f890>, key = 'ea'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+________ test_deleted_content_receipt_cannot_replay_or_write[ea-dedup] _________
+
+client = <starlette.testclient.TestClient object at 0x10ed80d60>
+key = 'ea-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+_________ test_deleted_content_receipt_cannot_replay_or_write[direct] __________
+
+client = <starlette.testclient.TestClient object at 0x10ed816e0>, key = 'direct'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+______ test_deleted_content_receipt_cannot_replay_or_write[direct-dedup] _______
+
+client = <starlette.testclient.TestClient object at 0x10ed60a70>
+key = 'direct-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+________ test_deleted_content_receipt_cannot_replay_or_write[indirect] _________
+
+client = <starlette.testclient.TestClient object at 0x10f5d5bf0>
+key = 'indirect'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+_____ test_deleted_content_receipt_cannot_replay_or_write[indirect-dedup] ______
+
+client = <starlette.testclient.TestClient object at 0x10f7ef020>
+key = 'indirect-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"receipt_status":"unavailable","schema_version":"memory-receipt-tombstone@1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[a]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[a-dedup]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[ea]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[ea-dedup]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[direct]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[direct-dedup]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[indirect]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[indirect-dedup]
+8 failed, 24 deselected, 1 warning in 0.80s

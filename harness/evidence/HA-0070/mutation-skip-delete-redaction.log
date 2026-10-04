@@ -1,0 +1,30 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_all_and_only_related_payloads_removed_with_digest_preserved _______
+
+client = <starlette.testclient.TestClient object at 0x10c9caf90>
+
+    def test_all_and_only_related_payloads_removed_with_digest_preserved(client):
+        w = world(client)
+        before = rows(client)
+        response = delete(client, w)
+        assert response.status_code == 200
+        assert response.json()['deleted_entity_count'] == 1
+        assert response.json()['deleted_relation_count'] == 2
+        audit = client.app.state.service.store.db.execute('SELECT doc FROM memory_audit WHERE id=?',
+                                                          (response.json()['audit_id'],)).fetchone()
+>       assert json.loads(audit['doc'])['metadata'].get('invalidated_receipt_count') == 8
+E       AssertionError: assert 0 == 8
+E        +  where 0 = <built-in method get of dict object at 0x10d7ba740>('invalidated_receipt_count')
+E        +    where <built-in method get of dict object at 0x10d7ba740> = {'deleted_entity_count': 1, 'deleted_fact_count': 1, 'deleted_relation_count': 2, 'invalidated_receipt_count': 0, ...}.get
+
+tests/test_memory_receipt_deletion.py:110: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_all_and_only_related_payloads_removed_with_digest_preserved
+1 failed, 31 deselected, 1 warning in 0.41s

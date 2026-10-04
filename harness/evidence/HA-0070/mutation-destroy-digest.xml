@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="8" time="0.788" timestamp="2026-10-04T08:21:05.862050+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=32332ffee853ef6d87d16e1dbc55f72288c4fa960b2c44ee80d34b9993e0f7aa]" time="0.124"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_a7631e5f88d74a5f94e14257ec0fe450&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10abc6e40&gt;, key = 'a'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_a7631e5f88d74a5f94e14257ec0fe450"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=e1128244bb7f0bf46cfac80e2effcb7e328c87be7b02f9e03687479a3998d639]" time="0.056"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_a03e3ad8a7d6488394ce90f6ac8dd230&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10c6ed090&gt;
+key = 'a-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_a03e3ad8a7d6488394ce90f6ac8dd230"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=cf724b1a7036d6bbfa1a14dd11272fc656c34ac97c38451d072d04925fa94947]" time="0.076"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_2bcb77957be04045bc1379dbaf5badf9&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10b8c7ed0&gt;, key = 'ea'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_2bcb77957be04045bc1379dbaf5badf9"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=aac9c82c5683ff838bb846346aea65c5fd56fb8b115e0543f7704871b5454a75]" time="0.057"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_a4d1f37f962e4c8b9daaee69ceadb38c&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10c8e4d60&gt;
+key = 'ea-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_a4d1f37f962e4c8b9daaee69ceadb38c"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=0582fdeeae91a296cb7792bacb1845840a40aa282c4ff94fc0dccec8329d9c78]" time="0.058"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_1a16ee52bc3247b68b4d838bced00b35&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10c8e56e0&gt;, key = 'direct'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_1a16ee52bc3247b68b4d838bced00b35"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=dca9ed19182ded688c5ecdc9f1025f52ca3eb1a3ed3c67dbc5a1d509f5309893]" time="0.057"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_8b584d924e49406d9173acb528d33288&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10c8c0a70&gt;
+key = 'direct-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_8b584d924e49406d9173acb528d33288"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=87272c076fb49d06a2f92a65d942286b2dbe1cdb609746b7499fcc56346daada]" time="0.058"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_cd46cf56df5049c096060855d4a5650b&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10d139bf0&gt;
+key = 'indirect'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_cd46cf56df5049c096060855d4a5650b"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=c3a4181350be4a0775ea4d397a290228d1d5a86dbfea3c2d24a7e096bfd79afa]" time="0.057"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;CONFLICT&quot;,&quot;message&quot;:&quot;同一幂等键已用于不同请求。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_0bcdf101b0a543fb818b9977a12bd0fa&quot;}}&#10;assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'&#10;  &#10;  - MEMORY_RECEIPT_UNAVAILABLE&#10;  + CONFLICT">client = &lt;starlette.testclient.TestClient object at 0x10d34f020&gt;
+key = 'indirect-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [409 Conflict]&gt;
+
+    def unavailable(response):
+        assert response.status_code == 409, response.text
+&gt;       assert response.json()['error']['code'] == 'MEMORY_RECEIPT_UNAVAILABLE', response.text
+E       AssertionError: {"error":{"code":"CONFLICT","message":"同一幂等键已用于不同请求。","retryable":false,"request_id":"req_0bcdf101b0a543fb818b9977a12bd0fa"}}
+E       assert 'CONFLICT' == 'MEMORY_RECEIPT_UNAVAILABLE'
+E
+E         - MEMORY_RECEIPT_UNAVAILABLE
+E         + CONFLICT
+
+tests/test_memory_receipt_deletion.py:85: AssertionError</failure></testcase></testsuite></testsuites>

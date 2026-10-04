@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.326" timestamp="2026-10-04T08:21:11.392753+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_receipt_authorization_and_purge_share_one_immediate_transaction[case_sha256=b3907a84c3d119d27478b123a724aefbceeb298fbe3c57294ccce02f90dd8d20]" time="0.126"><failure message="AssertionError: assert ['BEGIN IMMED...TE', 'COMMIT'] == ['BEGIN IMMEDIATE', 'COMMIT']&#10;  &#10;  Left contains 2 more items, first extra item: 'BEGIN IMMEDIATE'&#10;  Use -v to get more diff">client = &lt;starlette.testclient.TestClient object at 0x10ce1ee40&gt;
+operation = 'replay'
+
+    @pytest.mark.parametrize('operation', ['replay', 'delete'])
+    def test_receipt_authorization_and_purge_share_one_immediate_transaction(client, operation):
+        w = world(client)
+        store = client.app.state.service.store
+        statements = []
+        store.db.set_trace_callback(statements.append)
+        try:
+            response = replay(client, w, 'a') if operation == 'replay' else delete(client, w)
+        finally:
+            store.db.set_trace_callback(None)
+        assert response.status_code == (201 if operation == 'replay' else 200)
+        boundaries = [sql for sql in statements if sql in ['BEGIN', 'BEGIN IMMEDIATE', 'COMMIT', 'ROLLBACK']]
+&gt;       assert boundaries == ['BEGIN IMMEDIATE', 'COMMIT']
+E       AssertionError: assert ['BEGIN IMMED...TE', 'COMMIT'] == ['BEGIN IMMEDIATE', 'COMMIT']
+E
+E         Left contains 2 more items, first extra item: 'BEGIN IMMEDIATE'
+E         Use -v to get more diff
+
+tests/test_memory_receipt_deletion.py:337: AssertionError</failure></testcase></testsuite></testsuites>

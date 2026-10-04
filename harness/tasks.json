@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-03T23:56:00Z",
+  "generated_at": "2026-10-04T00:27:00Z",
   "tasks": [
+    {
+      "id": "HA-0070",
+      "title": "Memory删除传播到历史内容收据且禁止旧键复活",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Retain/Entity/Relation内容收据的删除传播", "保留digest的无正文失效标记与旧库启动清理", "事务回滚、重启、跨Bank隔离及并发回放测试"],
+      "non_goals": ["物理磁盘/WAL/备份擦除", "删除独立来源或其他产品的相同文本", "FTS缺模块写入退化或启用模型", "绕过本机部署132"],
+      "acceptance": ["固定基线行为反例与定向突变可重跑", "删除和内容收据失效原子且保留幂等冲突", "旧键409不写入不泄露不复活，非关联收据不变", "定向全量verify、固定提交review与双部署证据"],
+      "depends_on": ["HA-0069"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0070-memory-receipt-deletion.md",
+      "blocked_reason": "新32/相关224通过，旧23行为反例/12有效突变；全量1297 passed/16 skipped及verify退出0。待独立review与兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交独立Approved；先本机再132部署并核验启动清理与备份边界。",
+      "evidence": ["harness/evidence/HA-0070/acceptance.md", "harness/evidence/HA-0070/mutation-plan.json", "harness/evidence/HA-0070/mutation-results.json"]
+    },
     {
       "id": "HA-0069",
       "title": "Memory写入生命周期HTTP契约与失败边界",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0066"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0069-memory-write-contracts.md",
-      "blocked_reason": "40新增/192相关，旧35行为失败和10/10有效突变；全量1265 passed/16 skipped及verify通过。待独立review和兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交独立Approved；先本机再132发布。",
-      "evidence": ["harness/evidence/HA-0069/acceptance.md", "harness/evidence/HA-0069/mutation-plan.json", "harness/evidence/HA-0069/mutation-results.json", "harness/evidence/HA-0069/remaining-empty-responses.json"]
+      "blocked_reason": "3d83bd5独立Approved；40新/165指定及旧35行为失败核实，真实h11 DELETE与2 Low/2说明登记。仍待兼容本机拓扑后的双部署。",
+      "recovery_condition": "兼容本机拓扑明确后先本机再132发布。",
+      "evidence": ["harness/evidence/HA-0069/acceptance.md", "harness/evidence/HA-0069/mutation-plan.json", "harness/evidence/HA-0069/mutation-results.json", "harness/evidence/HA-0069/remaining-empty-responses.json", "harness/evidence/HA-0069/review.md"]
     },
     {
       "id": "HA-0068",

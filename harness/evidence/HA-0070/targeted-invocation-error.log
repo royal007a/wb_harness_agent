@@ -1,0 +1,4 @@
+ERROR: usage: python -m pytest [options] [file_or_dir] [file_or_dir] [...]
+python -m pytest: error: unrecognized arguments: --interface-evidence=harness/evidence/HA-0070/targeted-interfaces.json
+  inifile: None
+  rootdir: /Users/weberzhao/code/ai/harnessagent

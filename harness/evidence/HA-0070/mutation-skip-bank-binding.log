@@ -1,0 +1,35 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_startup_cleanup_does_not_hide_fault_or_partially_scrub[binding] _____
+
+client = <starlette.testclient.TestClient object at 0x10cdd2e40>
+bad = 'binding'
+
+    @pytest.mark.parametrize('bad', ['json', 'binding', 'db'])
+    def test_startup_cleanup_does_not_hide_fault_or_partially_scrub(client, bad):
+        w = legacy_orphans(client)
+        store = client.app.state.service.store
+        if bad != 'db':
+            mismatched = copy.deepcopy(w['receipts']['b'])
+            mismatched['source']['bank_id'] = 'membank_' + '0' * 32
+            payload = '{invalid JSON' if bad == 'json' else dumps(mismatched)
+            store.db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',
+                             (payload, 'memory:retain:' + w['bank']['id'], 'b'))
+        else:
+            store.db.execute("CREATE TEMP TRIGGER fail_cleanup70 BEFORE UPDATE OF response ON idempotency "
+                             "WHEN OLD.scope LIKE 'memory:relations:%' BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+>       with pytest.raises(Exception) as exc:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+tests/test_memory_receipt_deletion.py:252: Failed
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_startup_cleanup_does_not_hide_fault_or_partially_scrub[binding]
+1 failed, 31 deselected, 1 warning in 0.33s

@@ -1,0 +1,62 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+________ test_deleted_content_receipt_cannot_replay_or_write[indirect] _________
+
+client = <starlette.testclient.TestClient object at 0x1097d6e40>
+key = 'indirect'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_be8a2b00d9d14e71bd3311b05828b683","deduplicated":false,"relation":{"bank_id":"membank_13e4fb9c5f87401ea45340199e276501","confidence":1,"id":"memrel_1b4f42e1dfbd4fd880e3722cdcaa3615","object_entity_id":"mement_3b841af14b6b4a1eb26cf2bbfa7126fb","occurred_at":"2026-01-01T00:00:00Z","predicate":"depends_on","recorded_at":"2026-10-04T00:21:09.708196Z","status":"active","subject_entity_id":"mement_efa1d76061094a1399125ae399cf2d1a","support_fact_id":"memfact_f64160e300ed447c9662ee789149ea86","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+_____ test_deleted_content_receipt_cannot_replay_or_write[indirect-dedup] ______
+
+client = <starlette.testclient.TestClient object at 0x10b2fce10>
+key = 'indirect-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":null,"deduplicated":true,"relation":{"bank_id":"membank_24336c9b92af4666b40f5abe1aadf108","confidence":1,"id":"memrel_45de367be3894ffda9a30930bef1e4fa","object_entity_id":"mement_afbe6a86eae044fbbb2219376b4e821c","occurred_at":"2026-01-01T00:00:00Z","predicate":"depends_on","recorded_at":"2026-10-04T00:21:09.789389Z","status":"active","subject_entity_id":"mement_06794970c73841d9907300e64a31ff1e","support_fact_id":"memfact_01f6cdbeba764cd6834b73bee360fc87","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[indirect]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[indirect-dedup]
+2 failed, 30 deselected, 1 warning in 0.39s

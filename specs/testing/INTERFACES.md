@@ -241,11 +241,11 @@ Agent/Skill/Tool 模拟；零模型、零网络
 
 显式事实、FTS5/时间/两跳/精确实体；无自动聊天抽取/语义/Reflect
 
-必须验证：Bank/time/source 过滤；supersede/retract/delete 传播；FTS 重建和详情；图/实体歧义与 lineage；语义 gate fail-closed；正文/跨 Bank 零泄漏；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；Memory/Research读取静态动态源合同、退化状态与历史实例负例；Memory写回执、损坏准入档案、DELETE分块body及事务回滚。
+必须验证：Bank/time/source 过滤；supersede/retract/delete 传播；FTS 重建和详情；图/实体歧义与 lineage；语义 gate fail-closed；正文/跨 Bank 零泄漏；读取内容/生命周期/HEAD的HTTP行为；入口命中不是完整验收；Memory/Research读取静态动态源合同、退化状态与历史实例负例；Memory写回执、损坏准入档案、DELETE分块body及事务回滚；内容收据删除传播、旧键防复活、启动清理与原子回滚。
 
-规格：`docs/harness/MEMORY_PLANE_M1.md`、`docs/harness/MEMORY_CONTEXT_M2A.md`、`docs/harness/MEMORY_GRAPH_M3A.md`、`docs/harness/MEMORY_ENTITY_CATALOG_M3B.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`、`specs/testing/MEMORY_WRITE_CONTRACTS.md`
+规格：`docs/harness/MEMORY_PLANE_M1.md`、`docs/harness/MEMORY_CONTEXT_M2A.md`、`docs/harness/MEMORY_GRAPH_M3A.md`、`docs/harness/MEMORY_ENTITY_CATALOG_M3B.md`、`specs/testing/READ_SURFACES.md`、`specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`、`specs/testing/MEMORY_WRITE_CONTRACTS.md`、`specs/testing/MEMORY_RECEIPT_DELETION.md`
 
-测试入口：`tests/test_memory_plane.py`、`tests/test_memory_context.py`、`tests/test_memory_context_evaluation.py`、`tests/test_memory_graph.py`、`tests/test_memory_graph_evaluation.py`、`tests/test_memory_entity_catalog.py`、`tests/test_memory_fact_lineage.py`、`tests/test_memory_temporal_read_safety.py`、`tests/test_semantic_retrieval_admission.py`、`tests/test_read_surfaces.py`、`tests/test_memory_research_read_contracts.py`、`tests/test_memory_write_contracts.py`
+测试入口：`tests/test_memory_plane.py`、`tests/test_memory_context.py`、`tests/test_memory_context_evaluation.py`、`tests/test_memory_graph.py`、`tests/test_memory_graph_evaluation.py`、`tests/test_memory_entity_catalog.py`、`tests/test_memory_fact_lineage.py`、`tests/test_memory_temporal_read_safety.py`、`tests/test_semantic_retrieval_admission.py`、`tests/test_read_surfaces.py`、`tests/test_memory_research_read_contracts.py`、`tests/test_memory_write_contracts.py`、`tests/test_memory_receipt_deletion.py`
 
 ### team：Team Foundation / Task Handoff Gate
 

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="8" time="0.797" timestamp="2026-10-04T08:21:04.730992+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=32332ffee853ef6d87d16e1dbc55f72288c4fa960b2c44ee80d34b9993e0f7aa]" time="0.130"><failure message="AssertionError: {&quot;source&quot;:{&quot;id&quot;:&quot;memsrc_efffc507d57346fcb3907587c30909d0&quot;,&quot;bank_id&quot;:&quot;membank_5763f49c714f43df9539da7bed3708b6&quot;,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:05.037883Z&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:21:05.037883Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;retracted_at&quot;:null},&quot;facts&quot;:[{&quot;id&quot;:&quot;memfact_8b3d12ff643740f78e95a3c6bce31b8f&quot;,&quot;bank_id&quot;:&quot;membank_5763f49c714f43df9539da7bed3708b6&quot;,&quot;source_id&quot;:&quot;memsrc_efffc507d57346fcb3907587c30909d0&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;confidence&quot;:0.9,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;supersedes_fact_id&quot;:null,&quot;superseded_by_fact_id&quot;:null,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:05.037903Z&quot;}],&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_371239a88cbe4fbfba811217582faaf1&quot;,&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d706e40&gt;, key = 'a'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"source":{"id":"memsrc_efffc507d57346fcb3907587c30909d0","bank_id":"membank_5763f49c714f43df9539da7bed3708b6","source_ref":"fixture:ERASE_SENTINEL70","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:05.037883Z","expires_at":"2027-01-02T00:21:05.037883Z","status":"active","retracted_at":null},"facts":[{"id":"memfact_8b3d12ff643740f78e95a3c6bce31b8f","bank_id":"membank_5763f49c714f43df9539da7bed3708b6","source_id":"memsrc_efffc507d57346fcb3907587c30909d0","statement":"Fact ERASE_SENTINEL70","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","supersedes_fact_id":null,"superseded_by_fact_id":null,"recorded_at":"2026-10-04T00:21:05.037903Z"}],"deduplicated":false,"audit_id":"memaudit_371239a88cbe4fbfba811217582faaf1","note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=e1128244bb7f0bf46cfac80e2effcb7e328c87be7b02f9e03687479a3998d639]" time="0.061"><failure message="AssertionError: {&quot;source&quot;:{&quot;id&quot;:&quot;memsrc_aa5882407499458b92b6a9a88596fb4f&quot;,&quot;bank_id&quot;:&quot;membank_dc4f3f06eb25453a8131df68a745e668&quot;,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:05.125226Z&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:21:05.125226Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;retracted_at&quot;:null},&quot;facts&quot;:[{&quot;id&quot;:&quot;memfact_086653de4f6b4c929ef26c279d0e702c&quot;,&quot;bank_id&quot;:&quot;membank_dc4f3f06eb25453a8131df68a745e668&quot;,&quot;source_id&quot;:&quot;memsrc_aa5882407499458b92b6a9a88596fb4f&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;confidence&quot;:0.9,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;supersedes_fact_id&quot;:null,&quot;superseded_by_fact_id&quot;:null,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:05.125248Z&quot;}],&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_f78183cbc7414ef88b28630870f2f335&quot;,&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10f224e10&gt;
+key = 'a-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"source":{"id":"memsrc_aa5882407499458b92b6a9a88596fb4f","bank_id":"membank_dc4f3f06eb25453a8131df68a745e668","source_ref":"fixture:ERASE_SENTINEL70","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:05.125226Z","expires_at":"2027-01-02T00:21:05.125226Z","status":"active","retracted_at":null},"facts":[{"id":"memfact_086653de4f6b4c929ef26c279d0e702c","bank_id":"membank_dc4f3f06eb25453a8131df68a745e668","source_id":"memsrc_aa5882407499458b92b6a9a88596fb4f","statement":"Fact ERASE_SENTINEL70","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","supersedes_fact_id":null,"superseded_by_fact_id":null,"recorded_at":"2026-10-04T00:21:05.125248Z"}],"deduplicated":false,"audit_id":"memaudit_f78183cbc7414ef88b28630870f2f335","note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=cf724b1a7036d6bbfa1a14dd11272fc656c34ac97c38451d072d04925fa94947]" time="0.078"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND&quot;,&quot;message&quot;:&quot;Graph 支撑 Fact 不在此 Memory Bank。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_a6f16aa9b08746dd975dca5c7416b459&quot;}}&#10;assert 404 == 409&#10; +  where 404 = &lt;Response [404 Not Found]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10e407890&gt;, key = 'ea'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [404 Not Found]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_a6f16aa9b08746dd975dca5c7416b459"}}
+E       assert 404 == 409
+E        +  where 404 = &lt;Response [404 Not Found]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=aac9c82c5683ff838bb846346aea65c5fd56fb8b115e0543f7704871b5454a75]" time="0.056"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND&quot;,&quot;message&quot;:&quot;Graph 支撑 Fact 不在此 Memory Bank。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_fb014f6c35c64e83b372e79137f6b89b&quot;}}&#10;assert 404 == 409&#10; +  where 404 = &lt;Response [404 Not Found]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10f430e90&gt;
+key = 'ea-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [404 Not Found]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_fb014f6c35c64e83b372e79137f6b89b"}}
+E       assert 404 == 409
+E        +  where 404 = &lt;Response [404 Not Found]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=0582fdeeae91a296cb7792bacb1845840a40aa282c4ff94fc0dccec8329d9c78]" time="0.057"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND&quot;,&quot;message&quot;:&quot;Graph 支撑 Fact 不在此 Memory Bank。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_bc1ca5bb9c774645b44c0242ccda0d83&quot;}}&#10;assert 404 == 409&#10; +  where 404 = &lt;Response [404 Not Found]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10f431810&gt;, key = 'direct'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [404 Not Found]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_bc1ca5bb9c774645b44c0242ccda0d83"}}
+E       assert 404 == 409
+E        +  where 404 = &lt;Response [404 Not Found]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=dca9ed19182ded688c5ecdc9f1025f52ca3eb1a3ed3c67dbc5a1d509f5309893]" time="0.056"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND&quot;,&quot;message&quot;:&quot;Graph 支撑 Fact 不在此 Memory Bank。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_731a10b4e6704a13bcf19455634b9800&quot;}}&#10;assert 404 == 409&#10; +  where 404 = &lt;Response [404 Not Found]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10f3fca70&gt;
+key = 'direct-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [404 Not Found]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_731a10b4e6704a13bcf19455634b9800"}}
+E       assert 404 == 409
+E        +  where 404 = &lt;Response [404 Not Found]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=87272c076fb49d06a2f92a65d942286b2dbe1cdb609746b7499fcc56346daada]" time="0.056"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;MEMORY_GRAPH_ENTITY_NOT_FOUND&quot;,&quot;message&quot;:&quot;Graph Entity 不在此 Memory Bank。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_a3be946463d546b086b84cf71eb7ca68&quot;}}&#10;assert 404 == 409&#10; +  where 404 = &lt;Response [404 Not Found]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10fc75bf0&gt;
+key = 'indirect'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [404 Not Found]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_ENTITY_NOT_FOUND","message":"Graph Entity 不在此 Memory Bank。","retryable":false,"request_id":"req_a3be946463d546b086b84cf71eb7ca68"}}
+E       assert 404 == 409
+E        +  where 404 = &lt;Response [404 Not Found]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=c3a4181350be4a0775ea4d397a290228d1d5a86dbfea3c2d24a7e096bfd79afa]" time="0.056"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;MEMORY_GRAPH_ENTITY_NOT_FOUND&quot;,&quot;message&quot;:&quot;Graph Entity 不在此 Memory Bank。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_a59f87fa6b664fddb17e8baf483f4d7f&quot;}}&#10;assert 404 == 409&#10; +  where 404 = &lt;Response [404 Not Found]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10fe97020&gt;
+key = 'indirect-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [404 Not Found]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_ENTITY_NOT_FOUND","message":"Graph Entity 不在此 Memory Bank。","retryable":false,"request_id":"req_a59f87fa6b664fddb17e8baf483f4d7f"}}
+E       assert 404 == 409
+E        +  where 404 = &lt;Response [404 Not Found]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase></testsuite></testsuites>

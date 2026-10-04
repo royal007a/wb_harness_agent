@@ -4,6 +4,14 @@
   "title": "Memory Plane M1 contract",
   "type": "object",
   "$defs": {
+    "receipt_tombstone": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "receipt_status"],
+      "properties": {
+        "schema_version": {"const": "memory-receipt-tombstone@1"},
+        "receipt_status": {"const": "unavailable"}
+      }
+    },
     "local_http_memory_source": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "bank_id", "source_ref", "content_sha256", "data_classification", "occurred_at", "recorded_at", "expires_at", "status", "retracted_at"],

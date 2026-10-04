@@ -1,0 +1,26 @@
+.F..                                                                     [100%]
+=================================== FAILURES ===================================
+_____________________ test_marker_contract_is_strict[bad1] _____________________
+
+bad = {'schema_version': 'memory-receipt-tombstone@1', 'receipt_status': 'unavailable', 'response': 'PRIVATE'}
+
+    @pytest.mark.parametrize('bad', [{}, {**MARKER, 'response': 'PRIVATE'}, {**MARKER, 'receipt_status': 'active'},
+                                   {**MARKER, 'schema_version': 'memory-receipt-tombstone@2'}])
+    def test_marker_contract_is_strict(bad):
+        validator = Draft202012Validator({'$defs': CONTRACT['$defs'], '$ref': '#/$defs/receipt_tombstone'})
+        validator.validate(MARKER)
+>       assert not validator.is_valid(bad)
+E       AssertionError: assert not True
+E        +  where True = is_valid({'schema_version': 'memory-receipt-tombstone@1', 'receipt_status': 'unavailable', 'response': 'PRIVATE'})
+E        +    where is_valid = Draft202012Validator(schema={'$defs': {'bank_create_request': {'additionalProperties': False, 'properties': {'data_cla...ed': ['bank', 'counts', 'runtime'], 'type': 'object'}, ...}, '$ref': '#/$defs/receipt_tombstone'}, format_checker=None).is_valid
+
+tests/test_memory_receipt_deletion.py:297: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_marker_contract_is_strict[bad1]
+1 failed, 3 passed, 28 deselected, 1 warning in 0.20s

@@ -12,12 +12,14 @@
    Retain首次写入1–16 Fact且有audit；内容去重facts=[]、audit=null。
    重复撤回already_retracted=true且count=0，没有伪造新的audit或图计数。
 3. canonical Source content及Fact detail不出现在写回执；statement本身是交付。
-   同key同规范化请求为历史回执，不承诺反映后续supersede/retract/delete状态。
+   同key同规范化请求为历史回执，不承诺反映后续supersede/retract状态；HA-0070
+   改为删除后旧Retain/Entity/Relation内容收据返回409，不再返回正文。
    异请求同key409；合法回放业务状态和total_changes均不变。
 4. 来源、Fact、FTS、图派生、审计与幂等收据在同一事务；故障返回错误且可见
    DB快照不变。SQLite total_changes包含已回滚尝试，不能拿它证明失败没有尝试写。
 5. 删除清除本来源canonical及相关图/索引；不自动复活被supersede的旧Fact。
-   现有幂等Retain/Entity等历史收据仍可含派生正文，因此不是全库删除证明。
+   HA-0070把相关Retain/Entity/Relation内容收据一并失效；仅保留scope/key/digest
+   和无内容标记。历史删除/撤回收据不变；物理磁盘/WAL/备份仍不在范围内。
 6. 损坏准入档案fail-closed且不影响状态读取；输出类型码不含文件内容。
    负例锁定counts.sources、external_calls非负及FTS不可用时error为string。
 7. 合成Source/Fact、临时DB、TestClient与直接故障注入；不代表真实socket分块

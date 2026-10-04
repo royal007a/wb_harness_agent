@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.324" timestamp="2026-10-04T08:21:12.037421+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_failure_rolls_back_canonical_and_receipt_payloads[case_sha256=c9ba140030bd711f7152437832edd819ab1e9b2fd0539708cf95c22e73d4f286]" time="0.124"><failure message="assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}&#10;  &#10;  Omitting 49 identical items, use -vv to show&#10;  Differing items:&#10;  {'memory_entities': [('mement_cd39fbdd93f44931a031086afd2b4e7b', 'membank_69b31cca05174642aff4bf0544e409ff', 'system:e...us&quot;: &quot;active&quot;, &quot;support_fact_id&quot;: &quot;memfact_b753cd77b58d49c79fe886efe0e42d09&quot;, &quot;valid_from&quot;: null, &quot;valid_to&quot;: null}')]} != {'memory_entities': [('mement_840d51ba02504ea4ac0c8e8f66d3a1d7', 'membank_69b31cca05174642aff4bf0544e409ff', 'system:e...us&quot;: &quot;active&quot;, &quot;support_fact_id&quot;: &quot;memfact_b753cd77b58d49c79fe886efe0e42d09&quot;, &quot;valid_from&quot;: null, &quot;valid_to&quot;: null}')]}&#10;  {'memory_fact_fts_data': [(1, b'...&#10;  &#10;  ...Full output truncated (10 lines hidden), use '-vv' to show">client = &lt;starlette.testclient.TestClient object at 0x10af76e40&gt;
+stage = 'audit'
+
+    @pytest.mark.parametrize('stage', ['redaction', 'audit', 'receipt'])
+    def test_failure_rolls_back_canonical_and_receipt_payloads(client, stage):
+        w = world(client)
+        store = client.app.state.service.store
+        trigger = {
+            'redaction': "BEFORE UPDATE OF response ON idempotency WHEN OLD.scope LIKE 'memory:relations:%'",
+            'audit': "BEFORE INSERT ON memory_audit WHEN json_extract(NEW.doc, '$.event_type')='memory.source.deleted'",
+            'receipt': "BEFORE INSERT ON idempotency WHEN NEW.scope LIKE 'memory:delete:%'",
+        }[stage]
+        store.db.execute("CREATE TEMP TRIGGER fail70 " + trigger + " BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        response = delete(client, w)
+        assert response.status_code == 500
+        assert 'SENTINEL70' not in response.text
+&gt;       assert snapshot(client)[1] == before
+E       assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}
+E
+E         Omitting 49 identical items, use -vv to show
+E         Differing items:
+E         {'memory_entities': [('mement_cd39fbdd93f44931a031086afd2b4e7b', 'membank_69b31cca05174642aff4bf0544e409ff', 'system:e...us": "active", "support_fact_id": "memfact_b753cd77b58d49c79fe886efe0e42d09", "valid_from": null, "valid_to": null}')]} != {'memory_entities': [('mement_840d51ba02504ea4ac0c8e8f66d3a1d7', 'membank_69b31cca05174642aff4bf0544e409ff', 'system:e...us": "active", "support_fact_id": "memfact_b753cd77b58d49c79fe886efe0e42d09", "valid_from": null, "valid_to": null}')]}
+E         {'memory_fact_fts_data': [(1, b'...
+E
+E         ...Full output truncated (10 lines hidden), use '-vv' to show
+
+tests/test_memory_receipt_deletion.py:189: AssertionError</failure></testcase></testsuite></testsuites>

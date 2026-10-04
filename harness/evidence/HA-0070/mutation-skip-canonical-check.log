@@ -1,0 +1,33 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_old_orphan_replay_is_rejected_without_lazy_write _____________
+
+client = <starlette.testclient.TestClient object at 0x10d68af90>
+
+    def test_old_orphan_replay_is_rejected_without_lazy_write(client):
+        w = legacy_orphans(client)
+        before = snapshot(client)
+        for key in w['affected']:
+>           unavailable(replay(client, w, key))
+
+tests/test_memory_receipt_deletion.py:214:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_1e8ae115aa094476a17bfff7778dec1b","deduplicated":false,"facts":[{"bank_id":"membank_855ee6324e0445e4a798bc16a2e72184","confidence":0.9,"id":"memfact_8fe85270aee14495b9571172b39f781c","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:09.064456Z","source_id":"memsrc_1ad6f2bb21654873a40348f731806ff5","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_855ee6324e0445e4a798bc16a2e72184","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:21:09.064424Z","id":"memsrc_1ad6f2bb21654873a40348f731806ff5","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:09.064424Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_old_orphan_replay_is_rejected_without_lazy_write
+1 failed, 31 deselected, 1 warning in 0.34s

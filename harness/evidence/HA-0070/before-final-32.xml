@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="23" skipped="0" tests="28" time="2.249" timestamp="2026-10-04T08:19:24.040358+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=32332ffee853ef6d87d16e1dbc55f72288c4fa960b2c44ee80d34b9993e0f7aa]" time="0.181"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_6f7bd540d0504a12befac2edab003c0d&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_b34b91cd2c8c491880326955c5476cdd&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_f5fdf3ca46b4438292a0f6849d886f17&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.438450Z&quot;,&quot;source_id&quot;:&quot;memsrc_1f275a03d3d64d029d6f32f1c1d14d42&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_b34b91cd2c8c491880326955c5476cdd&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:24.438414Z&quot;,&quot;id&quot;:&quot;memsrc_1f275a03d3d64d029d6f32f1c1d14d42&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.438414Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b91acf0&gt;, key = 'a'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_6f7bd540d0504a12befac2edab003c0d","deduplicated":false,"facts":[{"bank_id":"membank_b34b91cd2c8c491880326955c5476cdd","confidence":0.9,"id":"memfact_f5fdf3ca46b4438292a0f6849d886f17","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:24.438450Z","source_id":"memsrc_1f275a03d3d64d029d6f32f1c1d14d42","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_b34b91cd2c8c491880326955c5476cdd","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:19:24.438414Z","id":"memsrc_1f275a03d3d64d029d6f32f1c1d14d42","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:24.438414Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=e1128244bb7f0bf46cfac80e2effcb7e328c87be7b02f9e03687479a3998d639]" time="0.072"><failure message="AssertionError: {&quot;audit_id&quot;:null,&quot;deduplicated&quot;:true,&quot;facts&quot;:[],&quot;note&quot;:&quot;相同来源内容已存在；没有再次写入 Fact。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_5f8edd977a1549eb9a70216ded5d066b&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:24.519007Z&quot;,&quot;id&quot;:&quot;memsrc_e8424f412c514e0d8a07337ae648eb9d&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.519007Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d43ccd0&gt;
+key = 'a-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":null,"deduplicated":true,"facts":[],"note":"相同来源内容已存在；没有再次写入 Fact。","source":{"bank_id":"membank_5f8edd977a1549eb9a70216ded5d066b","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:19:24.519007Z","id":"memsrc_e8424f412c514e0d8a07337ae648eb9d","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:24.519007Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=cf724b1a7036d6bbfa1a14dd11272fc656c34ac97c38451d072d04925fa94947]" time="0.053"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_3595eef2530f4b3194578abd95065bb4&quot;,&quot;deduplicated&quot;:false,&quot;entity&quot;:{&quot;aliases&quot;:[&quot;ea_ALIAS_SENTINEL70&quot;],&quot;bank_id&quot;:&quot;membank_551df1cd088347aa99fe44156c8c8430&quot;,&quot;canonical_name&quot;:&quot;ea_NAME_SENTINEL70&quot;,&quot;entity_type&quot;:&quot;system&quot;,&quot;id&quot;:&quot;mement_845cdf70438f4909ba692efde0822924&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.598377Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;support_fact_id&quot;:&quot;memfact_dff88b993d6d4f4994117529ca5d6331&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10baa2c10&gt;, key = 'ea'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_3595eef2530f4b3194578abd95065bb4","deduplicated":false,"entity":{"aliases":["ea_ALIAS_SENTINEL70"],"bank_id":"membank_551df1cd088347aa99fe44156c8c8430","canonical_name":"ea_NAME_SENTINEL70","entity_type":"system","id":"mement_845cdf70438f4909ba692efde0822924","recorded_at":"2026-10-04T00:19:24.598377Z","status":"active","support_fact_id":"memfact_dff88b993d6d4f4994117529ca5d6331","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=aac9c82c5683ff838bb846346aea65c5fd56fb8b115e0543f7704871b5454a75]" time="0.051"><failure message="AssertionError: {&quot;audit_id&quot;:null,&quot;deduplicated&quot;:true,&quot;entity&quot;:{&quot;aliases&quot;:[&quot;ea_ALIAS_SENTINEL70&quot;],&quot;bank_id&quot;:&quot;membank_91c54909880147d788f3e61a3f0e86f1&quot;,&quot;canonical_name&quot;:&quot;ea_NAME_SENTINEL70&quot;,&quot;entity_type&quot;:&quot;system&quot;,&quot;id&quot;:&quot;mement_c6f6588b90604abd9619b6412f4af3e0&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.657163Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;support_fact_id&quot;:&quot;memfact_37ccba2751a447d0af36f4c64ad5992c&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b8f0770&gt;
+key = 'ea-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":null,"deduplicated":true,"entity":{"aliases":["ea_ALIAS_SENTINEL70"],"bank_id":"membank_91c54909880147d788f3e61a3f0e86f1","canonical_name":"ea_NAME_SENTINEL70","entity_type":"system","id":"mement_c6f6588b90604abd9619b6412f4af3e0","recorded_at":"2026-10-04T00:19:24.657163Z","status":"active","support_fact_id":"memfact_37ccba2751a447d0af36f4c64ad5992c","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=0582fdeeae91a296cb7792bacb1845840a40aa282c4ff94fc0dccec8329d9c78]" time="0.052"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_3c56beadbf2f4ed78b43e248dc68d5f0&quot;,&quot;deduplicated&quot;:false,&quot;relation&quot;:{&quot;bank_id&quot;:&quot;membank_b392c0b1da704803ba39a146509ed793&quot;,&quot;confidence&quot;:1,&quot;id&quot;:&quot;memrel_41869d2c3ead42998f99f3624bbc0abf&quot;,&quot;object_entity_id&quot;:&quot;mement_fd21a88880ee4790bdc00b900527289a&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;predicate&quot;:&quot;affects&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.721440Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;subject_entity_id&quot;:&quot;mement_a1e9471e3223481b9b31a1eb1e97252a&quot;,&quot;support_fact_id&quot;:&quot;memfact_e8c2bb7fd84b44358be800c865e3d2d6&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b8f0fc0&gt;, key = 'direct'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_3c56beadbf2f4ed78b43e248dc68d5f0","deduplicated":false,"relation":{"bank_id":"membank_b392c0b1da704803ba39a146509ed793","confidence":1,"id":"memrel_41869d2c3ead42998f99f3624bbc0abf","object_entity_id":"mement_fd21a88880ee4790bdc00b900527289a","occurred_at":"2026-01-01T00:00:00Z","predicate":"affects","recorded_at":"2026-10-04T00:19:24.721440Z","status":"active","subject_entity_id":"mement_a1e9471e3223481b9b31a1eb1e97252a","support_fact_id":"memfact_e8c2bb7fd84b44358be800c865e3d2d6","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=dca9ed19182ded688c5ecdc9f1025f52ca3eb1a3ed3c67dbc5a1d509f5309893]" time="0.051"><failure message="AssertionError: {&quot;audit_id&quot;:null,&quot;deduplicated&quot;:true,&quot;relation&quot;:{&quot;bank_id&quot;:&quot;membank_87918119dde34dd8b7f9d04023d08f19&quot;,&quot;confidence&quot;:1,&quot;id&quot;:&quot;memrel_8183fbf43c5d4e82bd6ef09a0df3aeb3&quot;,&quot;object_entity_id&quot;:&quot;mement_40920aec6d5e4ee9bd41327a18a603c5&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;predicate&quot;:&quot;affects&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.777607Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;subject_entity_id&quot;:&quot;mement_6f5bc7c75bf54adf929058af0ffa6e32&quot;,&quot;support_fact_id&quot;:&quot;memfact_73ee844fa465419aa84f8767c3b78601&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10c70c710&gt;
+key = 'direct-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":null,"deduplicated":true,"relation":{"bank_id":"membank_87918119dde34dd8b7f9d04023d08f19","confidence":1,"id":"memrel_8183fbf43c5d4e82bd6ef09a0df3aeb3","object_entity_id":"mement_40920aec6d5e4ee9bd41327a18a603c5","occurred_at":"2026-01-01T00:00:00Z","predicate":"affects","recorded_at":"2026-10-04T00:19:24.777607Z","status":"active","subject_entity_id":"mement_6f5bc7c75bf54adf929058af0ffa6e32","support_fact_id":"memfact_73ee844fa465419aa84f8767c3b78601","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=87272c076fb49d06a2f92a65d942286b2dbe1cdb609746b7499fcc56346daada]" time="0.053"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_9da23310e91841a483b4b64b4d93171c&quot;,&quot;deduplicated&quot;:false,&quot;relation&quot;:{&quot;bank_id&quot;:&quot;membank_4be8b4114f8e4970935f243c52306e29&quot;,&quot;confidence&quot;:1,&quot;id&quot;:&quot;memrel_5d9ff757dc784ff695ef953e20464816&quot;,&quot;object_entity_id&quot;:&quot;mement_ba6fa8d787e94d23a624e1ce7f47ad19&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.833389Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;subject_entity_id&quot;:&quot;mement_4b2102ec161c4239889ff34b4714aa8d&quot;,&quot;support_fact_id&quot;:&quot;memfact_206a30190e4548688eba1b6648a010b0&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10de44e20&gt;
+key = 'indirect'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_9da23310e91841a483b4b64b4d93171c","deduplicated":false,"relation":{"bank_id":"membank_4be8b4114f8e4970935f243c52306e29","confidence":1,"id":"memrel_5d9ff757dc784ff695ef953e20464816","object_entity_id":"mement_ba6fa8d787e94d23a624e1ce7f47ad19","occurred_at":"2026-01-01T00:00:00Z","predicate":"depends_on","recorded_at":"2026-10-04T00:19:24.833389Z","status":"active","subject_entity_id":"mement_4b2102ec161c4239889ff34b4714aa8d","support_fact_id":"memfact_206a30190e4548688eba1b6648a010b0","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_deleted_content_receipt_cannot_replay_or_write[case_sha256=c3a4181350be4a0775ea4d397a290228d1d5a86dbfea3c2d24a7e096bfd79afa]" time="0.051"><failure message="AssertionError: {&quot;audit_id&quot;:null,&quot;deduplicated&quot;:true,&quot;relation&quot;:{&quot;bank_id&quot;:&quot;membank_f8c5c6d9762249f1a603715e5f9d48fb&quot;,&quot;confidence&quot;:1,&quot;id&quot;:&quot;memrel_39da8fd77cb043009c777c79dff35cc1&quot;,&quot;object_entity_id&quot;:&quot;mement_c774ba1db90d4ede94545414ff2e91b8&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:24.890906Z&quot;,&quot;status&quot;:&quot;active&quot;,&quot;subject_entity_id&quot;:&quot;mement_d2a5c193defc440e95c1a55e5656d724&quot;,&quot;support_fact_id&quot;:&quot;memfact_11a75fe7140942c9bc0264fd95b97df2&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10e09e030&gt;
+key = 'indirect-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+&gt;       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":null,"deduplicated":true,"relation":{"bank_id":"membank_f8c5c6d9762249f1a603715e5f9d48fb","confidence":1,"id":"memrel_39da8fd77cb043009c777c79dff35cc1","object_entity_id":"mement_c774ba1db90d4ede94545414ff2e91b8","occurred_at":"2026-01-01T00:00:00Z","predicate":"depends_on","recorded_at":"2026-10-04T00:19:24.890906Z","status":"active","subject_entity_id":"mement_d2a5c193defc440e95c1a55e5656d724","support_fact_id":"memfact_11a75fe7140942c9bc0264fd95b97df2","valid_from":null,"valid_to":null}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_all_and_only_related_payloads_removed_with_digest_preserved" time="0.050"><failure message="AssertionError: assert None == 8&#10; +  where None = &lt;built-in method get of dict object at 0x10e37f4c0&gt;('invalidated_receipt_count')&#10; +    where &lt;built-in method get of dict object at 0x10e37f4c0&gt; = {'deleted_entity_count': 1, 'deleted_fact_count': 1, 'deleted_relation_count': 2, 'source_sha256': 'ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e', ...}.get">client = &lt;starlette.testclient.TestClient object at 0x10e2ef020&gt;
+
+    def test_all_and_only_related_payloads_removed_with_digest_preserved(client):
+        w = world(client)
+        before = rows(client)
+        response = delete(client, w)
+        assert response.status_code == 200
+        assert response.json()['deleted_entity_count'] == 1
+        assert response.json()['deleted_relation_count'] == 2
+        audit = client.app.state.service.store.db.execute('SELECT doc FROM memory_audit WHERE id=?',
+                                                          (response.json()['audit_id'],)).fetchone()
+&gt;       assert json.loads(audit['doc'])['metadata'].get('invalidated_receipt_count') == 8
+E       AssertionError: assert None == 8
+E        +  where None = &lt;built-in method get of dict object at 0x10e37f4c0&gt;('invalidated_receipt_count')
+E        +    where &lt;built-in method get of dict object at 0x10e37f4c0&gt; = {'deleted_entity_count': 1, 'deleted_fact_count': 1, 'deleted_relation_count': 2, 'source_sha256': 'ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e', ...}.get
+
+tests/test_memory_receipt_deletion.py:110: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_invalidated_key_still_detects_conflict_before_unavailable[case_sha256=32332ffee853ef6d87d16e1dbc55f72288c4fa960b2c44ee80d34b9993e0f7aa]" time="0.053" /><testcase classname="tests.test_memory_receipt_deletion" name="test_invalidated_key_still_detects_conflict_before_unavailable[case_sha256=cf724b1a7036d6bbfa1a14dd11272fc656c34ac97c38451d072d04925fa94947]" time="0.055" /><testcase classname="tests.test_memory_receipt_deletion" name="test_invalidated_key_still_detects_conflict_before_unavailable[case_sha256=87272c076fb49d06a2f92a65d942286b2dbe1cdb609746b7499fcc56346daada]" time="0.055" /><testcase classname="tests.test_memory_receipt_deletion" name="test_explicit_new_key_does_not_resurrect_old_receipt" time="0.055"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_cf21d099c4c940c7b153a389760de23e&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_78ed73f19e8f4061b9bdb4a255a0af0c&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_21516ae122404cb98c05cb6f9aaba836&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.160249Z&quot;,&quot;source_id&quot;:&quot;memsrc_fc62bb7596c34be0b336acda9382f2f7&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_78ed73f19e8f4061b9bdb4a255a0af0c&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:25.160227Z&quot;,&quot;id&quot;:&quot;memsrc_fc62bb7596c34be0b336acda9382f2f7&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.160227Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10ea998c0&gt;
+
+    def test_explicit_new_key_does_not_resurrect_old_receipt(client):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        path, request, _ = w['calls']['a']
+        new = post(client, path, request, 'explicit-new70')
+        assert new['source']['id'] != w['source'] and new['deduplicated'] is False
+        before = snapshot(client)
+&gt;       unavailable(replay(client, w, 'a'))
+
+tests/test_memory_receipt_deletion.py:154:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_cf21d099c4c940c7b153a389760de23e","deduplicated":false,"facts":[{"bank_id":"membank_78ed73f19e8f4061b9bdb4a255a0af0c","confidence":0.9,"id":"memfact_21516ae122404cb98c05cb6f9aaba836","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.160249Z","source_id":"memsrc_fc62bb7596c34be0b336acda9382f2f7","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_78ed73f19e8f4061b9bdb4a255a0af0c","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:19:25.160227Z","id":"memsrc_fc62bb7596c34be0b336acda9382f2f7","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.160227Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_retract_and_supersede_are_not_deletion" time="0.107" /><testcase classname="tests.test_memory_receipt_deletion" name="test_failure_rolls_back_canonical_and_receipt_payloads[case_sha256=8623cdcb041ef3984e801b854abb209ba295defdbac87fd36d8e3c3c08d9a3fa]" time="0.055"><failure message="assert 200 == 500&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10e00d150&gt;
+stage = 'redaction'
+
+    @pytest.mark.parametrize('stage', ['redaction', 'audit', 'receipt'])
+    def test_failure_rolls_back_canonical_and_receipt_payloads(client, stage):
+        w = world(client)
+        store = client.app.state.service.store
+        trigger = {
+            'redaction': "BEFORE UPDATE OF response ON idempotency WHEN OLD.scope LIKE 'memory:relations:%'",
+            'audit': "BEFORE INSERT ON memory_audit WHEN json_extract(NEW.doc, '$.event_type')='memory.source.deleted'",
+            'receipt': "BEFORE INSERT ON idempotency WHEN NEW.scope LIKE 'memory:delete:%'",
+        }[stage]
+        store.db.execute("CREATE TEMP TRIGGER fail70 " + trigger + " BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        response = delete(client, w)
+&gt;       assert response.status_code == 500
+E       assert 200 == 500
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:187: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_failure_rolls_back_canonical_and_receipt_payloads[case_sha256=c9ba140030bd711f7152437832edd819ab1e9b2fd0539708cf95c22e73d4f286]" time="0.060"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_44fd34b12d1a4efe97afd0cf0661e5a5&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_13c3ba975d184c26b00ee57436a9db3e&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_57600618f4d74c9ea3425b7a441a824e&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.388800Z&quot;,&quot;source_id&quot;:&quot;memsrc_77bfad2302d24e2ca72bb235a29482c2&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_13c3ba975d184c26b00ee57436a9db3e&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:25.388775Z&quot;,&quot;id&quot;:&quot;memsrc_77bfad2302d24e2ca72bb235a29482c2&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.388775Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10e09cf30&gt;
+stage = 'audit'
+
+    @pytest.mark.parametrize('stage', ['redaction', 'audit', 'receipt'])
+    def test_failure_rolls_back_canonical_and_receipt_payloads(client, stage):
+        w = world(client)
+        store = client.app.state.service.store
+        trigger = {
+            'redaction': "BEFORE UPDATE OF response ON idempotency WHEN OLD.scope LIKE 'memory:relations:%'",
+            'audit': "BEFORE INSERT ON memory_audit WHEN json_extract(NEW.doc, '$.event_type')='memory.source.deleted'",
+            'receipt': "BEFORE INSERT ON idempotency WHEN NEW.scope LIKE 'memory:delete:%'",
+        }[stage]
+        store.db.execute("CREATE TEMP TRIGGER fail70 " + trigger + " BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        response = delete(client, w)
+        assert response.status_code == 500
+        assert 'SENTINEL70' not in response.text
+        assert snapshot(client)[1] == before
+        store.db.execute('DROP TRIGGER fail70')
+        for key in w['affected']:
+            assert replay(client, w, key).json() == w['receipts'][key]
+        assert delete(client, w).status_code == 200
+&gt;       unavailable(replay(client, w, 'a'))
+
+tests/test_memory_receipt_deletion.py:194:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_44fd34b12d1a4efe97afd0cf0661e5a5","deduplicated":false,"facts":[{"bank_id":"membank_13c3ba975d184c26b00ee57436a9db3e","confidence":0.9,"id":"memfact_57600618f4d74c9ea3425b7a441a824e","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.388800Z","source_id":"memsrc_77bfad2302d24e2ca72bb235a29482c2","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_13c3ba975d184c26b00ee57436a9db3e","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:19:25.388775Z","id":"memsrc_77bfad2302d24e2ca72bb235a29482c2","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.388775Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_failure_rolls_back_canonical_and_receipt_payloads[case_sha256=4fc16795daaf35b5e30624959ca498112abce5d6b063511d8c44cfd90c37920f]" time="0.061"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_8a19c04a33c74f91a4d355e171ad1410&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_f33668135be04104b4f244849b39f724&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_2c9a6f3b788e4cbe997c749507ab5b4f&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.455480Z&quot;,&quot;source_id&quot;:&quot;memsrc_82594c5962c5408097dcfd2be2995a5f&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_f33668135be04104b4f244849b39f724&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:25.455455Z&quot;,&quot;id&quot;:&quot;memsrc_82594c5962c5408097dcfd2be2995a5f&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.455455Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d8c9370&gt;
+stage = 'receipt'
+
+    @pytest.mark.parametrize('stage', ['redaction', 'audit', 'receipt'])
+    def test_failure_rolls_back_canonical_and_receipt_payloads(client, stage):
+        w = world(client)
+        store = client.app.state.service.store
+        trigger = {
+            'redaction': "BEFORE UPDATE OF response ON idempotency WHEN OLD.scope LIKE 'memory:relations:%'",
+            'audit': "BEFORE INSERT ON memory_audit WHEN json_extract(NEW.doc, '$.event_type')='memory.source.deleted'",
+            'receipt': "BEFORE INSERT ON idempotency WHEN NEW.scope LIKE 'memory:delete:%'",
+        }[stage]
+        store.db.execute("CREATE TEMP TRIGGER fail70 " + trigger + " BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        response = delete(client, w)
+        assert response.status_code == 500
+        assert 'SENTINEL70' not in response.text
+        assert snapshot(client)[1] == before
+        store.db.execute('DROP TRIGGER fail70')
+        for key in w['affected']:
+            assert replay(client, w, key).json() == w['receipts'][key]
+        assert delete(client, w).status_code == 200
+&gt;       unavailable(replay(client, w, 'a'))
+
+tests/test_memory_receipt_deletion.py:194:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_8a19c04a33c74f91a4d355e171ad1410","deduplicated":false,"facts":[{"bank_id":"membank_f33668135be04104b4f244849b39f724","confidence":0.9,"id":"memfact_2c9a6f3b788e4cbe997c749507ab5b4f","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.455480Z","source_id":"memsrc_82594c5962c5408097dcfd2be2995a5f","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_f33668135be04104b4f244849b39f724","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:19:25.455455Z","id":"memsrc_82594c5962c5408097dcfd2be2995a5f","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.455455Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_old_orphan_replay_is_rejected_without_lazy_write" time="0.055"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_0c0562567b924f6b909c3dbd5e249e24&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_ff4e50626f904aaea89a90a56d445e28&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_9b42ed73077b4c2fa9dbb38c0b012e7c&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.522782Z&quot;,&quot;source_id&quot;:&quot;memsrc_4b5474422dfa45cb9e56e45d6ebd33f1&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_ff4e50626f904aaea89a90a56d445e28&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:25.522758Z&quot;,&quot;id&quot;:&quot;memsrc_4b5474422dfa45cb9e56e45d6ebd33f1&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.522758Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d6ccf30&gt;
+
+    def test_old_orphan_replay_is_rejected_without_lazy_write(client):
+        w = legacy_orphans(client)
+        before = snapshot(client)
+        for key in w['affected']:
+&gt;           unavailable(replay(client, w, key))
+
+tests/test_memory_receipt_deletion.py:214:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_0c0562567b924f6b909c3dbd5e249e24","deduplicated":false,"facts":[{"bank_id":"membank_ff4e50626f904aaea89a90a56d445e28","confidence":0.9,"id":"memfact_9b42ed73077b4c2fa9dbb38c0b012e7c","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.522782Z","source_id":"memsrc_4b5474422dfa45cb9e56e45d6ebd33f1","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_ff4e50626f904aaea89a90a56d445e28","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:19:25.522758Z","id":"memsrc_4b5474422dfa45cb9e56e45d6ebd33f1","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.522758Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_new_app_cleans_legacy_orphans_and_repeated_cleanup_is_noop" time="0.081"><failure message="AssertionError: assert {'audit_id': ...eflect。', ...} == {'schema_vers...'unavailable'}&#10;  &#10;  Left contains 5 more items:&#10;  {'audit_id': 'memaudit_bdf28bbe9f4243b8b327fd42942bd258',&#10;   'deduplicated': False,&#10;   'facts': [{'bank_id': 'membank_b0e3f2a052464f25a4e2e195b72e5ea4',&#10;              'confidence': 0.9,&#10;              'id': 'memfact_5d1e521e08ab4d89a3f1c71629878c7d',...&#10;  &#10;  ...Full output truncated (25 lines hidden), use '-vv' to show">client = &lt;starlette.testclient.TestClient object at 0x10d362690&gt;
+
+    def test_new_app_cleans_legacy_orphans_and_repeated_cleanup_is_noop(client):
+        w = legacy_orphans(client)
+        store = client.app.state.service.store
+        database = store.db.execute('PRAGMA database_list').fetchone()['file']
+        client.__exit__(None, None, None)
+        with TestClient(create_app(database, False), base_url='http://127.0.0.1') as restarted:
+            for pair, record in rows(restarted).items():
+                if pair[0].endswith(w['bank']['id']) and pair[1] in w['affected']:
+&gt;                   assert json.loads(record['response']) == MARKER
+E                   AssertionError: assert {'audit_id': ...eflect。', ...} == {'schema_vers...'unavailable'}
+E
+E                     Left contains 5 more items:
+E                     {'audit_id': 'memaudit_bdf28bbe9f4243b8b327fd42942bd258',
+E                      'deduplicated': False,
+E                      'facts': [{'bank_id': 'membank_b0e3f2a052464f25a4e2e195b72e5ea4',
+E                                 'confidence': 0.9,
+E                                 'id': 'memfact_5d1e521e08ab4d89a3f1c71629878c7d',...
+E
+E                     ...Full output truncated (25 lines hidden), use '-vv' to show
+
+tests/test_memory_receipt_deletion.py:226: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_startup_cleanup_does_not_hide_fault_or_partially_scrub[case_sha256=b014c5f73bdad6bafbf860e689ec91b6e3fedabbdad74220ea4027a6194caad3]" time="0.057"><failure message="Failed: DID NOT RAISE Exception">client = &lt;starlette.testclient.TestClient object at 0x10e2ebac0&gt;, bad = 'json'
+
+    @pytest.mark.parametrize('bad', ['json', 'binding', 'db'])
+    def test_startup_cleanup_does_not_hide_fault_or_partially_scrub(client, bad):
+        w = legacy_orphans(client)
+        store = client.app.state.service.store
+        if bad != 'db':
+            mismatched = copy.deepcopy(w['receipts']['b'])
+            mismatched['source']['bank_id'] = 'membank_' + '0' * 32
+            payload = '{invalid JSON' if bad == 'json' else dumps(mismatched)
+            store.db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',
+                             (payload, 'memory:retain:' + w['bank']['id'], 'b'))
+        else:
+            store.db.execute("CREATE TEMP TRIGGER fail_cleanup70 BEFORE UPDATE OF response ON idempotency "
+                             "WHEN OLD.scope LIKE 'memory:relations:%' BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+&gt;       with pytest.raises(Exception) as exc:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+tests/test_memory_receipt_deletion.py:252: Failed</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_startup_cleanup_does_not_hide_fault_or_partially_scrub[case_sha256=b854dc8ec1dd6ca5d49c0f0191d1da8bbc8cb342140125958b4a75669c7b6a8d]" time="0.054"><failure message="Failed: DID NOT RAISE Exception">client = &lt;starlette.testclient.TestClient object at 0x10e19d590&gt;
+bad = 'binding'
+
+    @pytest.mark.parametrize('bad', ['json', 'binding', 'db'])
+    def test_startup_cleanup_does_not_hide_fault_or_partially_scrub(client, bad):
+        w = legacy_orphans(client)
+        store = client.app.state.service.store
+        if bad != 'db':
+            mismatched = copy.deepcopy(w['receipts']['b'])
+            mismatched['source']['bank_id'] = 'membank_' + '0' * 32
+            payload = '{invalid JSON' if bad == 'json' else dumps(mismatched)
+            store.db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',
+                             (payload, 'memory:retain:' + w['bank']['id'], 'b'))
+        else:
+            store.db.execute("CREATE TEMP TRIGGER fail_cleanup70 BEFORE UPDATE OF response ON idempotency "
+                             "WHEN OLD.scope LIKE 'memory:relations:%' BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+&gt;       with pytest.raises(Exception) as exc:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+tests/test_memory_receipt_deletion.py:252: Failed</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_startup_cleanup_does_not_hide_fault_or_partially_scrub[case_sha256=2e82aeaf423e1ba6e09989b3f09c49313e10df3d415678e6c2f9aebc62f75c15]" time="0.056"><failure message="Failed: DID NOT RAISE Exception">client = &lt;starlette.testclient.TestClient object at 0x10e19d6a0&gt;, bad = 'db'
+
+    @pytest.mark.parametrize('bad', ['json', 'binding', 'db'])
+    def test_startup_cleanup_does_not_hide_fault_or_partially_scrub(client, bad):
+        w = legacy_orphans(client)
+        store = client.app.state.service.store
+        if bad != 'db':
+            mismatched = copy.deepcopy(w['receipts']['b'])
+            mismatched['source']['bank_id'] = 'membank_' + '0' * 32
+            payload = '{invalid JSON' if bad == 'json' else dumps(mismatched)
+            store.db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',
+                             (payload, 'memory:retain:' + w['bank']['id'], 'b'))
+        else:
+            store.db.execute("CREATE TEMP TRIGGER fail_cleanup70 BEFORE UPDATE OF response ON idempotency "
+                             "WHEN OLD.scope LIKE 'memory:relations:%' BEGIN SELECT RAISE(ABORT, 'injected'); END")
+        before = snapshot(client)[1]
+&gt;       with pytest.raises(Exception) as exc:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+tests/test_memory_receipt_deletion.py:252: Failed</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_unknown_scope_and_user_text_are_not_dependency_keys" time="0.066" /><testcase classname="tests.test_memory_receipt_deletion" name="test_delete_does_not_run_startup_cleanup_for_another_bank" time="0.122"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_cbfcb350e9b14a17a1d671c4167abdc8&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_e88026d799334ecfbad056c0d0c49a0e&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_50211a59082f4ff9ab728380f126f1a6&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.996180Z&quot;,&quot;source_id&quot;:&quot;memsrc_faca50d27a714a3eb837f7c012ddf0e8&quot;,&quot;statement&quot;:&quot;Fact other-orphan70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_e88026d799334ecfbad056c0d0c49a0e&quot;,&quot;content_sha256&quot;:&quot;83e1aa6946e53e612c8a058c9b37f78e6fe368ce3a2023e61422fcc91cc35217&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:25.996164Z&quot;,&quot;id&quot;:&quot;memsrc_faca50d27a714a3eb837f7c012ddf0e8&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:25.996164Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:other-orphan70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10a399260&gt;
+
+    def test_delete_does_not_run_startup_cleanup_for_another_bank(client):
+        w = world(client)
+        extra = post_bank(client, 'legacy-other70', 'legacy-bank70')
+        path = '/api/local/memory/banks/' + extra['id'] + '/retain'
+        retained = post(client, path, body('other-orphan70'), 'legacy70')
+        pair = ('memory:retain:' + extra['id'], 'legacy70')
+        original = rows(client)[pair]
+        assert client.delete('/api/local/memory/sources/' + retained['source']['id'],
+                             headers={'Idempotency-Key': 'legacy-delete70'}).status_code == 200
+        store = client.app.state.service.store
+        store.db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?', (original['response'], *pair))
+        assert delete(client, w).status_code == 200
+        assert rows(client)[pair] == original
+        before = snapshot(client)
+&gt;       unavailable(client.post(path, json=body('other-orphan70'), headers={'Idempotency-Key': 'legacy70'}))
+
+tests/test_memory_receipt_deletion.py:288:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_cbfcb350e9b14a17a1d671c4167abdc8","deduplicated":false,"facts":[{"bank_id":"membank_e88026d799334ecfbad056c0d0c49a0e","confidence":0.9,"id":"memfact_50211a59082f4ff9ab728380f126f1a6","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.996180Z","source_id":"memsrc_faca50d27a714a3eb837f7c012ddf0e8","statement":"Fact other-orphan70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_e88026d799334ecfbad056c0d0c49a0e","content_sha256":"83e1aa6946e53e612c8a058c9b37f78e6fe368ce3a2023e61422fcc91cc35217","data_classification":"Internal","expires_at":"2027-01-02T00:19:25.996164Z","id":"memsrc_faca50d27a714a3eb837f7c012ddf0e8","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:25.996164Z","retracted_at":null,"source_ref":"fixture:other-orphan70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_delete_and_replay_serialize_without_resurrection" time="0.065"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_668370f7b9c846d495d24ae71d90fe31&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_f65ab80778ec4f71acabcba3b188ccb7&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_93fc68ea490342819af25ab6157535af&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:26.047328Z&quot;,&quot;source_id&quot;:&quot;memsrc_a43352a2a0fb4fd580e07b2967321841&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_f65ab80778ec4f71acabcba3b188ccb7&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:19:26.047296Z&quot;,&quot;id&quot;:&quot;memsrc_a43352a2a0fb4fd580e07b2967321841&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:19:26.047296Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10dce05a0&gt;
+
+    def test_delete_and_replay_serialize_without_resurrection(client):
+        w = world(client)
+        plane = client.app.state.service.memory
+        request = w['calls']['a'][1]
+        barrier = Barrier(2)
+        outcomes = []
+        def run(which):
+            barrier.wait(timeout=5)
+            if which == 'delete':
+                return plane.delete_source(w['source'], 'delete70')
+            try:
+                return plane.retain(w['bank']['id'], request, 'a')
+            except Exception as exc:
+                assert getattr(exc, 'code', '') == 'MEMORY_RECEIPT_UNAVAILABLE'
+                return 'unavailable'
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            outcomes = list(pool.map(run, ['delete', 'replay']))
+        assert outcomes[0]['status'] == 'deleted'
+        assert outcomes[1] in ['unavailable', w['receipts']['a']]
+        before = snapshot(client)
+&gt;       unavailable(replay(client, w, 'a'))
+
+tests/test_memory_receipt_deletion.py:320:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_668370f7b9c846d495d24ae71d90fe31","deduplicated":false,"facts":[{"bank_id":"membank_f65ab80778ec4f71acabcba3b188ccb7","confidence":0.9,"id":"memfact_93fc68ea490342819af25ab6157535af","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:26.047328Z","source_id":"memsrc_a43352a2a0fb4fd580e07b2967321841","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_f65ab80778ec4f71acabcba3b188ccb7","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:19:26.047296Z","id":"memsrc_a43352a2a0fb4fd580e07b2967321841","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:19:26.047296Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_receipt_authorization_and_purge_share_one_immediate_transaction[case_sha256=b3907a84c3d119d27478b123a724aefbceeb298fbe3c57294ccce02f90dd8d20]" time="0.066"><failure message="assert (1 == 1 and [])&#10; +  where 1 = len([1])">client = &lt;starlette.testclient.TestClient object at 0x10d362e00&gt;
+operation = 'replay'
+
+    @pytest.mark.parametrize('operation', ['replay', 'delete'])
+    def test_receipt_authorization_and_purge_share_one_immediate_transaction(client, operation):
+        w = world(client)
+        store = client.app.state.service.store
+        statements = []
+        store.db.set_trace_callback(statements.append)
+        try:
+            response = replay(client, w, 'a') if operation == 'replay' else delete(client, w)
+        finally:
+            store.db.set_trace_callback(None)
+        assert response.status_code == (201 if operation == 'replay' else 200)
+        boundaries = [sql for sql in statements if sql in ['BEGIN', 'BEGIN IMMEDIATE', 'COMMIT', 'ROLLBACK']]
+        assert boundaries == ['BEGIN IMMEDIATE', 'COMMIT']
+        assert statements[0] == 'BEGIN IMMEDIATE' and statements[-1] == 'COMMIT'
+        receipt_reads = [i for i, sql in enumerate(statements) if sql.startswith('SELECT digest,response FROM idempotency')]
+        source_reads = [i for i, sql in enumerate(statements) if sql.startswith('SELECT 1 FROM memory_sources')]
+&gt;       assert len(receipt_reads) == 1 and source_reads and receipt_reads[0] &lt; source_reads[0]
+E       assert (1 == 1 and [])
+E        +  where 1 = len([1])
+
+tests/test_memory_receipt_deletion.py:341: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_receipt_authorization_and_purge_share_one_immediate_transaction[case_sha256=41dc6169f3a0754243a347aaca64d16397d1bfcda02fc02b02094610905304eb]" time="0.056"><failure message="assert (1 == 1 and [])&#10; +  where 1 = len([1])">client = &lt;starlette.testclient.TestClient object at 0x10d6cd590&gt;
+operation = 'delete'
+
+    @pytest.mark.parametrize('operation', ['replay', 'delete'])
+    def test_receipt_authorization_and_purge_share_one_immediate_transaction(client, operation):
+        w = world(client)
+        store = client.app.state.service.store
+        statements = []
+        store.db.set_trace_callback(statements.append)
+        try:
+            response = replay(client, w, 'a') if operation == 'replay' else delete(client, w)
+        finally:
+            store.db.set_trace_callback(None)
+        assert response.status_code == (201 if operation == 'replay' else 200)
+        boundaries = [sql for sql in statements if sql in ['BEGIN', 'BEGIN IMMEDIATE', 'COMMIT', 'ROLLBACK']]
+        assert boundaries == ['BEGIN IMMEDIATE', 'COMMIT']
+        assert statements[0] == 'BEGIN IMMEDIATE' and statements[-1] == 'COMMIT'
+        receipt_reads = [i for i, sql in enumerate(statements) if sql.startswith('SELECT digest,response FROM idempotency')]
+        source_reads = [i for i, sql in enumerate(statements) if sql.startswith('SELECT 1 FROM memory_sources')]
+&gt;       assert len(receipt_reads) == 1 and source_reads and receipt_reads[0] &lt; source_reads[0]
+E       assert (1 == 1 and [])
+E        +  where 1 = len([1])
+
+tests/test_memory_receipt_deletion.py:341: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_replay_database_fault_is_not_unavailable_or_success" time="0.072"><failure message="assert (201 == 500)&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d8ca7a0&gt;
+
+    def test_replay_database_fault_is_not_unavailable_or_success(client):
+        w = world(client)
+        store = client.app.state.service.store
+        before = snapshot(client)
+        client._transport.raise_server_exceptions = False
+        store.db.set_authorizer(lambda action, first, *rest: sqlite3.SQLITE_DENY
+                                if action == sqlite3.SQLITE_READ and first == 'memory_sources' else sqlite3.SQLITE_OK)
+        try:
+            response = replay(client, w, 'a')
+        finally:
+            store.db.set_authorizer(None)
+&gt;       assert response.status_code == 500 and response.json()['error']['code'] == 'INTERNAL_ERROR'
+E       assert (201 == 500)
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:357: AssertionError</failure></testcase></testsuite></testsuites>

@@ -23,6 +23,12 @@ SEMANTIC_ADMISSION_CONTRACT = json.loads((ROOT / 'specs/v1/memory-semantic-admis
 SEMANTIC_ADMISSION_STATE = ROOT / 'harness/semantic-retrieval-admission.json'
 SENSITIVE_INPUT = re.compile(r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token|password)\s*[:=]|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
 WORD = re.compile(r'[a-z0-9_]{2,}|[\u4e00-\u9fff]+', re.I)
+RECEIPT_TOMBSTONE = {'schema_version': 'memory-receipt-tombstone@1', 'receipt_status': 'unavailable'}
+CONTENT_RECEIPTS = (
+    ('memory:retain:', 'source', 'memory_sources', 'memsrc'),
+    ('memory:entities:', 'entity', 'memory_entities', 'mement'),
+    ('memory:relations:', 'relation', 'memory_relations', 'memrel'),
+)
 
 
 def validate_contract(name, value):
@@ -125,7 +131,59 @@ class MemoryPlane:
         self.store = store
         self._fts_ready = False
         self._fts_error = None
+        # Upgrade existing local receipts before serving requests. This is a
+        # logical payload purge; never drop the key/digest and re-execute it.
+        with self.store.transaction() as db:
+            self._redact_orphaned_receipts(db)
         self._ensure_keyword_index()
+
+    @staticmethod
+    def _receipt_response(raw):
+        try:
+            value = json.loads(raw)
+        except (ValueError, RecursionError):
+            raise Problem('MEMORY_RECEIPT_CORRUPT', 'Memory历史收据损坏。', 500) from None
+        if not isinstance(value, dict):
+            raise Problem('MEMORY_RECEIPT_CORRUPT', 'Memory历史收据损坏。', 500)
+        return value
+
+    @staticmethod
+    def _receipt_available(db, scope, response):
+        if response == RECEIPT_TOMBSTONE:
+            return False
+        for prefix, field, table, id_prefix in CONTENT_RECEIPTS:
+            if not scope.startswith(prefix):
+                continue
+            bank_id = scope[len(prefix):]
+            target = response.get(field)
+            if (not re.fullmatch(r'membank_[a-f0-9]{32}', bank_id)
+                    or not isinstance(target, dict) or target.get('bank_id') != bank_id
+                    or not isinstance(target.get('id'), str)
+                    or not re.fullmatch(id_prefix + r'_[a-f0-9]{32}', target['id'])):
+                raise Problem('MEMORY_RECEIPT_CORRUPT', 'Memory历史收据绑定损坏。', 500)
+            # Table comes only from the fixed local registry, never a request.
+            return db.execute(f'SELECT 1 FROM {table} WHERE id=? AND bank_id=?',
+                              (target['id'], bank_id)).fetchone() is not None
+        return True
+
+    def _redact_orphaned_receipts(self, db, bank_id=None):
+        if bank_id is None:
+            rows = db.execute("SELECT scope,key,response FROM idempotency WHERE "
+                              "scope GLOB 'memory:retain:*' OR scope GLOB 'memory:entities:*' "
+                              "OR scope GLOB 'memory:relations:*' ORDER BY scope,key").fetchall()
+        else:
+            scopes = tuple(prefix + bank_id for prefix, *_ in CONTENT_RECEIPTS)
+            rows = db.execute('SELECT scope,key,response FROM idempotency WHERE scope IN (?,?,?) ORDER BY scope,key', scopes).fetchall()
+        changed = 0
+        for row in rows:
+            response = self._receipt_response(row['response'])
+            if response == RECEIPT_TOMBSTONE:
+                continue
+            if not self._receipt_available(db, row['scope'], response):
+                db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',
+                           (dumps(RECEIPT_TOMBSTONE), row['scope'], row['key']))
+                changed += 1
+        return changed
 
     def _ensure_keyword_index(self):
         """Create/rebuild an expendable FTS projection without making M1 unavailable on SQLite builds lacking FTS5."""
@@ -184,7 +242,10 @@ class MemoryPlane:
             if previous:
                 if previous['digest'] != request_digest:
                     raise Problem('CONFLICT', '同一幂等键已用于不同请求。', 409)
-                return json.loads(previous['response'])
+                response = self._receipt_response(previous['response'])
+                if not self._receipt_available(db, scope, response):
+                    raise Problem('MEMORY_RECEIPT_UNAVAILABLE', '历史收据的内容已不可用；不会重新执行原请求。', 409)
+                return response
             response = action(db)
             db.execute('INSERT INTO idempotency VALUES(?,?,?,?)', (scope, key, request_digest, dumps(response)))
             return response
@@ -883,10 +944,12 @@ class MemoryPlane:
             self._remove_index_entries(db, [fact['id'] for fact in facts])
             db.execute('DELETE FROM memory_facts WHERE source_id=?', (source_id,))
             db.execute('DELETE FROM memory_sources WHERE id=?', (source_id,))
+            invalidated_receipt_count = self._redact_orphaned_receipts(db, source['bank_id'])
             db.execute('INSERT INTO memory_tombstones VALUES(?,?,?)', (tombstone['id'], source['bank_id'], dumps(tombstone)))
             audit = self._audit(db, source['bank_id'], 'memory.source.deleted', source_id, {
                 'source_sha256': source['content_sha256'], 'deleted_fact_count': len(facts),
                 'deleted_entity_count': graph_deleted['entities'], 'deleted_relation_count': graph_deleted['relations'],
+                'invalidated_receipt_count': invalidated_receipt_count,
                 'tombstone_id': tombstone['id'],
             })
             return {'source_id': source_id, 'status': 'deleted', 'deleted_fact_count': len(facts),

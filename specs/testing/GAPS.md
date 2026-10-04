@@ -248,6 +248,9 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   保留Fact statement，旧key可回放。Entity/Relation等收据也需统一生命周期清理。
   HA-0069测试如实记录此边界，不把补HTTP合同称为全库删除或隐私抹除完成。
   后续应设计不复活写入的失效收据/摘要墓碑，覆盖重放、跨来源派生、备份/WAL边界。
+  HA-0070候选已按ADR-0070补三类内容收据删除传播、旧库启动清理与回放存在性
+  重查；不清key/digest，故障同事务回滚。待固定提交独立review与部署，不称
+  物理删除/备份清理完成。
 - **MEMORY-FTS-01 / Medium**：FTS初始化失败时状态readiness已降级，但Retain
   仍调用_index_fact，可能500；不损坏事务，不等于M1写入可用。本轮未修。
 - **OPENAPI-EMPTY-06**：HA-0069候选补Memory三类写回执后，剩22个API和1个页面
@@ -256,3 +259,7 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   Gate先成功再cancel的终态保护删除突变仍存活，需补行为反例，生产代码目前正确。
   相关185测试要求pi-adapter/node_modules已安装，否则179通过/6跳过。
   waiting_approval超过timeout仍可人工Gate属当前未禁止行为；不是模型执行延长授权。
+- **MEMORY-WRITE-02 / Low**：HA-0069固定3d83bd5独立Approved。重复撤回的audit_id
+  禁止项缺独立负例；生产约束正确。false_zero仅测ASGI不一致，HTTP/1.1 CL:0后
+  额外字节不属于本次body。ValueError也可吞校验器同类程序错误为fail-closed；
+  文件字节上限仍未实现。详见HA-0069/review.md，双部署仍未完成。

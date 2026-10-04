@@ -1,0 +1,36 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_new_app_cleans_legacy_orphans_and_repeated_cleanup_is_noop ________
+
+client = <starlette.testclient.TestClient object at 0x10b80af90>
+
+    def test_new_app_cleans_legacy_orphans_and_repeated_cleanup_is_noop(client):
+        w = legacy_orphans(client)
+        store = client.app.state.service.store
+        database = store.db.execute('PRAGMA database_list').fetchone()['file']
+        client.__exit__(None, None, None)
+        with TestClient(create_app(database, False), base_url='http://127.0.0.1') as restarted:
+            for pair, record in rows(restarted).items():
+                if pair[0].endswith(w['bank']['id']) and pair[1] in w['affected']:
+>                   assert json.loads(record['response']) == MARKER
+E                   AssertionError: assert {'audit_id': ...eflect。', ...} == {'schema_vers...'unavailable'}
+E
+E                     Left contains 5 more items:
+E                     {'audit_id': 'memaudit_1569a3486ee940be8d91e7895d9548c0',
+E                      'deduplicated': False,
+E                      'facts': [{'bank_id': 'membank_e76bcf11fd9644b6afe32db5087b6989',
+E                                 'confidence': 0.9,
+E                                 'id': 'memfact_a0d4decb98f9477c8f3214ddad2ad17b',...
+E
+E                     ...Full output truncated (25 lines hidden), use '-vv' to show
+
+tests/test_memory_receipt_deletion.py:226: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_new_app_cleans_legacy_orphans_and_repeated_cleanup_is_noop
+1 failed, 31 deselected, 1 warning in 0.36s

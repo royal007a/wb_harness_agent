@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.201" timestamp="2026-10-04T08:21:12.669245+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_marker_contract_is_strict[case_sha256=355f1fbf9eb50086a135bd38d550b8088a1b9009df5b984241daa3354016dccb]" time="0.000" /><testcase classname="tests.test_memory_receipt_deletion" name="test_marker_contract_is_strict[case_sha256=0c6bee292d76a782d2049e0e99d9e93274aefbdc7b0533d6bc145211babace82]" time="0.000"><failure message="AssertionError: assert not True&#10; +  where True = is_valid({'schema_version': 'memory-receipt-tombstone@1', 'receipt_status': 'unavailable', 'response': 'PRIVATE'})&#10; +    where is_valid = Draft202012Validator(schema={'$defs': {'bank_create_request': {'additionalProperties': False, 'properties': {'data_cla...ed': ['bank', 'counts', 'runtime'], 'type': 'object'}, ...}, '$ref': '#/$defs/receipt_tombstone'}, format_checker=None).is_valid">bad = {'schema_version': 'memory-receipt-tombstone@1', 'receipt_status': 'unavailable', 'response': 'PRIVATE'}
+
+    @pytest.mark.parametrize('bad', [{}, {**MARKER, 'response': 'PRIVATE'}, {**MARKER, 'receipt_status': 'active'},
+                                   {**MARKER, 'schema_version': 'memory-receipt-tombstone@2'}])
+    def test_marker_contract_is_strict(bad):
+        validator = Draft202012Validator({'$defs': CONTRACT['$defs'], '$ref': '#/$defs/receipt_tombstone'})
+        validator.validate(MARKER)
+&gt;       assert not validator.is_valid(bad)
+E       AssertionError: assert not True
+E        +  where True = is_valid({'schema_version': 'memory-receipt-tombstone@1', 'receipt_status': 'unavailable', 'response': 'PRIVATE'})
+E        +    where is_valid = Draft202012Validator(schema={'$defs': {'bank_create_request': {'additionalProperties': False, 'properties': {'data_cla...ed': ['bank', 'counts', 'runtime'], 'type': 'object'}, ...}, '$ref': '#/$defs/receipt_tombstone'}, format_checker=None).is_valid
+
+tests/test_memory_receipt_deletion.py:297: AssertionError</failure></testcase><testcase classname="tests.test_memory_receipt_deletion" name="test_marker_contract_is_strict[case_sha256=f70266890ce15890b177315817933933102343407eea5cef84d1ff910cb5e9a5]" time="0.000" /><testcase classname="tests.test_memory_receipt_deletion" name="test_marker_contract_is_strict[case_sha256=b6a1a4dced5c9894444b1072d87bad5c9bb12005b7fedd1c0d631cf445621e70]" time="0.000" /></testsuite></testsuites>

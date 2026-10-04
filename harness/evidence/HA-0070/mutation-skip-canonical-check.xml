@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.338" timestamp="2026-10-04T08:21:08.769712+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_old_orphan_replay_is_rejected_without_lazy_write" time="0.128"><failure message="AssertionError: {&quot;audit_id&quot;:&quot;memaudit_1e8ae115aa094476a17bfff7778dec1b&quot;,&quot;deduplicated&quot;:false,&quot;facts&quot;:[{&quot;bank_id&quot;:&quot;membank_855ee6324e0445e4a798bc16a2e72184&quot;,&quot;confidence&quot;:0.9,&quot;id&quot;:&quot;memfact_8fe85270aee14495b9571172b39f781c&quot;,&quot;kind&quot;:&quot;fact&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:09.064456Z&quot;,&quot;source_id&quot;:&quot;memsrc_1ad6f2bb21654873a40348f731806ff5&quot;,&quot;statement&quot;:&quot;Fact ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;,&quot;superseded_by_fact_id&quot;:null,&quot;supersedes_fact_id&quot;:null,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null}],&quot;note&quot;:&quot;来源和显式 Fact 已写入；未进行模型抽取或 Reflect。&quot;,&quot;source&quot;:{&quot;bank_id&quot;:&quot;membank_855ee6324e0445e4a798bc16a2e72184&quot;,&quot;content_sha256&quot;:&quot;ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e&quot;,&quot;data_classification&quot;:&quot;Internal&quot;,&quot;expires_at&quot;:&quot;2027-01-02T00:21:09.064424Z&quot;,&quot;id&quot;:&quot;memsrc_1ad6f2bb21654873a40348f731806ff5&quot;,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T00:21:09.064424Z&quot;,&quot;retracted_at&quot;:null,&quot;source_ref&quot;:&quot;fixture:ERASE_SENTINEL70&quot;,&quot;status&quot;:&quot;active&quot;}}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d68af90&gt;
+
+    def test_old_orphan_replay_is_rejected_without_lazy_write(client):
+        w = legacy_orphans(client)
+        before = snapshot(client)
+        for key in w['affected']:
+&gt;           unavailable(replay(client, w, key))
+
+tests/test_memory_receipt_deletion.py:214:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = &lt;Response [201 Created]&gt;
+
+    def unavailable(response):
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"audit_id":"memaudit_1e8ae115aa094476a17bfff7778dec1b","deduplicated":false,"facts":[{"bank_id":"membank_855ee6324e0445e4a798bc16a2e72184","confidence":0.9,"id":"memfact_8fe85270aee14495b9571172b39f781c","kind":"fact","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:09.064456Z","source_id":"memsrc_1ad6f2bb21654873a40348f731806ff5","statement":"Fact ERASE_SENTINEL70","status":"active","superseded_by_fact_id":null,"supersedes_fact_id":null,"valid_from":null,"valid_to":null}],"note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。","source":{"bank_id":"membank_855ee6324e0445e4a798bc16a2e72184","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","expires_at":"2027-01-02T00:21:09.064424Z","id":"memsrc_1ad6f2bb21654873a40348f731806ff5","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:09.064424Z","retracted_at":null,"source_ref":"fixture:ERASE_SENTINEL70","status":"active"}}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError</failure></testcase></testsuite></testsuites>

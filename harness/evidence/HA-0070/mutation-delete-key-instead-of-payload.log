@@ -1,0 +1,215 @@
+FFFFFFFF                                                                 [100%]
+=================================== FAILURES ===================================
+____________ test_deleted_content_receipt_cannot_replay_or_write[a] ____________
+
+client = <starlette.testclient.TestClient object at 0x10d706e40>, key = 'a'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"source":{"id":"memsrc_efffc507d57346fcb3907587c30909d0","bank_id":"membank_5763f49c714f43df9539da7bed3708b6","source_ref":"fixture:ERASE_SENTINEL70","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:05.037883Z","expires_at":"2027-01-02T00:21:05.037883Z","status":"active","retracted_at":null},"facts":[{"id":"memfact_8b3d12ff643740f78e95a3c6bce31b8f","bank_id":"membank_5763f49c714f43df9539da7bed3708b6","source_id":"memsrc_efffc507d57346fcb3907587c30909d0","statement":"Fact ERASE_SENTINEL70","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","supersedes_fact_id":null,"superseded_by_fact_id":null,"recorded_at":"2026-10-04T00:21:05.037903Z"}],"deduplicated":false,"audit_id":"memaudit_371239a88cbe4fbfba811217582faaf1","note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+_________ test_deleted_content_receipt_cannot_replay_or_write[a-dedup] _________
+
+client = <starlette.testclient.TestClient object at 0x10f224e10>
+key = 'a-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [201 Created]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"source":{"id":"memsrc_aa5882407499458b92b6a9a88596fb4f","bank_id":"membank_dc4f3f06eb25453a8131df68a745e668","source_ref":"fixture:ERASE_SENTINEL70","content_sha256":"ef90f3eed6d8c56e5b83260847e7667c17e0d31a138fabc4b58a659fa4f6522e","data_classification":"Internal","occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:21:05.125226Z","expires_at":"2027-01-02T00:21:05.125226Z","status":"active","retracted_at":null},"facts":[{"id":"memfact_086653de4f6b4c929ef26c279d0e702c","bank_id":"membank_dc4f3f06eb25453a8131df68a745e668","source_id":"memsrc_aa5882407499458b92b6a9a88596fb4f","statement":"Fact ERASE_SENTINEL70","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","supersedes_fact_id":null,"superseded_by_fact_id":null,"recorded_at":"2026-10-04T00:21:05.125248Z"}],"deduplicated":false,"audit_id":"memaudit_f78183cbc7414ef88b28630870f2f335","note":"来源和显式 Fact 已写入；未进行模型抽取或 Reflect。"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+___________ test_deleted_content_receipt_cannot_replay_or_write[ea] ____________
+
+client = <starlette.testclient.TestClient object at 0x10e407890>, key = 'ea'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [404 Not Found]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_a6f16aa9b08746dd975dca5c7416b459"}}
+E       assert 404 == 409
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+________ test_deleted_content_receipt_cannot_replay_or_write[ea-dedup] _________
+
+client = <starlette.testclient.TestClient object at 0x10f430e90>
+key = 'ea-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [404 Not Found]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_fb014f6c35c64e83b372e79137f6b89b"}}
+E       assert 404 == 409
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+_________ test_deleted_content_receipt_cannot_replay_or_write[direct] __________
+
+client = <starlette.testclient.TestClient object at 0x10f431810>, key = 'direct'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [404 Not Found]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_bc1ca5bb9c774645b44c0242ccda0d83"}}
+E       assert 404 == 409
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+______ test_deleted_content_receipt_cannot_replay_or_write[direct-dedup] _______
+
+client = <starlette.testclient.TestClient object at 0x10f3fca70>
+key = 'direct-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [404 Not Found]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND","message":"Graph 支撑 Fact 不在此 Memory Bank。","retryable":false,"request_id":"req_731a10b4e6704a13bcf19455634b9800"}}
+E       assert 404 == 409
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+________ test_deleted_content_receipt_cannot_replay_or_write[indirect] _________
+
+client = <starlette.testclient.TestClient object at 0x10fc75bf0>
+key = 'indirect'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [404 Not Found]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_ENTITY_NOT_FOUND","message":"Graph Entity 不在此 Memory Bank。","retryable":false,"request_id":"req_a3be946463d546b086b84cf71eb7ca68"}}
+E       assert 404 == 409
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+_____ test_deleted_content_receipt_cannot_replay_or_write[indirect-dedup] ______
+
+client = <starlette.testclient.TestClient object at 0x10fe97020>
+key = 'indirect-dedup'
+
+    @pytest.mark.parametrize('key', ['a', 'a-dedup', 'ea', 'ea-dedup', 'direct', 'direct-dedup', 'indirect', 'indirect-dedup'])
+    def test_deleted_content_receipt_cannot_replay_or_write(client, key):
+        w = world(client)
+        assert delete(client, w).status_code == 200
+        before = snapshot(client)
+        response = replay(client, w, key)
+>       unavailable(response)
+
+tests/test_memory_receipt_deletion.py:95:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [404 Not Found]>
+
+    def unavailable(response):
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"error":{"code":"MEMORY_GRAPH_ENTITY_NOT_FOUND","message":"Graph Entity 不在此 Memory Bank。","retryable":false,"request_id":"req_a59f87fa6b664fddb17e8baf483f4d7f"}}
+E       assert 404 == 409
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/test_memory_receipt_deletion.py:84: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[a]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[a-dedup]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[ea]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[ea-dedup]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[direct]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[direct-dedup]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[indirect]
+FAILED tests/test_memory_receipt_deletion.py::test_deleted_content_receipt_cannot_replay_or_write[indirect-dedup]
+8 failed, 24 deselected, 1 warning in 0.80s

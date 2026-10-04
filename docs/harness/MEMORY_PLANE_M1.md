@@ -31,9 +31,12 @@ runtime_enabled恒false，其调用数字只是档案记录，不是实测遥测
 `specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`。
 
 HA-0069补Retain/撤回/删除三类实际写回执，见
-`specs/testing/MEMORY_WRITE_CONTRACTS.md`。同key回放是历史收据，不是当前状态；
-删除后的旧Retain回执仍可能包含Fact statement，Entity等历史收据也没有统一清理。
-因此当前delete只保证canonical与相关图/FTS删除，不是全库派生内容抹除或磁盘擦除。
+`specs/testing/MEMORY_WRITE_CONTRACTS.md`。同key回放是历史收据，不是当前状态。
+HA-0070按ADR-0070补删除传播：相关Retain/Entity/Relation内容收据替换为无正文
+失效标记，保留key/digest；旧请求返回409 MEMORY_RECEIPT_UNAVAILABLE，不重新执行。
+启动时同样清理旧库中这三类canonical对象已不存在的孤儿收据，回放还会重查存在性。
+清理不可逆，发布前须备份；代码回退不恢复payload。它不是磁盘/WAL/备份擦除，
+也不会清除独立来源或其他产品的相同文本。见specs/testing/MEMORY_RECEIPT_DELETION.md。
 DELETE对分块非空body同样返回422；损坏semantic档案返回invalid_not_admitted，
 不启动任何检索/模型，也不把真正DB故障吞成空结果。
 

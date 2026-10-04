@@ -1,0 +1,75 @@
+[
+  {
+    "id": "skip-delete-redaction",
+    "old": "invalidated_receipt_count = self._redact_orphaned_receipts(db, source['bank_id'])",
+    "next": "invalidated_receipt_count = 0",
+    "select": "all_and_only_related"
+  },
+  {
+    "id": "delete-key-instead-of-payload",
+    "old": "db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',\n                           (dumps(RECEIPT_TOMBSTONE), row['scope'], row['key']))",
+    "next": "db.execute('DELETE FROM idempotency WHERE scope=? AND key=?',\n                           (row['scope'], row['key']))",
+    "select": "deleted_content_receipt"
+  },
+  {
+    "id": "destroy-digest",
+    "old": "db.execute('UPDATE idempotency SET response=? WHERE scope=? AND key=?',",
+    "next": "db.execute(\"UPDATE idempotency SET response=?,digest='' WHERE scope=? AND key=?\",",
+    "select": "deleted_content_receipt"
+  },
+  {
+    "id": "marker-replay-allowed",
+    "old": "if response == RECEIPT_TOMBSTONE:\n            return False",
+    "next": "if response == RECEIPT_TOMBSTONE:\n            return True",
+    "select": "deleted_content_receipt"
+  },
+  {
+    "id": "skip-startup-cleanup",
+    "old": "with self.store.transaction() as db:\n            self._redact_orphaned_receipts(db)",
+    "next": "with self.store.transaction() as db:\n            pass",
+    "select": "new_app_cleans_legacy"
+  },
+  {
+    "id": "skip-canonical-check",
+    "old": "return db.execute(f'SELECT 1 FROM {table} WHERE id=? AND bank_id=?',\n                              (target['id'], bank_id)).fetchone() is not None",
+    "next": "return True",
+    "select": "old_orphan_replay"
+  },
+  {
+    "id": "indirect-relation-not-deleted",
+    "old": "or relation['subject_entity_id'] in entity_ids or relation['object_entity_id'] in entity_ids}",
+    "next": "}",
+    "select": "deleted_content_receipt and indirect"
+  },
+  {
+    "id": "delete-cleans-other-bank",
+    "old": "invalidated_receipt_count = self._redact_orphaned_receipts(db, source['bank_id'])",
+    "next": "invalidated_receipt_count = self._redact_orphaned_receipts(db)",
+    "select": "does_not_run_startup_cleanup_for_another"
+  },
+  {
+    "id": "skip-bank-binding",
+    "old": "or not isinstance(target, dict) or target.get('bank_id') != bank_id",
+    "next": "or not isinstance(target, dict)",
+    "select": "startup_cleanup_does_not_hide_fault and binding"
+  },
+  {
+    "id": "split-replay-transaction",
+    "old": "response = self._receipt_response(previous['response'])\n                if not self._receipt_available",
+    "next": "response = self._receipt_response(previous['response'])\n                db.execute('COMMIT')\n                db.execute('BEGIN IMMEDIATE')\n                if not self._receipt_available",
+    "select": "receipt_authorization_and_purge and replay"
+  },
+  {
+    "id": "early-delete-commit",
+    "old": "invalidated_receipt_count = self._redact_orphaned_receipts(db, source['bank_id'])",
+    "next": "invalidated_receipt_count = self._redact_orphaned_receipts(db, source['bank_id'])\n            db.execute('COMMIT')\n            db.execute('BEGIN IMMEDIATE')",
+    "select": "failure_rolls_back_canonical and audit"
+  },
+  {
+    "id": "marker-allows-old-response",
+    "file": "specs/v1/memory-plane.schema.json",
+    "old": "\"receipt_tombstone\": {\n      \"type\": \"object\", \"additionalProperties\": false,",
+    "next": "\"receipt_tombstone\": {\n      \"type\": \"object\", \"additionalProperties\": true,",
+    "select": "marker_contract_is_strict"
+  }
+]

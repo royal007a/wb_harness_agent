@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.407" timestamp="2026-10-04T08:21:04.010968+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_receipt_deletion" name="test_all_and_only_related_payloads_removed_with_digest_preserved" time="0.157"><failure message="AssertionError: assert 0 == 8&#10; +  where 0 = &lt;built-in method get of dict object at 0x10d7ba740&gt;('invalidated_receipt_count')&#10; +    where &lt;built-in method get of dict object at 0x10d7ba740&gt; = {'deleted_entity_count': 1, 'deleted_fact_count': 1, 'deleted_relation_count': 2, 'invalidated_receipt_count': 0, ...}.get">client = &lt;starlette.testclient.TestClient object at 0x10c9caf90&gt;
+
+    def test_all_and_only_related_payloads_removed_with_digest_preserved(client):
+        w = world(client)
+        before = rows(client)
+        response = delete(client, w)
+        assert response.status_code == 200
+        assert response.json()['deleted_entity_count'] == 1
+        assert response.json()['deleted_relation_count'] == 2
+        audit = client.app.state.service.store.db.execute('SELECT doc FROM memory_audit WHERE id=?',
+                                                          (response.json()['audit_id'],)).fetchone()
+&gt;       assert json.loads(audit['doc'])['metadata'].get('invalidated_receipt_count') == 8
+E       AssertionError: assert 0 == 8
+E        +  where 0 = &lt;built-in method get of dict object at 0x10d7ba740&gt;('invalidated_receipt_count')
+E        +    where &lt;built-in method get of dict object at 0x10d7ba740&gt; = {'deleted_entity_count': 1, 'deleted_fact_count': 1, 'deleted_relation_count': 2, 'invalidated_receipt_count': 0, ...}.get
+
+tests/test_memory_receipt_deletion.py:110: AssertionError</failure></testcase></testsuite></testsuites>
