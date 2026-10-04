@@ -1,0 +1,142 @@
+{
+  "source_root": "/Users/weberzhao/Downloads/Harness Agent 脚手架实战课",
+  "kind": "local_course_snapshot",
+  "date": "2026-10-04",
+  "files": [
+    {
+      "name": "00 - 目录.pdf",
+      "bytes": 298563,
+      "sha256": "cb61e48b435a80ed0867059c1be3ec0474f27084de565a3ae84a7c538215a504"
+    },
+    {
+      "name": "01 - 开篇词｜掌握四套脚手架，让 Agent 开发回归业务本身.pdf",
+      "bytes": 14282019,
+      "sha256": "fad23e7c217009a16d1d4ef62ff82ee0ec8f08c86bc9be9d3417c27892760dd9"
+    },
+    {
+      "name": "02 - 01｜全景：Agent 开发的技术演进与课程定位.pdf",
+      "bytes": 1150360,
+      "sha256": "9accb6866fd528664f9f1b71abef5babed0425b4403c788f9e8ca654fff8bf31"
+    },
+    {
+      "name": "03 - 直播回放：5 倍效率提升，用 DeepAgents 重构 Agent 开发流.pdf",
+      "bytes": 4548434,
+      "sha256": "1441ecffbaf5d01bb96385cde45efaba40d37c8f7550f145716ccf1df8270b34"
+    },
+    {
+      "name": "04 - 02｜起点：从数据分析场景看 CodeAct 模式.pdf",
+      "bytes": 2047937,
+      "sha256": "d4b05dea2668fb48e75680280866c444b20c23e66fffa67cbfa213812458af9c"
+    },
+    {
+      "name": "05 - 03｜核心：用 Smolagents 结合自定义工具完成数据分析报告生成.pdf",
+      "bytes": 1546678,
+      "sha256": "4ab256e71f18ca0222a743d5e920e6e2055d05f429e0a8d3bd254c8a9c22913c"
+    },
+    {
+      "name": "06 - 04｜扩展：通过多 Agent 协同机制提升分析深度.pdf",
+      "bytes": 2495102,
+      "sha256": "0c61199eea6e2521e25e33bf857521b90f97592fec0213e01093e47e7a5bf758"
+    },
+    {
+      "name": "07 - 05｜起点：从复杂金融任务看Claude Agent SDK.pdf",
+      "bytes": 888703,
+      "sha256": "9147d3dd6cf5a5a2295b12fe3342e117a6dceb0609a46cba17874ff97391b2c5"
+    },
+    {
+      "name": "08 - 06｜核心：快速构建 Agent Loop 并接入研报所需的工具集.pdf",
+      "bytes": 8101877,
+      "sha256": "861f1156235688c29ee0abb8894f44252ab6b688a71f8236ab5d823c47682aab"
+    },
+    {
+      "name": "09 - 07 | 应用：构建替代工作流的 Skills 完成金融研报的生成.pdf",
+      "bytes": 1366564,
+      "sha256": "17874c66e6c6cd03edfbd4a00654f72c7a0185bafea2775eb85da5799a212997"
+    },
+    {
+      "name": "09 - 07 ／ 应用：构建替代工作流的 Skills 完成金融研报的生成.pdf",
+      "bytes": 1658359,
+      "sha256": "c99f219400d87fbd275f64b8c942f76626a6f3fc48f998dcf1ea729fb79e7f45"
+    },
+    {
+      "name": "10 - 08｜起点：多代理编排设计支持复杂投研场景.pdf",
+      "bytes": 1548976,
+      "sha256": "6ab8f2e44f566b5fb027a3f898cb190af9f233022d1abdc2ddf69a1a2944a140"
+    },
+    {
+      "name": "11 - 09｜进阶：会话 Session 与 Fork 分叉管理探索不同投资逻辑.pdf",
+      "bytes": 4765119,
+      "sha256": "128eccf63cd5deed5accd0df0bdcd04774c02c62ed20f01c7f51e5141a7bc936"
+    },
+    {
+      "name": "12 - 10｜扩展：Hooks 机制的实战应用.pdf",
+      "bytes": 1916114,
+      "sha256": "d2e12527be2d004c005e1d4a65c959ec99fa06595c81909447d139b50772fcc9"
+    },
+    {
+      "name": "13 - 11｜扩展：OpenTelemetry 全链路监控与成本管理.pdf",
+      "bytes": 4345524,
+      "sha256": "2f275eb4b9436970427bce6b91d6c9f1633e4dbb7ce246bffb4e6e3dc110f60f"
+    },
+    {
+      "name": "14 - 12｜起点：Deepagents 快速入门与 LangChain 老项目升级.pdf",
+      "bytes": 2661155,
+      "sha256": "9988d5cee25fec37e3a24dc513ef5f7fb148021d421b35a0520835c1b64f948d"
+    },
+    {
+      "name": "15 - 13｜基础：LLM-Wiki 快速理解与入门.pdf",
+      "bytes": 1135816,
+      "sha256": "f78263514a2117c08390ab9e6e35a90f93549160a865771e5750b7c47b1ad5d9"
+    },
+    {
+      "name": "16 - 14｜应用：基于 Deepagents 与 LLM-Wiki 方法论沉淀构建知识库.pdf",
+      "bytes": 3658601,
+      "sha256": "a2beb75f5b37599437f06e5c3734d94bcdd6fc0c43d4fd1232aa0251c58173fd"
+    },
+    {
+      "name": "17 - 15｜起点：基于 pimono 打造生产级合同审查 Agent Runtime.pdf",
+      "bytes": 1519855,
+      "sha256": "627c75c3247bda261d23b4287a790b1fd23d1235e43fcaa1fe5a323438408875"
+    },
+    {
+      "name": "18 - 16｜基础：统一工具接口与结构化输出实现合同文档解析与分类.pdf",
+      "bytes": 5586960,
+      "sha256": "ccce36e7331439af8186a3bde107bac10a022b6b06caed1f467fd71cc2c59a0f"
+    },
+    {
+      "name": "19 - 17｜进阶：长上下文与 Skill 调用构建大合同审查流水线.pdf",
+      "bytes": 3954619,
+      "sha256": "6f23f72aa57f69f09c11dc445408dc96efa0c57b14c1e5c24811b67748dd01a0"
+    },
+    {
+      "name": "20 - 18｜进阶：拦截管道构建合同敏感信息的多层安全护栏.pdf",
+      "bytes": 2028642,
+      "sha256": "2cf47cce3d66f68457337cf509da7e4a1b8fd8f6caa429994dd84998abc66fa8"
+    },
+    {
+      "name": "21 - 19｜扩展：ChatPanel 助力 Agent 丝滑接入聊天对话 Web 页面.pdf",
+      "bytes": 2315839,
+      "sha256": "a31b35f08a5aa6b8cf40fab7a825d663c663611f70c6a76035534ad3763c2ada"
+    },
+    {
+      "name": "22 - 20｜TUI：Pimono TUI 自绘引擎与内置组件库实战.pdf",
+      "bytes": 2028468,
+      "sha256": "52cdeeff25f43894c8c5f90e7dc05b975152d0560e6a4059ef0b4c0a48bf6ecd"
+    },
+    {
+      "name": "23 - DeepSeek Harness：插件化 Agent 框架与生态入门.pdf",
+      "bytes": 3312173,
+      "sha256": "1d6345747c78a1bc9e5ad904b50a9da9d1512fad0b406887ab2dc06be956924c"
+    },
+    {
+      "name": "24 - 结束语｜行动交给现在，结果交给时间.pdf",
+      "bytes": 1640145,
+      "sha256": "e9cd64dd6f8c9ff2610a26d7662d9ef8df70a55d67bf90ba938a3dc9c63efafc"
+    },
+    {
+      "name": "25 - 结课测试｜来赴一场满分之约！.pdf",
+      "bytes": 675364,
+      "sha256": "50540d28dc2914b2448ff4af0da581a18b40e1884dde4730ebdb82690e456dac"
+    }
+  ]
+}
