@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.374" timestamp="2026-10-04T09:16:23.494229+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_success_contract_rejects_independent_bad_instances[case_sha256=8a3d2cf8697d412ad8834dd08db5ddb5d2b421b7409c9187c437236888cddc4e]" time="0.179"><failure message="AssertionError: ('relation', 'new_null_audit')&#10;assert not True&#10; +  where True = is_valid({'relation': {'id': 'memrel_de952fa8d01f47ac935331f91a6eb06f', 'bank_id': 'membank_ee32afd506104d9f87ff0aaee9c4f9a8', ...': 'mement_d14cc2b93f2c44e1b825b4ac2c586d2c', 'predicate': 'depends_on', ...}, 'deduplicated': False, 'audit_id': None})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10b44ee40&gt;
+kind = 'relation', bad = 'new_null_audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('bad', ['new_null_audit', 'dedup_audit', 'missing_field', 'nested_extra'])
+    def test_success_contract_rejects_independent_bad_instances(client, kind, bad):
+        w = setup_graph(client, kind)
+        value = call(client, w).json()
+        if bad == 'new_null_audit':
+            value['audit_id'] = None
+        elif bad == 'dedup_audit':
+            value['deduplicated'] = True
+        elif bad == 'missing_field':
+            del value[kind]['support_fact_id']
+        else:
+            value[kind]['raw_content'] = 'NEVER'
+        for v in validators(client, kind):
+&gt;           assert not v.is_valid(value), (kind, bad)
+E           AssertionError: ('relation', 'new_null_audit')
+E           assert not True
+E            +  where True = is_valid({'relation': {'id': 'memrel_de952fa8d01f47ac935331f91a6eb06f', 'bank_id': 'membank_ee32afd506104d9f87ff0aaee9c4f9a8', ...': 'mement_d14cc2b93f2c44e1b825b4ac2c586d2c', 'predicate': 'depends_on', ...}, 'deduplicated': False, 'audit_id': None})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_graph_write_contracts.py:137: AssertionError</failure></testcase></testsuite></testsuites>

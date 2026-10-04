@@ -38,6 +38,9 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["entity", "deduplicated", "audit_id"],
+      "if": {"properties": {"deduplicated": {"const": true}}, "required": ["deduplicated"]},
+      "then": {"properties": {"audit_id": {"type": "null"}}},
+      "else": {"properties": {"audit_id": {"type": "string"}}},
       "properties": {
         "entity": {"$ref": "#/$defs/entity"},
         "deduplicated": {"type": "boolean"},
@@ -82,6 +85,9 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["relation", "deduplicated", "audit_id"],
+      "if": {"properties": {"deduplicated": {"const": true}}, "required": ["deduplicated"]},
+      "then": {"properties": {"audit_id": {"type": "null"}}},
+      "else": {"properties": {"audit_id": {"type": "string"}}},
       "properties": {
         "relation": {"$ref": "#/$defs/relation"},
         "deduplicated": {"type": "boolean"},

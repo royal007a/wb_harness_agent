@@ -1,0 +1,100 @@
+[
+  {
+    "id": "ignore-source-time",
+    "file": "backend/memory.py",
+    "old": "                parse_canonical(source['occurred_at']) > point or\n",
+    "next": "",
+    "select": "future_source_cannot or source_time_equality"
+  },
+  {
+    "id": "skip-subject-check",
+    "file": "backend/memory.py",
+    "old": "            self._active_entity_in_transaction(db, bank_id, relation_input['subject_entity_id'], point)",
+    "next": "            pass",
+    "select": "relation_rechecks_endpoint_source_time and subject"
+  },
+  {
+    "id": "skip-object-check",
+    "file": "backend/memory.py",
+    "old": "            self._active_entity_in_transaction(db, bank_id, relation_input['object_entity_id'], point)",
+    "next": "            pass",
+    "select": "relation_rechecks_endpoint_source_time and object"
+  },
+  {
+    "id": "commit-before-receipt",
+    "file": "backend/memory.py",
+    "old": "            response = action(db)\n            db.execute('INSERT INTO idempotency",
+    "next": "            response = action(db)\n            db.commit()\n            db.execute('BEGIN IMMEDIATE')\n            db.execute('INSERT INTO idempotency",
+    "select": "graph_failure_rolls_back and receipt"
+  },
+  {
+    "id": "ignore-expired-source",
+    "file": "backend/memory.py",
+    "old": "parse_canonical(source['expires_at']) < point or not self._within_window(fact, point)",
+    "next": "not self._within_window(fact, point)",
+    "select": "invalid_support and expired_source"
+  },
+  {
+    "id": "ignore-fact-bank",
+    "file": "backend/memory.py",
+    "old": "row = db.execute('SELECT doc FROM memory_facts WHERE id=? AND bank_id=?', (fact_id, bank_id)).fetchone()",
+    "next": "row = db.execute('SELECT doc FROM memory_facts WHERE id=?', (fact_id,)).fetchone()",
+    "select": "invalid_support and cross_bank"
+  },
+  {
+    "id": "unbind-entity-errors",
+    "file": "backend/openapi_contracts.py",
+    "old": "        ('/api/local/memory/banks/{bank_id}/entities', 'post', '201', 'entity_create_result'),\n",
+    "next": "",
+    "select": "actual_errors and entity"
+  },
+  {
+    "id": "unbind-relation-errors",
+    "file": "backend/openapi_contracts.py",
+    "old": "        ('/api/local/memory/banks/{bank_id}/relations', 'post', '201', 'relation_create_result'),\n",
+    "next": "",
+    "select": "actual_errors and relation"
+  },
+  {
+    "id": "static-entity-old-error",
+    "file": "specs/v1/openapi.yaml",
+    "old": "$ref: './memory-graph.schema.json#/$defs/entity_create_result'\n        default:\n          $ref: '#/components/responses/LocalProductError'",
+    "next": "$ref: './memory-graph.schema.json#/$defs/entity_create_result'\n        default:\n          $ref: '#/components/responses/Error'",
+    "select": "actual_errors and entity"
+  },
+  {
+    "id": "static-relation-old-error",
+    "file": "specs/v1/openapi.yaml",
+    "old": "$ref: './memory-graph.schema.json#/$defs/relation_create_result'\n        default:\n          $ref: '#/components/responses/LocalProductError'",
+    "next": "$ref: './memory-graph.schema.json#/$defs/relation_create_result'\n        default:\n          $ref: '#/components/responses/Error'",
+    "select": "actual_errors and relation"
+  },
+  {
+    "id": "entity-then-audit-unbound",
+    "file": "specs/v1/memory-graph.schema.json",
+    "old": "    \"entity_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"entity\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"then\": {\"properties\": {\"audit_id\": {\"type\": \"null\"}}},\n      \"else\": {\"properties\": {\"audit_id\": {\"type\": \"string\"}}},\n      \"properties\": {\n        \"entity\": {\"$ref\": \"#/$defs/entity\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "next": "    \"entity_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"entity\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"else\": {\"properties\": {\"audit_id\": {\"type\": \"string\"}}},\n      \"properties\": {\n        \"entity\": {\"$ref\": \"#/$defs/entity\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "select": "success_contract and entity and dedup_audit"
+  },
+  {
+    "id": "entity-else-audit-unbound",
+    "file": "specs/v1/memory-graph.schema.json",
+    "old": "    \"entity_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"entity\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"then\": {\"properties\": {\"audit_id\": {\"type\": \"null\"}}},\n      \"else\": {\"properties\": {\"audit_id\": {\"type\": \"string\"}}},\n      \"properties\": {\n        \"entity\": {\"$ref\": \"#/$defs/entity\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "next": "    \"entity_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"entity\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"then\": {\"properties\": {\"audit_id\": {\"type\": \"null\"}}},\n      \"properties\": {\n        \"entity\": {\"$ref\": \"#/$defs/entity\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "select": "success_contract and entity and new_null_audit"
+  },
+  {
+    "id": "relation-then-audit-unbound",
+    "file": "specs/v1/memory-graph.schema.json",
+    "old": "    \"relation_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"relation\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"then\": {\"properties\": {\"audit_id\": {\"type\": \"null\"}}},\n      \"else\": {\"properties\": {\"audit_id\": {\"type\": \"string\"}}},\n      \"properties\": {\n        \"relation\": {\"$ref\": \"#/$defs/relation\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "next": "    \"relation_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"relation\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"else\": {\"properties\": {\"audit_id\": {\"type\": \"string\"}}},\n      \"properties\": {\n        \"relation\": {\"$ref\": \"#/$defs/relation\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "select": "success_contract and relation and dedup_audit"
+  },
+  {
+    "id": "relation-else-audit-unbound",
+    "file": "specs/v1/memory-graph.schema.json",
+    "old": "    \"relation_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"relation\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"then\": {\"properties\": {\"audit_id\": {\"type\": \"null\"}}},\n      \"else\": {\"properties\": {\"audit_id\": {\"type\": \"string\"}}},\n      \"properties\": {\n        \"relation\": {\"$ref\": \"#/$defs/relation\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "next": "    \"relation_create_result\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"relation\", \"deduplicated\", \"audit_id\"],\n      \"if\": {\"properties\": {\"deduplicated\": {\"const\": true}}, \"required\": [\"deduplicated\"]},\n      \"then\": {\"properties\": {\"audit_id\": {\"type\": \"null\"}}},\n      \"properties\": {\n        \"relation\": {\"$ref\": \"#/$defs/relation\"},\n        \"deduplicated\": {\"type\": \"boolean\"},\n        \"audit_id\": {\"type\": [\"string\", \"null\"], \"pattern\": \"^memaudit_[a-f0-9]{32}$\"}\n      }\n    },",
+    "select": "success_contract and relation and new_null_audit"
+  }
+]

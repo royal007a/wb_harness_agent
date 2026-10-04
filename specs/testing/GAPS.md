@@ -254,11 +254,13 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
 - **MEMORY-FTS-01 / Medium**：FTS初始化失败时状态readiness已降级，但Retain
   仍调用_index_fact，可能500；HA-0071候选将降级限定为新索引创建缺模块，
   M1可写且context明确503；其他故障传播，新31/相关255/全量1328通过，
-  14指定突变被杀死；初始化失败的连接/租约清理亦补齐，待独立review和部署。
+  14指定突变被杀死；初始化失败的连接/租约清理亦补齐，7a03b99独立Approved，
+  待部署。review.md保留真实无FTS构建和实时索引身份/完整性不验证的边界。
 - **MEMORY-FTS-02 / Low**：HA-0070独立Approved；删除Fact索引行不保证FTS5影子表
   词项擦除（普通SELECT仍可读）。非目标已补明，不把查询不可见当成抹除证明。
 - **MEMORY-GRAPH-HTTP-01 / Low**：Entity/Relation POST缺409/500公开声明，实际
-  信封正确但HA70信封用例只覆盖Retain。待图写入契约任务补齐。
+  信封正确但HA70信封用例只覆盖Retain。HA-0072候选补动态default/422及静态
+  当前信封，去重audit分支与未来Source支撑检查，仍待固定提交复审和部署。
 - **OPENAPI-EMPTY-06**：HA-0069候选补Memory三类写回执后，剩22个API和1个页面
   成功JSON声明恰为空；缺content及非空但宽松声明另计，见该项remaining清单。
 - **PI-RUN-02 / Low**：HA-0068固定697ef73独立Approved；Child根列表过滤及

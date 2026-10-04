@@ -1,0 +1,100 @@
+[
+  {
+    "id": "ignore-source-time",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-ignore-source-time.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "skip-subject-check",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-skip-subject-check.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "skip-object-check",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-skip-object-check.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "commit-before-receipt",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-valid-commit-before-receipt.xml",
+    "verified_failure_stage": "persistent_snapshot_after_seed"
+  },
+  {
+    "id": "ignore-expired-source",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-ignore-expired-source.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "ignore-fact-bank",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-ignore-fact-bank.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "unbind-entity-errors",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-unbind-entity-errors.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "unbind-relation-errors",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-unbind-relation-errors.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "static-entity-old-error",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-static-entity-old-error.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "static-relation-old-error",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-static-relation-old-error.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "entity-then-audit-unbound",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-entity-then-audit-unbound.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "entity-else-audit-unbound",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-entity-else-audit-unbound.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "relation-then-audit-unbound",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-relation-then-audit-unbound.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  },
+  {
+    "id": "relation-else-audit-unbound",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-final-relation-else-audit-unbound.xml",
+    "verified_failure_stage": "behavior_or_contract_assertion"
+  }
+]

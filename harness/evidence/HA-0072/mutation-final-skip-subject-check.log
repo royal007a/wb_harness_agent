@@ -1,0 +1,39 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_relation_rechecks_endpoint_source_time[subject_entity_id] ________
+
+client = <starlette.testclient.TestClient object at 0x109a4ae40>
+endpoint = 'subject_entity_id'
+
+    @pytest.mark.parametrize('endpoint', ['subject_entity_id', 'object_entity_id'])
+    def test_relation_rechecks_endpoint_source_time(client, endpoint):
+        w = setup_graph(client, 'relation')
+        store = client.app.state.service.store
+        # Make the other endpoint independent so both checks are tested separately.
+        independent = post(client, w['path'].removesuffix('/relations') + '/entities', {
+            'canonical_name': 'Independent72', 'entity_type': 'system', 'aliases': [],
+            'support_fact_id': w['support']['facts'][0]['id']}, 'independent72')
+        other = 'object_entity_id' if endpoint == 'subject_entity_id' else 'subject_entity_id'
+        w['request'][other] = independent['entity']['id']
+        with store.transaction() as db:
+            record = json.loads(db.execute('SELECT doc FROM memory_sources WHERE id=?',
+                                          (w['endpoint']['source']['id'],)).fetchone()[0])
+            record['occurred_at'] = '2099-01-01T00:00:00Z'
+            db.execute('UPDATE memory_sources SET doc=? WHERE id=?', (dumps(record), record['id']))
+        before = snapshot(client)
+        result = call(client, w)
+>       assert result.status_code == 409, result.text
+E       AssertionError: {"relation":{"id":"memrel_84cf1385908f4e4d8457aa6dc3827f55","bank_id":"membank_6789b96c61c943e4b6ef9e3b8d8c8e91","subject_entity_id":"mement_2b45a6165a0c4289b6fa2a42277fa367","predicate":"depends_on","object_entity_id":"mement_fc7a2bf055d448bb8bbf0f46fcb6756c","support_fact_id":"memfact_1b03550f807c4b908de24e242b8db409","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:20:49.602989Z"},"deduplicated":false,"audit_id":"memaudit_77340a0bb9914c52a4908d77234fa9d9"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:266: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_write_contracts.py::test_relation_rechecks_endpoint_source_time[subject_entity_id]
+1 failed, 41 deselected, 1 warning in 0.34s

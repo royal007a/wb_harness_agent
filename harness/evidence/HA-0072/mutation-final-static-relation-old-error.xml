@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="5" time="0.881" timestamp="2026-10-04T09:20:57.911815+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_actual_errors_follow_all_three_contracts[case_sha256=223d2f8dedb5ced6a0fb9488848abe68ee63c150bb1886991ca679547138d762]" time="0.182"><failure message="AssertionError: ('relation', 404, 'retryable')&#10;assert not True&#10; +  where True = is_valid({'error': {'code': 'MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND', 'message': 'Graph 支撑 Fact 不在此 Memory Bank。', 'retryable': True, 'request_id': 'req_9eeedbe7761247b8b0d9f3b598cc3b52'}})&#10; +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10d612cf0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d0a3360&gt;
+kind = 'relation', status = 404
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+&gt;       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:170:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10d612cf0&gt;, kind = 'relation'
+response = &lt;Response [404 Not Found]&gt;, status = 404
+
+    def check_response(c, kind, response, status):
+        assert response.status_code == status, response.text
+        for v in validators(c, kind, str(status)):
+            v.validate(response.json())
+            assert not v.is_valid({**response.json(), 'unexpected': True})
+            if status != 201:
+                for field, invalid in [('retryable', True), ('code', ''), ('request_id', 'rts_invalid'),
+                                       ('details', {'raw': 'not_allowed'})]:
+                    bad = copy.deepcopy(response.json())
+                    bad['error'][field] = invalid
+&gt;                   assert not v.is_valid(bad), (kind, status, field)
+E                   AssertionError: ('relation', 404, 'retryable')
+E                   assert not True
+E                    +  where True = is_valid({'error': {'code': 'MEMORY_GRAPH_SUPPORT_FACT_NOT_FOUND', 'message': 'Graph 支撑 Fact 不在此 Memory Bank。', 'retryable': True, 'request_id': 'req_9eeedbe7761247b8b0d9f3b598cc3b52'}})
+E                    +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_graph_write_contracts.py:71: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_actual_errors_follow_all_three_contracts[case_sha256=dbd4ccbda9f2f6ab4829797d8a75afecee7c34d26df0126336d7ad2b530c589f]" time="0.132"><failure message="AssertionError: ('relation', 409, 'retryable')&#10;assert not True&#10; +  where True = is_valid({'error': {'code': 'CONFLICT', 'message': '同一幂等键已用于不同请求。', 'retryable': True, 'request_id': 'req_325768d5aeab4a9eaf660963a64b71c7'}})&#10; +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10f26ca50&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d46f360&gt;
+kind = 'relation', status = 409
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+&gt;       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:170:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10f26ca50&gt;, kind = 'relation'
+response = &lt;Response [409 Conflict]&gt;, status = 409
+
+    def check_response(c, kind, response, status):
+        assert response.status_code == status, response.text
+        for v in validators(c, kind, str(status)):
+            v.validate(response.json())
+            assert not v.is_valid({**response.json(), 'unexpected': True})
+            if status != 201:
+                for field, invalid in [('retryable', True), ('code', ''), ('request_id', 'rts_invalid'),
+                                       ('details', {'raw': 'not_allowed'})]:
+                    bad = copy.deepcopy(response.json())
+                    bad['error'][field] = invalid
+&gt;                   assert not v.is_valid(bad), (kind, status, field)
+E                   AssertionError: ('relation', 409, 'retryable')
+E                   assert not True
+E                    +  where True = is_valid({'error': {'code': 'CONFLICT', 'message': '同一幂等键已用于不同请求。', 'retryable': True, 'request_id': 'req_325768d5aeab4a9eaf660963a64b71c7'}})
+E                    +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_graph_write_contracts.py:71: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_actual_errors_follow_all_three_contracts[case_sha256=32189876282035736451dd50a542ecdd6d563acf885d284af902118a2d0676d8]" time="0.115"><failure message="AssertionError: ('relation', 415, 'retryable')&#10;assert not True&#10; +  where True = is_valid({'error': {'code': 'VALIDATION_ERROR', 'message': '请求必须为 application/json。', 'retryable': True, 'request_id': 'req_60321d998085451bafa0368fee45e90e'}})&#10; +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10f56a5d0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10e2e7e30&gt;
+kind = 'relation', status = 415
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+&gt;       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:170:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10f56a5d0&gt;, kind = 'relation'
+response = &lt;Response [415 Unsupported Media Type]&gt;, status = 415
+
+    def check_response(c, kind, response, status):
+        assert response.status_code == status, response.text
+        for v in validators(c, kind, str(status)):
+            v.validate(response.json())
+            assert not v.is_valid({**response.json(), 'unexpected': True})
+            if status != 201:
+                for field, invalid in [('retryable', True), ('code', ''), ('request_id', 'rts_invalid'),
+                                       ('details', {'raw': 'not_allowed'})]:
+                    bad = copy.deepcopy(response.json())
+                    bad['error'][field] = invalid
+&gt;                   assert not v.is_valid(bad), (kind, status, field)
+E                   AssertionError: ('relation', 415, 'retryable')
+E                   assert not True
+E                    +  where True = is_valid({'error': {'code': 'VALIDATION_ERROR', 'message': '请求必须为 application/json。', 'retryable': True, 'request_id': 'req_60321d998085451bafa0368fee45e90e'}})
+E                    +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_graph_write_contracts.py:71: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_actual_errors_follow_all_three_contracts[case_sha256=26e0d8d3d9cdf21a39b876444ef6ad80ca9c6ed0d98d3f1dceda273bd83c9c1a]" time="0.110"><failure message="AssertionError: ('relation', 422, 'retryable')&#10;assert not True&#10; +  where True = is_valid({'error': {'code': 'VALIDATION_ERROR', 'message': '请求不符合 Memory Graph M3-A 契约。', 'retryable': True, 'request_id': 'req_550cb4cbcd3c464591cecbf17b4f8379'}})&#10; +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10f571940&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10f50ce20&gt;
+kind = 'relation', status = 422
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+&gt;       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:170:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10f571940&gt;, kind = 'relation'
+response = &lt;Response [422 Unprocessable Content]&gt;, status = 422
+
+    def check_response(c, kind, response, status):
+        assert response.status_code == status, response.text
+        for v in validators(c, kind, str(status)):
+            v.validate(response.json())
+            assert not v.is_valid({**response.json(), 'unexpected': True})
+            if status != 201:
+                for field, invalid in [('retryable', True), ('code', ''), ('request_id', 'rts_invalid'),
+                                       ('details', {'raw': 'not_allowed'})]:
+                    bad = copy.deepcopy(response.json())
+                    bad['error'][field] = invalid
+&gt;                   assert not v.is_valid(bad), (kind, status, field)
+E                   AssertionError: ('relation', 422, 'retryable')
+E                   assert not True
+E                    +  where True = is_valid({'error': {'code': 'VALIDATION_ERROR', 'message': '请求不符合 Memory Graph M3-A 契约。', 'retryable': True, 'request_id': 'req_550cb4cbcd3c464591cecbf17b4f8379'}})
+E                    +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_graph_write_contracts.py:71: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_actual_errors_follow_all_three_contracts[case_sha256=985ecbdc85e396833e5c5649734649afe7f5d3066eee629c9b51030017a2f376]" time="0.111"><failure message="AssertionError: ('relation', 500, 'retryable')&#10;assert not True&#10; +  where True = is_valid({'error': {'code': 'INTERNAL_ERROR', 'message': '请求失败，请查看运行事件。', 'retryable': True, 'request_id': 'req_e3eaf23f1108458389e763f5a163baf9'}})&#10; +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10f5722c0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10fa80490&gt;
+kind = 'relation', status = 500
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+&gt;       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:170:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = &lt;starlette.testclient.TestClient object at 0x10f5722c0&gt;, kind = 'relation'
+response = &lt;Response [500 Internal Server Error]&gt;, status = 500
+
+    def check_response(c, kind, response, status):
+        assert response.status_code == status, response.text
+        for v in validators(c, kind, str(status)):
+            v.validate(response.json())
+            assert not v.is_valid({**response.json(), 'unexpected': True})
+            if status != 201:
+                for field, invalid in [('retryable', True), ('code', ''), ('request_id', 'rts_invalid'),
+                                       ('details', {'raw': 'not_allowed'})]:
+                    bad = copy.deepcopy(response.json())
+                    bad['error'][field] = invalid
+&gt;                   assert not v.is_valid(bad), (kind, status, field)
+E                   AssertionError: ('relation', 500, 'retryable')
+E                   assert not True
+E                    +  where True = is_valid({'error': {'code': 'INTERNAL_ERROR', 'message': '请求失败，请查看运行事件。', 'retryable': True, 'request_id': 'req_e3eaf23f1108458389e763f5a163baf9'}})
+E                    +    where is_valid = Draft202012Validator(schema={'$id': 'file:///priv.../openapi.yaml', '$ref': '#/components/schemas/Error', 'components'...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_graph_write_contracts.py:71: AssertionError</failure></testcase></testsuite></testsuites>

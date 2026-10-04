@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ignore-source-time",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "skip-subject-check",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "skip-object-check",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "commit-before-receipt",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "ignore-expired-source",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "ignore-fact-bank",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "unbind-entity-errors",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "unbind-relation-errors",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "static-entity-old-error",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "static-relation-old-error",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "entity-then-audit-unbound",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "entity-else-audit-unbound",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "relation-then-audit-unbound",
+    "exit_code": 1,
+    "restored": true
+  },
+  {
+    "id": "relation-else-audit-unbound",
+    "exit_code": 1,
+    "restored": true
+  }
+]

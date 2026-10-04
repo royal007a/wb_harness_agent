@@ -1,0 +1,82 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+________ test_future_source_cannot_support_current_graph_write[entity] _________
+
+client = <starlette.testclient.TestClient object at 0x1091e2cf0>
+kind = 'entity'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_future_source_cannot_support_current_graph_write(client, kind):
+        w = setup_graph(client, kind, '2099-01-01T00:00:00Z')
+        before = snapshot(client)
+        result = call(client, w)
+>       assert result.status_code == 409, result.text
+E       AssertionError: {"entity":{"id":"mement_207c7c9dc82e4d1f8725c38718ee6c7f","bank_id":"membank_d3f0146a75fd42a8969d3cdcce54a787","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_474d88a48613494d8a74ac9a53e81c6a","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:16:13.042856Z"},"deduplicated":false,"audit_id":"memaudit_48835e07272741b4bceb0ca25ba7c1b1"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:199: AssertionError
+_______ test_future_source_cannot_support_current_graph_write[relation] ________
+
+client = <starlette.testclient.TestClient object at 0x10ad00910>
+kind = 'relation'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_future_source_cannot_support_current_graph_write(client, kind):
+        w = setup_graph(client, kind, '2099-01-01T00:00:00Z')
+        before = snapshot(client)
+        result = call(client, w)
+>       assert result.status_code == 409, result.text
+E       AssertionError: {"relation":{"id":"memrel_827cb4b8a10d4200b24c633c6c852fa6","bank_id":"membank_9dfb5b64ce104657a7deeb64cc43b737","subject_entity_id":"mement_d594f11920764b108b001d06ad80773b","predicate":"depends_on","object_entity_id":"mement_f3fe31ee3ae7453a88fea35ba992efdb","support_fact_id":"memfact_f099171c3ac9485ca9866c9979b20512","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:16:13.106439Z"},"deduplicated":false,"audit_id":"memaudit_4a2ea00841f449499af2401733f23c5f"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:199: AssertionError
+________ test_source_time_equality_and_same_key_after_rejection[entity] ________
+
+client = <starlette.testclient.TestClient object at 0x109ed2e90>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1084cf9b0>
+kind = 'entity'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_source_time_equality_and_same_key_after_rejection(client, monkeypatch, kind):
+        monkeypatch.setattr(memory, 'now', lambda: '2026-10-04T11:59:59Z')
+        w = setup_graph(client, kind, '2026-10-04T12:00:00Z')
+        before = snapshot(client)
+        response = call(client, w)
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"entity":{"id":"mement_a4b91aa5eaf544168b1e19df8a408a0d","bank_id":"membank_cb522bb755c346f2973c769f6459d94f","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_8712d54c30774d85b1d7c6f943f3b3d3","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T11:59:59Z"},"deduplicated":false,"audit_id":"memaudit_f4e5388176934e029afccefd9a24fb4c"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:210: AssertionError
+_______ test_source_time_equality_and_same_key_after_rejection[relation] _______
+
+client = <starlette.testclient.TestClient object at 0x10aee8b00>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108cf5d00>
+kind = 'relation'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_source_time_equality_and_same_key_after_rejection(client, monkeypatch, kind):
+        monkeypatch.setattr(memory, 'now', lambda: '2026-10-04T11:59:59Z')
+        w = setup_graph(client, kind, '2026-10-04T12:00:00Z')
+        before = snapshot(client)
+        response = call(client, w)
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"relation":{"id":"memrel_f010b743118e4db9bd596661cebdc514","bank_id":"membank_82067ee084c4453fad0176f8b3167191","subject_entity_id":"mement_ec4ed20b066a471590d6d90ef2f47a03","predicate":"depends_on","object_entity_id":"mement_971d4e053f5e4ca8bf5e45344e02b92b","support_fact_id":"memfact_26956f1bfa4d4390a2593c2d4b41323b","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T11:59:59Z"},"deduplicated":false,"audit_id":"memaudit_fecea711016c46feb5c2e645596dd70f"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:210: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_write_contracts.py::test_future_source_cannot_support_current_graph_write[entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_future_source_cannot_support_current_graph_write[relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_source_time_equality_and_same_key_after_rejection[entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_source_time_equality_and_same_key_after_rejection[relation]
+4 failed, 38 deselected, 1 warning in 0.61s

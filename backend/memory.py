@@ -629,6 +629,7 @@ class MemoryPlane:
                                 (fact['source_id'], bank_id)).fetchone()
         source = json.loads(source_row['doc']) if source_row else None
         if (fact['status'] != 'active' or not source or source['status'] != 'active' or
+                parse_canonical(source['occurred_at']) > point or
                 parse_canonical(source['expires_at']) < point or not self._within_window(fact, point)):
             raise Problem('MEMORY_GRAPH_SUPPORT_FACT_NOT_ACTIVE', 'Graph 支撑 Fact 或其来源当前无效。', 409)
         return fact, source

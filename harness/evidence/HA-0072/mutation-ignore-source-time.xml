@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="0.550" timestamp="2026-10-04T09:16:12.677366+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_future_source_cannot_support_current_graph_write[case_sha256=bca3685fea8acd4e4b5c149874e1aa2bad0708e7e5ed490f3cf0702cb7a8bb56]" time="0.135"><failure message="AssertionError: {&quot;entity&quot;:{&quot;id&quot;:&quot;mement_207c7c9dc82e4d1f8725c38718ee6c7f&quot;,&quot;bank_id&quot;:&quot;membank_d3f0146a75fd42a8969d3cdcce54a787&quot;,&quot;canonical_name&quot;:&quot;C72&quot;,&quot;entity_type&quot;:&quot;system&quot;,&quot;aliases&quot;:[&quot;alias-C72&quot;],&quot;support_fact_id&quot;:&quot;memfact_474d88a48613494d8a74ac9a53e81c6a&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T01:16:13.042856Z&quot;},&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_48835e07272741b4bceb0ca25ba7c1b1&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x1091e2cf0&gt;
+kind = 'entity'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_future_source_cannot_support_current_graph_write(client, kind):
+        w = setup_graph(client, kind, '2099-01-01T00:00:00Z')
+        before = snapshot(client)
+        result = call(client, w)
+&gt;       assert result.status_code == 409, result.text
+E       AssertionError: {"entity":{"id":"mement_207c7c9dc82e4d1f8725c38718ee6c7f","bank_id":"membank_d3f0146a75fd42a8969d3cdcce54a787","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_474d88a48613494d8a74ac9a53e81c6a","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:16:13.042856Z"},"deduplicated":false,"audit_id":"memaudit_48835e07272741b4bceb0ca25ba7c1b1"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_graph_write_contracts.py:199: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_future_source_cannot_support_current_graph_write[case_sha256=fc8fbb48a3a16bfdd85345d0b6aa543ebd805c370e5b763ed75207185093fca3]" time="0.043"><failure message="AssertionError: {&quot;relation&quot;:{&quot;id&quot;:&quot;memrel_827cb4b8a10d4200b24c633c6c852fa6&quot;,&quot;bank_id&quot;:&quot;membank_9dfb5b64ce104657a7deeb64cc43b737&quot;,&quot;subject_entity_id&quot;:&quot;mement_d594f11920764b108b001d06ad80773b&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;object_entity_id&quot;:&quot;mement_f3fe31ee3ae7453a88fea35ba992efdb&quot;,&quot;support_fact_id&quot;:&quot;memfact_f099171c3ac9485ca9866c9979b20512&quot;,&quot;confidence&quot;:0.9,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T01:16:13.106439Z&quot;},&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_4a2ea00841f449499af2401733f23c5f&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10ad00910&gt;
+kind = 'relation'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_future_source_cannot_support_current_graph_write(client, kind):
+        w = setup_graph(client, kind, '2099-01-01T00:00:00Z')
+        before = snapshot(client)
+        result = call(client, w)
+&gt;       assert result.status_code == 409, result.text
+E       AssertionError: {"relation":{"id":"memrel_827cb4b8a10d4200b24c633c6c852fa6","bank_id":"membank_9dfb5b64ce104657a7deeb64cc43b737","subject_entity_id":"mement_d594f11920764b108b001d06ad80773b","predicate":"depends_on","object_entity_id":"mement_f3fe31ee3ae7453a88fea35ba992efdb","support_fact_id":"memfact_f099171c3ac9485ca9866c9979b20512","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:16:13.106439Z"},"deduplicated":false,"audit_id":"memaudit_4a2ea00841f449499af2401733f23c5f"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_graph_write_contracts.py:199: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_source_time_equality_and_same_key_after_rejection[case_sha256=bca3685fea8acd4e4b5c149874e1aa2bad0708e7e5ed490f3cf0702cb7a8bb56]" time="0.064"><failure message="AssertionError: {&quot;entity&quot;:{&quot;id&quot;:&quot;mement_a4b91aa5eaf544168b1e19df8a408a0d&quot;,&quot;bank_id&quot;:&quot;membank_cb522bb755c346f2973c769f6459d94f&quot;,&quot;canonical_name&quot;:&quot;C72&quot;,&quot;entity_type&quot;:&quot;system&quot;,&quot;aliases&quot;:[&quot;alias-C72&quot;],&quot;support_fact_id&quot;:&quot;memfact_8712d54c30774d85b1d7c6f943f3b3d3&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T11:59:59Z&quot;},&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_f4e5388176934e029afccefd9a24fb4c&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x109ed2e90&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1084cf9b0&gt;
+kind = 'entity'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_source_time_equality_and_same_key_after_rejection(client, monkeypatch, kind):
+        monkeypatch.setattr(memory, 'now', lambda: '2026-10-04T11:59:59Z')
+        w = setup_graph(client, kind, '2026-10-04T12:00:00Z')
+        before = snapshot(client)
+        response = call(client, w)
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"entity":{"id":"mement_a4b91aa5eaf544168b1e19df8a408a0d","bank_id":"membank_cb522bb755c346f2973c769f6459d94f","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_8712d54c30774d85b1d7c6f943f3b3d3","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T11:59:59Z"},"deduplicated":false,"audit_id":"memaudit_f4e5388176934e029afccefd9a24fb4c"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_graph_write_contracts.py:210: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_source_time_equality_and_same_key_after_rejection[case_sha256=fc8fbb48a3a16bfdd85345d0b6aa543ebd805c370e5b763ed75207185093fca3]" time="0.042"><failure message="AssertionError: {&quot;relation&quot;:{&quot;id&quot;:&quot;memrel_f010b743118e4db9bd596661cebdc514&quot;,&quot;bank_id&quot;:&quot;membank_82067ee084c4453fad0176f8b3167191&quot;,&quot;subject_entity_id&quot;:&quot;mement_ec4ed20b066a471590d6d90ef2f47a03&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;object_entity_id&quot;:&quot;mement_971d4e053f5e4ca8bf5e45344e02b92b&quot;,&quot;support_fact_id&quot;:&quot;memfact_26956f1bfa4d4390a2593c2d4b41323b&quot;,&quot;confidence&quot;:0.9,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T11:59:59Z&quot;},&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_fecea711016c46feb5c2e645596dd70f&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10aee8b00&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108cf5d00&gt;
+kind = 'relation'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_source_time_equality_and_same_key_after_rejection(client, monkeypatch, kind):
+        monkeypatch.setattr(memory, 'now', lambda: '2026-10-04T11:59:59Z')
+        w = setup_graph(client, kind, '2026-10-04T12:00:00Z')
+        before = snapshot(client)
+        response = call(client, w)
+&gt;       assert response.status_code == 409, response.text
+E       AssertionError: {"relation":{"id":"memrel_f010b743118e4db9bd596661cebdc514","bank_id":"membank_82067ee084c4453fad0176f8b3167191","subject_entity_id":"mement_ec4ed20b066a471590d6d90ef2f47a03","predicate":"depends_on","object_entity_id":"mement_971d4e053f5e4ca8bf5e45344e02b92b","support_fact_id":"memfact_26956f1bfa4d4390a2593c2d4b41323b","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T11:59:59Z"},"deduplicated":false,"audit_id":"memaudit_fecea711016c46feb5c2e645596dd70f"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_graph_write_contracts.py:210: AssertionError</failure></testcase></testsuite></testsuites>

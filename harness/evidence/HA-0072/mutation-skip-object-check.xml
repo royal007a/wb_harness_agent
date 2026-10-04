@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.317" timestamp="2026-10-04T09:16:14.164715+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_relation_rechecks_endpoint_source_time[case_sha256=d95639b9ba9c4de48f9588bb7b896560e4efc7a0023a37354843eddf47b7c7aa]" time="0.113"><failure message="AssertionError: {&quot;relation&quot;:{&quot;id&quot;:&quot;memrel_261ae235edd5405384e7ec67d65435e9&quot;,&quot;bank_id&quot;:&quot;membank_f5338ae2726f43b18c27baa81547300d&quot;,&quot;subject_entity_id&quot;:&quot;mement_4245c062dcbb4cb8b0a478ea42bb61dc&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;object_entity_id&quot;:&quot;mement_c1df5ba1df9e4d7c930e88fb1dd0e0c8&quot;,&quot;support_fact_id&quot;:&quot;memfact_2744be2031a9481d82b95d3e2a23f2e7&quot;,&quot;confidence&quot;:0.9,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T01:16:14.457942Z&quot;},&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_909d617c50b3444ab0e4594d053f14ce&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10cd9ae40&gt;
+endpoint = 'object_entity_id'
+
+    @pytest.mark.parametrize('endpoint', ['subject_entity_id', 'object_entity_id'])
+    def test_relation_rechecks_endpoint_source_time(client, endpoint):
+        w = setup_graph(client, 'relation')
+        store = client.app.state.service.store
+        # Make the other endpoint independent so both checks are tested separately.
+        independent = post(client, w['path'].removesuffix('/relations') + '/entities', {
+            'canonical_name': 'Independent72', 'entity_type': 'system', 'aliases': [],
+            'support_fact_id': w['support']['facts'][0]['id']}, 'independent72')
+        other = 'object_entity_id' if endpoint == 'subject_entity_id' else 'subject_entity_id'
+        w['request'][other] = independent['entity']['id']
+        with store.transaction() as db:
+            record = json.loads(db.execute('SELECT doc FROM memory_sources WHERE id=?',
+                                          (w['endpoint']['source']['id'],)).fetchone()[0])
+            record['occurred_at'] = '2099-01-01T00:00:00Z'
+            db.execute('UPDATE memory_sources SET doc=? WHERE id=?', (dumps(record), record['id']))
+        before = snapshot(client)
+        result = call(client, w)
+&gt;       assert result.status_code == 409, result.text
+E       AssertionError: {"relation":{"id":"memrel_261ae235edd5405384e7ec67d65435e9","bank_id":"membank_f5338ae2726f43b18c27baa81547300d","subject_entity_id":"mement_4245c062dcbb4cb8b0a478ea42bb61dc","predicate":"depends_on","object_entity_id":"mement_c1df5ba1df9e4d7c930e88fb1dd0e0c8","support_fact_id":"memfact_2744be2031a9481d82b95d3e2a23f2e7","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:16:14.457942Z"},"deduplicated":false,"audit_id":"memaudit_909d617c50b3444ab0e4594d053f14ce"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_graph_write_contracts.py:260: AssertionError</failure></testcase></testsuite></testsuites>

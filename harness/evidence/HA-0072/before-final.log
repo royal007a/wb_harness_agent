@@ -1,0 +1,1348 @@
+..FFFF....FFFFFFFFFF..FFFF........FFFFFFFF                               [100%]
+=================================== FAILURES ===================================
+_ test_success_contract_rejects_independent_bad_instances[new_null_audit-entity] _
+
+client = <starlette.testclient.TestClient object at 0x10eb73750>
+kind = 'entity', bad = 'new_null_audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('bad', ['new_null_audit', 'dedup_audit', 'missing_field', 'nested_extra'])
+    def test_success_contract_rejects_independent_bad_instances(client, kind, bad):
+        w = setup_graph(client, kind)
+        value = call(client, w).json()
+        if bad == 'new_null_audit':
+            value['audit_id'] = None
+        elif bad == 'dedup_audit':
+            value['deduplicated'] = True
+        elif bad == 'missing_field':
+            del value[kind]['support_fact_id']
+        else:
+            value[kind]['raw_content'] = 'NEVER'
+        for v in validators(client, kind):
+>           assert not v.is_valid(value), (kind, bad)
+E           AssertionError: ('entity', 'new_null_audit')
+E           assert not True
+E            +  where True = is_valid({'entity': {'id': 'mement_f014184544aa4879b181e5ce9b62f55d', 'bank_id': 'membank_f6eeefc4d7ab43d29ab28c921e0f1354', 'canonical_name': 'C72', 'entity_type': 'system', ...}, 'deduplicated': False, 'audit_id': None})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:137: AssertionError
+_ test_success_contract_rejects_independent_bad_instances[new_null_audit-relation] _
+
+client = <starlette.testclient.TestClient object at 0x10db5bbb0>
+kind = 'relation', bad = 'new_null_audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('bad', ['new_null_audit', 'dedup_audit', 'missing_field', 'nested_extra'])
+    def test_success_contract_rejects_independent_bad_instances(client, kind, bad):
+        w = setup_graph(client, kind)
+        value = call(client, w).json()
+        if bad == 'new_null_audit':
+            value['audit_id'] = None
+        elif bad == 'dedup_audit':
+            value['deduplicated'] = True
+        elif bad == 'missing_field':
+            del value[kind]['support_fact_id']
+        else:
+            value[kind]['raw_content'] = 'NEVER'
+        for v in validators(client, kind):
+>           assert not v.is_valid(value), (kind, bad)
+E           AssertionError: ('relation', 'new_null_audit')
+E           assert not True
+E            +  where True = is_valid({'relation': {'id': 'memrel_7767a1c316b645319cb65d063655cf44', 'bank_id': 'membank_45a1e473502d4958a8d1df65a33cdd89', ...': 'mement_e3e7ff27864240b4b896af90acea925e', 'predicate': 'depends_on', ...}, 'deduplicated': False, 'audit_id': None})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:137: AssertionError
+_ test_success_contract_rejects_independent_bad_instances[dedup_audit-entity] __
+
+client = <starlette.testclient.TestClient object at 0x10db5b5c0>
+kind = 'entity', bad = 'dedup_audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('bad', ['new_null_audit', 'dedup_audit', 'missing_field', 'nested_extra'])
+    def test_success_contract_rejects_independent_bad_instances(client, kind, bad):
+        w = setup_graph(client, kind)
+        value = call(client, w).json()
+        if bad == 'new_null_audit':
+            value['audit_id'] = None
+        elif bad == 'dedup_audit':
+            value['deduplicated'] = True
+        elif bad == 'missing_field':
+            del value[kind]['support_fact_id']
+        else:
+            value[kind]['raw_content'] = 'NEVER'
+        for v in validators(client, kind):
+>           assert not v.is_valid(value), (kind, bad)
+E           AssertionError: ('entity', 'dedup_audit')
+E           assert not True
+E            +  where True = is_valid({'entity': {'id': 'mement_89129ac86b264ea9af7ca1358c8901da', 'bank_id': 'membank_5b0be822a1ab4b578dcfb6bc196a70eb', 'c...': 'C72', 'entity_type': 'system', ...}, 'deduplicated': True, 'audit_id': 'memaudit_e410f78260384c90a828d5e84a49573f'})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:137: AssertionError
+_ test_success_contract_rejects_independent_bad_instances[dedup_audit-relation] _
+
+client = <starlette.testclient.TestClient object at 0x10a9cd7f0>
+kind = 'relation', bad = 'dedup_audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('bad', ['new_null_audit', 'dedup_audit', 'missing_field', 'nested_extra'])
+    def test_success_contract_rejects_independent_bad_instances(client, kind, bad):
+        w = setup_graph(client, kind)
+        value = call(client, w).json()
+        if bad == 'new_null_audit':
+            value['audit_id'] = None
+        elif bad == 'dedup_audit':
+            value['deduplicated'] = True
+        elif bad == 'missing_field':
+            del value[kind]['support_fact_id']
+        else:
+            value[kind]['raw_content'] = 'NEVER'
+        for v in validators(client, kind):
+>           assert not v.is_valid(value), (kind, bad)
+E           AssertionError: ('relation', 'dedup_audit')
+E           assert not True
+E            +  where True = is_valid({'relation': {'id': 'memrel_a0857f9d2be1442eaaebb76be6f057f6', 'bank_id': 'membank_919b2d58e43245b1a77fd940d11c7885', ...da2b1', 'predicate': 'depends_on', ...}, 'deduplicated': True, 'audit_id': 'memaudit_ccb31a3412e04732a24a016bf22fea46'})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:137: AssertionError
+__________ test_actual_errors_follow_all_three_contracts[404-entity] ___________
+
+client = <starlette.testclient.TestClient object at 0x10f55f240>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10fbfc210>
+kind = 'entity', status = 404
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f55f240>, kind = 'entity'
+status = '404', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '404', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_________ test_actual_errors_follow_all_three_contracts[404-relation] __________
+
+client = <starlette.testclient.TestClient object at 0x10e87a360>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10fc07a00>
+kind = 'relation', status = 404
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e87a360>, kind = 'relation'
+status = '404', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'relation', '404', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+__________ test_actual_errors_follow_all_three_contracts[409-entity] ___________
+
+client = <starlette.testclient.TestClient object at 0x10eb8dbf0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e847890>
+kind = 'entity', status = 409
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10eb8dbf0>, kind = 'entity'
+status = '409', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '409', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_________ test_actual_errors_follow_all_three_contracts[409-relation] __________
+
+client = <starlette.testclient.TestClient object at 0x10ea66f10>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e845490>
+kind = 'relation', status = 409
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ea66f10>, kind = 'relation'
+status = '409', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'relation', '409', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+__________ test_actual_errors_follow_all_three_contracts[415-entity] ___________
+
+client = <starlette.testclient.TestClient object at 0x10ec198c0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ea8a570>
+kind = 'entity', status = 415
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ec198c0>, kind = 'entity'
+status = '415', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '415', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_________ test_actual_errors_follow_all_three_contracts[415-relation] __________
+
+client = <starlette.testclient.TestClient object at 0x10b781040>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f317800>
+kind = 'relation', status = 415
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10b781040>, kind = 'relation'
+status = '415', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'relation', '415', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+__________ test_actual_errors_follow_all_three_contracts[422-entity] ___________
+
+client = <starlette.testclient.TestClient object at 0x10eb8ead0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10aa9db30>
+kind = 'entity', status = 422
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10eb8ead0>, kind = 'entity'
+status = '422', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '422', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_________ test_actual_errors_follow_all_three_contracts[422-relation] __________
+
+client = <starlette.testclient.TestClient object at 0x10e87a470>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10eef3930>
+kind = 'relation', status = 422
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e87a470>, kind = 'relation'
+status = '422', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'relation', '422', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+__________ test_actual_errors_follow_all_three_contracts[500-entity] ___________
+
+client = <starlette.testclient.TestClient object at 0x10f55fdf0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce862a0>
+kind = 'entity', status = 500
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f55fdf0>, kind = 'entity'
+status = '500', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '500', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_________ test_actual_errors_follow_all_three_contracts[500-relation] __________
+
+client = <starlette.testclient.TestClient object at 0x10f4ed8c0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f591250>
+kind = 'relation', status = 500
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('status', [404, 409, 415, 422, 500])
+    def test_actual_errors_follow_all_three_contracts(client, monkeypatch, kind, status):
+        w = setup_graph(client, kind)
+        before = snapshot(client)
+        if status == 404:
+            w['request']['support_fact_id'] = 'memfact_' + '0' * 32
+        elif status == 409:
+            assert call(client, w).status_code == 201
+            before = snapshot(client)
+            field = 'canonical_name' if kind == 'entity' else 'confidence'
+            w['request'][field] = 'changed72' if kind == 'entity' else 0.1
+        elif status == 422:
+            w['request']['unexpected'] = True
+        elif status == 500:
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_DB_PATH72')
+            monkeypatch.setattr(client.app.state.service.memory, '_active_support_fact', fail)
+            client._transport.raise_server_exceptions = False
+        response = client.post(w['path'], content='{}', headers={'Content-Type': 'text/plain',
+                               'Idempotency-Key': 'graph72'}) if status == 415 else call(client, w)
+        assert response.status_code == status, response.text
+        assert snapshot(client) == before
+        assert 'PRIVATE_DB_PATH72' not in response.text
+>       check_response(client, kind, response, status)
+
+tests/test_memory_graph_write_contracts.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f4ed8c0>, kind = 'relation'
+status = '500', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'relation', '500', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+________ test_future_source_cannot_support_current_graph_write[entity] _________
+
+client = <starlette.testclient.TestClient object at 0x10e8bff00>
+kind = 'entity'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_future_source_cannot_support_current_graph_write(client, kind):
+        w = setup_graph(client, kind, '2099-01-01T00:00:00Z')
+        before = snapshot(client)
+        result = call(client, w)
+>       assert result.status_code == 409, result.text
+E       AssertionError: {"entity":{"id":"mement_d45ec196967742209f6c28519f80093e","bank_id":"membank_a41293b2898a4f2191f9e0ccec7ae738","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_24fdb8cd08404ef6ba57fe5602f9f2a4","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:14:24.331660Z"},"deduplicated":false,"audit_id":"memaudit_012e0a5a203d4d82bce9f994ab08f2c6"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:199: AssertionError
+_______ test_future_source_cannot_support_current_graph_write[relation] ________
+
+client = <starlette.testclient.TestClient object at 0x10eb8e7a0>
+kind = 'relation'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_future_source_cannot_support_current_graph_write(client, kind):
+        w = setup_graph(client, kind, '2099-01-01T00:00:00Z')
+        before = snapshot(client)
+        result = call(client, w)
+>       assert result.status_code == 409, result.text
+E       AssertionError: {"relation":{"id":"memrel_155b7937e4e74740a3a1ead33c7b7b3e","bank_id":"membank_ecb90b7ce04b40889b24bcc6f148cfca","subject_entity_id":"mement_de801ae2393544e4b3c79c9718ffa8aa","predicate":"depends_on","object_entity_id":"mement_dbfaf3957a424ffa9ff61b756424a85a","support_fact_id":"memfact_8b5cdb88f3e84d5a95e2e8dd2acd4155","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:14:24.383557Z"},"deduplicated":false,"audit_id":"memaudit_55ad13dccff5456c98d4ebb83075e158"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:199: AssertionError
+________ test_source_time_equality_and_same_key_after_rejection[entity] ________
+
+client = <starlette.testclient.TestClient object at 0x10ea66ad0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e84f2a0>
+kind = 'entity'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_source_time_equality_and_same_key_after_rejection(client, monkeypatch, kind):
+        monkeypatch.setattr(memory, 'now', lambda: '2026-10-04T11:59:59Z')
+        w = setup_graph(client, kind, '2026-10-04T12:00:00Z')
+        before = snapshot(client)
+        response = call(client, w)
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"entity":{"id":"mement_ae90807b1a704f8fbbf8e9b1344e1d3f","bank_id":"membank_f0802cee19194da98c8779baf77bb06f","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_ea981d996cba4e6dabf6dfb6dc795726","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T11:59:59Z"},"deduplicated":false,"audit_id":"memaudit_5af5824aa561497f846085614b603c17"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:210: AssertionError
+_______ test_source_time_equality_and_same_key_after_rejection[relation] _______
+
+client = <starlette.testclient.TestClient object at 0x10eec9480>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x110004670>
+kind = 'relation'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    def test_source_time_equality_and_same_key_after_rejection(client, monkeypatch, kind):
+        monkeypatch.setattr(memory, 'now', lambda: '2026-10-04T11:59:59Z')
+        w = setup_graph(client, kind, '2026-10-04T12:00:00Z')
+        before = snapshot(client)
+        response = call(client, w)
+>       assert response.status_code == 409, response.text
+E       AssertionError: {"relation":{"id":"memrel_088b2a21398d4a95a081f6a071618fbc","bank_id":"membank_509fbe0ffb514745bf27fd89f2acbd7b","subject_entity_id":"mement_8e295129d120489394463f215c2a3a24","predicate":"depends_on","object_entity_id":"mement_a0e089c5abba49fbb5347d87546a6931","support_fact_id":"memfact_237f4d56d746437fb41a0c2ce2ea904b","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T11:59:59Z"},"deduplicated":false,"audit_id":"memaudit_a50ec9e7a3cb4f3e9ad91f93d30bdf29"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:210: AssertionError
+________ test_relation_rechecks_endpoint_source_time[subject_entity_id] ________
+
+client = <starlette.testclient.TestClient object at 0x10f897df0>
+endpoint = 'subject_entity_id'
+
+    @pytest.mark.parametrize('endpoint', ['subject_entity_id', 'object_entity_id'])
+    def test_relation_rechecks_endpoint_source_time(client, endpoint):
+        w = setup_graph(client, 'relation')
+        store = client.app.state.service.store
+        # Make the other endpoint independent so both checks are tested separately.
+        independent = post(client, w['path'].removesuffix('/relations') + '/entities', {
+            'canonical_name': 'Independent72', 'entity_type': 'system', 'aliases': [],
+            'support_fact_id': w['support']['facts'][0]['id']}, 'independent72')
+        other = 'object_entity_id' if endpoint == 'subject_entity_id' else 'subject_entity_id'
+        w['request'][other] = independent['entity']['id']
+        with store.transaction() as db:
+            record = json.loads(db.execute('SELECT doc FROM memory_sources WHERE id=?',
+                                          (w['endpoint']['source']['id'],)).fetchone()[0])
+            record['occurred_at'] = '2099-01-01T00:00:00Z'
+            db.execute('UPDATE memory_sources SET doc=? WHERE id=?', (dumps(record), record['id']))
+        before = snapshot(client)
+        result = call(client, w)
+>       assert result.status_code == 409, result.text
+E       AssertionError: {"relation":{"id":"memrel_b2b14cabea1d44adbb126bfb0ef4fbcb","bank_id":"membank_6b08755b3ff94825bf44bfa27cee8aab","subject_entity_id":"mement_a0d6047053ad483f8deeeb0f731cfe06","predicate":"depends_on","object_entity_id":"mement_5ad834211fab4fbbb3dcbbf8b61ac163","support_fact_id":"memfact_59878a4a84044ac1a32fd8b9510630e3","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:14:24.948312Z"},"deduplicated":false,"audit_id":"memaudit_e3a06fa388b14d2cb03a252c4c58533c"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:260: AssertionError
+________ test_relation_rechecks_endpoint_source_time[object_entity_id] _________
+
+client = <starlette.testclient.TestClient object at 0x10e8ccc00>
+endpoint = 'object_entity_id'
+
+    @pytest.mark.parametrize('endpoint', ['subject_entity_id', 'object_entity_id'])
+    def test_relation_rechecks_endpoint_source_time(client, endpoint):
+        w = setup_graph(client, 'relation')
+        store = client.app.state.service.store
+        # Make the other endpoint independent so both checks are tested separately.
+        independent = post(client, w['path'].removesuffix('/relations') + '/entities', {
+            'canonical_name': 'Independent72', 'entity_type': 'system', 'aliases': [],
+            'support_fact_id': w['support']['facts'][0]['id']}, 'independent72')
+        other = 'object_entity_id' if endpoint == 'subject_entity_id' else 'subject_entity_id'
+        w['request'][other] = independent['entity']['id']
+        with store.transaction() as db:
+            record = json.loads(db.execute('SELECT doc FROM memory_sources WHERE id=?',
+                                          (w['endpoint']['source']['id'],)).fetchone()[0])
+            record['occurred_at'] = '2099-01-01T00:00:00Z'
+            db.execute('UPDATE memory_sources SET doc=? WHERE id=?', (dumps(record), record['id']))
+        before = snapshot(client)
+        result = call(client, w)
+>       assert result.status_code == 409, result.text
+E       AssertionError: {"relation":{"id":"memrel_10278e65a9ed487daf975ee3f9dae96a","bank_id":"membank_816d6db161a341009bfcd52f11e5fb63","subject_entity_id":"mement_2c34549a7b394453b30df6db3eb27979","predicate":"depends_on","object_entity_id":"mement_6674a268683f469dbcfa4f8a3f31ddbf","support_fact_id":"memfact_a98b5be9564848f4af440f055656d571","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:14:24.995944Z"},"deduplicated":false,"audit_id":"memaudit_69ebca4706414b8c9e77bd337f5f0009"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:260: AssertionError
+_ test_graph_failure_rolls_back_after_object_write_and_same_key_retries[audit-entity] _
+
+client = <starlette.testclient.TestClient object at 0x10f2e3240>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10fe7c670>
+kind = 'entity', stage = 'audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+        w = setup_graph(client, kind)
+        plane = client.app.state.service.memory
+        original = plane._audit
+        if stage == 'audit':
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_INJECT72')
+            monkeypatch.setattr(plane, '_audit', fail)
+        else:
+            with plane.store.transaction() as db:
+                db.execute("CREATE TRIGGER graph72_fail BEFORE INSERT ON idempotency WHEN NEW.key='graph72' "
+                           "BEGIN SELECT RAISE(ABORT, 'PRIVATE_INJECT72'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        failed = call(client, w)
+        assert failed.status_code == 500
+        assert 'PRIVATE_INJECT72' not in failed.text
+        assert snapshot(client)[1] == before
+>       check_response(client, kind, failed, 500)
+
+tests/test_memory_graph_write_contracts.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f2e3240>, kind = 'entity'
+status = '500', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '500', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_ test_graph_failure_rolls_back_after_object_write_and_same_key_retries[audit-relation] _
+
+client = <starlette.testclient.TestClient object at 0x10f0998c0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10fb8c520>
+kind = 'relation', stage = 'audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+        w = setup_graph(client, kind)
+        plane = client.app.state.service.memory
+        original = plane._audit
+        if stage == 'audit':
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_INJECT72')
+            monkeypatch.setattr(plane, '_audit', fail)
+        else:
+            with plane.store.transaction() as db:
+                db.execute("CREATE TRIGGER graph72_fail BEFORE INSERT ON idempotency WHEN NEW.key='graph72' "
+                           "BEGIN SELECT RAISE(ABORT, 'PRIVATE_INJECT72'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        failed = call(client, w)
+        assert failed.status_code == 500
+        assert 'PRIVATE_INJECT72' not in failed.text
+        assert snapshot(client)[1] == before
+>       check_response(client, kind, failed, 500)
+
+tests/test_memory_graph_write_contracts.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f0998c0>, kind = 'relation'
+status = '500', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'relation', '500', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_ test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-entity] _
+
+client = <starlette.testclient.TestClient object at 0x10f68ff00>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f88dbe0>
+kind = 'entity', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+        w = setup_graph(client, kind)
+        plane = client.app.state.service.memory
+        original = plane._audit
+        if stage == 'audit':
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_INJECT72')
+            monkeypatch.setattr(plane, '_audit', fail)
+        else:
+            with plane.store.transaction() as db:
+                db.execute("CREATE TRIGGER graph72_fail BEFORE INSERT ON idempotency WHEN NEW.key='graph72' "
+                           "BEGIN SELECT RAISE(ABORT, 'PRIVATE_INJECT72'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        failed = call(client, w)
+        assert failed.status_code == 500
+        assert 'PRIVATE_INJECT72' not in failed.text
+        assert snapshot(client)[1] == before
+>       check_response(client, kind, failed, 500)
+
+tests/test_memory_graph_write_contracts.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f68ff00>, kind = 'entity'
+status = '500', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '500', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_ test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-relation] _
+
+client = <starlette.testclient.TestClient object at 0x10f099370>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f8fc750>
+kind = 'relation', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+        w = setup_graph(client, kind)
+        plane = client.app.state.service.memory
+        original = plane._audit
+        if stage == 'audit':
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_INJECT72')
+            monkeypatch.setattr(plane, '_audit', fail)
+        else:
+            with plane.store.transaction() as db:
+                db.execute("CREATE TRIGGER graph72_fail BEFORE INSERT ON idempotency WHEN NEW.key='graph72' "
+                           "BEGIN SELECT RAISE(ABORT, 'PRIVATE_INJECT72'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        failed = call(client, w)
+        assert failed.status_code == 500
+        assert 'PRIVATE_INJECT72' not in failed.text
+        assert snapshot(client)[1] == before
+>       check_response(client, kind, failed, 500)
+
+tests/test_memory_graph_write_contracts.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f099370>, kind = 'relation'
+status = '500', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'relation', '500', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+__________ test_historical_receipts_then_delete_then_restart[retract] __________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1251/test_historical_receipts_then_0')
+transition = 'retract'
+
+    @pytest.mark.parametrize('transition', ['retract', 'supersede'])
+    def test_historical_receipts_then_delete_then_restart(tmp_path, transition):
+        path = tmp_path / 'graph72.db'
+        with TestClient(create_app(path, False), base_url='http://127.0.0.1') as c:
+            w = world(c)
+            if transition == 'retract':
+                assert c.post('/api/local/memory/sources/' + w['source'] + ':retract', json={},
+                              headers={'Idempotency-Key': 'retract72'}).status_code == 200
+            else:
+                request = body('replacement72')
+                request['facts'][0]['supersedes_fact_id'] = w['receipts']['a']['facts'][0]['id']
+                post(c, w['base'] + '/retain', request, 'replace72')
+            before = snapshot(c)
+            for key in ['ea', 'ea-dedup', 'direct', 'direct-dedup']:
+                result = replay(c, w, key)
+                assert result.json() == w['receipts'][key]
+                check_response(c, 'entity' if key.startswith('ea') else 'relation', result, 201)
+            assert snapshot(c) == before
+            assert delete(c, w).status_code == 200
+        with TestClient(create_app(path, False), base_url='http://127.0.0.1') as c:
+            before = snapshot(c)
+            for key in ['ea', 'ea-dedup', 'direct', 'direct-dedup']:
+                result = replay(c, w, key)
+>               check_response(c, 'entity' if key.startswith('ea') else 'relation', result, 409)
+
+tests/test_memory_graph_write_contracts.py:316:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10f55ecf0>, kind = 'entity'
+status = '409', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '409', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+_________ test_historical_receipts_then_delete_then_restart[supersede] _________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1251/test_historical_receipts_then_1')
+transition = 'supersede'
+
+    @pytest.mark.parametrize('transition', ['retract', 'supersede'])
+    def test_historical_receipts_then_delete_then_restart(tmp_path, transition):
+        path = tmp_path / 'graph72.db'
+        with TestClient(create_app(path, False), base_url='http://127.0.0.1') as c:
+            w = world(c)
+            if transition == 'retract':
+                assert c.post('/api/local/memory/sources/' + w['source'] + ':retract', json={},
+                              headers={'Idempotency-Key': 'retract72'}).status_code == 200
+            else:
+                request = body('replacement72')
+                request['facts'][0]['supersedes_fact_id'] = w['receipts']['a']['facts'][0]['id']
+                post(c, w['base'] + '/retain', request, 'replace72')
+            before = snapshot(c)
+            for key in ['ea', 'ea-dedup', 'direct', 'direct-dedup']:
+                result = replay(c, w, key)
+                assert result.json() == w['receipts'][key]
+                check_response(c, 'entity' if key.startswith('ea') else 'relation', result, 201)
+            assert snapshot(c) == before
+            assert delete(c, w).status_code == 200
+        with TestClient(create_app(path, False), base_url='http://127.0.0.1') as c:
+            before = snapshot(c)
+            for key in ['ea', 'ea-dedup', 'direct', 'direct-dedup']:
+                result = replay(c, w, key)
+>               check_response(c, 'entity' if key.startswith('ea') else 'relation', result, 409)
+
+tests/test_memory_graph_write_contracts.py:316:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:63: in check_response
+    for v in validators(c, kind, str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e8bc050>, kind = 'entity'
+status = '409', request = False
+
+    def validators(c, kind, status='201', request=False):
+        sources, resources = {}, []
+        for stem in ['memory-graph', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            source = json.loads(file.read_text())
+            sources[stem] = source
+            resources.extend([(file.as_uri(), Resource.from_contents(source)),
+                              (source['$id'], Resource.from_contents(source))])
+        registry = Registry().with_resources(resources)
+        checks = []
+        for doc, path, base in documents(c, kind):
+            op = doc['paths'][path]['post']
+            if request:
+                response = op['requestBody']
+            else:
+                response = op['responses'].get(status, op['responses'].get('default', {}))
+                if '$ref' in response:
+                    response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            check = Draft202012Validator({**doc, **base, **schema}, registry=registry, format_checker=FORMATS)
+>           assert not check.is_valid({}), ('empty schema', kind, status, request)
+E           AssertionError: ('empty schema', 'entity', '409', False)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:53: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_write_contracts.py::test_success_contract_rejects_independent_bad_instances[new_null_audit-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_success_contract_rejects_independent_bad_instances[new_null_audit-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_success_contract_rejects_independent_bad_instances[dedup_audit-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_success_contract_rejects_independent_bad_instances[dedup_audit-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[404-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[404-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[409-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[409-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[415-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[415-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[422-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[422-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[500-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_actual_errors_follow_all_three_contracts[500-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_future_source_cannot_support_current_graph_write[entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_future_source_cannot_support_current_graph_write[relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_source_time_equality_and_same_key_after_rejection[entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_source_time_equality_and_same_key_after_rejection[relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_relation_rechecks_endpoint_source_time[subject_entity_id]
+FAILED tests/test_memory_graph_write_contracts.py::test_relation_rechecks_endpoint_source_time[object_entity_id]
+FAILED tests/test_memory_graph_write_contracts.py::test_graph_failure_rolls_back_after_object_write_and_same_key_retries[audit-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_graph_failure_rolls_back_after_object_write_and_same_key_retries[audit-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-relation]
+FAILED tests/test_memory_graph_write_contracts.py::test_historical_receipts_then_delete_then_restart[retract]
+FAILED tests/test_memory_graph_write_contracts.py::test_historical_receipts_then_delete_then_restart[supersede]
+26 failed, 16 passed, 1 warning in 6.03s

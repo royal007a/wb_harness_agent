@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_success_contract_rejects_independent_bad_instances[new_null_audit-relation] _
+
+client = <starlette.testclient.TestClient object at 0x10b44ee40>
+kind = 'relation', bad = 'new_null_audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('bad', ['new_null_audit', 'dedup_audit', 'missing_field', 'nested_extra'])
+    def test_success_contract_rejects_independent_bad_instances(client, kind, bad):
+        w = setup_graph(client, kind)
+        value = call(client, w).json()
+        if bad == 'new_null_audit':
+            value['audit_id'] = None
+        elif bad == 'dedup_audit':
+            value['deduplicated'] = True
+        elif bad == 'missing_field':
+            del value[kind]['support_fact_id']
+        else:
+            value[kind]['raw_content'] = 'NEVER'
+        for v in validators(client, kind):
+>           assert not v.is_valid(value), (kind, bad)
+E           AssertionError: ('relation', 'new_null_audit')
+E           assert not True
+E            +  where True = is_valid({'relation': {'id': 'memrel_de952fa8d01f47ac935331f91a6eb06f', 'bank_id': 'membank_ee32afd506104d9f87ff0aaee9c4f9a8', ...': 'mement_d14cc2b93f2c44e1b825b4ac2c586d2c', 'predicate': 'depends_on', ...}, 'deduplicated': False, 'audit_id': None})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_memory_graph_write_contracts.py:137: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_write_contracts.py::test_success_contract_rejects_independent_bad_instances[new_null_audit-relation]
+1 failed, 41 deselected, 1 warning in 0.37s

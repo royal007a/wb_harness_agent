@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.409" timestamp="2026-10-04T09:20:50.895776+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_graph_failure_rolls_back_after_object_write_and_same_key_retries[case_sha256=f9e4de11a2cb0f72e1c38dfdc558d72d87d6e541f0b6fa36741a22d78b2f064a]" time="0.118"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_46a2b39384684afdb5bb8a4359335d68&quot;}}&#10;assert 500 == 201&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x1095cacf0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1090b23f0&gt;
+kind = 'entity', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+&gt;       w = setup_graph(client, kind)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_graph_write_contracts.py:273:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:75: in setup_graph
+    bank = post_bank(c, 'graph72', 'bank72')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = &lt;starlette.testclient.TestClient object at 0x1095cacf0&gt;
+name = 'graph72', key = 'bank72'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+&gt;       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_46a2b39384684afdb5bb8a4359335d68"}}
+E       assert 500 == 201
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_read_surfaces.py:55: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_graph_failure_rolls_back_after_object_write_and_same_key_retries[case_sha256=cf245ad5a22b560c0f8c8130593a91058afce9e68cb7c09c612c5bf2d7c19284]" time="0.046"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_689d4dcc04d44404a25dfa623ff47c08&quot;}}&#10;assert 500 == 201&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b0b9310&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10942b100&gt;
+kind = 'relation', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+&gt;       w = setup_graph(client, kind)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_graph_write_contracts.py:273:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:75: in setup_graph
+    bank = post_bank(c, 'graph72', 'bank72')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = &lt;starlette.testclient.TestClient object at 0x10b0b9310&gt;
+name = 'graph72', key = 'bank72'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+&gt;       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_689d4dcc04d44404a25dfa623ff47c08"}}
+E       assert 500 == 201
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_read_surfaces.py:55: AssertionError</failure></testcase></testsuite></testsuites>

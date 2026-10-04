@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.519" timestamp="2026-10-04T09:20:51.806028+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_invalid_support_fails_without_receipt[case_sha256=c495a3081b7a9eff3c99302398a7c7dc7d84b876e69191e31c7df45f19ad0991]" time="0.164"><failure message="AssertionError: {&quot;entity&quot;:{&quot;id&quot;:&quot;mement_ecd04e28ec46440cae2f5bdc9809114f&quot;,&quot;bank_id&quot;:&quot;membank_4a4f28d524d94200a083b771c8c3f796&quot;,&quot;canonical_name&quot;:&quot;C72&quot;,&quot;entity_type&quot;:&quot;system&quot;,&quot;aliases&quot;:[&quot;alias-C72&quot;],&quot;support_fact_id&quot;:&quot;memfact_e5f7df93f5fa4b61949c42f3122de90d&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T01:20:52.206132Z&quot;},&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_88508bc0cf124610be52440c19fc9dd8&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d98acf0&gt;
+kind = 'entity', mode = 'expired_source'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('mode', ['expired_source', 'future_fact', 'retracted', 'cross_bank'])
+    def test_invalid_support_fails_without_receipt(client, kind, mode):
+        w = setup_graph(client, kind)
+        store = client.app.state.service.store
+        if mode in {'expired_source', 'future_fact'}:
+            table, item, field, value = ('memory_sources', w['support']['source'], 'expires_at', '2000-01-01T00:00:00Z') if mode == 'expired_source' else (
+                'memory_facts', w['support']['facts'][0], 'occurred_at', '2099-01-01T00:00:00Z')
+            with store.transaction() as db:
+                record = json.loads(db.execute('SELECT doc FROM ' + table + ' WHERE id=?', (item['id'],)).fetchone()[0])
+                record[field] = value
+                db.execute('UPDATE ' + table + ' SET doc=? WHERE id=?', (dumps(record), item['id']))
+        elif mode == 'retracted':
+            assert client.post('/api/local/memory/sources/' + w['support']['source']['id'] + ':retract',
+                               json={}, headers={'Idempotency-Key': 'retract72'}).status_code == 200
+        else:
+            other = post_bank(client, 'other72', 'other72')
+            external = post(client, '/api/local/memory/banks/' + other['id'] + '/retain', body('foreign72'), 'foreign72')
+            w['request']['support_fact_id'] = external['facts'][0]['id']
+        before = snapshot(client)
+        response = call(client, w)
+&gt;       assert response.status_code == (404 if mode == 'cross_bank' else 409), response.text
+E       AssertionError: {"entity":{"id":"mement_ecd04e28ec46440cae2f5bdc9809114f","bank_id":"membank_4a4f28d524d94200a083b771c8c3f796","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_e5f7df93f5fa4b61949c42f3122de90d","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:20:52.206132Z"},"deduplicated":false,"audit_id":"memaudit_88508bc0cf124610be52440c19fc9dd8"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_graph_write_contracts.py:245: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_invalid_support_fails_without_receipt[case_sha256=f69af596ee05394ec6657a7bf782cff982b9d87b75cdbc8f6809481d11cc26de]" time="0.068"><failure message="AssertionError: {&quot;relation&quot;:{&quot;id&quot;:&quot;memrel_fd7077e1000842e0b2b854aa56649e43&quot;,&quot;bank_id&quot;:&quot;membank_9335bc13364342ef9fe465dcd439e089&quot;,&quot;subject_entity_id&quot;:&quot;mement_02e4fa51d85343deb90f1b29b60f9ba5&quot;,&quot;predicate&quot;:&quot;depends_on&quot;,&quot;object_entity_id&quot;:&quot;mement_59de612e99df42afa5005546438ab8af&quot;,&quot;support_fact_id&quot;:&quot;memfact_70ff4d3bb2134beaae5d035d490971dc&quot;,&quot;confidence&quot;:0.9,&quot;occurred_at&quot;:&quot;2026-01-01T00:00:00Z&quot;,&quot;valid_from&quot;:null,&quot;valid_to&quot;:null,&quot;status&quot;:&quot;active&quot;,&quot;recorded_at&quot;:&quot;2026-10-04T01:20:52.316039Z&quot;},&quot;deduplicated&quot;:false,&quot;audit_id&quot;:&quot;memaudit_0d22a35f7307492c98f5e5025222c329&quot;}&#10;assert 201 == 409&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10f4a8a50&gt;
+kind = 'relation', mode = 'expired_source'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('mode', ['expired_source', 'future_fact', 'retracted', 'cross_bank'])
+    def test_invalid_support_fails_without_receipt(client, kind, mode):
+        w = setup_graph(client, kind)
+        store = client.app.state.service.store
+        if mode in {'expired_source', 'future_fact'}:
+            table, item, field, value = ('memory_sources', w['support']['source'], 'expires_at', '2000-01-01T00:00:00Z') if mode == 'expired_source' else (
+                'memory_facts', w['support']['facts'][0], 'occurred_at', '2099-01-01T00:00:00Z')
+            with store.transaction() as db:
+                record = json.loads(db.execute('SELECT doc FROM ' + table + ' WHERE id=?', (item['id'],)).fetchone()[0])
+                record[field] = value
+                db.execute('UPDATE ' + table + ' SET doc=? WHERE id=?', (dumps(record), item['id']))
+        elif mode == 'retracted':
+            assert client.post('/api/local/memory/sources/' + w['support']['source']['id'] + ':retract',
+                               json={}, headers={'Idempotency-Key': 'retract72'}).status_code == 200
+        else:
+            other = post_bank(client, 'other72', 'other72')
+            external = post(client, '/api/local/memory/banks/' + other['id'] + '/retain', body('foreign72'), 'foreign72')
+            w['request']['support_fact_id'] = external['facts'][0]['id']
+        before = snapshot(client)
+        response = call(client, w)
+&gt;       assert response.status_code == (404 if mode == 'cross_bank' else 409), response.text
+E       AssertionError: {"relation":{"id":"memrel_fd7077e1000842e0b2b854aa56649e43","bank_id":"membank_9335bc13364342ef9fe465dcd439e089","subject_entity_id":"mement_02e4fa51d85343deb90f1b29b60f9ba5","predicate":"depends_on","object_entity_id":"mement_59de612e99df42afa5005546438ab8af","support_fact_id":"memfact_70ff4d3bb2134beaae5d035d490971dc","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:20:52.316039Z"},"deduplicated":false,"audit_id":"memaudit_0d22a35f7307492c98f5e5025222c329"}
+E       assert 201 == 409
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_memory_graph_write_contracts.py:245: AssertionError</failure></testcase></testsuite></testsuites>

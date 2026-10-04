@@ -1,0 +1,6 @@
+ERROR: file or directory not found: tests/test_memory_temporal_read.py
+
+
+HTTP observations (not acceptance): {"total": 148, "observed": 0, "not_observed": 148}
+
+no tests ran in 0.09s

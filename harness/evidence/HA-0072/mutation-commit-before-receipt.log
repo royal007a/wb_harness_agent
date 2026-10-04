@@ -1,0 +1,74 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-entity] _
+
+client = <starlette.testclient.TestClient object at 0x10d1aacf0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cc923f0>
+kind = 'entity', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+>       w = setup_graph(client, kind)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_graph_write_contracts.py:267:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:69: in setup_graph
+    bank = post_bank(c, 'graph72', 'bank72')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x10d1aacf0>
+name = 'graph72', key = 'bank72'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_605d1d75de814d7c9f0b4116e5d75593"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_read_surfaces.py:55: AssertionError
+_ test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-relation] _
+
+client = <starlette.testclient.TestClient object at 0x10ec89310>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d00b100>
+kind = 'relation', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+>       w = setup_graph(client, kind)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_graph_write_contracts.py:267:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_memory_graph_write_contracts.py:69: in setup_graph
+    bank = post_bank(c, 'graph72', 'bank72')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x10ec89310>
+name = 'graph72', key = 'bank72'
+
+    def post_bank(client, name, key):
+        body = {'name': name, 'scope': 'project', 'data_classification': 'Internal', 'retention_days': 90}
+        response = client.post('/api/local/memory/banks', json=body, headers={'Idempotency-Key': key})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_5ec300222bd9404b8477e249aaf90609"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_read_surfaces.py:55: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_write_contracts.py::test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-relation]
+2 failed, 40 deselected, 1 warning in 0.35s

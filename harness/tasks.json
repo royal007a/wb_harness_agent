@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-04T00:58:09Z",
+  "generated_at": "2026-10-04T01:25:00Z",
   "tasks": [
+    {
+      "id": "HA-0072",
+      "title": "Memory图写入合同与支撑来源时间边界",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Entity/Relation写入三套HTTP合同", "支撑Source时间一致性", "回放、生命周期、事务反例和定向突变"],
+      "non_goals": ["自动抽取或图推理", "FTS影子擦除及认证", "绕过本机部署132"],
+      "acceptance": ["三套Schema覆盖正负分支与公开错误", "当前无效支撑拒绝且失败不半写", "固定基线行为反例、突变及全量verify", "固定提交独立review和双部署证据"],
+      "depends_on": ["HA-0070", "HA-0071"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0072-memory-graph-write-contracts.md",
+      "blocked_reason": "新42/相关242、基线26行为反例与14有效突变；全量1370/16、verify退出0。待固定提交独立review与兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交Approved；本机拓扑批准后先8765再132验收。",
+      "evidence": ["harness/evidence/HA-0072/acceptance.md", "harness/evidence/HA-0072/mutation-plan.json", "harness/evidence/HA-0072/mutation-results-final.json"]
+    },
     {
       "id": "HA-0071",
       "title": "FTS缺模块的M1写入降级与数据库故障传播",

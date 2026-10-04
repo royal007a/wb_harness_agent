@@ -12,3 +12,12 @@ known start_entity_id → status/time/Bank filters → at most two hops → evid
 ```
 
 此路径不会：读取原始 Source 正文、自动解析聊天/PDF/文件、按名称模糊查人、调用模型或 embedding、访问网络、写 Product Task/Run，或把无路径解释为“没有影响”。Source retract/supersede 会使依赖证据失效；delete 会清理仅由已删 Fact 支撑的派生 Entity/Relation。它仍不是完整图数据库、Hindsight 集成、实体消歧或 Reflect。
+
+HA-0072补充图写入合同：Entity/Relation两个POST保持201；新key要求当前有效的
+同Bank支撑Fact与Source（包含Source.occurred_at不能在未来），Relation还重查
+两端Entity及其支撑。成功去重的audit_id为null，新建为memaudit引用。公开错误
+统一local_http_error；请求与幂等键1..128的既有约束保留。
+
+同key返回历史收据不是当前有效性声明：retract/supersede后canonical仍存在时
+可读原active视图；delete清除依赖后旧key409且不会重新执行。测试规格见
+specs/testing/MEMORY_GRAPH_WRITE_CONTRACTS.md，证据见HA-0072；不是部署证明。

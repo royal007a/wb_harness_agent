@@ -121,6 +121,8 @@ def bind_memory_write_responses(document):
     """Current M1 historical receipts; no change to execution or deletion scope."""
     for path, method, status, definition in (
         ('/api/local/memory/banks/{bank_id}/retain', 'post', '201', 'local_http_memory_retained'),
+        ('/api/local/memory/banks/{bank_id}/entities', 'post', '201', 'entity_create_result'),
+        ('/api/local/memory/banks/{bank_id}/relations', 'post', '201', 'relation_create_result'),
         ('/api/local/memory/sources/{source_id}:retract', 'post', '200', 'local_http_memory_retracted'),
         ('/api/local/memory/sources/{source_id}', 'delete', '200', 'local_http_memory_deleted'),
     ):

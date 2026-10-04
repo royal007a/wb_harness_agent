@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.388" timestamp="2026-10-04T09:20:59.818541+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_success_contract_rejects_independent_bad_instances[case_sha256=807c5eb67a52f8912cd4152b92b6d9255fb0619bb7fc3a116f2b37b286755d25]" time="0.195"><failure message="AssertionError: ('entity', 'new_null_audit')&#10;assert not True&#10; +  where True = is_valid({'entity': {'id': 'mement_35b10c8253d74670a1488587ed958eda', 'bank_id': 'membank_e836f2476b4c414b9bfbf7668fc63889', 'canonical_name': 'C72', 'entity_type': 'system', ...}, 'deduplicated': False, 'audit_id': None})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10966ee40&gt;
+kind = 'entity', bad = 'new_null_audit'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('bad', ['new_null_audit', 'dedup_audit', 'missing_field', 'nested_extra'])
+    def test_success_contract_rejects_independent_bad_instances(client, kind, bad):
+        w = setup_graph(client, kind)
+        value = call(client, w).json()
+        if bad == 'new_null_audit':
+            value['audit_id'] = None
+        elif bad == 'dedup_audit':
+            value['deduplicated'] = True
+        elif bad == 'missing_field':
+            del value[kind]['support_fact_id']
+        else:
+            value[kind]['raw_content'] = 'NEVER'
+        for v in validators(client, kind):
+&gt;           assert not v.is_valid(value), (kind, bad)
+E           AssertionError: ('entity', 'new_null_audit')
+E           assert not True
+E            +  where True = is_valid({'entity': {'id': 'mement_35b10c8253d74670a1488587ed958eda', 'bank_id': 'membank_e836f2476b4c414b9bfbf7668fc63889', 'canonical_name': 'C72', 'entity_type': 'system', ...}, 'deduplicated': False, 'audit_id': None})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...create_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_memory_graph_write_contracts.py:143: AssertionError</failure></testcase></testsuite></testsuites>

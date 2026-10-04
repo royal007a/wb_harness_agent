@@ -343,7 +343,7 @@ paths:
               schema:
                 $ref: './memory-graph.schema.json#/$defs/entity_create_result'
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/memory/banks/{bankId}/relations:
     servers:
       - url: /api
@@ -371,7 +371,7 @@ paths:
               schema:
                 $ref: './memory-graph.schema.json#/$defs/relation_create_result'
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/memory/banks/{bankId}:recall:
     servers:
       - url: /api

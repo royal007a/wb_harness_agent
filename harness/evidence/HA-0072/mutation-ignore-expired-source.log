@@ -1,0 +1,76 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+______ test_invalid_support_fails_without_receipt[expired_source-entity] _______
+
+client = <starlette.testclient.TestClient object at 0x1096f2cf0>
+kind = 'entity', mode = 'expired_source'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('mode', ['expired_source', 'future_fact', 'retracted', 'cross_bank'])
+    def test_invalid_support_fails_without_receipt(client, kind, mode):
+        w = setup_graph(client, kind)
+        store = client.app.state.service.store
+        if mode in {'expired_source', 'future_fact'}:
+            table, item, field, value = ('memory_sources', w['support']['source'], 'expires_at', '2000-01-01T00:00:00Z') if mode == 'expired_source' else (
+                'memory_facts', w['support']['facts'][0], 'occurred_at', '2099-01-01T00:00:00Z')
+            with store.transaction() as db:
+                record = json.loads(db.execute('SELECT doc FROM ' + table + ' WHERE id=?', (item['id'],)).fetchone()[0])
+                record[field] = value
+                db.execute('UPDATE ' + table + ' SET doc=? WHERE id=?', (dumps(record), item['id']))
+        elif mode == 'retracted':
+            assert client.post('/api/local/memory/sources/' + w['support']['source']['id'] + ':retract',
+                               json={}, headers={'Idempotency-Key': 'retract72'}).status_code == 200
+        else:
+            other = post_bank(client, 'other72', 'other72')
+            external = post(client, '/api/local/memory/banks/' + other['id'] + '/retain', body('foreign72'), 'foreign72')
+            w['request']['support_fact_id'] = external['facts'][0]['id']
+        before = snapshot(client)
+        response = call(client, w)
+>       assert response.status_code == (404 if mode == 'cross_bank' else 409), response.text
+E       AssertionError: {"entity":{"id":"mement_a3a38020fd0b4fa7bf2a31b7fa34e410","bank_id":"membank_f88bb06dcf2844c5b049ac14721e8f62","canonical_name":"C72","entity_type":"system","aliases":["alias-C72"],"support_fact_id":"memfact_e86c105e2ed540faac6691bfc4e2f5b6","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:16:15.749045Z"},"deduplicated":false,"audit_id":"memaudit_2963fcdd7d674d31b3d38b7bdf0d794c"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:239: AssertionError
+_____ test_invalid_support_fails_without_receipt[expired_source-relation] ______
+
+client = <starlette.testclient.TestClient object at 0x10b210a50>
+kind = 'relation', mode = 'expired_source'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('mode', ['expired_source', 'future_fact', 'retracted', 'cross_bank'])
+    def test_invalid_support_fails_without_receipt(client, kind, mode):
+        w = setup_graph(client, kind)
+        store = client.app.state.service.store
+        if mode in {'expired_source', 'future_fact'}:
+            table, item, field, value = ('memory_sources', w['support']['source'], 'expires_at', '2000-01-01T00:00:00Z') if mode == 'expired_source' else (
+                'memory_facts', w['support']['facts'][0], 'occurred_at', '2099-01-01T00:00:00Z')
+            with store.transaction() as db:
+                record = json.loads(db.execute('SELECT doc FROM ' + table + ' WHERE id=?', (item['id'],)).fetchone()[0])
+                record[field] = value
+                db.execute('UPDATE ' + table + ' SET doc=? WHERE id=?', (dumps(record), item['id']))
+        elif mode == 'retracted':
+            assert client.post('/api/local/memory/sources/' + w['support']['source']['id'] + ':retract',
+                               json={}, headers={'Idempotency-Key': 'retract72'}).status_code == 200
+        else:
+            other = post_bank(client, 'other72', 'other72')
+            external = post(client, '/api/local/memory/banks/' + other['id'] + '/retain', body('foreign72'), 'foreign72')
+            w['request']['support_fact_id'] = external['facts'][0]['id']
+        before = snapshot(client)
+        response = call(client, w)
+>       assert response.status_code == (404 if mode == 'cross_bank' else 409), response.text
+E       AssertionError: {"relation":{"id":"memrel_556b89a58a6346dfa721fb29a40329cf","bank_id":"membank_5f24eaab573c43668f2ad91842215c8b","subject_entity_id":"mement_e34249541f8d4f05a4959abf2fabbad6","predicate":"depends_on","object_entity_id":"mement_45f1202b59394e38b1d0c050e309bff2","support_fact_id":"memfact_7d7a4e4c6f674ca6a012dece93ab1f79","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","valid_from":null,"valid_to":null,"status":"active","recorded_at":"2026-10-04T01:16:15.814182Z"},"deduplicated":false,"audit_id":"memaudit_5bb62eda33fe46a0bc79ced548864dc8"}
+E       assert 201 == 409
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_memory_graph_write_contracts.py:239: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_write_contracts.py::test_invalid_support_fails_without_receipt[expired_source-entity]
+FAILED tests/test_memory_graph_write_contracts.py::test_invalid_support_fails_without_receipt[expired_source-relation]
+2 failed, 40 deselected, 1 warning in 0.37s
