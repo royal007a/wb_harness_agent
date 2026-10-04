@@ -2,7 +2,7 @@
 
 业务基线5241fe4；d65cd06只登记HA72复审/补跑证据，不改业务。候选由包含本文件
 的提交固定；d2e0538独立review为Changes Requested，见review.md及下文返工。
-尚待返工复审与双部署。规格EXTERNAL_SKILL_HTTP_CONTRACTS.md、
+返工9cfc351已获独立Approved，仍待双部署。规格EXTERNAL_SKILL_HTTP_CONTRACTS.md、
 ADR-0073；目标是现有四入口，不接Agent Loop或Product Run。
 
 ## 实现

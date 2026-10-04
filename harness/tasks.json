@@ -1,6 +1,6 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-04T02:16:00Z",
+  "generated_at": "2026-10-04T02:20:00Z",
   "tasks": [
     {
       "id": "HA-0073",
@@ -13,8 +13,8 @@
       "depends_on": ["HA-0052", "HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0073-external-skill-http-contracts.md",
-      "blocked_reason": "d2e0538独立Changes Requested：UTF-8文件名构造期500。返工窄捕获UnicodeDecodeError；旧2行为反例、新60/相关200通过，verify退出0全量1430/16。待固定提交复审与兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交Approved；兼容本机拓扑批准后先8765再132验收。",
+      "blocked_reason": "9cfc351独立Approved；UTF-8文件名遗漏修复，60新/200相关与全量1430/16通过。仍待兼容本机拓扑后的双部署，未把代码批准当发布验收。",
+      "recovery_condition": "兼容本机拓扑批准后先8765再132验收。",
       "evidence": ["harness/evidence/HA-0073/acceptance.md", "harness/evidence/HA-0073/mutation-plan.json", "harness/evidence/HA-0073/mutation-results-release.json", "harness/evidence/HA-0073/remaining-empty-responses.json", "harness/evidence/HA-0073/review.md"]
     },
     {
@@ -315,7 +315,7 @@
       "plan": "exec-plans/completed/HA-0053-system-verification.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": ["harness/evidence/HA-0053/acceptance.md"]
+      "evidence": ["harness/evidence/HA-0053/acceptance.md", "harness/evidence/HA-0053/12h-completion-audit.md"]
     },
     {
       "id": "HA-0052",

@@ -22,3 +22,10 @@ struct.error形态未验证，不笼统捕获所有异常为422。
 其余9项通过。随后只在ZIP解析段增加UnicodeDecodeError捕获；其他构造器
 ValueError/RuntimeError/MemoryError/EOFError/NotImplementedError仍为500。
 证据见filename-before、filename-targeted、filename-verify；新候选待固定提交复审。
+
+## 返工复审：Approved
+
+2026-10-04 02:19 UTC收到mymacclaude对9cfc351的Approved。独立worktree只读，
+新60项通过、测试SHA一致；恢复旧生产代码后2 failed/58 passed，放宽捕获为
+ValueError/RuntimeError后3 failed。两个文件名反例和意外错误保护均有效。
+未复跑1430全量或verify，未测其他Python版本、真实容器与双部署；不扩展批准范围。
