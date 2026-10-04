@@ -1,6 +1,6 @@
 # 课程对照：已实现、未贯通与下一步缺口
 
-日期：2026-10-04。审计基线：HarnessAgent `31a1877`；独立项目 `pi-contract-review` `21f9451`（实现修复 `8242f86`）。本报告待 mymacclaude 独立 review。
+日期：2026-10-04。审计基线：HarnessAgent `31a1877`；独立项目 `pi-contract-review` `21f9451`（实现修复 `8242f86`）。初版报告 `01c1361` 经 mymacclaude review 为 Changes Requested；下文已按源码核对修订，待文档差异复审。
 
 ## 结论先行
 
@@ -25,15 +25,15 @@
 |---|---|---|
 | 00–03：目录、定位、直播 | 总体主题；不把直播效率宣传作为基准 | 控制面定位已明确，仍需完整业务纵切 |
 | 04–06：CodeAct、自定义工具/MCP、多 Agent | 文件 04 第 9–11 页；05 第 4、7–9 页；06 第 2–4 页 | 固定 CSV 产品链路 + Scripted CodeAgent 沙箱探针；非真实模型驱动的 CodeAct 产品 |
-| 07–10：Claude Loop、Skills、投研 SubAgent | 文件 08 的 Loop、两份 09 的 Skill、10 的分工章节 | Native SDK/MCP/SubAgent 代码存在；默认未准入；演示仍为模拟 |
+| 07–10：Claude Loop、Skills、投研 SubAgent | 文件 08 的 Loop、两份 09 的 Skill、10 的分工章节 | Native SDK/MCP/SubAgent 代码存在；默认未准入；三角色 Skill 不等于课程七项研报 Skill/scripts 链 |
 | 11：Session / Fork | PDF 第 1、3、5 页 | 聊天历史和 metadata Handoff 存在；SDK resume/fork 产品链路未实现 |
 | 12：Hooks | PDF 第 2、6–7 页 | 有各适配器权限拦截和事件映射；无统一的跨会话模式 Hook 治理闭环 |
 | 13：OTel / 成本 | PDF 第 2、9–10 页 | 有持久 Event / 部分 SDK usage；无已接通的 OTLP 全链路和统一费用账 |
 | 14：Deepagents / 旧项目升级 | PDF 第 3–6 页 | 设计映射与可选框架路线，不是已接入的 Deepagents Backend/Middleware |
 | 15–16：LLM-Wiki | 文件 15 第 3–5 页；16 第 2–3 页 | Source/Fact/Graph 已有；Wiki 编译、index/log 自动维护仍 Proposed |
 | 17–18：Pi Runtime、工具、结构化输出 | 文件 17 第 2–4 页及文件 18 解析/输出章节 | Pi core 真实循环 + Faux Provider；本平台不是完整业务审查 SDK |
-| 19–20：长合同 Skill、拦截管道 | 文件 19 第 2–5 页；20 第 2–4 页及流程图 | 本地切分/敏感检查、沙箱边界已有；真实语义流水线主要在独立仓库 |
-| 21–22：Web / TUI | Web/TUI 组件与事件章节 | 本平台已有 Web/SSE；独立仓库已有业务 Web/TUI；不要求照搬组件库 |
+| 19–20：长合同 Skill、拦截管道 | 文件 19 第 2–5 页；20 第 2–4 页及流程图 | 本地切分/敏感检查、沙箱边界已有；独立 PiSecurityGuard 检查 API 未接入 Pi 循环；真实语义流水线主要在独立仓库 |
+| 21–22：Web / TUI | Web/TUI 组件与事件章节 | 本平台已有 Web/SSE，终端仅 metadata 事件文本渲染；独立仓库已有交互业务 Web/TUI；不要求照搬组件库 |
 | 23：DeepSeek Harness 加餐 | 插件、Profile、生命周期与课程预览定位 | 可选研究项，不应为凑齐框架数量而接入 |
 | 24–25：结语、测试介绍 | 非实现规格 | 不计功能缺口；没有完整考试题，不评分 |
 
@@ -59,6 +59,10 @@
 
 下一步不是重写三角色，而是准备完整准入包后跑有界集成验收。课程的外部搜索/金融 API 不是现成授权；不能拿模拟结果代替真实来源。不要和 G1 同时大规模铺开，先选择一条业务纵切。
 
+另一个不能被“已有三角色”掩盖的缺口是**研报 Skill/scripts 业务链**。文件 09（标题第 07 讲）的 Skill 表列出七项：竞争对手研究、财务数据采集、财务比率计算、财务图表、估值建模、写作规范、研报组装；采集示例还带 `scripts/collect_financial_data.py`。本平台 `plugins/research-skills/skills/` 只有 `financial-analysis`、`industry-analysis`、`risk-review` 三份 SKILL.md，没有该插件下的 scripts 链。财务 Skill 已规定指标来源、单位和公式，但这不等于已实现可执行的采集→回算→图表→组装全链；`tech-debt-tracker.md` 的 TD-019 仍登记真实金融输入与完备性评测缺口。
+
+后续应按实际范围验收数据时效/引用、指标回算、图表与报告的输入版本绑定，不以 Skill 数量为目标。课程中的估值/预测属于与课程的差异，**不自动纳入当前禁止投资建议/价格预测的产品范围**，如要扩展应另行确认。
+
 ### G3 / P1：Session 历史、业务 Checkpoint 不等于 SDK Resume / Fork
 
 课程文件 11 展示在同一历史上继续，以及派生互不污染的分析分支。
@@ -71,7 +75,11 @@
 
 ### G4 / P1：缺统一的 Hook / 工具治理桥接，不是完全没有护栏
 
-已有：Claude `can_use_tool` 白名单、MCP 来源策略；Pi `beforeToolCall`；独立 Skill 沙箱；交付 Gate。课程文件 12 第 6–7 页强调 fresh/resume/fork 复用策略，文件 20 是多层工具拦截。
+已有：Claude `can_use_tool` 白名单、MCP 来源策略；独立 Skill 沙箱；交付 Gate。Pi `beforeToolCall`（`pi-adapter/src/sidecar.mjs:76`）只准入 `evidence_locate + clause-12.3` 这个固定组合，是 Faux 场景的硬编码单项检查，**不是课程文件 20 所述的多层规则管道**。
+
+`backend/pi_security_guard.py` 提供 metadata-only 策略评估，检查工具、敏感内容、路径、域名和预算。它由 `backend/service.py:95` 构造，只经 `backend/app.py:680` 的独立 POST API 调用；当前 sidecar 和运行循环没有调用这套规则。因此不能声称“Pi 循环已有多层护栏，只差统一”。本平台这套 Pi 护栏还未实现课程中的危险命令检测规则与 LLM 二次确认；不开放 Bash/限制工具与执行沙箱是另外的安全边界，不等于实现了这两项规则。
+
+课程文件 12 第 6–7 页强调 fresh/resume/fork 复用策略，文件 20 的关键则是规则实际处于循环的工具调用前，而不只是提供一个可单独测试的检查接口。
 
 缺口：将工具调用前检查、参数摘要、逐项人工审批、结果脱敏、失败/取消、子 Agent 起止、会话收尾，统一关联 Run/Step/call_id；建立覆盖内部续轮与辅助模型调用的测试。`include_hook_events=True` 只是请求接收事件，不等于已经注册完整 Hook 管道。
 
@@ -103,7 +111,7 @@ Gate 是交付验收，不等于工具执行前审批；Hook 也不能代替 OS/
 
 缺口：检索控制器调用真实受准入 retriever、逐轮写状态并核对预算、把证据交回业务 Agent。目前生产 backend 中这些 helper 的引用只在自身模块；`AGENTIC_RAG_ADAPTATION.md` 也明确控制器/缓存/自主路由未实现。不能把独立函数校验称为已上线 Agentic RAG。
 
-本轮重跑 `harness/adaptive_chunk_evaluation.py`：2 个调参 + 2 个合成留出；留出 fixed Recall@1=0，adaptive=1，父扩展指标=1。数字可复现，但排序使用标注词的子串命中，留出 adaptive 各只有 1 个子块；这是切分边界演示，不是独立自然语言查询集，更不能证明泛化提升。
+本轮重跑 `harness/adaptive_chunk_evaluation.py`：2 个调参 + 2 个合成留出；留出 fixed Recall@1=0，adaptive=1，父扩展指标=1。数字可复现，但排序使用标注词的 `count`（第 20、29、34 行），而两个留出样本的 adaptive 都仅有 1 个子块且包含全部标注词。**在这两个现有留出样本上，adaptive Recall@1=1 是恒真的，无法区分排序优劣，不能作为检索质量证据。** “一个候选”本身并非对任意样本都保证有答案，这里的恒真来自当前夹具同时满足“唯一候选包含全部标注词”。它最多演示这两段文本的切分保留情况，不是独立自然语言查询集，不能证明泛化提升。
 
 验收建议：固定 Query/文档/相关性标注，调参和留出隔离；加入多父块、表格、跨条款、矛盾和无答案；比较固定/结构切分、单路/融合、无/有父聚合；报告 Recall@K、证据覆盖/重复、首个有用结果时间、端到端延迟和预算。语义/API 路由和缓存仍保持既有禁用边界。
 
@@ -123,6 +131,13 @@ Gate 是交付验收，不等于工具执行前审批；Hook 也不能代替 OS/
 ### G9 / P2：课程能力清单与当前状态文档需要同步
 
 `docs/research/PI_CONTRACT_COURSE_17_22.md:31` 将 Pi Node sidecar 列为本切片不实现的内容，属于早期切片描述，不能再作为整个仓库当前状态；`FRAMEWORK_INTEGRATION.md:68` 与实际 sidecar 已说明后续实现。
+
+另外两处需要登记的对照歧义：
+
+- **框架目录、引擎列表和路线文档覆盖不一致**：`backend/framework_catalog.py:19` 的目录只有 Pi、Claude Agent SDK、LangChain、LangGraph；`docs/harness/FRAMEWORK_INTEGRATION.md:1,26` 的四类路线则是 Smolagents、Claude、Deepagents、Pi，并以 Smolagents 为 P0；`backend/app.py:132,134` 的引擎列表还列有 Smolagents（blocked）与 Deepagents（planned）。框架、组件生态和具体引擎不必一一对应，但当前缺少明确覆盖范围与映射，不能把 `/frameworks` 当作完整路线清单，也不能据其未登记推断没有适配代码。本轮只登记，未改目录 API。
+- **课号/文件号混用**：`docs/research/PI_CONTRACT_COURSE_17_22.md:17` 的“课程 16–18”在该文按文件编号引用的语境里错位：文件 16 是 LLM-Wiki。这里应明确写为“文件 17–19（标题第 15–17 讲）的无模型预览适配”；同文的 19/21/22 也宜统一标注为文件号，不能混用为标题课号。本轮记录该歧义，不改写早期交付历史或扩大其实现声明。
+
+TUI 现状也应直说：`harness/pi_contract_tui.py` 的 56 行程序读取 JSONL 并渲染/打印 metadata 事件，没有交互输入组件或 pi-tui 的自绘业务界面。它不能算课程的完整交互 TUI；独立仓库已有的业务 TUI 单列于 G8。
 
 建议每项能力维护“设计/离线组件/产品接入/真实验收/部署”五列和固定版本证据；功能测试数、API Schema 完整度、开发过程 review 通过，不是课程业务交付覆盖率。不要给出无依据的“课程完成 90%”。
 
@@ -156,11 +171,13 @@ Gate 是交付验收，不等于工具执行前审批；Hook 也不能代替 OS/
 
 81 是框架目录、协议、检索函数/状态的定向测试总数，不是业务验收率。测试使用已有离线夹具，没有请求真实 Provider，没有运行真实容器或发布，没有扫描全部 1430 项，也没新做安全突变。本报告只新增研究文档，不改业务代码、准入档案、正式 DB、部署配置或现有任务状态。
 
+本次文档返工重新检查了 Pi 护栏调用点、固定 `beforeToolCall`、插件文件树、TD-019、框架/引擎清单与 TUI 源码，并重跑评测核对上述两条留出的唯一候选/标注词条件。81 项是初版的验证记录，文档返工没有重新跑该测试组，也没有修复上述运行时缺口。来源 SHA 清单不变。
+
 ## 6. 交给 Reviewer 的具体问题
 
 1. G1–G8 有没有把独立仓库能力算到主仓库，或把默认关闭误写为未实现？
 2. Session/Fork、Hooks、OTel 和 Wiki 的缺口判断，是否有本报告漏掉的真实调用入口？请给文件行号反证。
-3. 是否同意评测只能证明切分边界示例、不能证明真实检索泛化？检查脚本而非只看汇总数字。
+3. 是否同意当前两条含全部标注词的单候选留出导致 Recall@1 恒真、不能证明检索质量？检查脚本而非只看汇总数字。
 4. 下一轮建议是否仍守住 metadata-only、默认禁用、一个业务纵切与独立 Gate 的边界？
 
 完成标准：对这份对照报告给出 Approved 或 Changes Requested，附证据与范围。该结论不是对真实 Provider、所有课程代码、在线部署或合同专业质量的批准。
