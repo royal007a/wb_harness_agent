@@ -1,0 +1,43 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_manifest_parser_limit_failure_is_an_input_error[RecursionError] _____
+
+client = <starlette.testclient.TestClient object at 0x10af2ba10>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ac55220>
+fault_type = <class 'RecursionError'>
+
+    @pytest.mark.parametrize('fault_type', [ValueError, RecursionError])
+    def test_manifest_parser_limit_failure_is_an_input_error(client, monkeypatch, fault_type):
+        raw = package()
+        original = external_skills.json.loads
+        def limited(value, *args, **kwargs):
+            if isinstance(value, str) and value == json.dumps(MANIFEST):
+                raise fault_type('PRIVATE_PARSER_LIMIT73')
+            return original(value, *args, **kwargs)
+        monkeypatch.setattr(external_skills.json, 'loads', limited)
+        before = snapshot(client)
+        result = upload(client, raw)
+>       check(client, 2, result, 422)
+
+tests/test_external_skill_http_contracts.py:379:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10af2ba10>, op = 2
+response = <Response [500 Internal Server Error]>, status = 422
+
+    def check(c, op, response, status):
+>       assert response.status_code == status, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_afff582116aa4d1ca32bdff2ab5dd5ff"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:99: AssertionError
+=============================== warnings summary ===============================
+../../..[REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_manifest_parser_limit_failure_is_an_input_error[RecursionError]
+1 failed, 47 deselected, 1 warning in 0.29s

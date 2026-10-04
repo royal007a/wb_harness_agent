@@ -117,6 +117,29 @@ def bind_pi_product_responses(document):
                 'schema': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
 
 
+def bind_external_skill_responses(document):
+    """Metadata and historical receipts; querying runtime may inspect an image."""
+    prefix = '/api/local/external-skills'
+    for suffix, method, status, definition in (
+        ('/runtime', 'get', '200', 'local_http_external_skill_runtime'),
+        ('/packages', 'get', '200', 'local_http_external_skill_list'),
+        ('/packages', 'post', '201', 'local_http_external_skill_package'),
+        ('/packages/{package_id}:execute', 'post', '200', 'execution_result'),
+    ):
+        operation = document['paths'][prefix + suffix][method]
+        operation['responses'][status]['content'] = {
+            'application/json': {'schema': {'$ref': '#/components/schemas/' + definition}}}
+        envelope = {'description': 'Current local error envelope.', 'content': {
+            'application/json': {'schema': {'$ref': '#/components/schemas/local_http_error'}}}}
+        operation['responses']['default'] = envelope
+        if '422' in operation['responses']:
+            operation['responses']['422'] = envelope
+    upload = document['paths'][prefix + '/packages']['post']
+    for parameter in upload['parameters']:
+        if parameter['in'] == 'query' and parameter['name'] == 'source_label':
+            parameter['schema'] = {'$ref': '#/components/schemas/package_registration/properties/source_label'}
+
+
 def bind_memory_write_responses(document):
     """Current M1 historical receipts; no change to execution or deletion scope."""
     for path, method, status, definition in (

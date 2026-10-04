@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="4" time="0.962" timestamp="2026-10-04T09:54:49.122021+08:00" hostname="192.168.31.117"><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[0]" time="0.254" /><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[1]" time="0.170"><failure message="AssertionError: (1, {'items': [{'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2...skill-runtime@1', 'runtime_enabled': True, 'backend': 'colima', 'access_scope': 'direct_loopback_or_ssh_tunnel', ...}})&#10;assert not True&#10; +  where True = is_valid({'items': [{'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2026-...-skill-runtime@1', 'runtime_enabled': True, 'backend': 'colima', 'access_scope': 'direct_loopback_or_ssh_tunnel', ...}})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...al_skill_list', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10b430410&gt;, op = 1
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+        check(client, op, response, int(OPS[op][2]))
+        value = response.json()
+        cases = []
+        if op == 0:
+            for field, bad in [('network', 'allowed'), ('max_concurrency', 2), ('image_id', 'bad'), ('credentials', 'injected')]:
+                cases.append({**value, field: bad})
+            cases.append({**value, 'runtime_enabled': False, 'blockers': []})
+        elif op in [1, 2]:
+            for field, bad in [('execution_count', -1), ('content_sha256', 'A' * 64), ('storage', '/private/path')]:
+                invalid = copy.deepcopy(value)
+                (invalid['items'][0] if op == 1 else invalid)[field] = bad
+                cases.append(invalid)
+        else:
+            for field, bad in [('image_id', 'bad'), ('container_cleaned', False), ('duration_ms', -1),
+                               ('input_sha256', 'A' * 64), ('extra', 'private')]:
+                invalid = copy.deepcopy(value)
+                invalid['audit'][field] = bad
+                cases.append(invalid)
+        for v in contracts(client, op):
+            for invalid in cases:
+&gt;               assert not v.is_valid(invalid), (op, invalid)
+E               AssertionError: (1, {'items': [{'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2...skill-runtime@1', 'runtime_enabled': True, 'backend': 'colima', 'access_scope': 'direct_loopback_or_ssh_tunnel', ...}})
+E               assert not True
+E                +  where True = is_valid({'items': [{'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2026-...-skill-runtime@1', 'runtime_enabled': True, 'backend': 'colima', 'access_scope': 'direct_loopback_or_ssh_tunnel', ...}})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...al_skill_list', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_external_skill_http_contracts.py:207: AssertionError</failure></testcase><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[2]" time="0.172"><failure message="AssertionError: (2, {'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2026-10-04T01:54:49.769991Z', 'execution_count': -1, 'id': 'extpkg_39c82e0a63b04ec39f29c1a2f8e529af', ...})&#10;assert not True&#10; +  where True = is_valid({'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2026-10-04T01:54:49.769991Z', 'execution_count': -1, 'id': 'extpkg_39c82e0a63b04ec39f29c1a2f8e529af', ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...skill_package', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10bab9950&gt;, op = 2
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+        check(client, op, response, int(OPS[op][2]))
+        value = response.json()
+        cases = []
+        if op == 0:
+            for field, bad in [('network', 'allowed'), ('max_concurrency', 2), ('image_id', 'bad'), ('credentials', 'injected')]:
+                cases.append({**value, field: bad})
+            cases.append({**value, 'runtime_enabled': False, 'blockers': []})
+        elif op in [1, 2]:
+            for field, bad in [('execution_count', -1), ('content_sha256', 'A' * 64), ('storage', '/private/path')]:
+                invalid = copy.deepcopy(value)
+                (invalid['items'][0] if op == 1 else invalid)[field] = bad
+                cases.append(invalid)
+        else:
+            for field, bad in [('image_id', 'bad'), ('container_cleaned', False), ('duration_ms', -1),
+                               ('input_sha256', 'A' * 64), ('extra', 'private')]:
+                invalid = copy.deepcopy(value)
+                invalid['audit'][field] = bad
+                cases.append(invalid)
+        for v in contracts(client, op):
+            for invalid in cases:
+&gt;               assert not v.is_valid(invalid), (op, invalid)
+E               AssertionError: (2, {'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2026-10-04T01:54:49.769991Z', 'execution_count': -1, 'id': 'extpkg_39c82e0a63b04ec39f29c1a2f8e529af', ...})
+E               assert not True
+E                +  where True = is_valid({'content_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'created_at': '2026-10-04T01:54:49.769991Z', 'execution_count': -1, 'id': 'extpkg_39c82e0a63b04ec39f29c1a2f8e529af', ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...skill_package', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_external_skill_http_contracts.py:207: AssertionError</failure></testcase><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[3]" time="0.172" /></testsuite></testsuites>

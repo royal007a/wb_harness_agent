@@ -1,0 +1,55 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_registration_execution_replay_count_and_tamper ______________
+
+client = <starlette.testclient.TestClient object at 0x109497b60>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x109209350>
+
+    def test_registration_execution_replay_count_and_tamper(client, monkeypatch):
+        first = upload(client)
+>       check(client, 2, first, 201)
+
+tests/test_external_skill_http_contracts.py:151:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x109497b60>, op = 2
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+=============================== warnings summary ===============================
+../../..[REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_registration_execution_replay_count_and_tamper
+1 failed, 49 deselected, 1 warning in 0.37s

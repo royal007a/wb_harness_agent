@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_database_failure_rolls_back_and_retry_is_explicit[execution] _______
+
+client = <starlette.testclient.TestClient object at 0x10c633b60>
+stage = 'execution'
+
+    @pytest.mark.parametrize('stage', ['registration', 'execution'])
+    def test_database_failure_rolls_back_and_retry_is_explicit(client, stage):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = True
+        item = upload(client).json() if stage == 'execution' else None
+        table = 'external_skill_executions' if stage == 'execution' else 'idempotency'
+        with runtime.store.transaction() as db:
+            db.execute('CREATE TRIGGER failure73 BEFORE INSERT ON ' + table +
+                       " BEGIN SELECT RAISE(ABORT, 'PRIVATE_DB_PATH73'); END")
+        before = snapshot(client)[1]
+        response = run(client, item['id']) if item else upload(client)
+        assert response.status_code == 500 and 'PRIVATE_DB_PATH73' not in response.text
+>       assert snapshot(client)[1] == before
+E       assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}
+E
+E         Omitting 58 identical items, use -vv to show
+E         Differing items:
+E         {'external_skill_packages': [('extpkg_c3ceb835784f44aa8eee652f0f103dc1', '551489702868f5518c93c4b14a6d18c3be654a517194...d": "ext_json_echo", "version": "1.0.0"}, "source_label": "fixture73", "storage": "controlled_immutable_directory"}')]} != {'external_skill_packages': [('extpkg_c3ceb835784f44aa8eee652f0f103dc1', '551489702868f5518c93c4b14a6d18c3be654a517194...d": "ext_json_echo", "version": "1.0.0"}, "source_label": "fixture73", "storage": "controlled_immutable_directory"}')]}
+E         Use -v to get more diff
+
+tests/test_external_skill_http_contracts.py:325: AssertionError
+=============================== warnings summary ===============================
+../../..[REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_database_failure_rolls_back_and_retry_is_explicit[execution]
+1 failed, 49 deselected, 1 warning in 0.30s

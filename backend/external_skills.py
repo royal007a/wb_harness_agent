@@ -9,6 +9,7 @@ import shutil
 import tempfile
 import threading
 import zipfile
+import zlib
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
@@ -70,6 +71,8 @@ class ExternalSkillRuntime:
             if {item.filename for item in infos} != allowed or len(infos) != 2:
                 raise Problem('EXTERNAL_SKILL_PACKAGE_INVALID', 'ZIP 根目录只能包含 manifest.json 与 entry.py。', 422)
             for item in infos:
+                if item.flag_bits & (1 | 32 | 64) or item.compress_type not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
+                    raise Problem('EXTERNAL_SKILL_PACKAGE_INVALID', 'ZIP 仅允许无加密、非 patched-data 的 stored/deflated 文件。', 422)
                 mode = (item.external_attr >> 16) & 0o170000
                 if item.is_dir() or item.filename.startswith('/') or '..' in Path(item.filename).parts or mode == 0o120000:
                     raise Problem('EXTERNAL_SKILL_PACKAGE_INVALID', 'ZIP 不允许目录、链接或路径穿越。', 422)
@@ -79,13 +82,13 @@ class ExternalSkillRuntime:
             entry_raw = archive.read('entry.py')
         except Problem:
             raise
-        except (OSError, zipfile.BadZipFile, KeyError):
+        except (OSError, zipfile.BadZipFile, KeyError, zlib.error):
             raise Problem('EXTERNAL_SKILL_PACKAGE_INVALID', '外部 Skill 必须是有效 ZIP。', 422) from None
         try:
             manifest = json.loads(manifest_raw.decode('utf-8'))
             entry_raw.decode('utf-8')
-        except (UnicodeDecodeError, json.JSONDecodeError):
-            raise Problem('EXTERNAL_SKILL_PACKAGE_INVALID', 'manifest 和 entry.py 必须是 UTF-8。', 422) from None
+        except (ValueError, RecursionError):
+            raise Problem('EXTERNAL_SKILL_PACKAGE_INVALID', 'manifest 必须是可解析的 UTF-8 JSON，entry.py 必须是 UTF-8。', 422) from None
         validate_contract('skill_manifest', manifest)
         if SENSITIVE_INPUT.search(manifest_raw.decode('utf-8')) or SENSITIVE_INPUT.search(entry_raw.decode('utf-8')):
             raise Problem('SENSITIVE_INPUT_REJECTED', '外部 Skill 包不得包含凭证样式内容。', 422)

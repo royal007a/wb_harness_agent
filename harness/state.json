@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "system_spec_and_verification_audit",
   "implementation_started": true,
-  "active_task_id": "HA-0072",
-  "active_plan": "exec-plans/blocked/HA-0072-memory-graph-write-contracts.md",
-  "last_checkpoint": "0071固定7a03b99独立Approved，3 Low/1信息记录a78d535。0072新42/相关242、旧26行为反例及14有效突变；全量1370 passed/16 skipped、verify退出0。",
-  "last_updated_at": "2026-10-04T01:25:00Z",
-  "next_action": "0072固定提交交独立review；继续剩22个空JSON入口与已登记Low，FTS影子残留不混称删除完成。兼容本机拓扑后先本机再132，不开模型门禁。",
+  "active_task_id": "HA-0073",
+  "active_plan": "exec-plans/blocked/HA-0073-external-skill-http-contracts.md",
+  "last_checkpoint": "0072固定5241fe4独立Approved，损坏突变XML固定版本重跑并改引用（d65cd06）。0073最终50新/相关190、旧50断言反例及12有效定向突变；最终verify退出0，全量1420 passed/16 skipped。",
+  "last_updated_at": "2026-10-04T02:03:00Z",
+  "next_action": "0073固定提交独立review；剩19个API加1页面空JSON成功声明与其他GAPS仍未验收。兼容本机拓扑后先8765再132，不开模型门禁。",
   "release": "0.1.0-local"
 }

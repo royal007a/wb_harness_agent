@@ -460,3 +460,14 @@ HA-0071：无既有FTS索引且启动创建精确缺模块时，keyword_index.er
 FTS5_UNAVAILABLE，M1写入/关键词Recall可用，M2 context返回503；索引或数据库
 其他故障不再被误吞成M1扫描，返回无内部异常文本的500。恢复需修复环境后重启，
 不在GET自动重建；readiness只描述上一次初始化。见ADR-0071。
+
+### 外部 Skill 当前 HTTP 合同（HA-0073）
+
+runtime、packages GET/POST和execute共四入口共享external-skill-runtime源合同；
+静态/动态错误信封均为local_http_error。上传仅接受无加密stored/deflated ZIP，
+压缩包128KiB、每项64KiB，source_label1..160且沿用受限字符集，key1..128。
+损坏压缩流、非法编码及manifest解析资源限制返回422，不扩大执行权限。
+runtime会探测镜像但不启动容器。列表计数是当前值，幂等回放是历史快照，关门
+后仍可回放已有收据但不新执行。执行审计backend为兼容旧收据保持可选。
+临时目录与DB不是跨资源事务；执行后DB失败时重试可能再次执行，不承诺exactly-once。
+测试与未验收边界见specs/testing/EXTERNAL_SKILL_HTTP_CONTRACTS.md、ADR-0073。

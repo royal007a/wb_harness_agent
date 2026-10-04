@@ -1,0 +1,86 @@
+[
+  {
+    "id": "allow-unsupported-zip",
+    "file": "backend/external_skills.py",
+    "old": "                if item.flag_bits & (1 | 32 | 64) or item.compress_type not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):",
+    "next": "                if False:",
+    "select": "bad_archive and (bzip2 or unsupported or encrypted or strong_encryption or patched_data)"
+  },
+  {
+    "id": "unhandled-deflate",
+    "file": "backend/external_skills.py",
+    "old": "        except (OSError, zipfile.BadZipFile, KeyError, zlib.error):",
+    "next": "        except (OSError, zipfile.BadZipFile, KeyError):",
+    "select": "bad_archive and deflate"
+  },
+  {
+    "id": "unhandled-value-limit",
+    "file": "backend/external_skills.py",
+    "old": "        except (ValueError, RecursionError):",
+    "next": "        except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):",
+    "select": "manifest_parser_limit and ValueError"
+  },
+  {
+    "id": "unhandled-recursion-limit",
+    "file": "backend/external_skills.py",
+    "old": "        except (ValueError, RecursionError):",
+    "next": "        except ValueError:",
+    "select": "manifest_parser_limit and RecursionError"
+  },
+  {
+    "id": "swallow-program-error",
+    "file": "backend/external_skills.py",
+    "old": "        except (OSError, zipfile.BadZipFile, KeyError, zlib.error):",
+    "next": "        except Exception:",
+    "select": "unexpected_zip_parser"
+  },
+  {
+    "id": "unbind-runtime",
+    "file": "backend/openapi_contracts.py",
+    "old": "        ('/runtime', 'get', '200', 'local_http_external_skill_runtime'),\n",
+    "next": "",
+    "select": "runtime_states"
+  },
+  {
+    "id": "unbind-list",
+    "file": "backend/openapi_contracts.py",
+    "old": "        ('/packages', 'get', '200', 'local_http_external_skill_list'),\n",
+    "next": "",
+    "select": "restart_preserves"
+  },
+  {
+    "id": "unbind-upload",
+    "file": "backend/openapi_contracts.py",
+    "old": "        ('/packages', 'post', '201', 'local_http_external_skill_package'),\n",
+    "next": "",
+    "select": "registration_execution"
+  },
+  {
+    "id": "unbind-execution-errors",
+    "file": "backend/openapi_contracts.py",
+    "old": "        ('/packages/{package_id}:execute', 'post', '200', 'execution_result'),\n",
+    "next": "",
+    "select": "execution_errors"
+  },
+  {
+    "id": "relax-audit-cleanup",
+    "file": "specs/v1/external-skill-runtime.schema.json",
+    "old": "        \"container_cleaned\": {\"const\": true},",
+    "next": "        \"container_cleaned\": {\"type\": \"boolean\"},",
+    "select": "nested_invalid_result"
+  },
+  {
+    "id": "relax-package-count",
+    "file": "specs/v1/external-skill-runtime.schema.json",
+    "old": "        \"execution_count\": {\"type\": \"integer\", \"minimum\": 0}",
+    "next": "        \"execution_count\": {\"type\": \"integer\"}",
+    "select": "nested_invalid_result"
+  },
+  {
+    "id": "commit-before-execution-row",
+    "file": "backend/external_skills.py",
+    "old": "            db.execute('INSERT INTO external_skill_executions",
+    "next": "            db.commit()\n            db.execute('BEGIN IMMEDIATE')\n            db.execute('INSERT INTO external_skill_executions",
+    "select": "database_failure and execution"
+  }
+]

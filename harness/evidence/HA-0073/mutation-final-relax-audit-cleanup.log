@@ -1,0 +1,48 @@
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+___________ test_contract_rejects_empty_or_nested_invalid_result[3] ____________
+
+client = <starlette.testclient.TestClient object at 0x10db528b0>, op = 3
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+        check(client, op, response, int(OPS[op][2]))
+        value = response.json()
+        cases = []
+        if op == 0:
+            for field, bad in [('network', 'allowed'), ('max_concurrency', 2), ('image_id', 'bad'), ('credentials', 'injected')]:
+                cases.append({**value, field: bad})
+            cases.append({**value, 'runtime_enabled': False, 'blockers': []})
+        elif op in [1, 2]:
+            for field, bad in [('execution_count', -1), ('content_sha256', 'A' * 64), ('storage', '/private/path')]:
+                invalid = copy.deepcopy(value)
+                (invalid['items'][0] if op == 1 else invalid)[field] = bad
+                cases.append(invalid)
+        else:
+            for field, bad in [('image_id', 'bad'), ('container_cleaned', False), ('duration_ms', -1),
+                               ('input_sha256', 'A' * 64), ('extra', 'private')]:
+                invalid = copy.deepcopy(value)
+                invalid['audit'][field] = bad
+                cases.append(invalid)
+        for v in contracts(client, op):
+            for invalid in cases:
+>               assert not v.is_valid(invalid), (op, invalid)
+E               AssertionError: (3, {'execution_id': 'extx_1d59fdea754b4eecab1f0fa2376ed87b', 'package_id': 'extpkg_cc4236f1388d4a3da7cb05482c0be553', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})
+E               assert not True
+E                +  where True = is_valid({'execution_id': 'extx_1d59fdea754b4eecab1f0fa2376ed87b', 'package_id': 'extpkg_cc4236f1388d4a3da7cb05482c0be553', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...cution_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:207: AssertionError
+=============================== warnings summary ===============================
+../../..[REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_contract_rejects_empty_or_nested_invalid_result[3]
+1 failed, 3 passed, 44 deselected, 1 warning in 0.96s

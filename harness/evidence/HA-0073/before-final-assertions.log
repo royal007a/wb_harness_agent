@@ -1,0 +1,2414 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                         [100%]
+=================================== FAILURES ===================================
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-False-False] _
+
+client = <starlette.testclient.TestClient object at 0x10ae6fb60>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10abf10f0>
+enabled = False, available = False, backend = 'colima'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae6fb60>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-False-True] _
+
+client = <starlette.testclient.TestClient object at 0x10d1207d0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10abf1a70>
+enabled = True, available = False, backend = 'colima'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d1207d0>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-True-False] _
+
+client = <starlette.testclient.TestClient object at 0x10ce1e350>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10aaca9f0>
+enabled = False, available = True, backend = 'colima'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ce1e350>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-True-True] _
+
+client = <starlette.testclient.TestClient object at 0x10d3509d0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce7bdf0>
+enabled = True, available = True, backend = 'colima'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d3509d0>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-False-False] _
+
+client = <starlette.testclient.TestClient object at 0x10d351350>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d58ef10>
+enabled = False, available = False, backend = 'linux-docker'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d351350>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-False-True] _
+
+client = <starlette.testclient.TestClient object at 0x10cd90a70>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d491b50>
+enabled = True, available = False, backend = 'linux-docker'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10cd90a70>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-True-False] _
+
+client = <starlette.testclient.TestClient object at 0x10e1cb240>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d492e50>
+enabled = False, available = True, backend = 'linux-docker'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e1cb240>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_ test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-True-True] _
+
+client = <starlette.testclient.TestClient object at 0x10dcc79b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10de4a120>
+enabled = True, available = True, backend = 'linux-docker'
+
+    @pytest.mark.parametrize('enabled', [False, True])
+    @pytest.mark.parametrize('available', [False, True])
+    @pytest.mark.parametrize('backend', ['colima', 'linux-docker'])
+    def test_runtime_states_are_exact_metadata_and_reads_do_not_write(client, monkeypatch, enabled, available, backend):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = enabled
+        monkeypatch.setattr(external_skills, 'sandbox_backend', lambda: backend)
+        probes = []
+        def probe():
+            probes.append(True)
+            if not available:
+                raise Problem('EXTERNAL_SKILL_IMAGE_MISSING', 'PRIVATE_IMAGE_PATH73', 503)
+            return IMAGE
+        monkeypatch.setattr(external_skills, 'image_id', probe)
+        before = snapshot(client)
+        result = client.get(BASE + '/runtime')
+>       check(client, 0, result, 200)
+
+tests/test_external_skill_http_contracts.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10dcc79b0>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_____________ test_registration_execution_replay_count_and_tamper ______________
+
+client = <starlette.testclient.TestClient object at 0x10d383790>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cc38aa0>
+
+    def test_registration_execution_replay_count_and_tamper(client, monkeypatch):
+        first = upload(client)
+>       check(client, 2, first, 201)
+
+tests/test_external_skill_http_contracts.py:151:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d383790>, op = 2
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________ test_contract_rejects_empty_or_nested_invalid_result[0] ____________
+
+client = <starlette.testclient.TestClient object at 0x10ae91ae0>, op = 0
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+>       check(client, op, response, int(OPS[op][2]))
+
+tests/test_external_skill_http_contracts.py:187:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae91ae0>, op = 0
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 0, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________ test_contract_rejects_empty_or_nested_invalid_result[1] ____________
+
+client = <starlette.testclient.TestClient object at 0x10e52f020>, op = 1
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+>       check(client, op, response, int(OPS[op][2]))
+
+tests/test_external_skill_http_contracts.py:187:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e52f020>, op = 1
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 1, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________ test_contract_rejects_empty_or_nested_invalid_result[2] ____________
+
+client = <starlette.testclient.TestClient object at 0x10d99d590>, op = 2
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+>       check(client, op, response, int(OPS[op][2]))
+
+tests/test_external_skill_http_contracts.py:187:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d99d590>, op = 2
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________ test_contract_rejects_empty_or_nested_invalid_result[3] ____________
+
+client = <starlette.testclient.TestClient object at 0x10e667ac0>, op = 3
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+        check(client, op, response, int(OPS[op][2]))
+        value = response.json()
+        cases = []
+        if op == 0:
+            for field, bad in [('network', 'allowed'), ('max_concurrency', 2), ('image_id', 'bad'), ('credentials', 'injected')]:
+                cases.append({**value, field: bad})
+            cases.append({**value, 'runtime_enabled': False, 'blockers': []})
+        elif op in [1, 2]:
+            for field, bad in [('execution_count', -1), ('content_sha256', 'A' * 64), ('storage', '/private/path')]:
+                invalid = copy.deepcopy(value)
+                (invalid['items'][0] if op == 1 else invalid)[field] = bad
+                cases.append(invalid)
+        else:
+            for field, bad in [('image_id', 'bad'), ('container_cleaned', False), ('duration_ms', -1),
+                               ('input_sha256', 'A' * 64), ('extra', 'private')]:
+                invalid = copy.deepcopy(value)
+                invalid['audit'][field] = bad
+                cases.append(invalid)
+        for v in contracts(client, op):
+            for invalid in cases:
+>               assert not v.is_valid(invalid), (op, invalid)
+E               AssertionError: (3, {'execution_id': 'extx_532c07d934b04e8db0c4042fcfb3aa24', 'package_id': 'extpkg_c8b64702d76f40eab556394e25461eac', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})
+E               assert not True
+E                +  where True = is_valid({'execution_id': 'extx_532c07d934b04e8db0c4042fcfb3aa24', 'package_id': 'extpkg_c8b64702d76f40eab556394e25461eac', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...cution_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:207: AssertionError
+____ test_bad_archive_is_422_before_any_persistence_or_execution[deep_json] ____
+
+client = <starlette.testclient.TestClient object at 0x10ae03350>
+kind = 'deep_json'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+        assert response.status_code == 422, response.text
+        accepted_codes = {'EXTERNAL_SKILL_PACKAGE_INVALID', 'VALIDATION_ERROR'} if kind == 'deep_json' else {'EXTERNAL_SKILL_PACKAGE_INVALID'}
+        assert response.json()['error']['code'] in accepted_codes
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+        assert not external_skills.PACKAGE_ROOT.exists()
+>       check(client, 2, response, 422)
+
+tests/test_external_skill_http_contracts.py:257:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae03350>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+__ test_bad_archive_is_422_before_any_persistence_or_execution[large_integer] __
+
+client = <starlette.testclient.TestClient object at 0x10ce785a0>
+kind = 'large_integer'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_9f0f6ba0352e427e841fc1f3a3f606fd"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:252: AssertionError
+______ test_bad_archive_is_422_before_any_persistence_or_execution[utf8] _______
+
+client = <starlette.testclient.TestClient object at 0x10d58d370>, kind = 'utf8'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+        assert response.status_code == 422, response.text
+        accepted_codes = {'EXTERNAL_SKILL_PACKAGE_INVALID', 'VALIDATION_ERROR'} if kind == 'deep_json' else {'EXTERNAL_SKILL_PACKAGE_INVALID'}
+        assert response.json()['error']['code'] in accepted_codes
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+        assert not external_skills.PACKAGE_ROOT.exists()
+>       check(client, 2, response, 422)
+
+tests/test_external_skill_http_contracts.py:257:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d58d370>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+______ test_bad_archive_is_422_before_any_persistence_or_execution[extra] ______
+
+client = <starlette.testclient.TestClient object at 0x10e52f570>, kind = 'extra'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+        assert response.status_code == 422, response.text
+        accepted_codes = {'EXTERNAL_SKILL_PACKAGE_INVALID', 'VALIDATION_ERROR'} if kind == 'deep_json' else {'EXTERNAL_SKILL_PACKAGE_INVALID'}
+        assert response.json()['error']['code'] in accepted_codes
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+        assert not external_skills.PACKAGE_ROOT.exists()
+>       check(client, 2, response, 422)
+
+tests/test_external_skill_http_contracts.py:257:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e52f570>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+______ test_bad_archive_is_422_before_any_persistence_or_execution[bzip2] ______
+
+client = <starlette.testclient.TestClient object at 0x10e1c9260>, kind = 'bzip2'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"id":"extpkg_c9d5f735250c42748527c2922158f7e0","manifest":{"schema_version":"external-skill-manifest@1","skill_id":"ext_json_echo","version":"1.0.0","entrypoint":"entry.py","runtime":"python-stdlib@3.12","capabilities":["transform_json"]},"source_label":"fixture73","content_sha256":"03bb88ef46d3132ba9b971c6a2ca6038f41c973186ff8426e0ff91450072a63d","storage":"controlled_immutable_directory","created_at":"2026-10-04T01:53:15.859755Z","execution_count":0}
+E       assert 201 == 422
+E        +  where 201 = <Response [201 Created]>.status_code
+
+tests/test_external_skill_http_contracts.py:252: AssertionError
+____ test_bad_archive_is_422_before_any_persistence_or_execution[encrypted] ____
+
+client = <starlette.testclient.TestClient object at 0x10ae905a0>
+kind = 'encrypted'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_2e004a9b769b4093a8b341f6bb7673da"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:252: AssertionError
+___ test_bad_archive_is_422_before_any_persistence_or_execution[unsupported] ___
+
+client = <starlette.testclient.TestClient object at 0x1088c5ae0>
+kind = 'unsupported'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_b9ea26fea63a444299c533e25c6f77fe"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:252: AssertionError
+_____ test_bad_archive_is_422_before_any_persistence_or_execution[deflate] _____
+
+client = <starlette.testclient.TestClient object at 0x10dd956a0>
+kind = 'deflate'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_176811d0850343488923497df2abf9ae"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:252: AssertionError
+_______ test_bad_archive_is_422_before_any_persistence_or_execution[crc] _______
+
+client = <starlette.testclient.TestClient object at 0x10d58f570>, kind = 'crc'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+        assert response.status_code == 422, response.text
+        accepted_codes = {'EXTERNAL_SKILL_PACKAGE_INVALID', 'VALIDATION_ERROR'} if kind == 'deep_json' else {'EXTERNAL_SKILL_PACKAGE_INVALID'}
+        assert response.json()['error']['code'] in accepted_codes
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+        assert not external_skills.PACKAGE_ROOT.exists()
+>       check(client, 2, response, 422)
+
+tests/test_external_skill_http_contracts.py:257:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d58f570>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_____ test_bad_archive_is_422_before_any_persistence_or_execution[symlink] _____
+
+client = <starlette.testclient.TestClient object at 0x10ae007c0>
+kind = 'symlink'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+        assert response.status_code == 422, response.text
+        accepted_codes = {'EXTERNAL_SKILL_PACKAGE_INVALID', 'VALIDATION_ERROR'} if kind == 'deep_json' else {'EXTERNAL_SKILL_PACKAGE_INVALID'}
+        assert response.json()['error']['code'] in accepted_codes
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+        assert not external_skills.PACKAGE_ROOT.exists()
+>       check(client, 2, response, 422)
+
+tests/test_external_skill_http_contracts.py:257:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae007c0>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________________ test_upload_http_boundaries[key_missing] ___________________
+
+client = <starlette.testclient.TestClient object at 0x10e664d10>
+kind = 'key_missing'
+
+    @pytest.mark.parametrize('kind', ['key_missing', 'key_empty', 'key_long', 'oversize', 'media', 'label', 'missing_label'])
+    def test_upload_http_boundaries(client, kind):
+        before = snapshot(client)
+        if kind in {'key_missing', 'key_empty', 'key_long'}:
+            response = upload(client, key={'key_missing': None, 'key_empty': '', 'key_long': 'k' * 129}[kind])
+        elif kind == 'oversize':
+            response = upload(client, b'x' * (128 * 1024 + 1))
+        elif kind == 'media':
+            response = client.post(BASE + '/packages?source_label=x', content=b'zip', headers={'Content-Type': 'text/plain'})
+        elif kind == 'label':
+            response = upload(client, label='<script>')
+        else:
+            response = client.post(BASE + '/packages', content=package(), headers={'Content-Type': 'application/zip'})
+        expected = 413 if kind == 'oversize' else 415 if kind == 'media' else 422
+        assert response.status_code == expected
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+>       check(client, 2, response, expected)
+
+tests/test_external_skill_http_contracts.py:276:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e664d10>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+____________________ test_upload_http_boundaries[key_empty] ____________________
+
+client = <starlette.testclient.TestClient object at 0x10e52c7c0>
+kind = 'key_empty'
+
+    @pytest.mark.parametrize('kind', ['key_missing', 'key_empty', 'key_long', 'oversize', 'media', 'label', 'missing_label'])
+    def test_upload_http_boundaries(client, kind):
+        before = snapshot(client)
+        if kind in {'key_missing', 'key_empty', 'key_long'}:
+            response = upload(client, key={'key_missing': None, 'key_empty': '', 'key_long': 'k' * 129}[kind])
+        elif kind == 'oversize':
+            response = upload(client, b'x' * (128 * 1024 + 1))
+        elif kind == 'media':
+            response = client.post(BASE + '/packages?source_label=x', content=b'zip', headers={'Content-Type': 'text/plain'})
+        elif kind == 'label':
+            response = upload(client, label='<script>')
+        else:
+            response = client.post(BASE + '/packages', content=package(), headers={'Content-Type': 'application/zip'})
+        expected = 413 if kind == 'oversize' else 415 if kind == 'media' else 422
+        assert response.status_code == expected
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+>       check(client, 2, response, expected)
+
+tests/test_external_skill_http_contracts.py:276:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e52c7c0>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+____________________ test_upload_http_boundaries[key_long] _____________________
+
+client = <starlette.testclient.TestClient object at 0x10d294f30>
+kind = 'key_long'
+
+    @pytest.mark.parametrize('kind', ['key_missing', 'key_empty', 'key_long', 'oversize', 'media', 'label', 'missing_label'])
+    def test_upload_http_boundaries(client, kind):
+        before = snapshot(client)
+        if kind in {'key_missing', 'key_empty', 'key_long'}:
+            response = upload(client, key={'key_missing': None, 'key_empty': '', 'key_long': 'k' * 129}[kind])
+        elif kind == 'oversize':
+            response = upload(client, b'x' * (128 * 1024 + 1))
+        elif kind == 'media':
+            response = client.post(BASE + '/packages?source_label=x', content=b'zip', headers={'Content-Type': 'text/plain'})
+        elif kind == 'label':
+            response = upload(client, label='<script>')
+        else:
+            response = client.post(BASE + '/packages', content=package(), headers={'Content-Type': 'application/zip'})
+        expected = 413 if kind == 'oversize' else 415 if kind == 'media' else 422
+        assert response.status_code == expected
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+>       check(client, 2, response, expected)
+
+tests/test_external_skill_http_contracts.py:276:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d294f30>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+____________________ test_upload_http_boundaries[oversize] _____________________
+
+client = <starlette.testclient.TestClient object at 0x10ce78e20>
+kind = 'oversize'
+
+    @pytest.mark.parametrize('kind', ['key_missing', 'key_empty', 'key_long', 'oversize', 'media', 'label', 'missing_label'])
+    def test_upload_http_boundaries(client, kind):
+        before = snapshot(client)
+        if kind in {'key_missing', 'key_empty', 'key_long'}:
+            response = upload(client, key={'key_missing': None, 'key_empty': '', 'key_long': 'k' * 129}[kind])
+        elif kind == 'oversize':
+            response = upload(client, b'x' * (128 * 1024 + 1))
+        elif kind == 'media':
+            response = client.post(BASE + '/packages?source_label=x', content=b'zip', headers={'Content-Type': 'text/plain'})
+        elif kind == 'label':
+            response = upload(client, label='<script>')
+        else:
+            response = client.post(BASE + '/packages', content=package(), headers={'Content-Type': 'application/zip'})
+        expected = 413 if kind == 'oversize' else 415 if kind == 'media' else 422
+        assert response.status_code == expected
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+>       check(client, 2, response, expected)
+
+tests/test_external_skill_http_contracts.py:276:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ce78e20>, op = 2
+status = '413'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '413')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+______________________ test_upload_http_boundaries[media] ______________________
+
+client = <starlette.testclient.TestClient object at 0x10ae03460>, kind = 'media'
+
+    @pytest.mark.parametrize('kind', ['key_missing', 'key_empty', 'key_long', 'oversize', 'media', 'label', 'missing_label'])
+    def test_upload_http_boundaries(client, kind):
+        before = snapshot(client)
+        if kind in {'key_missing', 'key_empty', 'key_long'}:
+            response = upload(client, key={'key_missing': None, 'key_empty': '', 'key_long': 'k' * 129}[kind])
+        elif kind == 'oversize':
+            response = upload(client, b'x' * (128 * 1024 + 1))
+        elif kind == 'media':
+            response = client.post(BASE + '/packages?source_label=x', content=b'zip', headers={'Content-Type': 'text/plain'})
+        elif kind == 'label':
+            response = upload(client, label='<script>')
+        else:
+            response = client.post(BASE + '/packages', content=package(), headers={'Content-Type': 'application/zip'})
+        expected = 413 if kind == 'oversize' else 415 if kind == 'media' else 422
+        assert response.status_code == expected
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+>       check(client, 2, response, expected)
+
+tests/test_external_skill_http_contracts.py:276:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae03460>, op = 2
+status = '415'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '415')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+______________________ test_upload_http_boundaries[label] ______________________
+
+client = <starlette.testclient.TestClient object at 0x10d58cc00>, kind = 'label'
+
+    @pytest.mark.parametrize('kind', ['key_missing', 'key_empty', 'key_long', 'oversize', 'media', 'label', 'missing_label'])
+    def test_upload_http_boundaries(client, kind):
+        before = snapshot(client)
+        if kind in {'key_missing', 'key_empty', 'key_long'}:
+            response = upload(client, key={'key_missing': None, 'key_empty': '', 'key_long': 'k' * 129}[kind])
+        elif kind == 'oversize':
+            response = upload(client, b'x' * (128 * 1024 + 1))
+        elif kind == 'media':
+            response = client.post(BASE + '/packages?source_label=x', content=b'zip', headers={'Content-Type': 'text/plain'})
+        elif kind == 'label':
+            response = upload(client, label='<script>')
+        else:
+            response = client.post(BASE + '/packages', content=package(), headers={'Content-Type': 'application/zip'})
+        expected = 413 if kind == 'oversize' else 415 if kind == 'media' else 422
+        assert response.status_code == expected
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+>       check(client, 2, response, expected)
+
+tests/test_external_skill_http_contracts.py:276:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d58cc00>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+__________________ test_upload_http_boundaries[missing_label] __________________
+
+client = <starlette.testclient.TestClient object at 0x10e1cbf00>
+kind = 'missing_label'
+
+    @pytest.mark.parametrize('kind', ['key_missing', 'key_empty', 'key_long', 'oversize', 'media', 'label', 'missing_label'])
+    def test_upload_http_boundaries(client, kind):
+        before = snapshot(client)
+        if kind in {'key_missing', 'key_empty', 'key_long'}:
+            response = upload(client, key={'key_missing': None, 'key_empty': '', 'key_long': 'k' * 129}[kind])
+        elif kind == 'oversize':
+            response = upload(client, b'x' * (128 * 1024 + 1))
+        elif kind == 'media':
+            response = client.post(BASE + '/packages?source_label=x', content=b'zip', headers={'Content-Type': 'text/plain'})
+        elif kind == 'label':
+            response = upload(client, label='<script>')
+        else:
+            response = client.post(BASE + '/packages', content=package(), headers={'Content-Type': 'application/zip'})
+        expected = 413 if kind == 'oversize' else 415 if kind == 'media' else 422
+        assert response.status_code == expected
+        assert snapshot(client) == before and SyntheticSandbox.calls == []
+>       check(client, 2, response, expected)
+
+tests/test_external_skill_http_contracts.py:276:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e1cbf00>, op = 2
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_______________ test_execution_errors_and_lock_release[disabled] _______________
+
+client = <starlette.testclient.TestClient object at 0x10e6657b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10dec6740>
+mode = 'disabled'
+
+    @pytest.mark.parametrize('mode', ['disabled', 'missing', 'busy', 'tampered', 'sandbox_failure'])
+    def test_execution_errors_and_lock_release(client, monkeypatch, mode):
+        item = upload(client).json()
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = mode != 'disabled'
+        ident = item['id']
+        expected = {'disabled': 409, 'missing': 404, 'busy': 429, 'tampered': 409, 'sandbox_failure': 503}[mode]
+        if mode == 'disabled':
+            monkeypatch.setattr(runtime, '_verify_package', lambda *args: pytest.fail('disabled must not read package'))
+            monkeypatch.setattr(runtime.store, 'external_skill_package', lambda *args: pytest.fail('disabled must not lookup package'))
+        elif mode == 'missing':
+            ident = 'extpkg_' + '0' * 32
+        elif mode == 'busy':
+            runtime._execution_lock.acquire()
+        elif mode == 'tampered':
+            file = external_skills.PACKAGE_ROOT / item['content_sha256'] / 'entry.py'
+            file.chmod(0o644)
+            file.write_text('tampered fixture')
+        else:
+            monkeypatch.setattr(SyntheticSandbox, 'execute', lambda self: (_ for _ in ()).throw(
+                Problem('EXTERNAL_SKILL_START_FAILED', 'fixed public error', 503)))
+        before = snapshot(client)
+        try:
+            response = run(client, ident)
+            assert response.status_code == expected, response.text
+            assert snapshot(client) == before
+>           check(client, 3, response, expected)
+
+tests/test_external_skill_http_contracts.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e6657b0>, op = 3
+status = '409'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '409')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_______________ test_execution_errors_and_lock_release[missing] ________________
+
+client = <starlette.testclient.TestClient object at 0x10e030050>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d603850>
+mode = 'missing'
+
+    @pytest.mark.parametrize('mode', ['disabled', 'missing', 'busy', 'tampered', 'sandbox_failure'])
+    def test_execution_errors_and_lock_release(client, monkeypatch, mode):
+        item = upload(client).json()
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = mode != 'disabled'
+        ident = item['id']
+        expected = {'disabled': 409, 'missing': 404, 'busy': 429, 'tampered': 409, 'sandbox_failure': 503}[mode]
+        if mode == 'disabled':
+            monkeypatch.setattr(runtime, '_verify_package', lambda *args: pytest.fail('disabled must not read package'))
+            monkeypatch.setattr(runtime.store, 'external_skill_package', lambda *args: pytest.fail('disabled must not lookup package'))
+        elif mode == 'missing':
+            ident = 'extpkg_' + '0' * 32
+        elif mode == 'busy':
+            runtime._execution_lock.acquire()
+        elif mode == 'tampered':
+            file = external_skills.PACKAGE_ROOT / item['content_sha256'] / 'entry.py'
+            file.chmod(0o644)
+            file.write_text('tampered fixture')
+        else:
+            monkeypatch.setattr(SyntheticSandbox, 'execute', lambda self: (_ for _ in ()).throw(
+                Problem('EXTERNAL_SKILL_START_FAILED', 'fixed public error', 503)))
+        before = snapshot(client)
+        try:
+            response = run(client, ident)
+            assert response.status_code == expected, response.text
+            assert snapshot(client) == before
+>           check(client, 3, response, expected)
+
+tests/test_external_skill_http_contracts.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e030050>, op = 3
+status = '404'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '404')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_________________ test_execution_errors_and_lock_release[busy] _________________
+
+client = <starlette.testclient.TestClient object at 0x10e1c89e0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e415c50>
+mode = 'busy'
+
+    @pytest.mark.parametrize('mode', ['disabled', 'missing', 'busy', 'tampered', 'sandbox_failure'])
+    def test_execution_errors_and_lock_release(client, monkeypatch, mode):
+        item = upload(client).json()
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = mode != 'disabled'
+        ident = item['id']
+        expected = {'disabled': 409, 'missing': 404, 'busy': 429, 'tampered': 409, 'sandbox_failure': 503}[mode]
+        if mode == 'disabled':
+            monkeypatch.setattr(runtime, '_verify_package', lambda *args: pytest.fail('disabled must not read package'))
+            monkeypatch.setattr(runtime.store, 'external_skill_package', lambda *args: pytest.fail('disabled must not lookup package'))
+        elif mode == 'missing':
+            ident = 'extpkg_' + '0' * 32
+        elif mode == 'busy':
+            runtime._execution_lock.acquire()
+        elif mode == 'tampered':
+            file = external_skills.PACKAGE_ROOT / item['content_sha256'] / 'entry.py'
+            file.chmod(0o644)
+            file.write_text('tampered fixture')
+        else:
+            monkeypatch.setattr(SyntheticSandbox, 'execute', lambda self: (_ for _ in ()).throw(
+                Problem('EXTERNAL_SKILL_START_FAILED', 'fixed public error', 503)))
+        before = snapshot(client)
+        try:
+            response = run(client, ident)
+            assert response.status_code == expected, response.text
+            assert snapshot(client) == before
+>           check(client, 3, response, expected)
+
+tests/test_external_skill_http_contracts.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e1c89e0>, op = 3
+status = '429'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '429')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_______________ test_execution_errors_and_lock_release[tampered] _______________
+
+client = <starlette.testclient.TestClient object at 0x10d58d260>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d3d1da0>
+mode = 'tampered'
+
+    @pytest.mark.parametrize('mode', ['disabled', 'missing', 'busy', 'tampered', 'sandbox_failure'])
+    def test_execution_errors_and_lock_release(client, monkeypatch, mode):
+        item = upload(client).json()
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = mode != 'disabled'
+        ident = item['id']
+        expected = {'disabled': 409, 'missing': 404, 'busy': 429, 'tampered': 409, 'sandbox_failure': 503}[mode]
+        if mode == 'disabled':
+            monkeypatch.setattr(runtime, '_verify_package', lambda *args: pytest.fail('disabled must not read package'))
+            monkeypatch.setattr(runtime.store, 'external_skill_package', lambda *args: pytest.fail('disabled must not lookup package'))
+        elif mode == 'missing':
+            ident = 'extpkg_' + '0' * 32
+        elif mode == 'busy':
+            runtime._execution_lock.acquire()
+        elif mode == 'tampered':
+            file = external_skills.PACKAGE_ROOT / item['content_sha256'] / 'entry.py'
+            file.chmod(0o644)
+            file.write_text('tampered fixture')
+        else:
+            monkeypatch.setattr(SyntheticSandbox, 'execute', lambda self: (_ for _ in ()).throw(
+                Problem('EXTERNAL_SKILL_START_FAILED', 'fixed public error', 503)))
+        before = snapshot(client)
+        try:
+            response = run(client, ident)
+            assert response.status_code == expected, response.text
+            assert snapshot(client) == before
+>           check(client, 3, response, expected)
+
+tests/test_external_skill_http_contracts.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d58d260>, op = 3
+status = '409'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '409')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________ test_execution_errors_and_lock_release[sandbox_failure] ____________
+
+client = <starlette.testclient.TestClient object at 0x10ae03df0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cc17f50>
+mode = 'sandbox_failure'
+
+    @pytest.mark.parametrize('mode', ['disabled', 'missing', 'busy', 'tampered', 'sandbox_failure'])
+    def test_execution_errors_and_lock_release(client, monkeypatch, mode):
+        item = upload(client).json()
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = mode != 'disabled'
+        ident = item['id']
+        expected = {'disabled': 409, 'missing': 404, 'busy': 429, 'tampered': 409, 'sandbox_failure': 503}[mode]
+        if mode == 'disabled':
+            monkeypatch.setattr(runtime, '_verify_package', lambda *args: pytest.fail('disabled must not read package'))
+            monkeypatch.setattr(runtime.store, 'external_skill_package', lambda *args: pytest.fail('disabled must not lookup package'))
+        elif mode == 'missing':
+            ident = 'extpkg_' + '0' * 32
+        elif mode == 'busy':
+            runtime._execution_lock.acquire()
+        elif mode == 'tampered':
+            file = external_skills.PACKAGE_ROOT / item['content_sha256'] / 'entry.py'
+            file.chmod(0o644)
+            file.write_text('tampered fixture')
+        else:
+            monkeypatch.setattr(SyntheticSandbox, 'execute', lambda self: (_ for _ in ()).throw(
+                Problem('EXTERNAL_SKILL_START_FAILED', 'fixed public error', 503)))
+        before = snapshot(client)
+        try:
+            response = run(client, ident)
+            assert response.status_code == expected, response.text
+            assert snapshot(client) == before
+>           check(client, 3, response, expected)
+
+tests/test_external_skill_http_contracts.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae03df0>, op = 3
+status = '503'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '503')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_____ test_database_failure_rolls_back_and_retry_is_explicit[registration] _____
+
+client = <starlette.testclient.TestClient object at 0x10ce7ae00>
+stage = 'registration'
+
+    @pytest.mark.parametrize('stage', ['registration', 'execution'])
+    def test_database_failure_rolls_back_and_retry_is_explicit(client, stage):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = True
+        item = upload(client).json() if stage == 'execution' else None
+        table = 'external_skill_executions' if stage == 'execution' else 'idempotency'
+        with runtime.store.transaction() as db:
+            db.execute('CREATE TRIGGER failure73 BEFORE INSERT ON ' + table +
+                       " BEGIN SELECT RAISE(ABORT, 'PRIVATE_DB_PATH73'); END")
+        before = snapshot(client)[1]
+        response = run(client, item['id']) if item else upload(client)
+        assert response.status_code == 500 and 'PRIVATE_DB_PATH73' not in response.text
+        assert snapshot(client)[1] == before
+        assert not runtime._execution_lock.locked()
+>       check(client, 3 if item else 2, response, 500)
+
+tests/test_external_skill_http_contracts.py:326:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ce7ae00>, op = 2
+status = '500'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '500')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+______ test_database_failure_rolls_back_and_retry_is_explicit[execution] _______
+
+client = <starlette.testclient.TestClient object at 0x10e116f10>
+stage = 'execution'
+
+    @pytest.mark.parametrize('stage', ['registration', 'execution'])
+    def test_database_failure_rolls_back_and_retry_is_explicit(client, stage):
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = True
+        item = upload(client).json() if stage == 'execution' else None
+        table = 'external_skill_executions' if stage == 'execution' else 'idempotency'
+        with runtime.store.transaction() as db:
+            db.execute('CREATE TRIGGER failure73 BEFORE INSERT ON ' + table +
+                       " BEGIN SELECT RAISE(ABORT, 'PRIVATE_DB_PATH73'); END")
+        before = snapshot(client)[1]
+        response = run(client, item['id']) if item else upload(client)
+        assert response.status_code == 500 and 'PRIVATE_DB_PATH73' not in response.text
+        assert snapshot(client)[1] == before
+        assert not runtime._execution_lock.locked()
+>       check(client, 3 if item else 2, response, 500)
+
+tests/test_external_skill_http_contracts.py:326:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e116f10>, op = 3
+status = '500'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '500')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________ test_restart_preserves_history_and_reads_do_not_execute ____________
+
+client = <starlette.testclient.TestClient object at 0x10e0328b0>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1322/test_restart_preserves_history0')
+
+    def test_restart_preserves_history_and_reads_do_not_execute(client, tmp_path):
+        item = upload(client, key='k' * 128).json()
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = True
+        result = run(client, item['id']).json()
+        db_path = tmp_path / 'skill73.db'
+        client.__exit__(None, None, None)
+        with TestClient(create_app(db_path, False), base_url='http://127.0.0.1',
+                        client=('127.0.0.1', 45174)) as restored:
+            restored.app.state.service.external_skills.sandbox_cls = SyntheticSandbox
+            before = snapshot(restored)
+            assert run(restored, item['id']).json() == result
+            assert upload(restored, key='k' * 128).json() == item
+            listing = restored.get(BASE + '/packages')
+>           check(restored, 1, listing, 200)
+
+tests/test_external_skill_http_contracts.py:351:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d99f790>, op = 1
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 1, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+________________ test_unexpected_zip_parser_fault_is_not_hidden ________________
+
+client = <starlette.testclient.TestClient object at 0x10ae008d0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10dec71c0>
+
+    def test_unexpected_zip_parser_fault_is_not_hidden(client, monkeypatch):
+        raw = package()
+        def fault(*args, **kwargs):
+            raise RuntimeError('PRIVATE_PROGRAM_BUG73')
+        monkeypatch.setattr(external_skills.zipfile, 'ZipFile', fault)
+        before = snapshot(client)
+        result = upload(client, raw)
+        assert result.status_code == 500 and 'PRIVATE_PROGRAM_BUG73' not in result.text
+        assert snapshot(client) == before
+>       check(client, 2, result, 500)
+
+tests/test_external_skill_http_contracts.py:365:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae008d0>, op = 2
+status = '500'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, '500')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+_______ test_manifest_parser_limit_failure_is_an_input_error[ValueError] _______
+
+client = <starlette.testclient.TestClient object at 0x10d382470>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d5d84b0>
+fault_type = <class 'ValueError'>
+
+    @pytest.mark.parametrize('fault_type', [ValueError, RecursionError])
+    def test_manifest_parser_limit_failure_is_an_input_error(client, monkeypatch, fault_type):
+        raw = package()
+        original = external_skills.json.loads
+        def limited(value, *args, **kwargs):
+            if isinstance(value, str) and value == json.dumps(MANIFEST):
+                raise fault_type('PRIVATE_PARSER_LIMIT73')
+            return original(value, *args, **kwargs)
+        monkeypatch.setattr(external_skills.json, 'loads', limited)
+        before = snapshot(client)
+        result = upload(client, raw)
+>       check(client, 2, result, 422)
+
+tests/test_external_skill_http_contracts.py:379:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d382470>, op = 2
+response = <Response [500 Internal Server Error]>, status = 422
+
+    def check(c, op, response, status):
+>       assert response.status_code == status, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_c27f632fea4a43ffac2a8362420a0cc9"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:99: AssertionError
+_____ test_manifest_parser_limit_failure_is_an_input_error[RecursionError] _____
+
+client = <starlette.testclient.TestClient object at 0x10dd97020>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e05b540>
+fault_type = <class 'RecursionError'>
+
+    @pytest.mark.parametrize('fault_type', [ValueError, RecursionError])
+    def test_manifest_parser_limit_failure_is_an_input_error(client, monkeypatch, fault_type):
+        raw = package()
+        original = external_skills.json.loads
+        def limited(value, *args, **kwargs):
+            if isinstance(value, str) and value == json.dumps(MANIFEST):
+                raise fault_type('PRIVATE_PARSER_LIMIT73')
+            return original(value, *args, **kwargs)
+        monkeypatch.setattr(external_skills.json, 'loads', limited)
+        before = snapshot(client)
+        result = upload(client, raw)
+>       check(client, 2, result, 422)
+
+tests/test_external_skill_http_contracts.py:379:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10dd97020>, op = 2
+response = <Response [500 Internal Server Error]>, status = 422
+
+    def check(c, op, response, status):
+>       assert response.status_code == status, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_8dfb07b1f61b4f85b99f91b97adb01a8"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:99: AssertionError
+________ test_execute_request_is_strict_before_gate_or_execution[body0] ________
+
+client = <starlette.testclient.TestClient object at 0x10e52ead0>
+body = {'input': {}, 'extra': True}
+
+    @pytest.mark.parametrize('body', [{'input': {}, 'extra': True}, {'input': []}, {}, [], {'input': {str(i): i for i in range(33)}}])
+    def test_execute_request_is_strict_before_gate_or_execution(client, body):
+        before = snapshot(client)
+        result = client.post(BASE + '/packages/extpkg_' + 'a' * 32 + ':execute', json=body,
+                             headers={'Idempotency-Key': 'body73'})
+>       check(client, 3, result, 422)
+
+tests/test_external_skill_http_contracts.py:390:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e52ead0>, op = 3
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+________ test_execute_request_is_strict_before_gate_or_execution[body1] ________
+
+client = <starlette.testclient.TestClient object at 0x10e1cb8a0>
+body = {'input': []}
+
+    @pytest.mark.parametrize('body', [{'input': {}, 'extra': True}, {'input': []}, {}, [], {'input': {str(i): i for i in range(33)}}])
+    def test_execute_request_is_strict_before_gate_or_execution(client, body):
+        before = snapshot(client)
+        result = client.post(BASE + '/packages/extpkg_' + 'a' * 32 + ':execute', json=body,
+                             headers={'Idempotency-Key': 'body73'})
+>       check(client, 3, result, 422)
+
+tests/test_external_skill_http_contracts.py:390:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10e1cb8a0>, op = 3
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+________ test_execute_request_is_strict_before_gate_or_execution[body2] ________
+
+client = <starlette.testclient.TestClient object at 0x10debcd10>, body = {}
+
+    @pytest.mark.parametrize('body', [{'input': {}, 'extra': True}, {'input': []}, {}, [], {'input': {str(i): i for i in range(33)}}])
+    def test_execute_request_is_strict_before_gate_or_execution(client, body):
+        before = snapshot(client)
+        result = client.post(BASE + '/packages/extpkg_' + 'a' * 32 + ':execute', json=body,
+                             headers={'Idempotency-Key': 'body73'})
+>       check(client, 3, result, 422)
+
+tests/test_external_skill_http_contracts.py:390:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10debcd10>, op = 3
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+________ test_execute_request_is_strict_before_gate_or_execution[body3] ________
+
+client = <starlette.testclient.TestClient object at 0x10ae90270>, body = []
+
+    @pytest.mark.parametrize('body', [{'input': {}, 'extra': True}, {'input': []}, {}, [], {'input': {str(i): i for i in range(33)}}])
+    def test_execute_request_is_strict_before_gate_or_execution(client, body):
+        before = snapshot(client)
+        result = client.post(BASE + '/packages/extpkg_' + 'a' * 32 + ':execute', json=body,
+                             headers={'Idempotency-Key': 'body73'})
+>       check(client, 3, result, 422)
+
+tests/test_external_skill_http_contracts.py:390:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ae90270>, op = 3
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+________ test_execute_request_is_strict_before_gate_or_execution[body4] ________
+
+client = <starlette.testclient.TestClient object at 0x10d380490>
+body = {'input': {'0': 0, '1': 1, '2': 2, '3': 3, ...}}
+
+    @pytest.mark.parametrize('body', [{'input': {}, 'extra': True}, {'input': []}, {}, [], {'input': {str(i): i for i in range(33)}}])
+    def test_execute_request_is_strict_before_gate_or_execution(client, body):
+        before = snapshot(client)
+        result = client.post(BASE + '/packages/extpkg_' + 'a' * 32 + ':execute', json=body,
+                             headers={'Idempotency-Key': 'body73'})
+>       check(client, 3, result, 422)
+
+tests/test_external_skill_http_contracts.py:390:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d380490>, op = 3
+status = '422'
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 3, '422')
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...lidationError', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+___________ test_declared_parameters_and_error_branches_match_source ___________
+
+client = <starlette.testclient.TestClient object at 0x10ae01150>
+
+    def test_declared_parameters_and_error_branches_match_source(client):
+        source = external_skills.CONTRACT
+        for doc, static, _ in documents(client):
+            for path, method, _, _ in OPS:
+                p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+                operation = doc['paths'][p][method]
+                expected = {'$ref': '#/components/responses/LocalProductError'} if static else {
+                    '$ref': '#/components/schemas/local_http_error'}
+                for status in ['default'] + (['422'] if '422' in operation['responses'] else []):
+>                   assert status in operation['responses'], ('missing declared error response', p, method, status)
+E                   AssertionError: ('missing declared error response', '/api/local/external-skills/runtime', 'get', 'default')
+E                   assert 'default' in {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {}}}}}
+
+tests/test_external_skill_http_contracts.py:403: AssertionError
+_________________ test_stored_package_boundary_keys_and_labels _________________
+
+client = <starlette.testclient.TestClient object at 0x10d99f020>
+
+    def test_stored_package_boundary_keys_and_labels(client):
+        first = upload(client, archive(json.dumps(MANIFEST).encode(), compression=zipfile.ZIP_STORED), key='k' * 128, label='a' * 160)
+>       check(client, 2, first, 201)
+
+tests/test_external_skill_http_contracts.py:420:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10d99f020>, op = 2
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 2, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+=============================== warnings summary ===============================
+../../..[REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-False-False]
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-False-True]
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-True-False]
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[colima-True-True]
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-False-False]
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-False-True]
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-True-False]
+FAILED tests/test_external_skill_http_contracts.py::test_runtime_states_are_exact_metadata_and_reads_do_not_write[linux-docker-True-True]
+FAILED tests/test_external_skill_http_contracts.py::test_registration_execution_replay_count_and_tamper
+FAILED tests/test_external_skill_http_contracts.py::test_contract_rejects_empty_or_nested_invalid_result[0]
+FAILED tests/test_external_skill_http_contracts.py::test_contract_rejects_empty_or_nested_invalid_result[1]
+FAILED tests/test_external_skill_http_contracts.py::test_contract_rejects_empty_or_nested_invalid_result[2]
+FAILED tests/test_external_skill_http_contracts.py::test_contract_rejects_empty_or_nested_invalid_result[3]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[deep_json]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[large_integer]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[utf8]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[extra]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[bzip2]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[encrypted]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[unsupported]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[deflate]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[crc]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[symlink]
+FAILED tests/test_external_skill_http_contracts.py::test_upload_http_boundaries[key_missing]
+FAILED tests/test_external_skill_http_contracts.py::test_upload_http_boundaries[key_empty]
+FAILED tests/test_external_skill_http_contracts.py::test_upload_http_boundaries[key_long]
+FAILED tests/test_external_skill_http_contracts.py::test_upload_http_boundaries[oversize]
+FAILED tests/test_external_skill_http_contracts.py::test_upload_http_boundaries[media]
+FAILED tests/test_external_skill_http_contracts.py::test_upload_http_boundaries[label]
+FAILED tests/test_external_skill_http_contracts.py::test_upload_http_boundaries[missing_label]
+FAILED tests/test_external_skill_http_contracts.py::test_execution_errors_and_lock_release[disabled]
+FAILED tests/test_external_skill_http_contracts.py::test_execution_errors_and_lock_release[missing]
+FAILED tests/test_external_skill_http_contracts.py::test_execution_errors_and_lock_release[busy]
+FAILED tests/test_external_skill_http_contracts.py::test_execution_errors_and_lock_release[tampered]
+FAILED tests/test_external_skill_http_contracts.py::test_execution_errors_and_lock_release[sandbox_failure]
+FAILED tests/test_external_skill_http_contracts.py::test_database_failure_rolls_back_and_retry_is_explicit[registration]
+FAILED tests/test_external_skill_http_contracts.py::test_database_failure_rolls_back_and_retry_is_explicit[execution]
+FAILED tests/test_external_skill_http_contracts.py::test_restart_preserves_history_and_reads_do_not_execute
+FAILED tests/test_external_skill_http_contracts.py::test_unexpected_zip_parser_fault_is_not_hidden
+FAILED tests/test_external_skill_http_contracts.py::test_manifest_parser_limit_failure_is_an_input_error[ValueError]
+FAILED tests/test_external_skill_http_contracts.py::test_manifest_parser_limit_failure_is_an_input_error[RecursionError]
+FAILED tests/test_external_skill_http_contracts.py::test_execute_request_is_strict_before_gate_or_execution[body0]
+FAILED tests/test_external_skill_http_contracts.py::test_execute_request_is_strict_before_gate_or_execution[body1]
+FAILED tests/test_external_skill_http_contracts.py::test_execute_request_is_strict_before_gate_or_execution[body2]
+FAILED tests/test_external_skill_http_contracts.py::test_execute_request_is_strict_before_gate_or_execution[body3]
+FAILED tests/test_external_skill_http_contracts.py::test_execute_request_is_strict_before_gate_or_execution[body4]
+FAILED tests/test_external_skill_http_contracts.py::test_declared_parameters_and_error_branches_match_source
+FAILED tests/test_external_skill_http_contracts.py::test_stored_package_boundary_keys_and_labels
+48 failed, 1 warning in 6.42s

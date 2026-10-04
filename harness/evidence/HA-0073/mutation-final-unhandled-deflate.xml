@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.291" timestamp="2026-10-04T09:54:41.904846+08:00" hostname="192.168.31.117"><testcase classname="tests.test_external_skill_http_contracts" name="test_bad_archive_is_422_before_any_persistence_or_execution[deflate]" time="0.102"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_22f3a223f21642f590644775cc5743bb&quot;}}&#10;assert 500 == 422&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d14ba10&gt;
+kind = 'deflate'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_22f3a223f21642f590644775cc5743bb"}}
+E       assert 500 == 422
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_external_skill_http_contracts.py:252: AssertionError</failure></testcase></testsuite></testsuites>

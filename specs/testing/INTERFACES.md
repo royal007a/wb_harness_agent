@@ -231,11 +231,11 @@ Agent/Skill/Tool 模拟；零模型、零网络
 
 本机/SSH 管理员 ZIP JSON transform；未接 Product Run
 
-必须验证：包 Schema/路径/摘要；代理拒绝；禁网非 root/只读/无凭证；输出/超时/并发/清理；两端真实容器；崩溃自动回收尚缺。
+必须验证：四入口源静态动态合同、坏ZIP解析及DB回滚历史收据；包 Schema/路径/摘要；代理拒绝；禁网非 root/只读/无凭证；输出/超时/并发/清理；两端真实容器；崩溃自动回收尚缺。
 
-规格：`docs/harness/EXTERNAL_SKILL_RUNTIME.md`
+规格：`docs/harness/EXTERNAL_SKILL_RUNTIME.md`、`specs/testing/EXTERNAL_SKILL_HTTP_CONTRACTS.md`
 
-测试入口：`tests/test_external_skills.py`
+测试入口：`tests/test_external_skills.py`、`tests/test_external_skill_http_contracts.py`
 
 ### memory：Memory M1/M2-A/M3 与语义准入
 

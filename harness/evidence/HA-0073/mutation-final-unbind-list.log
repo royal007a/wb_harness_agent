@@ -1,0 +1,67 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________ test_restart_preserves_history_and_reads_do_not_execute ____________
+
+client = <starlette.testclient.TestClient object at 0x10addbb60>
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1330/test_restart_preserves_history0')
+
+    def test_restart_preserves_history_and_reads_do_not_execute(client, tmp_path):
+        item = upload(client, key='k' * 128).json()
+        runtime = client.app.state.service.external_skills
+        runtime._enabled = True
+        result = run(client, item['id']).json()
+        db_path = tmp_path / 'skill73.db'
+        client.__exit__(None, None, None)
+        with TestClient(create_app(db_path, False), base_url='http://127.0.0.1',
+                        client=('127.0.0.1', 45174)) as restored:
+            restored.app.state.service.external_skills.sandbox_cls = SyntheticSandbox
+            before = snapshot(restored)
+            assert run(restored, item['id']).json() == result
+            assert upload(restored, key='k' * 128).json() == item
+            listing = restored.get(BASE + '/packages')
+>           check(restored, 1, listing, 200)
+
+tests/test_external_skill_http_contracts.py:351:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_external_skill_http_contracts.py:100: in check
+    for v in contracts(c, op, None if str(status) == OPS[op][2] else str(status)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10bea6ad0>, op = 1
+status = None
+
+    def contracts(c, op, status=None):
+        path, method, success, name = OPS[op]
+        sources, resources = {}, []
+        for stem in ['external-skill-runtime', 'core-contracts']:
+            file = ROOT / 'specs/v1' / (stem + '.schema.json')
+            doc = json.loads(file.read_text())
+            sources[stem] = doc
+            resources += [(file.as_uri(), Resource.from_contents(doc)), (doc['$id'], Resource.from_contents(doc))]
+        checks = []
+        for doc, static, base in documents(c):
+            p = path.removeprefix('/api').replace('{package_id}', '{packageId}') if static else path
+            responses = doc['paths'][p][method]['responses']
+            response = responses.get(status or success, responses.get('default', {}))
+            if '$ref' in response:
+                response = doc['components']['responses'][response['$ref'].split('/')[-1]]
+            schema = response.get('content', {}).get('application/json', {}).get('schema', {})
+            v = Draft202012Validator({**doc, **base, **schema}, registry=Registry().with_resources(resources),
+                                      format_checker=FORMATS)
+>           assert not v.is_valid({}), ('empty response schema', op, status)
+E           AssertionError: ('empty response schema', 1, None)
+E           assert not True
+E            +  where True = is_valid({})
+E            +    where is_valid = Draft202012Validator(schema={'components': {'schemas': {'HTTPValidationError': {'properties': {'detail': {'items': {.....Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']>).is_valid
+
+tests/test_external_skill_http_contracts.py:89: AssertionError
+=============================== warnings summary ===============================
+../../..[REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_restart_preserves_history_and_reads_do_not_execute
+1 failed, 47 deselected, 1 warning in 0.42s

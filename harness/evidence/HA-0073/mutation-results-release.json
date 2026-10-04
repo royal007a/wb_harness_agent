@@ -1,0 +1,74 @@
+[
+  {
+    "id": "allow-unsupported-zip",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-allow-unsupported-zip.xml"
+  },
+  {
+    "id": "unhandled-deflate",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-unhandled-deflate.xml"
+  },
+  {
+    "id": "unhandled-value-limit",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-unhandled-value-limit.xml"
+  },
+  {
+    "id": "unhandled-recursion-limit",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-unhandled-recursion-limit.xml"
+  },
+  {
+    "id": "swallow-program-error",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-swallow-program-error.xml"
+  },
+  {
+    "id": "unbind-runtime",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-unbind-runtime.xml"
+  },
+  {
+    "id": "unbind-list",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-unbind-list.xml"
+  },
+  {
+    "id": "unbind-upload",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-unbind-upload.xml"
+  },
+  {
+    "id": "unbind-execution-errors",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-unbind-execution-errors.xml"
+  },
+  {
+    "id": "relax-audit-cleanup",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-relax-audit-cleanup.xml"
+  },
+  {
+    "id": "relax-package-count",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-relax-package-count.xml"
+  },
+  {
+    "id": "commit-before-execution-row",
+    "exit_code": 1,
+    "restored": true,
+    "evidence": "mutation-release-commit-before-execution-row.xml"
+  }
+]

@@ -44,7 +44,65 @@
         "status": {"const": "succeeded"},
         "output": {"type": "object"},
         "isolation_profile": {"const": "external-skill-stdlib-v1"},
-        "audit": {"type": "object"}
+        "audit": {"$ref": "#/$defs/external_skill_execution_audit"}
+      }
+    },
+    "external_skill_execution_audit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["isolation_profile", "profile_sha256", "image_id", "duration_ms", "container_cleaned", "input_sha256", "output_sha256", "executed_at"],
+      "properties": {
+        "isolation_profile": {"const": "external-skill-stdlib-v1"},
+        "backend": {"enum": ["colima", "linux-docker"]},
+        "profile_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "image_id": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "container_cleaned": {"const": true},
+        "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "output_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "executed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "local_http_external_skill_runtime": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "runtime_enabled", "backend", "access_scope", "max_concurrency", "isolation_profile", "image_id", "package_sources", "network", "host_paths", "credentials", "blockers"],
+      "properties": {
+        "mode": {"const": "external-skill-runtime@1"},
+        "runtime_enabled": {"type": "boolean"},
+        "backend": {"enum": ["colima", "linux-docker"]},
+        "access_scope": {"const": "direct_loopback_or_ssh_tunnel"},
+        "max_concurrency": {"const": 1},
+        "isolation_profile": {"const": "external-skill-stdlib-v1"},
+        "image_id": {"type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$"},
+        "package_sources": {"const": ["local_zip_upload_only"]},
+        "network": {"const": "denied"},
+        "host_paths": {"const": "denied_except_immutable_package_and_request_mounts"},
+        "credentials": {"const": "not_injected"},
+        "blockers": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true, "maxItems": 2}
+      },
+      "allOf": [
+        {"if": {"properties": {"runtime_enabled": {"const": false}}}, "then": {"properties": {"blockers": {"contains": {"const": "external_skill_runtime_disabled"}}}}, "else": {"properties": {"blockers": {"not": {"contains": {"const": "external_skill_runtime_disabled"}}}}}},
+        {"if": {"properties": {"image_id": {"type": "string"}}}, "then": {"properties": {"blockers": {"items": {"const": "external_skill_runtime_disabled"}}}}, "else": {"properties": {"blockers": {"contains": {"not": {"const": "external_skill_runtime_disabled"}}}}}}
+      ]
+    },
+    "local_http_external_skill_package": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "manifest", "source_label", "content_sha256", "storage", "created_at", "execution_count"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^extpkg_[a-f0-9]{32}$"},
+        "manifest": {"$ref": "#/$defs/skill_manifest"},
+        "source_label": {"$ref": "#/$defs/package_registration/properties/source_label"},
+        "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "storage": {"const": "controlled_immutable_directory"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "execution_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "local_http_external_skill_list": {
+      "type": "object", "additionalProperties": false,
+      "required": ["items", "runtime"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/local_http_external_skill_package"}},
+        "runtime": {"$ref": "#/$defs/local_http_external_skill_runtime"}
       }
     }
   }

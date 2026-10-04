@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="5" time="0.618" timestamp="2026-10-04T10:00:34.197523+08:00" hostname="192.168.31.117"><testcase classname="tests.test_external_skill_http_contracts" name="test_bad_archive_is_422_before_any_persistence_or_execution[bzip2]" time="0.154"><failure message="AssertionError: {&quot;id&quot;:&quot;extpkg_5a6e158dec9e46de9bffbc331aec8f06&quot;,&quot;manifest&quot;:{&quot;schema_version&quot;:&quot;external-skill-manifest@1&quot;,&quot;skill_id&quot;:&quot;ext_json_echo&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;entrypoint&quot;:&quot;entry.py&quot;,&quot;runtime&quot;:&quot;python-stdlib@3.12&quot;,&quot;capabilities&quot;:[&quot;transform_json&quot;]},&quot;source_label&quot;:&quot;fixture73&quot;,&quot;content_sha256&quot;:&quot;03bb88ef46d3132ba9b971c6a2ca6038f41c973186ff8426e0ff91450072a63d&quot;,&quot;storage&quot;:&quot;controlled_immutable_directory&quot;,&quot;created_at&quot;:&quot;2026-10-04T02:00:34.592014Z&quot;,&quot;execution_count&quot;:0}&#10;assert 201 == 422&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10a883770&gt;, kind = 'bzip2'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink', 'strong_encryption', 'patched_data'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"id":"extpkg_5a6e158dec9e46de9bffbc331aec8f06","manifest":{"schema_version":"external-skill-manifest@1","skill_id":"ext_json_echo","version":"1.0.0","entrypoint":"entry.py","runtime":"python-stdlib@3.12","capabilities":["transform_json"]},"source_label":"fixture73","content_sha256":"03bb88ef46d3132ba9b971c6a2ca6038f41c973186ff8426e0ff91450072a63d","storage":"controlled_immutable_directory","created_at":"2026-10-04T02:00:34.592014Z","execution_count":0}
+E       assert 201 == 422
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests/test_external_skill_http_contracts.py:253: AssertionError</failure></testcase><testcase classname="tests.test_external_skill_http_contracts" name="test_bad_archive_is_422_before_any_persistence_or_execution[encrypted]" time="0.040"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_27b00cd05ece4fbc92ce9f3831af799b&quot;}}&#10;assert 500 == 422&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10b9db610&gt;
+kind = 'encrypted'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink', 'strong_encryption', 'patched_data'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_27b00cd05ece4fbc92ce9f3831af799b"}}
+E       assert 500 == 422
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_external_skill_http_contracts.py:253: AssertionError</failure></testcase><testcase classname="tests.test_external_skill_http_contracts" name="test_bad_archive_is_422_before_any_persistence_or_execution[unsupported]" time="0.061"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_574b2e2e0761466ca767402943379f8e&quot;}}&#10;assert 500 == 422&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10aa2c190&gt;
+kind = 'unsupported'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink', 'strong_encryption', 'patched_data'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_574b2e2e0761466ca767402943379f8e"}}
+E       assert 500 == 422
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_external_skill_http_contracts.py:253: AssertionError</failure></testcase><testcase classname="tests.test_external_skill_http_contracts" name="test_bad_archive_is_422_before_any_persistence_or_execution[strong_encryption]" time="0.037"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_340600015b3e4fb3a6a5712313393841&quot;}}&#10;assert 500 == 422&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10c8dce90&gt;
+kind = 'strong_encryption'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink', 'strong_encryption', 'patched_data'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_340600015b3e4fb3a6a5712313393841"}}
+E       assert 500 == 422
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_external_skill_http_contracts.py:253: AssertionError</failure></testcase><testcase classname="tests.test_external_skill_http_contracts" name="test_bad_archive_is_422_before_any_persistence_or_execution[patched_data]" time="0.038"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_1afeea0653124e37b5f3459bcc47be70&quot;}}&#10;assert 500 == 422&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10c8dda70&gt;
+kind = 'patched_data'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink', 'strong_encryption', 'patched_data'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+&gt;       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_1afeea0653124e37b5f3459bcc47be70"}}
+E       assert 500 == 422
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_external_skill_http_contracts.py:253: AssertionError</failure></testcase></testsuite></testsuites>

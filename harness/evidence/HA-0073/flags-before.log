@@ -1,0 +1,44 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_bad_archive_is_422_before_any_persistence_or_execution[strong_encryption] _
+
+client = <starlette.testclient.TestClient object at 0x108e342f0>
+kind = 'strong_encryption'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink', 'strong_encryption', 'patched_data'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_cfb97bb9d7404e1ba1eece6141289350"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:253: AssertionError
+__ test_bad_archive_is_422_before_any_persistence_or_execution[patched_data] ___
+
+client = <starlette.testclient.TestClient object at 0x10ac30050>
+kind = 'patched_data'
+
+    @pytest.mark.parametrize('kind', ['deep_json', 'large_integer', 'utf8', 'extra', 'bzip2', 'encrypted',
+                                      'unsupported', 'deflate', 'crc', 'symlink', 'strong_encryption', 'patched_data'])
+    def test_bad_archive_is_422_before_any_persistence_or_execution(client, kind):
+        before = snapshot(client)
+        response = upload(client, bad_zip(kind))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_46396311be1847dead157d7a1a3efcf0"}}
+E       assert 500 == 422
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_external_skill_http_contracts.py:253: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[strong_encryption]
+FAILED tests/test_external_skill_http_contracts.py::test_bad_archive_is_422_before_any_persistence_or_execution[patched_data]
+2 failed, 48 deselected, 1 warning in 0.39s

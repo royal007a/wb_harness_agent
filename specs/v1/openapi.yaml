@@ -159,12 +159,15 @@ paths:
       - url: /api
     get:
       operationId: getExternalSkillRuntime
-      description: Returns the default-closed external Skill gate and isolation profile without reading a package or starting Docker.
+      description: Probes image availability and returns the default-closed external Skill gate; does not read a package or start a container.
       responses:
         '200':
           description: Runtime gate status.
+          content:
+            application/json:
+              schema: {$ref: './external-skill-runtime.schema.json#/$defs/local_http_external_skill_runtime'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/external-skills/packages:
     servers:
       - url: /api
@@ -173,8 +176,11 @@ paths:
       responses:
         '200':
           description: Immutable registered package summaries and runtime status.
+          content:
+            application/json:
+              schema: {$ref: './external-skill-runtime.schema.json#/$defs/local_http_external_skill_list'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
     post:
       operationId: registerExternalSkillPackage
       description: Registers an unexecuted local ZIP containing only manifest.json and entry.py.
@@ -183,9 +189,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
-            minLength: 1
-            maxLength: 160
+            $ref: './external-skill-runtime.schema.json#/$defs/package_registration/properties/source_label'
         - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
@@ -197,8 +201,11 @@ paths:
       responses:
         '201':
           description: Package registered with immutable content digest.
+          content:
+            application/json:
+              schema: {$ref: './external-skill-runtime.schema.json#/$defs/local_http_external_skill_package'}
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/external-skills/packages/{packageId}:execute:
     servers:
       - url: /api
@@ -226,7 +233,7 @@ paths:
               schema:
                 $ref: './external-skill-runtime.schema.json#/$defs/execution_result'
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/LocalProductError'
   /local/memory/runtime:
     servers:
       - url: /api

@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-04T01:25:00Z",
+  "generated_at": "2026-10-04T02:03:00Z",
   "tasks": [
+    {
+      "id": "HA-0073",
+      "title": "外部Skill HTTP合同与损坏包输入边界",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["四类外部Skill HTTP合同", "损坏ZIP/manifest输入错误", "合成执行、生命周期、故障和回放验证"],
+      "non_goals": ["新增沙箱权限或启用模型", "真实容器隔离或多租户验收", "绕过本机部署132"],
+      "acceptance": ["三套合同与实际正负实例一致", "坏包拒绝且不执行，DB故障不半写", "基线反例、突变、相关和全量verify", "固定提交独立review及双部署证据"],
+      "depends_on": ["HA-0052", "HA-0062"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0073-external-skill-http-contracts.md",
+      "blocked_reason": "50新/相关190通过，旧版50断言反例与12定向突变；最终verify退出0，1420 passed/16 skipped。待固定提交独立review与兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交Approved；兼容本机拓扑批准后先8765再132验收。",
+      "evidence": ["harness/evidence/HA-0073/acceptance.md", "harness/evidence/HA-0073/mutation-plan.json", "harness/evidence/HA-0073/mutation-results-release.json", "harness/evidence/HA-0073/remaining-empty-responses.json"]
+    },
     {
       "id": "HA-0072",
       "title": "Memory图写入合同与支撑来源时间边界",
@@ -13,9 +28,9 @@
       "depends_on": ["HA-0070", "HA-0071"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0072-memory-graph-write-contracts.md",
-      "blocked_reason": "新42/相关242、基线26行为反例与14有效突变；全量1370/16、verify退出0。待固定提交独立review与兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交Approved；本机拓扑批准后先8765再132验收。",
-      "evidence": ["harness/evidence/HA-0072/acceptance.md", "harness/evidence/HA-0072/mutation-plan.json", "harness/evidence/HA-0072/mutation-results-final.json"]
+      "blocked_reason": "5241fe4独立Approved；42新/176指定及26基线反例核实，2 Low为证据问题，损坏XML已固定版本重跑并修正引用。仍待兼容本机拓扑后的双部署。",
+      "recovery_condition": "本机拓扑批准后先8765再132验收。",
+      "evidence": ["harness/evidence/HA-0072/acceptance.md", "harness/evidence/HA-0072/mutation-plan.json", "harness/evidence/HA-0072/mutation-results-final.json", "harness/evidence/HA-0072/review.md"]
     },
     {
       "id": "HA-0071",

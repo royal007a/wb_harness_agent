@@ -260,7 +260,7 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   词项擦除（普通SELECT仍可读）。非目标已补明，不把查询不可见当成抹除证明。
 - **MEMORY-GRAPH-HTTP-01 / Low**：Entity/Relation POST缺409/500公开声明，实际
   信封正确但HA70信封用例只覆盖Retain。HA-0072候选补动态default/422及静态
-  当前信封，去重audit分支与未来Source支撑检查，仍待固定提交复审和部署。
+  当前信封，去重audit分支与未来Source支撑检查，5241fe4独立Approved，仍待部署。
 - **OPENAPI-EMPTY-06**：HA-0069候选补Memory三类写回执后，剩22个API和1个页面
   成功JSON声明恰为空；缺content及非空但宽松声明另计，见该项remaining清单。
 - **PI-RUN-02 / Low**：HA-0068固定697ef73独立Approved；Child根列表过滤及
@@ -271,3 +271,9 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   禁止项缺独立负例；生产约束正确。false_zero仅测ASGI不一致，HTTP/1.1 CL:0后
   额外字节不属于本次body。ValueError也可吞校验器同类程序错误为fail-closed；
   文件字节上限仍未实现。详见HA-0069/review.md，双部署仍未完成。
+- **EXTERNAL-SKILL-HTTP-01**：HA-0073补四入口合同、坏ZIP/manifest输入错误，
+  验证只用合成Sandbox，不代表真实容器、崩溃清理、部署或Product Run接入验收。
+  历史收据与实时计数分开；执行后DB失败可能导致重试再次执行。
+- **OPENAPI-EMPTY-07**：HA-0073补外部Skill三类空成功响应后，剩19个API和1个
+  页面成功JSON声明恰为空，见该项remaining-empty-responses.json；缺content、
+  非空但宽松Schema、行为与真实部署证据另计，不能据此宣称所有接口完成验收。

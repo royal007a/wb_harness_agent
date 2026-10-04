@@ -1,0 +1,28 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________ test_unexpected_zip_parser_fault_is_not_hidden ________________
+
+client = <starlette.testclient.TestClient object at 0x10c75fb60>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c3e1350>
+
+    def test_unexpected_zip_parser_fault_is_not_hidden(client, monkeypatch):
+        raw = package()
+        def fault(*args, **kwargs):
+            raise RuntimeError('PRIVATE_PROGRAM_BUG73')
+        monkeypatch.setattr(external_skills.zipfile, 'ZipFile', fault)
+        before = snapshot(client)
+        result = upload(client, raw)
+>       assert result.status_code == 500 and 'PRIVATE_PROGRAM_BUG73' not in result.text
+E       assert (422 == 500)
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/test_external_skill_http_contracts.py:363: AssertionError
+=============================== warnings summary ===============================
+../../..[REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  [REPOSITORY]/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_external_skill_http_contracts.py::test_unexpected_zip_parser_fault_is_not_hidden
+1 failed, 47 deselected, 1 warning in 0.32s

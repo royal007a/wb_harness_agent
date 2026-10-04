@@ -25,6 +25,10 @@ entry.py        # export main(payload) -> JSON object
 
 manifest 固定为 `python-stdlib@3.12`、`entry.py`、`transform_json`；不接受包内依赖、命令、二进制、链接、目录、额外文件或任何动态安装。登记时平台复制内容到受控目录并记录内容 SHA-256；每次执行前再次复核摘要，因此登记后的文件漂移会拒绝而非执行。
 
+HA-0073明确ZIP方法仅支持无加密stored/deflated，继续限制每个文件64KiB；
+损坏压缩流、非法UTF-8、manifest解析上限均按输入错误拒绝。登记与列表等四入口
+的HTTP合同和故障验证见`specs/testing/EXTERNAL_SKILL_HTTP_CONTRACTS.md`。
+
 `POST /api/local/external-skills/packages?source_label=<label>` 使用 `application/zip` 和 `Idempotency-Key` 登记包。`POST /api/local/external-skills/packages/{package_id}:execute` 接收严格 JSON：
 
 ```json
@@ -57,6 +61,11 @@ HARNESS_DOCKER_TESTS=1 .venv/bin/python -m pytest -q tests/test_external_skills.
 ## 门禁与非目标
 
 `HARNESS_EXTERNAL_SKILLS=enabled` 默认**未设置**。因此执行接口先返回 `EXTERNAL_SKILL_RUNTIME_DISABLED`，不会读取登记包或启动 Docker。注册包也不会执行包内代码。
+
+上句指新执行：同key同请求仍可回放历史成功收据，不读取包、不新执行。runtime/
+列表查询会做镜像可用性探测，可调用Docker CLI，但不启动容器；不能称零I/O。
+DB回滚可能留下按摘要固化的文件目录，重试复核后复用。容器执行之后DB失败，
+再次请求可能重新执行；不承诺跨文件系统/容器/DB的exactly-once。
 
 该运行时不允许 URL、Git、pip/npm、shell、任意宿主路径、网络、凭证、模型、MCP、真实资料或 Product Task/Run 自动接入。它的独立 audit 记录不假装为 Product Event；将来接入一个 Product Run 时，必须先定义 Task/Run/权限/预算/审批关联与新的 ADR。容器隔离是本机单用户 L3 探针，不等价于多租户、内核级或生产供应链认证。
 

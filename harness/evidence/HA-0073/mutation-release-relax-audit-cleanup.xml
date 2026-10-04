@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.992" timestamp="2026-10-04T10:00:41.370879+08:00" hostname="192.168.31.117"><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[0]" time="0.265" /><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[1]" time="0.183" /><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[2]" time="0.174" /><testcase classname="tests.test_external_skill_http_contracts" name="test_contract_rejects_empty_or_nested_invalid_result[3]" time="0.173"><failure message="AssertionError: (3, {'execution_id': 'extx_eb196ee36eb34ecd908bba9d09837fb1', 'package_id': 'extpkg_e6a59a245fd5475eac3a76fd3b6cc386', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})&#10;assert not True&#10; +  where True = is_valid({'execution_id': 'extx_eb196ee36eb34ecd908bba9d09837fb1', 'package_id': 'extpkg_e6a59a245fd5475eac3a76fd3b6cc386', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})&#10; +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...cution_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid">client = &lt;starlette.testclient.TestClient object at 0x10a1b28b0&gt;, op = 3
+
+    @pytest.mark.parametrize('op', range(4))
+    def test_contract_rejects_empty_or_nested_invalid_result(client, op):
+        item = upload(client).json()
+        client.app.state.service.external_skills._enabled = True
+        response = [lambda: client.get(BASE + '/runtime'), lambda: client.get(BASE + '/packages'),
+                    lambda: upload(client), lambda: run(client, item['id'])][op]()
+        check(client, op, response, int(OPS[op][2]))
+        value = response.json()
+        cases = []
+        if op == 0:
+            for field, bad in [('network', 'allowed'), ('max_concurrency', 2), ('image_id', 'bad'), ('credentials', 'injected')]:
+                cases.append({**value, field: bad})
+            cases.append({**value, 'runtime_enabled': False, 'blockers': []})
+        elif op in [1, 2]:
+            for field, bad in [('execution_count', -1), ('content_sha256', 'A' * 64), ('storage', '/private/path')]:
+                invalid = copy.deepcopy(value)
+                (invalid['items'][0] if op == 1 else invalid)[field] = bad
+                cases.append(invalid)
+        else:
+            for field, bad in [('image_id', 'bad'), ('container_cleaned', False), ('duration_ms', -1),
+                               ('input_sha256', 'A' * 64), ('extra', 'private')]:
+                invalid = copy.deepcopy(value)
+                invalid['audit'][field] = bad
+                cases.append(invalid)
+        for v in contracts(client, op):
+            for invalid in cases:
+&gt;               assert not v.is_valid(invalid), (op, invalid)
+E               AssertionError: (3, {'execution_id': 'extx_eb196ee36eb34ecd908bba9d09837fb1', 'package_id': 'extpkg_e6a59a245fd5475eac3a76fd3b6cc386', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})
+E               assert not True
+E                +  where True = is_valid({'execution_id': 'extx_eb196ee36eb34ecd908bba9d09837fb1', 'package_id': 'extpkg_e6a59a245fd5475eac3a76fd3b6cc386', 'package_sha256': '551489702868f5518c93c4b14a6d18c3be654a517194f126ad9c4bfa80fc6e65', 'status': 'succeeded', ...})
+E                +    where is_valid = Draft202012Validator(schema={'$ref': '#/components...cution_result', 'components': {'schemas': {'HTTPValidationError':...Checker checkers=['date', 'date-time', 'email', 'idn-email', 'idn-hostname', 'ipv4', 'ipv6', 'regex', 'time', 'uuid']&gt;).is_valid
+
+tests/test_external_skill_http_contracts.py:207: AssertionError</failure></testcase></testsuite></testsuites>
