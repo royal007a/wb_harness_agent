@@ -1,6 +1,6 @@
 # ADR-0070：删除优先于内容收据的历史回放
 
-状态：候选实现通过本地验证，待独立review与双部署；HA-0070，基线1c9aaf5。
+状态：4c17c47独立Approved，待双部署；HA-0070，基线1c9aaf5。
 
 HA-0069明确发现：删除Source及其Fact/Entity/Relation/FTS之后，旧Retain和图写入
 收据仍保留派生文本。直接删除幂等记录会让同key重试重新执行业务，不能采用。
@@ -32,5 +32,6 @@ HA-0069明确发现：删除Source及其Fact/Entity/Relation/FTS之后，旧Reta
 ## 非目标
 
 不清理磁盘空闲页/WAL、备份、客户端副本、其他产品产物或独立来源的相同文本；
+FTS5影子表可能仍保留已删词项（不是空闲页），本轮也不保证其擦除；
 scope/key/digest、Bank标签、审计元数据继续保留。不做FTS不可用时的写入恢复，
 不加身份/模型/外部检索权限。验收见`specs/testing/MEMORY_RECEIPT_DELETION.md`。

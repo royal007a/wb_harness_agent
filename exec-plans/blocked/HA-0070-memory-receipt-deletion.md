@@ -9,5 +9,5 @@
 5. 双部署仍按既有规则先本机后132；兼容本机拓扑未批准前不得跳过本机。
 
 验证完成：新32、相关224、全量1297 passed/16 skipped、verify退出0；基线23行为
-失败/5通过/4新Schema向量排除；12有效突变均被杀死。待固定提交独立review及
-兼容拓扑后的双部署。证据harness/evidence/HA-0070/acceptance.md。
+失败/5通过/4新Schema向量排除；12有效突变均被杀死。4c17c47独立Approved，
+2 Low/1 Info已登记；待兼容拓扑后的双部署。证据harness/evidence/HA-0070/acceptance.md。

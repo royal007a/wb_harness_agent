@@ -249,10 +249,14 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   HA-0069测试如实记录此边界，不把补HTTP合同称为全库删除或隐私抹除完成。
   后续应设计不复活写入的失效收据/摘要墓碑，覆盖重放、跨来源派生、备份/WAL边界。
   HA-0070候选已按ADR-0070补三类内容收据删除传播、旧库启动清理与回放存在性
-  重查；不清key/digest，故障同事务回滚。待固定提交独立review与部署，不称
+  重查；不清key/digest，故障同事务回滚。4c17c47独立Approved，待部署，不称
   物理删除/备份清理完成。
 - **MEMORY-FTS-01 / Medium**：FTS初始化失败时状态readiness已降级，但Retain
   仍调用_index_fact，可能500；不损坏事务，不等于M1写入可用。本轮未修。
+- **MEMORY-FTS-02 / Low**：HA-0070独立Approved；删除Fact索引行不保证FTS5影子表
+  词项擦除（普通SELECT仍可读）。非目标已补明，不把查询不可见当成抹除证明。
+- **MEMORY-GRAPH-HTTP-01 / Low**：Entity/Relation POST缺409/500公开声明，实际
+  信封正确但HA70信封用例只覆盖Retain。待图写入契约任务补齐。
 - **OPENAPI-EMPTY-06**：HA-0069候选补Memory三类写回执后，剩22个API和1个页面
   成功JSON声明恰为空；缺content及非空但宽松声明另计，见该项remaining清单。
 - **PI-RUN-02 / Low**：HA-0068固定697ef73独立Approved；Child根列表过滤及

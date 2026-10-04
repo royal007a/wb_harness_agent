@@ -36,7 +36,8 @@ HA-0070按ADR-0070补删除传播：相关Retain/Entity/Relation内容收据替�
 失效标记，保留key/digest；旧请求返回409 MEMORY_RECEIPT_UNAVAILABLE，不重新执行。
 启动时同样清理旧库中这三类canonical对象已不存在的孤儿收据，回放还会重查存在性。
 清理不可逆，发布前须备份；代码回退不恢复payload。它不是磁盘/WAL/备份擦除，
-也不会清除独立来源或其他产品的相同文本。见specs/testing/MEMORY_RECEIPT_DELETION.md。
+也不保证FTS5影子表词项擦除，不会清除独立来源或其他产品的相同文本。
+见specs/testing/MEMORY_RECEIPT_DELETION.md。
 DELETE对分块非空body同样返回422；损坏semantic档案返回invalid_not_admitted，
 不启动任何检索/模型，也不把真正DB故障吞成空结果。
 

@@ -13,9 +13,9 @@
       "depends_on": ["HA-0069"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0070-memory-receipt-deletion.md",
-      "blocked_reason": "新32/相关224通过，旧23行为反例/12有效突变；全量1297 passed/16 skipped及verify退出0。待独立review与兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交独立Approved；先本机再132部署并核验启动清理与备份边界。",
-      "evidence": ["harness/evidence/HA-0070/acceptance.md", "harness/evidence/HA-0070/mutation-plan.json", "harness/evidence/HA-0070/mutation-results.json"]
+      "blocked_reason": "4c17c47独立Approved；新32和旧23行为反例复跑，旧库升级及事务验证通过。2 Low/1 Info已登记；待兼容本机拓扑后的双部署。",
+      "recovery_condition": "先本机再132部署并核验启动清理与备份边界。",
+      "evidence": ["harness/evidence/HA-0070/acceptance.md", "harness/evidence/HA-0070/mutation-plan.json", "harness/evidence/HA-0070/mutation-results.json", "harness/evidence/HA-0070/review.md"]
     },
     {
       "id": "HA-0069",
