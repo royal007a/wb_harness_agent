@@ -354,16 +354,58 @@ def test_restart_preserves_history_and_reads_do_not_execute(client, tmp_path):
         assert len(SyntheticSandbox.calls) == 1 and snapshot(restored) == before
 
 
-def test_unexpected_zip_parser_fault_is_not_hidden(client, monkeypatch):
+@pytest.mark.parametrize('fault_type', [RuntimeError, ValueError, MemoryError, EOFError, NotImplementedError])
+def test_unexpected_zip_parser_fault_is_not_hidden(client, monkeypatch, fault_type):
     raw = package()
     def fault(*args, **kwargs):
-        raise RuntimeError('PRIVATE_PROGRAM_BUG73')
+        raise fault_type('PRIVATE_PROGRAM_BUG73')
     monkeypatch.setattr(external_skills.zipfile, 'ZipFile', fault)
     before = snapshot(client)
     result = upload(client, raw)
     assert result.status_code == 500 and 'PRIVATE_PROGRAM_BUG73' not in result.text
     assert snapshot(client) == before
     check(client, 2, result, 500)
+
+
+@pytest.mark.parametrize('filename', ['entry.py', 'manifest.json'])
+@pytest.mark.parametrize('encoding', ['invalid_utf8', 'cp437', 'valid_utf8'])
+def test_archive_filename_encoding_is_rejected_before_side_effects(client, filename, encoding):
+    if encoding == 'valid_utf8':
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, 'w') as archive:
+            for name, content in [('manifest.json', json.dumps(MANIFEST)), ('entry.py', 'def main(payload): return {}')]:
+                archive.writestr(name.replace('.', 'é.', 1) if name == filename else name, content)
+        raw = stream.getvalue()
+    else:
+        raw = bytearray(package())
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            local = archive.getinfo(filename).header_offset
+            central = archive.start_dir
+        while True:
+            name_length, extra_length, comment_length = struct.unpack_from('<HHH', raw, central + 28)
+            assert raw[central:central + 4] == b'PK\x01\x02'
+            if raw[central + 46:central + 46 + name_length] == filename.encode():
+                break
+            central += 46 + name_length + extra_length + comment_length
+        # Patch both headers without changing sizes/offsets. Only bit11 makes ff invalid.
+        for flag_offset, name_offset in [(local + 6, local + 30), (central + 8, central + 46)]:
+            raw[name_offset + filename.index('.') - 1] = 0xff
+            if encoding == 'invalid_utf8':
+                struct.pack_into('<H', raw, flag_offset, struct.unpack_from('<H', raw, flag_offset)[0] | 0x800)
+        raw = bytes(raw)
+    if encoding == 'invalid_utf8':
+        with pytest.raises(UnicodeDecodeError):
+            zipfile.ZipFile(io.BytesIO(raw))  # The fixture fails during constructor filename decode.
+    else:
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            assert any(not name.isascii() for name in archive.namelist())
+    before = snapshot(client)
+    response = upload(client, raw)
+    assert response.status_code == 422, response.text
+    assert response.json()['error']['code'] == 'EXTERNAL_SKILL_PACKAGE_INVALID'
+    assert snapshot(client) == before and SyntheticSandbox.calls == []
+    assert not external_skills.PACKAGE_ROOT.exists()
+    check(client, 2, response, 422)
 
 
 @pytest.mark.parametrize('fault_type', [ValueError, RecursionError])

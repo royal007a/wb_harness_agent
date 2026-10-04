@@ -82,7 +82,7 @@ class ExternalSkillRuntime:
             entry_raw = archive.read('entry.py')
         except Problem:
             raise
-        except (OSError, zipfile.BadZipFile, KeyError, zlib.error):
+        except (OSError, zipfile.BadZipFile, KeyError, zlib.error, UnicodeDecodeError):
             raise Problem('EXTERNAL_SKILL_PACKAGE_INVALID', '外部 Skill 必须是有效 ZIP。', 422) from None
         try:
             manifest = json.loads(manifest_raw.decode('utf-8'))

@@ -16,3 +16,8 @@
 6. 登记或执行DB中途故障回滚；文件目录可能残留但内容不可变，同key重试复核。
    重启保留包与历史回执；GET不写DB（不称不做镜像探测）。
 7. 固定基线反例、定向突变、全量/verify和独立review；真实容器/部署另计。
+8. 文件名编码单独验证：中央目录/本地头 bit 11 声明 UTF-8 但名称含非法字节，
+   entry 与 manifest 两种名称都返回422；合法UTF-8非ASCII名、cp437非ASCII名
+   也不得规整成允许的固定文件名。失败不写库、不创建包目录、不执行。
+   只将文件名 UnicodeDecodeError 归为输入错误；ZIP构造器的其他ValueError、
+   RuntimeError、MemoryError、EOFError、NotImplementedError保持500，不泄露异常。

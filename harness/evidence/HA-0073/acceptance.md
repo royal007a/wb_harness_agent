@@ -1,7 +1,8 @@
 # HA-0073 外部 Skill HTTP 合同与损坏包
 
 业务基线5241fe4；d65cd06只登记HA72复审/补跑证据，不改业务。候选由包含本文件
-的提交固定，尚待独立review与双部署。规格EXTERNAL_SKILL_HTTP_CONTRACTS.md、
+的提交固定；d2e0538独立review为Changes Requested，见review.md及下文返工。
+尚待返工复审与双部署。规格EXTERNAL_SKILL_HTTP_CONTRACTS.md、
 ADR-0073；目标是现有四入口，不接Agent Loop或Product Run。
 
 ## 实现
@@ -9,7 +10,8 @@ ADR-0073；目标是现有四入口，不接Agent Loop或Product Run。
 - runtime、包列表、登记三类空成功声明补源/静态/动态合同；执行审计收紧。
   四入口default及动态422绑定当前local_http_error，source_label复用源约束。
 - ZIP只接受无加密stored/deflated；损坏deflate、manifest ValueError/RecursionError
-  转422。非法UTF-8也属ValueError子类；意外RuntimeError不吞成输入问题。
+  转422。原版仅覆盖文件内容的非法UTF-8，文件名构造期遗漏已由复审指出；
+  返工窄捕获UnicodeDecodeError。意外RuntimeError不吞成输入问题。
 - 没有增加运行权限/网络/凭据，也没有改幂等或执行事务。数据库回滚、历史收据、
   成功计数与单执行锁原有行为此次补证据，不虚报新实现。
 
@@ -51,9 +53,20 @@ targeted/full初版observer各148份源码摘要运行内稳定；后续增加�
 148个入口只是命中记录，含拒绝，不是验收率。清单剩19个API+1页面空JSON成功
 Schema，缺content及非空但宽松声明另计，不能宣称全部合同已补完。
 
-最终targeted-release的148份摘要经比较全部匹配当前文件，sources_unchanged_during_run
+targeted-release的148份摘要在d2e0538阶段全部匹配当时文件，sources_unchanged_during_run
 为true。最终12份突变XML与before-release逐一解析，testcase/failure结构正常，
 没有error或导入失败；只做路径替换，不再用跨标签正则改写XML testcase名称。
+
+## 文件名编码返工
+
+测试文件SHA256：50fb63df5b0a75fc089be90f2a854bf8039803c1f4193cb3108d3371ed40b603。
+旧50项扩为60项：6种名称编码组合，构造器程序异常由1种扩为5种。
+filename-before.log/xml是在d2e0538生产代码上直接新增测试后运行：
+2 failed / 9 passed / 49 deselected / errors0，两处均500≠422的行为失败。
+filename-targeted.log/xml：同5文件200 passed / 5 skipped，20.50s。
+filename-verify.log：verify退出0，全量1430 passed / 16 skipped。
+旧release证据只代表旧50项，不冒充返工测试或其源码摘要。新增两份JUnit经
+xmllint解析通过，路径只用XML安全的REPO_ROOT替换，未改testcase/failure结构。
 
 ## not_evidence
 

@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0073",
   "active_plan": "exec-plans/blocked/HA-0073-external-skill-http-contracts.md",
-  "last_checkpoint": "0072固定5241fe4独立Approved，损坏突变XML固定版本重跑并改引用（d65cd06）。0073最终50新/相关190、旧50断言反例及12有效定向突变；最终verify退出0，全量1420 passed/16 skipped。",
-  "last_updated_at": "2026-10-04T02:03:00Z",
-  "next_action": "0073固定提交独立review；剩19个API加1页面空JSON成功声明与其他GAPS仍未验收。兼容本机拓扑后先8765再132，不开模型门禁。",
+  "last_checkpoint": "0073 d2e0538独立Changes Requested，UTF-8文件名构造期遗漏已窄捕获；旧2行为反例，60新/200相关通过，verify退出0全量1430/16，待返工复审。0072已Approved。",
+  "last_updated_at": "2026-10-04T02:16:00Z",
+  "next_action": "0073返工固定提交复审；剩19个API加1页面空JSON成功声明与其他GAPS仍未验收。兼容本机拓扑后先8765再132，不开模型门禁。",
   "release": "0.1.0-local"
 }

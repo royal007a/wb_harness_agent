@@ -12,6 +12,11 @@ ZIP入口限定无加密的stored/deflated两个方法，继续只允许manifest
 不把DB/文件系统/其他程序错误宽泛吞成输入错误。128KiB压缩包、每项64KiB和
 manifest Schema限制保留；不实现宿主加载第三方代码。
 
+复审补充：文件名bit11声明UTF-8却不能解码时，同样返回422；只窄捕获
+UnicodeDecodeError，不把ZIP构造器的任意ValueError视为损坏输入。非ASCII名
+不得规范化成允许名。允许合法data descriptor；尺寸按zipfile中央目录解析，
+manifest重复JSON键目前取最后值；不宣称跨Python版本的全部异常形态已覆盖。
+
 runtime查询实际会探测镜像（可调用Docker CLI），不是零I/O或容器ready证明。
 列表带实时runtime与execution_count；上传和执行幂等收据是历史快照。关门后同key
 可回放既有执行收据但不会新执行。合成Sandbox只证明控制面，不替代真实隔离探针。
