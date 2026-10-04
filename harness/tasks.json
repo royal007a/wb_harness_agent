@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-04T02:20:00Z",
+  "generated_at": "2026-10-04T12:45:46Z",
   "tasks": [
+    {
+      "id": "HA-0074",
+      "title": "固化业务模型选择、Token预算意图及接入差距",
+      "status": "completed",
+      "risk": "low",
+      "scope": ["无密记录用户确认的模型、端点、业务用途及Token上限", "只读核对业务Runtime接入差距"],
+      "non_goals": ["真实模型接入或调用", "凭证落盘和开门禁", "业务或双部署验收"],
+      "acceptance": ["明确区分用户确认、待实现预算约束及未验证能力", "任务注册表校验和diff检查通过，生产代码和准入档案不变"],
+      "depends_on": [],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0074-business-model-selection.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0074/acceptance.md", "docs/decisions/ADR-0074-business-model-selection.md"]
+    },
     {
       "id": "HA-0073",
       "title": "外部Skill HTTP合同与损坏包输入边界",
