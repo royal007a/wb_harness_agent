@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-04T12:45:46Z",
+  "generated_at": "2026-10-04T13:49:49Z",
   "tasks": [
+    {
+      "id": "HA-0075",
+      "title": "业务模型持久共享Token账本与调用边界",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": ["根子Run共享预留和一次性结算", "未知用量熔断、取消与显式恢复", "异步调用包装器和离线行为测试", "修正全仓验证中复现的ZIP测试夹具时间戳不确定性"],
+      "non_goals": ["真实HTTP或SDK传输", "改变现有业务路由或准入", "部署尚未接入的组件"],
+      "acceptance": ["并发与持久化预算不重置、不重复花费", "缺失或异常usage冻结根，不自动重试", "调用前门禁及取消异常行为测试和工作台回归通过"],
+      "depends_on": ["HA-0074"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0075-business-token-ledger.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0075/acceptance.md", "harness/evidence/HA-0075/verification.json", "harness/evidence/HA-0075/targeted.xml", "harness/evidence/HA-0075/related-final.xml", "harness/evidence/HA-0075/zip-fixture-before.xml"]
+    },
     {
       "id": "HA-0074",
       "title": "固化业务模型选择、Token预算意图及接入差距",

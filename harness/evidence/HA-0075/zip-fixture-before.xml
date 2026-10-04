@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests">
+  <testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.288" timestamp="2026-10-04T21:46:08.133061+08:00">
+    <testcase classname="tests.test_external_skills" name="test_package_fixture_bytes_do_not_depend_on_wall_clock" time="0.001">
+      <failure message="assert b&quot;PK\x03\x04\...0\x00\x00\x00&quot; == b&quot;PK\x03\x04\...0\x00\x00\x00&quot;&#10;  &#10;  At index 10 diff: b'\x01' != b'\x00'&#10;  Use -v to get more diff">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10aa776f0&gt;
+
+    def test_package_fixture_bytes_do_not_depend_on_wall_clock(monkeypatch):
+        monkeypatch.setattr(zipfile.time, 'localtime', lambda *args: (2026, 1, 1, 0, 0, 0, 0, 1, -1))
+        first = package()
+        monkeypatch.setattr(zipfile.time, 'localtime', lambda *args: (2026, 1, 1, 0, 0, 2, 0, 1, -1))
+&gt;       assert package() == first
+E       assert b"PK\x03\x04\...0\x00\x00\x00" == b"PK\x03\x04\...0\x00\x00\x00"
+E         
+E         At index 10 diff: b'\x01' != b'\x00'
+E         Use -v to get more diff
+
+tests/test_external_skills.py:40: AssertionError</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

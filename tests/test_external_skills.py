@@ -26,11 +26,24 @@ MANIFEST = {
 def package(entry="def main(payload):\n    return {'echo': payload}\n", manifest=MANIFEST, extra=None):
     raw = io.BytesIO()
     with zipfile.ZipFile(raw, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr('manifest.json', json.dumps(manifest))
-        archive.writestr('entry.py', entry)
+        def write(name, text):
+            info = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            archive.writestr(info, text)
+        write('manifest.json', json.dumps(manifest))
+        write('entry.py', entry)
         if extra:
-            archive.writestr(extra, 'no')
+            write(extra, 'no')
     return raw.getvalue()
+
+
+def test_package_fixture_bytes_do_not_depend_on_wall_clock(monkeypatch):
+    monkeypatch.setattr(zipfile.time, 'localtime', lambda *args: (2026, 1, 1, 0, 0, 0, 0, 1, -1))
+    first = package()
+    monkeypatch.setattr(zipfile.time, 'localtime', lambda *args: (2026, 1, 1, 0, 0, 2, 0, 1, -1))
+    assert package() == first
+    with zipfile.ZipFile(io.BytesIO(first)) as archive:
+        assert all(item.compress_type == zipfile.ZIP_DEFLATED for item in archive.infolist())
 
 
 @pytest.fixture

@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "system_spec_and_verification_audit",
+  "phase": "business_model_budget_foundation",
   "implementation_started": true,
-  "active_task_id": "HA-0073",
-  "active_plan": "exec-plans/blocked/HA-0073-external-skill-http-contracts.md",
-  "last_checkpoint": "0073 9cfc351独立Approved，60新/200相关与全量1430/16；12小时完成度盘点已写HA53：148路由/22功能，仍19API空声明、2测试文件未映射、双部署未完成。",
-  "last_updated_at": "2026-10-04T02:20:00Z",
-  "next_action": "整体目标未完成；兼容本机拓扑批准后先8765再132，继续补19API合同及功能测试映射，不开模型门禁。",
+  "active_task_id": "HA-0075",
+  "active_plan": "exec-plans/active/HA-0075-business-token-ledger.md",
+  "last_checkpoint": "HA-0075离线账本及调用边界：69定向、199相关/5跳过，全量1500/16及verify通过；修正ZIP测试时间戳不确定性，未开启真实模型。",
+  "last_updated_at": "2026-10-04T13:49:49Z",
+  "next_action": "复审HA-0075；下一切片接入真实Provider传输、可靠输入计数和usage映射，再对接Pi业务链。真实连通及双部署尚未完成。",
   "release": "0.1.0-local"
 }

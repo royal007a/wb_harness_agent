@@ -1,0 +1,18 @@
+{
+  "kind": "author_execution_summary",
+  "baseline": "1b9ae02",
+  "verified_at": "2026-10-04T13:49:49Z",
+  "targeted": {"passed": 69, "failed": 0},
+  "related": {"passed": 199, "skipped": 5, "failed": 0},
+  "full": {"passed": 1500, "skipped": 16, "failed": 0},
+  "verify_exit_code": 0,
+  "sha256": {
+    "backend/business_budget.py": "3be5952661f7fd843fab6b5d1915cd25bee6e65c82b60247756fb981416180ca",
+    "tests/test_business_budget.py": "051c5ddbe70f4f58a5aab145153368fc46d939c8e0acfb7d73f6962f2e27cb28",
+    "tests/test_external_skills.py": "62264aa1f4383854b62c59a2da5424a70af052e577a22ebecf75b72fed1481a3"
+  },
+  "real_provider_calls": 0,
+  "credentials_accessed": false,
+  "deployment_performed": false,
+  "independent_review": "pending"
+}
