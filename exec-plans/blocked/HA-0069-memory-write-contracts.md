@@ -13,3 +13,6 @@
 收口：新增40、相关192通过；旧版35 failed/5 passed/errors0；10/10有效突变。
 全量1265 passed/16 skipped，verify退出0，144份源码哈希稳定。等待固定提交
 独立review及兼容本机拓扑明确后先8765再132发布。证据HA-0069/acceptance.md。
+
+更新：3d83bd5已独立Approved；2 Low/2说明登记在HA-0069/review.md。
+现仅阻塞双部署，不将后续HA-0070内容清理反算成本项修复。

@@ -1,6 +1,6 @@
 # HA-0069 Memory写入HTTP与失败边界
 
-基线697ef73；候选工作树。未部署，未获得本项独立Approved。
+基线697ef73；固定候选3d83bd5已获独立Approved，未部署。见review.md。
 
 ## 实现
 
@@ -69,3 +69,8 @@ passing-test 2xx。144份源码/合同/测试/功能映射哈希稳定，运行�
 及确定性Memory/Team评测、两类准入检查、JS语法、inventory/diff检查通过。
 见verify.log；最终144份源码哈希无漂移。固定提交送mymacclaude只读复审，
 Work Item保持blocked（review及双部署未验收），12小时整体目标仍在推进。
+
+后续独立复审已Approved，上述“等待review”解除，blocked仅为双部署。
+复审新增h11真实socket证据及2 Low/2说明见review.md；ASGI false_zero不得外推
+为HTTP/1.1请求体判断，ValueError捕获不等于所有程序错误都传播。HA-0070另行
+修复内容收据删除传播，不倒写成本项已经完成的功能。
