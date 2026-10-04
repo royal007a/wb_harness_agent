@@ -24,7 +24,9 @@
     "id": "commit-before-receipt",
     "exit_code": 1,
     "restored": true,
-    "evidence": "mutation-valid-commit-before-receipt.xml",
+    "evidence": "mutation-commit-receipt-rerun.xml",
+    "superseded_invalid_evidence": "mutation-valid-commit-before-receipt.xml",
+    "rerun_base": "5241fe4",
     "verified_failure_stage": "persistent_snapshot_after_seed"
   },
   {

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.521" timestamp="2026-10-04T09:46:48.973923+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_graph_write_contracts" name="test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-entity]" time="0.148"><failure message="assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}&#10;  &#10;  Omitting 57 identical items, use -vv to show&#10;  Differing items:&#10;  {'memory_entities': [('mement_a91619f16be24d239762634352e437de', 'membank_c83fd287d2b64b8faeab693b7793b670', 'system:a...us&quot;: &quot;active&quot;, &quot;support_fact_id&quot;: &quot;memfact_e9cdd7c602ef401398c29aa194b17952&quot;, &quot;valid_from&quot;: null, &quot;valid_to&quot;: null}')]} != {'memory_entities': [('mement_a91619f16be24d239762634352e437de', 'membank_c83fd287d2b64b8faeab693b7793b670', 'system:a...us&quot;: &quot;active&quot;, &quot;support_fact_id&quot;: &quot;memfact_512d1f46ea8b4d35acf34aed834a8784&quot;, &quot;valid_from&quot;: null, &quot;valid_to&quot;: null}')]}&#10;  {'memory_audit': [('memaudit_879...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">client = &lt;starlette.testclient.TestClient object at 0x10b222a50&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ac9f490&gt;
+kind = 'entity', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+        w = setup_graph(client, kind)
+        plane = client.app.state.service.memory
+        original = plane._audit
+        if stage == 'audit':
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_INJECT72')
+            monkeypatch.setattr(plane, '_audit', fail)
+        else:
+            with plane.store.transaction() as db:
+                db.execute("CREATE TRIGGER graph72_fail BEFORE INSERT ON idempotency WHEN NEW.key='graph72' "
+                           "BEGIN SELECT RAISE(ABORT, 'PRIVATE_INJECT72'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        failed = call(client, w)
+        assert failed.status_code == 500
+        assert 'PRIVATE_INJECT72' not in failed.text
+&gt;       assert snapshot(client)[1] == before
+E       assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}
+E         
+E         Omitting 57 identical items, use -vv to show
+E         Differing items:
+E         {'memory_entities': [('mement_a91619f16be24d239762634352e437de', 'membank_c83fd287d2b64b8faeab693b7793b670', 'system:a...us": "active", "support_fact_id": "memfact_e9cdd7c602ef401398c29aa194b17952", "valid_from": null, "valid_to": null}')]} != {'memory_entities': [('mement_a91619f16be24d239762634352e437de', 'membank_c83fd287d2b64b8faeab693b7793b670', 'system:a...us": "active", "support_fact_id": "memfact_512d1f46ea8b4d35acf34aed834a8784", "valid_from": null, "valid_to": null}')]}
+E         {'memory_audit': [('memaudit_879...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_memory_graph_write_contracts.py:289: AssertionError</failure></testcase><testcase classname="tests.test_memory_graph_write_contracts" name="test_graph_failure_rolls_back_after_object_write_and_same_key_retries[receipt-relation]" time="0.043"><failure message="assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}&#10;  &#10;  Omitting 57 identical items, use -vv to show&#10;  Differing items:&#10;  {'memory_relations': [('memrel_2efb2393d4ef421dbb27ba3eedf9790e', 'membank_7c027ab26c6d4e69a1162978e3378f16', 'mement_...cdf5b08a8d07&quot;, &quot;support_fact_id&quot;: &quot;memfact_d20219c1849f4f04be77cc2aee1bf28c&quot;, &quot;valid_from&quot;: null, &quot;valid_to&quot;: null}')]} != {'memory_relations': []}&#10;  {'memory_audit': [('memaudit_9aa4becd41fb4fdba24952b9c37da0cb', 'membank_7c027ab26c6d4e69a1162978e3378f16', '{&quot;bank_id...2aee1bf28c&quot;}, &quot;occurred_at&quot;: &quot;2026-10-04T01:46:49.487684Z&quot;, &quot;target_id&quot;: &quot;memrel_2efb2393d4ef421dbb27ba3eedf9790e&quot;}')]} != {'me...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">client = &lt;starlette.testclient.TestClient object at 0x10ccd4690&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b0f7230&gt;
+kind = 'relation', stage = 'receipt'
+
+    @pytest.mark.parametrize('kind', KINDS)
+    @pytest.mark.parametrize('stage', ['audit', 'receipt'])
+    def test_graph_failure_rolls_back_after_object_write_and_same_key_retries(client, monkeypatch, kind, stage):
+        w = setup_graph(client, kind)
+        plane = client.app.state.service.memory
+        original = plane._audit
+        if stage == 'audit':
+            def fail(*args):
+                raise sqlite3.OperationalError('PRIVATE_INJECT72')
+            monkeypatch.setattr(plane, '_audit', fail)
+        else:
+            with plane.store.transaction() as db:
+                db.execute("CREATE TRIGGER graph72_fail BEFORE INSERT ON idempotency WHEN NEW.key='graph72' "
+                           "BEGIN SELECT RAISE(ABORT, 'PRIVATE_INJECT72'); END")
+        before = snapshot(client)[1]
+        client._transport.raise_server_exceptions = False
+        failed = call(client, w)
+        assert failed.status_code == 500
+        assert 'PRIVATE_INJECT72' not in failed.text
+&gt;       assert snapshot(client)[1] == before
+E       assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}
+E         
+E         Omitting 57 identical items, use -vv to show
+E         Differing items:
+E         {'memory_relations': [('memrel_2efb2393d4ef421dbb27ba3eedf9790e', 'membank_7c027ab26c6d4e69a1162978e3378f16', 'mement_...cdf5b08a8d07", "support_fact_id": "memfact_d20219c1849f4f04be77cc2aee1bf28c", "valid_from": null, "valid_to": null}')]} != {'memory_relations': []}
+E         {'memory_audit': [('memaudit_9aa4becd41fb4fdba24952b9c37da0cb', 'membank_7c027ab26c6d4e69a1162978e3378f16', '{"bank_id...2aee1bf28c"}, "occurred_at": "2026-10-04T01:46:49.487684Z", "target_id": "memrel_2efb2393d4ef421dbb27ba3eedf9790e"}')]} != {'me...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_memory_graph_write_contracts.py:289: AssertionError</failure></testcase></testsuite></testsuites>

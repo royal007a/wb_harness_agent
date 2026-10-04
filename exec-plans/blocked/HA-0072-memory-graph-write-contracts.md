@@ -13,3 +13,7 @@
 突变（静态错误约束负例补强、提前commit重新BEGIN后到快照断言才算有效）。
 全量1370 passed/16 skipped，verify退出0。固定提交交独立review，待兼容拓扑
 后的双部署；证据harness/evidence/HA-0072/acceptance.md，未启用任何模型门禁。
+
+5241fe4已独立Approved。损坏的早提交突变XML已标无效，固定版本隔离重跑
+2项均在持久快照断言失败，新XML通过解析并替换manifest引用，详见review.md。
+仍只阻塞于双部署，不重复申请代码review。
