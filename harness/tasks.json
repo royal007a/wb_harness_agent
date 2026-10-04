@@ -13,9 +13,9 @@
       "depends_on": ["HA-0070"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0071-memory-fts-availability.md",
-      "blocked_reason": "新31/相关255、基线28行为反例及14有效突变通过；全量1328 passed/16 skipped与verify退出0。待独立review及兼容本机拓扑后的双部署。",
-      "recovery_condition": "固定提交独立Approved；兼容本机拓扑批准后先8765再132验收。",
-      "evidence": ["harness/evidence/HA-0071/acceptance.md", "harness/evidence/HA-0071/mutation-plan.json", "harness/evidence/HA-0071/mutation-results.json"]
+      "blocked_reason": "7a03b99独立Approved；165相关与旧28行为反例复跑，3 Low/1信息已登记。全量1328/16和verify仅作者运行；待兼容本机拓扑后的双部署。",
+      "recovery_condition": "兼容本机拓扑批准后先8765再132验收。",
+      "evidence": ["harness/evidence/HA-0071/acceptance.md", "harness/evidence/HA-0071/mutation-plan.json", "harness/evidence/HA-0071/mutation-results.json", "harness/evidence/HA-0071/review.md"]
     },
     {
       "id": "HA-0070",
