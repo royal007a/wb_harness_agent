@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.524" timestamp="2026-10-04T08:54:20.692595+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="test_failed_memory_initialization_releases_store_and_lease_without_gc" time="0.139"><failure message="RuntimeError: A Harness process already owns this database">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1234/test_failed_memory_initializat0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c5a7100&gt;
+
+    def test_failed_memory_initialization_releases_store_and_lease_without_gc(tmp_path, monkeypatch):
+        path = tmp_path / 'startup-failure.db'
+        failure = RuntimeError('PRIVATE initialization failure')
+        stores = []
+        original = MemoryPlane._ensure_keyword_index
+        def broken(self):
+            stores.append(self.store)
+            raise failure
+        monkeypatch.setattr(MemoryPlane, '_ensure_keyword_index', broken)
+        with pytest.raises(RuntimeError) as captured:
+            with TestClient(create_app(path, False)):
+                pytest.fail('Startup must fail')
+        assert captured.value is failure
+        with pytest.raises(sqlite3.ProgrammingError, match='closed'):
+            stores[0].db.execute('SELECT 1')
+        monkeypatch.setattr(MemoryPlane, '_ensure_keyword_index', original)
+        # captured and failure retain their traceback, so GC cannot be the cleanup.
+&gt;       with TestClient(create_app(path, False), base_url='http://127.0.0.1') as c:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_fts_availability.py:364:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:698: in __enter__
+    portal.call(self.wait_startup)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/from_thread.py:340: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py:454: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py:396: in __get_result
+    raise self._exception
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/from_thread.py:265: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:733: in wait_startup
+    await receive()
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:724: in receive
+    self.task.result()
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py:447: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py:396: in __get_result
+    raise self._exception
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/from_thread.py:265: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:714: in lifespan
+    await self.app(scope, self.stream_receive.receive, self.stream_send.send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/middleware/errors.py:151: in __call__
+    await self.app(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/middleware/base.py:103: in __call__
+    await self.app(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/middleware/exceptions.py:49: in __call__
+    await self.app(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/routing.py:670: in __call__
+    await self.middleware_stack(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/fastapi/routing.py:2523: in app
+    await self.lifespan(scope, receive, send)
+/Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/routing.py:648: in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py:214: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+app = &lt;fastapi.applications.FastAPI object at 0x10c614d70&gt;
+
+    @asynccontextmanager
+    async def lifespan(app):
+        target = Path(db_path or os.environ.get('HARNESS_DB', ROOT / '.local/harness.db'))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with ExitStack() as cleanup:
+            lease = target.with_suffix('.lock').open('a')
+            try:
+                fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+&gt;               raise RuntimeError('A Harness process already owns this database') from None
+E               RuntimeError: A Harness process already owns this database
+
+backend/app.py:35: RuntimeError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,58 @@
+..FF..                                                                   [100%]
+=================================== FAILURES ===================================
+_______ test_creation_errors_other_than_exact_absence_propagate[syntax] ________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1224/test_creation_errors_other_tha2')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('near PRIVATE: syntax error'), 'calls': ['PRAGMA journal_...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('near PRIVATE: syntax error')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+>           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed
+_____ test_creation_errors_other_than_exact_absence_propagate[near-match] ______
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1224/test_creation_errors_other_tha3')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5 PRIVATE'), 'calls': ['PRAGMA journa...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('no such module: fts5 PRIVATE')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+>           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_creation_errors_other_than_exact_absence_propagate[syntax]
+FAILED tests/test_memory_fts_availability.py::test_creation_errors_other_than_exact_absence_propagate[near-match]
+2 failed, 4 passed, 25 deselected, 1 warning in 0.26s

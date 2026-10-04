@@ -1,0 +1,25 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_existing_index_cannot_degrade_even_with_exact_creation_error _______
+
+client = <starlette.testclient.TestClient object at 0x108aa41a0>
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_existing_index_cannot_degrade_even_with_exact_creation_error(client, fault):
+        plane = client.app.state.service.memory
+        before = persistent(client)
+        fail(fault, 'CREATE VIRTUAL TABLE')
+>       with pytest.raises(sqlite3.OperationalError, match='no such module: fts5'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:206: Failed
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_existing_index_cannot_degrade_even_with_exact_creation_error
+1 failed, 30 deselected, 1 warning in 0.37s

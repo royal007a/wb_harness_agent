@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.473" timestamp="2026-10-04T08:54:11.653360+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="test_missing_module_retain_dedup_replay_and_delete_never_touch_index" time="0.242"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_2b76c9dffb6945da83abeddfb1a5b09c&quot;}}&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">unavailable = &lt;starlette.testclient.TestClient object at 0x10ad9c1a0&gt;
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_missing_module_retain_dedup_replay_and_delete_never_touch_index(unavailable, fault):
+        c = unavailable
+        bank = post_bank(c, 'degraded71', 'bank71')
+        offset = len(fault['calls'])
+        result, request, path = retain(c, bank, 'zqalpha71')
+        check(c, OPERATIONS[0], result)
+        before = snapshot(c)
+        replay = c.post(path, json=request, headers={'Idempotency-Key': 'zqalpha71'})
+        assert replay.json() == result and replay.status_code == 201
+        assert snapshot(c) == before
+        duplicate = c.post(path, json=request, headers={'Idempotency-Key': 'dedup71'})
+        assert duplicate.status_code == 201 and duplicate.json()['deduplicated'] is True
+        source = result['source']['id']
+        deleted = c.delete('/api/local/memory/sources/' + source, headers={'Idempotency-Key': 'delete71'})
+&gt;       assert deleted.status_code == 200, deleted.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_2b76c9dffb6945da83abeddfb1a5b09c"}}
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_memory_fts_availability.py:118: AssertionError</failure></testcase></testsuite></testsuites>

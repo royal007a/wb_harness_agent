@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.374" timestamp="2026-10-04T08:54:17.391159+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="test_missing_module_status_is_sanitized_and_matches_public_contract" time="0.136"><failure message="AssertionError: assert {'engine': No...module: fts5'} == {'engine': No...active_facts'}&#10;  &#10;  Omitting 3 identical items, use -vv to show&#10;  Differing items:&#10;  {'error': 'no such module: fts5'} != {'error': 'FTS5_UNAVAILABLE'}&#10;  Use -v to get more diff">unavailable = &lt;starlette.testclient.TestClient object at 0x10cb681a0&gt;
+
+    def test_missing_module_status_is_sanitized_and_matches_public_contract(unavailable):
+        before = snapshot(unavailable)
+        response = unavailable.get('/api/local/memory/runtime')
+        assert response.status_code == 200
+        state = response.json()
+&gt;       assert state['keyword_index'] == {
+            'engine': None, 'ready': False, 'error': 'FTS5_UNAVAILABLE',
+            'rebuildable_from': 'canonical_active_facts',
+        }
+E       AssertionError: assert {'engine': No...module: fts5'} == {'engine': No...active_facts'}
+E
+E         Omitting 3 identical items, use -vv to show
+E         Differing items:
+E         {'error': 'no such module: fts5'} != {'error': 'FTS5_UNAVAILABLE'}
+E         Use -v to get more diff
+
+tests/test_memory_fts_availability.py:95: AssertionError</failure></testcase></testsuite></testsuites>

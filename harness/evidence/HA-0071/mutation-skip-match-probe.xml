@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="0.398" timestamp="2026-10-04T08:54:15.052538+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="parameterized-9f620d69833ccd65f6c2" time="0.113" /><testcase classname="tests.test_memory_fts_availability" name="parameterized-4677d3f713c64b531e01" time="0.043"><failure message="Failed: DID NOT RAISE OperationalError">client = &lt;starlette.testclient.TestClient object at 0x10d398410&gt;
+object_type = 'table'
+
+    @pytest.mark.parametrize('object_type', ['view', 'table'])
+    def test_wrong_named_object_is_not_a_healthy_index(client, object_type):
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            db.execute('DROP TABLE memory_fact_fts')
+            if object_type == 'view':
+                db.execute("CREATE VIEW memory_fact_fts AS SELECT 'id' AS fact_id, 'bank' AS bank_id, 'term' AS terms")
+            else:
+                db.execute('CREATE TABLE memory_fact_fts(fact_id,bank_id,terms)')
+                db.execute("INSERT INTO memory_fact_fts VALUES('id','bank','term')")
+        before = persistent(client)
+&gt;       with pytest.raises(sqlite3.OperationalError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:223: Failed</failure></testcase></testsuite></testsuites>

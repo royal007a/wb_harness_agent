@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="6" time="0.256" timestamp="2026-10-04T08:54:13.293138+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="parameterized-00f5b2f670f0821cf18c" time="0.010" /><testcase classname="tests.test_memory_fts_availability" name="parameterized-dfa960aa82b88800330c" time="0.008" /><testcase classname="tests.test_memory_fts_availability" name="parameterized-1d4a8961bc09de2f5d78" time="0.008"><failure message="Failed: DID NOT RAISE OperationalError">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1224/test_creation_errors_other_tha2')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('near PRIVATE: syntax error'), 'calls': ['PRAGMA journal_...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('near PRIVATE: syntax error')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+&gt;           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed</failure></testcase><testcase classname="tests.test_memory_fts_availability" name="parameterized-7a57e2181a3d943e1e7a" time="0.010"><failure message="Failed: DID NOT RAISE OperationalError">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1224/test_creation_errors_other_tha3')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5 PRIVATE'), 'calls': ['PRAGMA journa...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('no such module: fts5 PRIVATE')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+&gt;           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed</failure></testcase><testcase classname="tests.test_memory_fts_availability" name="parameterized-2d7b1acc6c7d08db193f" time="0.008" /><testcase classname="tests.test_memory_fts_availability" name="parameterized-3f93d6b7929d1f7e0e3b" time="0.008" /></testsuite></testsuites>

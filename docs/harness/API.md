@@ -453,5 +453,10 @@ DELETE拒绝非空请求体（含分块），幂等键均1–128字符。
 回放是历史收据；HA-0070在删除后使相关Retain/Entity/Relation内容回执失效，
 旧key同请求返回409 MEMORY_RECEIPT_UNAVAILABLE，异请求仍409 CONFLICT。
 启动会清理旧库孤儿内容收据，保留key/digest防止重试复活；删除/撤回收据不变。
-不宣称磁盘/WAL/备份、FTS5影子表词项或其他独立副本擦除。详见specs/testing/MEMORY_WRITE_CONTRACTS.md
-与specs/testing/MEMORY_RECEIPT_DELETION.md。
+不宣称磁盘/WAL/备份、FTS5影子表词项或其他独立副本擦除。
+详见specs/testing/MEMORY_WRITE_CONTRACTS.md与specs/testing/MEMORY_RECEIPT_DELETION.md。
+
+HA-0071：无既有FTS索引且启动创建精确缺模块时，keyword_index.error为固定
+FTS5_UNAVAILABLE，M1写入/关键词Recall可用，M2 context返回503；索引或数据库
+其他故障不再被误吞成M1扫描，返回无内部异常文本的500。恢复需修复环境后重启，
+不在GET自动重建；readiness只描述上一次初始化。见ADR-0071。

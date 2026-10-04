@@ -1,0 +1,145 @@
+{
+  "mutations": [
+    {
+      "id": "cleanup-despite-absent-index",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "early-retain-commit",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "error-text-not-sanitized",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "ignore-error-code",
+      "tests": 6,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "ignore-error-message",
+      "tests": 6,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "ignore-existing-index",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "leak-startup-lease",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "leak-startup-store",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "ready-before-commit",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "rebuild-inactive-facts",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "skip-match-probe",
+      "tests": 2,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "skip-rebuild",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "swallow-query-error",
+      "tests": 6,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    },
+    {
+      "id": "write-despite-absent-index",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "restored_and_cmp": true,
+      "killed": true
+    }
+  ],
+  "not_evidence": "One initial mutation harness indentation failure is retained separately; excluded from killed count."
+}

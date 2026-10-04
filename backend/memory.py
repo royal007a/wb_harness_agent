@@ -186,14 +186,26 @@ class MemoryPlane:
         return changed
 
     def _ensure_keyword_index(self):
-        """Create/rebuild an expendable FTS projection without making M1 unavailable on SQLite builds lacking FTS5."""
-        try:
+        """Only a missing module on a projection-free DB permits M1 degradation."""
+        with self.store.lock:
             with self.store.transaction() as db:
-                db.execute("CREATE VIRTUAL TABLE IF NOT EXISTS memory_fact_fts USING fts5(fact_id UNINDEXED, bank_id UNINDEXED, terms, tokenize='unicode61 remove_diacritics 2')")
-                self._rebuild_keyword_index(db)
-            self._fts_ready, self._fts_error = True, None
-        except sqlite3.OperationalError as exc:
-            self._fts_ready, self._fts_error = False, str(exc)
+                existing = db.execute("SELECT 1 FROM sqlite_master WHERE name='memory_fact_fts'").fetchone()
+                available = True
+                try:
+                    db.execute("CREATE VIRTUAL TABLE IF NOT EXISTS memory_fact_fts USING fts5(fact_id UNINDEXED, bank_id UNINDEXED, terms, tokenize='unicode61 remove_diacritics 2')")
+                except sqlite3.OperationalError as exc:
+                    if (existing is not None or str(exc) != 'no such module: fts5'
+                            or getattr(exc, 'sqlite_errorcode', None) != sqlite3.SQLITE_ERROR):
+                        raise
+                    available = False
+                if available:
+                    self._rebuild_keyword_index(db)
+                    # A same-named ordinary table is not an FTS index. Probe the
+                    # real MATCH path before committing the rebuild/readiness.
+                    db.execute('SELECT fact_id FROM memory_fact_fts WHERE memory_fact_fts MATCH ? LIMIT 1',
+                               ('"harnessftsprobe"',)).fetchall()
+            self._fts_ready = available
+            self._fts_error = None if available else 'FTS5_UNAVAILABLE'
 
     @staticmethod
     def _index_fact(db, fact):
@@ -210,7 +222,7 @@ class MemoryPlane:
                 self._index_fact(db, fact)
 
     def _remove_index_entries(self, db, fact_ids):
-        if self._fts_ready or self._fts_error is None:
+        if self._fts_ready:
             db.executemany('DELETE FROM memory_fact_fts WHERE fact_id=?', ((fact_id,) for fact_id in fact_ids))
 
     def _fts_candidate_ids(self, bank_id, query):
@@ -219,15 +231,12 @@ class MemoryPlane:
         expression = _fts_match_query(query)
         if not expression:
             return set()
-        try:
-            with self.store.lock:
-                rows = self.store.db.execute(
-                    'SELECT fact_id FROM memory_fact_fts WHERE memory_fact_fts MATCH ? AND bank_id=? LIMIT 80',
-                    (expression, bank_id),
-                ).fetchall()
-            return {row['fact_id'] for row in rows}
-        except sqlite3.OperationalError:
-            return None
+        with self.store.lock:
+            rows = self.store.db.execute(
+                'SELECT fact_id FROM memory_fact_fts WHERE memory_fact_fts MATCH ? AND bank_id=? LIMIT 80',
+                (expression, bank_id),
+            ).fetchall()
+        return {row['fact_id'] for row in rows}
 
     @staticmethod
     def _idempotency_key(key):
@@ -417,7 +426,8 @@ class MemoryPlane:
                         'invalidated_entity_count': graph_invalidated['entities'],
                         'invalidated_relation_count': graph_invalidated['relations'],
                     })
-                self._index_fact(db, fact)
+                if self._fts_ready:
+                    self._index_fact(db, fact)
                 result_facts.append(_fact_view(fact))
             audit = self._audit(db, bank_id, 'memory.source.retained', source_doc['id'], {
                 'source_sha256': content_sha, 'fact_count': len(result_facts), 'data_classification': source_doc['data_classification'],

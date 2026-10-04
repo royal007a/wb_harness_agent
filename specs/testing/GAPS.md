@@ -252,7 +252,9 @@ full-http-observations.json记录148/148 observed，148都有passing-test 2xx；
   重查；不清key/digest，故障同事务回滚。4c17c47独立Approved，待部署，不称
   物理删除/备份清理完成。
 - **MEMORY-FTS-01 / Medium**：FTS初始化失败时状态readiness已降级，但Retain
-  仍调用_index_fact，可能500；不损坏事务，不等于M1写入可用。本轮未修。
+  仍调用_index_fact，可能500；HA-0071候选将降级限定为新索引创建缺模块，
+  M1可写且context明确503；其他故障传播，新31/相关255/全量1328通过，
+  14指定突变被杀死；初始化失败的连接/租约清理亦补齐，待独立review和部署。
 - **MEMORY-FTS-02 / Low**：HA-0070独立Approved；删除Fact索引行不保证FTS5影子表
   词项擦除（普通SELECT仍可读）。非目标已补明，不把查询不可见当成抹除证明。
 - **MEMORY-GRAPH-HTTP-01 / Low**：Entity/Relation POST缺409/500公开声明，实际

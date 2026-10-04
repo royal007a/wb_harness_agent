@@ -30,6 +30,11 @@ FTS不可用时明确ready=false；semantic档案admitted仍不代表运行时�
 runtime_enabled恒false，其调用数字只是档案记录，不是实测遥测。验证与非目标见
 `specs/testing/MEMORY_RESEARCH_READ_CONTRACTS.md`。
 
+HA-0071按ADR-0071修复FTS缺模块时Retain仍强制写索引：无既有索引且创建明确
+缺FTS5模块时，M1生命周期可只写canonical，Recall使用现有关键词扫描。
+M2 context仍返回503；其余数据库/索引故障保持失败并回滚，不自动降级。
+FTS恢复后的重启重建、负例与事务边界见specs/testing/MEMORY_FTS_AVAILABILITY.md。
+
 HA-0069补Retain/撤回/删除三类实际写回执，见
 `specs/testing/MEMORY_WRITE_CONTRACTS.md`。同key回放是历史收据，不是当前状态。
 HA-0070按ADR-0070补删除传播：相关Retain/Entity/Relation内容收据替换为无正文

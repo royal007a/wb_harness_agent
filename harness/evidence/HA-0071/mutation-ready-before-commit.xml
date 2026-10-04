@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.346" timestamp="2026-10-04T08:54:16.628032+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state" time="0.118"><failure message="assert ([True] == [False]&#10;  &#10;  At index 0 diff: True != False&#10;  Use -v to get more diff)">client = &lt;starlette.testclient.TestClient object at 0x10b0701a0&gt;
+fault = {'prefix': None, 'error': None, 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA foreign_keys=ON', 'BEGIN IMMEDIATE', "SEL...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state(client, fault):
+        plane = client.app.state.service.memory
+        plane._fts_ready, plane._fts_error = False, 'FTS5_UNAVAILABLE'
+        observations = []
+        fault['before_commit'] = lambda: observations.append(plane._fts_ready)
+        plane._ensure_keyword_index()
+        fault['before_commit'] = None
+&gt;       assert observations == [False] and plane._fts_ready is True
+E       assert ([True] == [False]
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff)
+
+tests/test_memory_fts_availability.py:308: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,30 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state _
+
+client = <starlette.testclient.TestClient object at 0x10b0701a0>
+fault = {'prefix': None, 'error': None, 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA foreign_keys=ON', 'BEGIN IMMEDIATE', "SEL...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state(client, fault):
+        plane = client.app.state.service.memory
+        plane._fts_ready, plane._fts_error = False, 'FTS5_UNAVAILABLE'
+        observations = []
+        fault['before_commit'] = lambda: observations.append(plane._fts_ready)
+        plane._ensure_keyword_index()
+        fault['before_commit'] = None
+>       assert observations == [False] and plane._fts_ready is True
+E       assert ([True] == [False]
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff)
+
+tests/test_memory_fts_availability.py:308: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state
+1 failed, 30 deselected, 1 warning in 0.35s

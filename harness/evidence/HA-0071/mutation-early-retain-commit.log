@@ -1,0 +1,45 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_ready_index_write_failure_rolls_back_and_same_key_retries[INSERT INTO memory_fact_fts] _
+
+client = <starlette.testclient.TestClient object at 0x10ad68050>
+fault = {'prefix': None, 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA forei...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+phase = 'INSERT INTO memory_fact_fts'
+
+    @pytest.mark.parametrize('phase', ['INSERT INTO memory_fact_fts', 'DELETE FROM memory_fact_fts'])
+    def test_ready_index_write_failure_rolls_back_and_same_key_retries(client, fault, phase):
+        bank = post_bank(client, 'atomic71', 'atomic-bank71')
+        first, _, path = retain(client, bank, 'zqfirst71')
+        before = persistent(client)
+        if phase.startswith('INSERT'):
+            request = body('zqsecond71')
+            send = lambda: client.post(path, json=request, headers={'Idempotency-Key': 'retry71'})
+            expected = 201
+        else:
+            send = lambda: client.delete('/api/local/memory/sources/' + first['source']['id'],
+                                         headers={'Idempotency-Key': 'retry71'})
+            expected = 200
+        fail(fault, phase, sql_error('PRIVATE failed index'))
+        result = send()
+        assert result.status_code == 500 and 'PRIVATE' not in result.text
+        fail(fault, None)
+>       assert persistent(client) == before
+E       assert {'resources':...nts': [], ...} == {'resources':...nts': [], ...}
+E
+E         Omitting 57 identical items, use -vv to show
+E         Differing items:
+E         {'memory_facts': [('memfact_59203d0daa964d2e80ff47b59a896a79', 'membank_49f6decf1e8049c5988cdaed93fc2c89', 'memsrc_ca5...status": "active", "superseded_by_fact_id": null, "supersedes_fact_id": null, "valid_from": null, "valid_to": null}')]} != {'memory_facts': [('memfact_59203d0daa964d2e80ff47b59a896a79', 'membank_49f6decf1e8049c5988cdaed93fc2c89', 'memsrc_ca5...status": "active", "superseded_by_fact_id": null, "supersedes_fact_id": null, "valid_from": null, "valid_to": null}')]}
+E         {'memory_sources': [('memsrc_ca5...
+E
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_memory_fts_availability.py:294: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_ready_index_write_failure_rolls_back_and_same_key_retries[INSERT INTO memory_fact_fts]
+1 failed, 30 deselected, 1 warning in 0.37s

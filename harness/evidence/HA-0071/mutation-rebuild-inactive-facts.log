@@ -1,0 +1,45 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_restart_after_module_restored_rebuilds_only_active_facts _________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1228/test_restart_after_module_rest0')
+fault = {'prefix': None, 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA forei...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_restart_after_module_restored_rebuilds_only_active_facts(tmp_path, fault):
+        path = tmp_path / 'restart71.db'
+        fail(fault, 'CREATE VIRTUAL TABLE')
+        with TestClient(create_app(path, False), base_url='http://127.0.0.1', raise_server_exceptions=False) as c:
+            bank = post_bank(c, 'restart71', 'restart-bank71')
+            old, _, _ = retain(c, bank, 'zqoldrestart71')
+            keep, _, _ = retain(c, bank, 'zqkeeprestart71', old['facts'][0]['id'])
+            retired, _, _ = retain(c, bank, 'zqretired71')
+            deleted, _, _ = retain(c, bank, 'zqdeleted71')
+            assert c.post('/api/local/memory/sources/' + retired['source']['id'] + ':retract',
+                          json={}, headers={'Idempotency-Key': 'retired71'}).status_code == 200
+            assert c.delete('/api/local/memory/sources/' + deleted['source']['id'],
+                            headers={'Idempotency-Key': 'deleted71'}).status_code == 200
+            before = persistent(c)
+        fail(fault, None)
+        for _ in range(2):
+            with TestClient(create_app(path, False), base_url='http://127.0.0.1') as c:
+                store = c.app.state.service.store
+                assert c.get('/api/local/memory/runtime').json()['keyword_index']['ready'] is True
+                with store.lock:
+                    indexed = [row[0] for row in store.db.execute('SELECT fact_id FROM memory_fact_fts')]
+>               assert indexed == [keep['facts'][0]['id']]
+E               AssertionError: assert ['memfact_d9f...1ee8db484d53'] == ['memfact_510...1ee8db484d53']
+E
+E                 At index 0 diff: 'memfact_d9fd2b30c65541fbad9b19b4e10ccd29' != 'memfact_510a0df2321343edb1381ee8db484d53'
+E                 Left contains one more item: 'memfact_510a0df2321343edb1381ee8db484d53'
+E                 Use -v to get more diff
+
+tests/test_memory_fts_availability.py:338: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_restart_after_module_restored_rebuilds_only_active_facts
+1 failed, 30 deselected, 1 warning in 0.45s

@@ -4,7 +4,7 @@ import fcntl
 import ipaddress
 import json
 import os
-from contextlib import aclosing, asynccontextmanager
+from contextlib import ExitStack, aclosing, asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Query, Request
@@ -27,24 +27,21 @@ def create_app(db_path=None, run_worker=True):
     async def lifespan(app):
         target = Path(db_path or os.environ.get('HARNESS_DB', ROOT / '.local/harness.db'))
         target.parent.mkdir(parents=True, exist_ok=True)
-        lease = target.with_suffix('.lock').open('a')
-        try:
-            fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            lease.close()
-            raise RuntimeError('A Harness process already owns this database') from None
-        store = Store(target)
-        service = Service(store)
-        app.state.service = service
-        service.agent_runtime.recover()
-        if run_worker:
-            service.start()
-        try:
+        with ExitStack() as cleanup:
+            lease = cleanup.enter_context(target.with_suffix('.lock').open('a'))
+            try:
+                fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise RuntimeError('A Harness process already owns this database') from None
+            store = Store(target)
+            cleanup.callback(store.close)
+            service = Service(store)
+            cleanup.callback(service.stop)
+            app.state.service = service
+            service.agent_runtime.recover()
+            if run_worker:
+                service.start()
             yield
-        finally:
-            service.stop()
-            store.close()
-            lease.close()
 
     app = FastAPI(title='HarnessAgent Local API', version='0.1.0', lifespan=lifespan, docs_url=None, redoc_url=None)
 

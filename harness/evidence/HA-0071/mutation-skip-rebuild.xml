@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.366" timestamp="2026-10-04T08:54:14.351876+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="test_restart_after_module_restored_rebuilds_only_active_facts" time="0.153"><failure message="AssertionError: assert [] == ['memfact_3f2...6910a888d652']&#10;  &#10;  Right contains one more item: 'memfact_3f295eec793a4006849d6910a888d652'&#10;  Use -v to get more diff">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1226/test_restart_after_module_rest0')
+fault = {'prefix': None, 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA forei...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_restart_after_module_restored_rebuilds_only_active_facts(tmp_path, fault):
+        path = tmp_path / 'restart71.db'
+        fail(fault, 'CREATE VIRTUAL TABLE')
+        with TestClient(create_app(path, False), base_url='http://127.0.0.1', raise_server_exceptions=False) as c:
+            bank = post_bank(c, 'restart71', 'restart-bank71')
+            old, _, _ = retain(c, bank, 'zqoldrestart71')
+            keep, _, _ = retain(c, bank, 'zqkeeprestart71', old['facts'][0]['id'])
+            retired, _, _ = retain(c, bank, 'zqretired71')
+            deleted, _, _ = retain(c, bank, 'zqdeleted71')
+            assert c.post('/api/local/memory/sources/' + retired['source']['id'] + ':retract',
+                          json={}, headers={'Idempotency-Key': 'retired71'}).status_code == 200
+            assert c.delete('/api/local/memory/sources/' + deleted['source']['id'],
+                            headers={'Idempotency-Key': 'deleted71'}).status_code == 200
+            before = persistent(c)
+        fail(fault, None)
+        for _ in range(2):
+            with TestClient(create_app(path, False), base_url='http://127.0.0.1') as c:
+                store = c.app.state.service.store
+                assert c.get('/api/local/memory/runtime').json()['keyword_index']['ready'] is True
+                with store.lock:
+                    indexed = [row[0] for row in store.db.execute('SELECT fact_id FROM memory_fact_fts')]
+&gt;               assert indexed == [keep['facts'][0]['id']]
+E               AssertionError: assert [] == ['memfact_3f2...6910a888d652']
+E
+E                 Right contains one more item: 'memfact_3f295eec793a4006849d6910a888d652'
+E                 Use -v to get more diff
+
+tests/test_memory_fts_availability.py:338: AssertionError</failure></testcase></testsuite></testsuites>

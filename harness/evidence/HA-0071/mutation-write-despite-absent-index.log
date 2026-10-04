@@ -1,0 +1,42 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_missing_module_retain_dedup_replay_and_delete_never_touch_index _____
+
+unavailable = <starlette.testclient.TestClient object at 0x10ad001a0>
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_missing_module_retain_dedup_replay_and_delete_never_touch_index(unavailable, fault):
+        c = unavailable
+        bank = post_bank(c, 'degraded71', 'bank71')
+        offset = len(fault['calls'])
+>       result, request, path = retain(c, bank, 'zqalpha71')
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_fts_availability.py:108:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ad001a0>
+bank = {'id': 'membank_316df9e1960a4805a275316edef60c1b', 'workspace_id': 'ws_local', 'owner': 'local_admin', 'name': 'degraded71', ...}
+label = 'zqalpha71', supersedes = None
+
+    def retain(c, bank, label, supersedes=None):
+        request = body(label)
+        if supersedes:
+            request['facts'][0]['supersedes_fact_id'] = supersedes
+        path = '/api/local/memory/banks/' + bank['id'] + '/retain'
+        response = c.post(path, json=request, headers={'Idempotency-Key': label})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_0fbf5536bb324a3d99bb9213a25c4996"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_fts_availability.py:81: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_missing_module_retain_dedup_replay_and_delete_never_touch_index
+1 failed, 30 deselected, 1 warning in 0.50s

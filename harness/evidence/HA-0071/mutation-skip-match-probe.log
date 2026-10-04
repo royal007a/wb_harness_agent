@@ -1,0 +1,32 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+____________ test_wrong_named_object_is_not_a_healthy_index[table] _____________
+
+client = <starlette.testclient.TestClient object at 0x10d398410>
+object_type = 'table'
+
+    @pytest.mark.parametrize('object_type', ['view', 'table'])
+    def test_wrong_named_object_is_not_a_healthy_index(client, object_type):
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            db.execute('DROP TABLE memory_fact_fts')
+            if object_type == 'view':
+                db.execute("CREATE VIEW memory_fact_fts AS SELECT 'id' AS fact_id, 'bank' AS bank_id, 'term' AS terms")
+            else:
+                db.execute('CREATE TABLE memory_fact_fts(fact_id,bank_id,terms)')
+                db.execute("INSERT INTO memory_fact_fts VALUES('id','bank','term')")
+        before = persistent(client)
+>       with pytest.raises(sqlite3.OperationalError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:223: Failed
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_wrong_named_object_is_not_a_healthy_index[table]
+1 failed, 1 passed, 29 deselected, 1 warning in 0.40s

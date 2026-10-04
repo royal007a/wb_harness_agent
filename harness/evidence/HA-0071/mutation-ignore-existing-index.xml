@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.373" timestamp="2026-10-04T08:54:12.593392+08:00" hostname="192.168.31.117"><testcase classname="tests.test_memory_fts_availability" name="test_existing_index_cannot_degrade_even_with_exact_creation_error" time="0.109"><failure message="Failed: DID NOT RAISE OperationalError">client = &lt;starlette.testclient.TestClient object at 0x108aa41a0&gt;
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_existing_index_cannot_degrade_even_with_exact_creation_error(client, fault):
+        plane = client.app.state.service.memory
+        before = persistent(client)
+        fail(fault, 'CREATE VIRTUAL TABLE')
+&gt;       with pytest.raises(sqlite3.OperationalError, match='no such module: fts5'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:206: Failed</failure></testcase></testsuite></testsuites>

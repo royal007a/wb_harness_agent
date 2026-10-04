@@ -1,0 +1,651 @@
+FFFFFFFFFFF.FFFFFFFFFFFFFF..FFF                                          [100%]
+=================================== FAILURES ===================================
+_____ test_missing_module_status_is_sanitized_and_matches_public_contract ______
+
+unavailable = <starlette.testclient.TestClient object at 0x1087767b0>
+
+    def test_missing_module_status_is_sanitized_and_matches_public_contract(unavailable):
+        before = snapshot(unavailable)
+        response = unavailable.get('/api/local/memory/runtime')
+        assert response.status_code == 200
+        state = response.json()
+>       assert state['keyword_index'] == {
+            'engine': None, 'ready': False, 'error': 'FTS5_UNAVAILABLE',
+            'rebuildable_from': 'canonical_active_facts',
+        }
+E       AssertionError: assert {'engine': No...module: fts5'} == {'engine': No...active_facts'}
+E
+E         Omitting 3 identical items, use -vv to show
+E         Differing items:
+E         {'error': 'no such module: fts5'} != {'error': 'FTS5_UNAVAILABLE'}
+E         Use -v to get more diff
+
+tests/test_memory_fts_availability.py:95: AssertionError
+_____ test_missing_module_retain_dedup_replay_and_delete_never_touch_index _____
+
+unavailable = <starlette.testclient.TestClient object at 0x10c645bd0>
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_missing_module_retain_dedup_replay_and_delete_never_touch_index(unavailable, fault):
+        c = unavailable
+        bank = post_bank(c, 'degraded71', 'bank71')
+        offset = len(fault['calls'])
+>       result, request, path = retain(c, bank, 'zqalpha71')
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_fts_availability.py:108:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10c645bd0>
+bank = {'id': 'membank_18c8a5782319492cb3e04554786099e4', 'workspace_id': 'ws_local', 'owner': 'local_admin', 'name': 'degraded71', ...}
+label = 'zqalpha71', supersedes = None
+
+    def retain(c, bank, label, supersedes=None):
+        request = body(label)
+        if supersedes:
+            request['facts'][0]['supersedes_fact_id'] = supersedes
+        path = '/api/local/memory/banks/' + bank['id'] + '/retain'
+        response = c.post(path, json=request, headers={'Idempotency-Key': label})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_3938dd0f70ef4082bf35a9461d2cf171"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_fts_availability.py:81: AssertionError
+___________ test_missing_module_supersede_retract_scope_and_context ____________
+
+unavailable = <starlette.testclient.TestClient object at 0x10ca10050>
+
+    def test_missing_module_supersede_retract_scope_and_context(unavailable):
+        c = unavailable
+        bank = post_bank(c, 'lifecycle71', 'life-bank71')
+        other = post_bank(c, 'other71', 'other-bank71')
+>       old, _, _ = retain(c, bank, 'zqold71')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_fts_availability.py:133:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10ca10050>
+bank = {'id': 'membank_d1f3fd680c7e4ba5ad46fee1002bec26', 'workspace_id': 'ws_local', 'owner': 'local_admin', 'name': 'lifecycle71', ...}
+label = 'zqold71', supersedes = None
+
+    def retain(c, bank, label, supersedes=None):
+        request = body(label)
+        if supersedes:
+            request['facts'][0]['supersedes_fact_id'] = supersedes
+        path = '/api/local/memory/banks/' + bank['id'] + '/retain'
+        response = c.post(path, json=request, headers={'Idempotency-Key': label})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_16a68a1997f64d39a6e40b0d6d10290b"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_fts_availability.py:81: AssertionError
+________ test_degraded_scan_keeps_temporal_filters[source.occurred_at] _________
+
+unavailable = <starlette.testclient.TestClient object at 0x10cab49d0>
+field = 'source.occurred_at'
+
+    @pytest.mark.parametrize('field', ['source.occurred_at', 'fact.occurred_at', 'fact.valid_to'])
+    def test_degraded_scan_keeps_temporal_filters(unavailable, field):
+        c = unavailable
+        bank = post_bank(c, 'time71', 'time-bank71')
+        request = body('zqtime71')
+        owner, name = field.split('.')
+        target = request['source'] if owner == 'source' else request['facts'][0]
+        target[name] = '2020-01-01T00:00:00Z' if name == 'valid_to' else '2100-01-01T00:00:00Z'
+        path = '/api/local/memory/banks/' + bank['id']
+        result = c.post(path + '/retain', json=request, headers={'Idempotency-Key': 'time71'})
+>       assert result.status_code == 201, result.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_0876f4b9f08d40488ca2bbeb86799621"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_fts_availability.py:163: AssertionError
+_________ test_degraded_scan_keeps_temporal_filters[fact.occurred_at] __________
+
+unavailable = <starlette.testclient.TestClient object at 0x10cab55b0>
+field = 'fact.occurred_at'
+
+    @pytest.mark.parametrize('field', ['source.occurred_at', 'fact.occurred_at', 'fact.valid_to'])
+    def test_degraded_scan_keeps_temporal_filters(unavailable, field):
+        c = unavailable
+        bank = post_bank(c, 'time71', 'time-bank71')
+        request = body('zqtime71')
+        owner, name = field.split('.')
+        target = request['source'] if owner == 'source' else request['facts'][0]
+        target[name] = '2020-01-01T00:00:00Z' if name == 'valid_to' else '2100-01-01T00:00:00Z'
+        path = '/api/local/memory/banks/' + bank['id']
+        result = c.post(path + '/retain', json=request, headers={'Idempotency-Key': 'time71'})
+>       assert result.status_code == 201, result.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_d932d1d18fe34ef4b89e345dedcb5dc7"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_fts_availability.py:163: AssertionError
+___________ test_degraded_scan_keeps_temporal_filters[fact.valid_to] ___________
+
+unavailable = <starlette.testclient.TestClient object at 0x10b926b10>
+field = 'fact.valid_to'
+
+    @pytest.mark.parametrize('field', ['source.occurred_at', 'fact.occurred_at', 'fact.valid_to'])
+    def test_degraded_scan_keeps_temporal_filters(unavailable, field):
+        c = unavailable
+        bank = post_bank(c, 'time71', 'time-bank71')
+        request = body('zqtime71')
+        owner, name = field.split('.')
+        target = request['source'] if owner == 'source' else request['facts'][0]
+        target[name] = '2020-01-01T00:00:00Z' if name == 'valid_to' else '2100-01-01T00:00:00Z'
+        path = '/api/local/memory/banks/' + bank['id']
+        result = c.post(path + '/retain', json=request, headers={'Idempotency-Key': 'time71'})
+>       assert result.status_code == 201, result.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_681d6640d6854ca4b45fc2099c2602e6"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_fts_availability.py:163: AssertionError
+_______ test_creation_errors_other_than_exact_absence_propagate[locked] ________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1217/test_creation_errors_other_tha0')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('database is locked'), 'calls': ['PRAGMA journal_mode=WAL...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('database is locked')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+>           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed
+______ test_creation_errors_other_than_exact_absence_propagate[readonly] _______
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1217/test_creation_errors_other_tha1')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('attempt to write a readonly database'), 'calls': ['PRAGM...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('attempt to write a readonly database')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+>           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed
+_______ test_creation_errors_other_than_exact_absence_propagate[syntax] ________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1217/test_creation_errors_other_tha2')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('near PRIVATE: syntax error'), 'calls': ['PRAGMA journal_...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('near PRIVATE: syntax error')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+>           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed
+_____ test_creation_errors_other_than_exact_absence_propagate[near-match] ______
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1217/test_creation_errors_other_tha3')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5 PRIVATE'), 'calls': ['PRAGMA journa...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('no such module: fts5 PRIVATE')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+>           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed
+_____ test_creation_errors_other_than_exact_absence_propagate[wrong-code] ______
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1217/test_creation_errors_other_tha4')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('no such module: fts5')
+
+    @pytest.mark.parametrize('error', [
+        sql_error('database is locked', sqlite3.SQLITE_BUSY),
+        sql_error('attempt to write a readonly database', sqlite3.SQLITE_READONLY),
+        sql_error('near PRIVATE: syntax error'),
+        sql_error('no such module: fts5 PRIVATE'),
+        sql_error(code=sqlite3.SQLITE_BUSY),
+        RuntimeError('PRIVATE program failure'),
+    ], ids=['locked', 'readonly', 'syntax', 'near-match', 'wrong-code', 'program'])
+    def test_creation_errors_other_than_exact_absence_propagate(tmp_path, fault, error):
+        store = Store(tmp_path / 'start.db')
+        fail(fault, 'CREATE VIRTUAL TABLE', error)
+        try:
+>           with pytest.raises(type(error)) as caught:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:182: Failed
+_ test_missing_module_message_outside_creation_is_not_a_degradation[DELETE FROM memory_fact_fts] _
+
+client = <starlette.testclient.TestClient object at 0x10d2e68b0>
+fault = {'prefix': 'DELETE FROM memory_fact_fts', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+phase = 'DELETE FROM memory_fact_fts'
+
+    @pytest.mark.parametrize('phase', ['DELETE FROM memory_fact_fts', 'SELECT fact_id FROM memory_fact_fts'])
+    def test_missing_module_message_outside_creation_is_not_a_degradation(client, fault, phase):
+        plane = client.app.state.service.memory
+        before = persistent(client)
+        fail(fault, phase)
+>       with pytest.raises(sqlite3.OperationalError, match='no such module: fts5'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:196: Failed
+_ test_missing_module_message_outside_creation_is_not_a_degradation[SELECT fact_id FROM memory_fact_fts] _
+
+client = <starlette.testclient.TestClient object at 0x10d53f790>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+phase = 'SELECT fact_id FROM memory_fact_fts'
+
+    @pytest.mark.parametrize('phase', ['DELETE FROM memory_fact_fts', 'SELECT fact_id FROM memory_fact_fts'])
+    def test_missing_module_message_outside_creation_is_not_a_degradation(client, fault, phase):
+        plane = client.app.state.service.memory
+        before = persistent(client)
+        fail(fault, phase)
+>       with pytest.raises(sqlite3.OperationalError, match='no such module: fts5'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:196: Failed
+______ test_existing_index_cannot_degrade_even_with_exact_creation_error _______
+
+client = <starlette.testclient.TestClient object at 0x10d850160>
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_existing_index_cannot_degrade_even_with_exact_creation_error(client, fault):
+        plane = client.app.state.service.memory
+        before = persistent(client)
+        fail(fault, 'CREATE VIRTUAL TABLE')
+>       with pytest.raises(sqlite3.OperationalError, match='no such module: fts5'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:206: Failed
+_____________ test_wrong_named_object_is_not_a_healthy_index[view] _____________
+
+client = <starlette.testclient.TestClient object at 0x10da528b0>
+object_type = 'view'
+
+    @pytest.mark.parametrize('object_type', ['view', 'table'])
+    def test_wrong_named_object_is_not_a_healthy_index(client, object_type):
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            db.execute('DROP TABLE memory_fact_fts')
+            if object_type == 'view':
+                db.execute("CREATE VIEW memory_fact_fts AS SELECT 'id' AS fact_id, 'bank' AS bank_id, 'term' AS terms")
+            else:
+                db.execute('CREATE TABLE memory_fact_fts(fact_id,bank_id,terms)')
+                db.execute("INSERT INTO memory_fact_fts VALUES('id','bank','term')")
+        before = persistent(client)
+>       with pytest.raises(sqlite3.OperationalError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:223: Failed
+____________ test_wrong_named_object_is_not_a_healthy_index[table] _____________
+
+client = <starlette.testclient.TestClient object at 0x10da528b0>
+object_type = 'table'
+
+    @pytest.mark.parametrize('object_type', ['view', 'table'])
+    def test_wrong_named_object_is_not_a_healthy_index(client, object_type):
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            db.execute('DROP TABLE memory_fact_fts')
+            if object_type == 'view':
+                db.execute("CREATE VIEW memory_fact_fts AS SELECT 'id' AS fact_id, 'bank' AS bank_id, 'term' AS terms")
+            else:
+                db.execute('CREATE TABLE memory_fact_fts(fact_id,bank_id,terms)')
+                db.execute("INSERT INTO memory_fact_fts VALUES('id','bank','term')")
+        before = persistent(client)
+>       with pytest.raises(sqlite3.OperationalError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:223: Failed
+_ test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:recall] _
+
+client = <starlette.testclient.TestClient object at 0x10d850380>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('database is locked'), 'calls': ['PRAGMA j...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':recall', message = 'database is locked'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"schema_version":"evidence-bundle@1","bank_id":"membank_73913f9fc0974949a3f9ee17be9b03c9","query":"zqquery71","memory_status":"available","channels":["keyword","temporal"],"evidence":[{"evidence_id":"memfact_6c38da508dc7443c9ed4392d5f0ecd60","type":"fact","statement":"Fact zqquery71","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:50:07.429273Z","valid_from":null,"valid_to":null,"status":"active","source_evidence":{"source_id":"memsrc_95cc0a282fe2459ea13ac549a2f72f81","source_ref":"fixture:zqquery71","content_sha256":"c673c237db3136eeaad6d07d33858de41aa805f106d6cca4a776a38c63fea029","occurred_at":"2026-01-01T00:00:00Z"},"score_explanation":{"channel":"keyword","matched_terms":["zqquery71"],"keyword_score":21,"temporal_as_of":"2026-10-04T00:50:07.430422Z"}}]}
+E       assert 200 == 500
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:context] _
+
+client = <starlette.testclient.TestClient object at 0x10d032140>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('database is locked'), 'calls': ['PRAGMA j...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':context', message = 'database is locked'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"error":{"code":"MEMORY_INDEX_UNAVAILABLE","message":"M2-A 关键词索引不可用；不能把索引故障伪装成无历史。","retryable":false,"request_id":"req_8fb4f3ea3ae04ff69158fe9c6f56007a"}}
+E       assert 503 == 500
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:recall] _
+
+client = <starlette.testclient.TestClient object at 0x10c5c9590>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('no such table: memory_fact_fts'), 'calls'...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':recall', message = 'no such table: memory_fact_fts'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"schema_version":"evidence-bundle@1","bank_id":"membank_a8032785896e4f1d82173053b94d7b64","query":"zqquery71","memory_status":"available","channels":["keyword","temporal"],"evidence":[{"evidence_id":"memfact_6f2cb759c969443486b61d777215d514","type":"fact","statement":"Fact zqquery71","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:50:07.515941Z","valid_from":null,"valid_to":null,"status":"active","source_evidence":{"source_id":"memsrc_88704bde07fc499192d24d3f93632588","source_ref":"fixture:zqquery71","content_sha256":"c673c237db3136eeaad6d07d33858de41aa805f106d6cca4a776a38c63fea029","occurred_at":"2026-01-01T00:00:00Z"},"score_explanation":{"channel":"keyword","matched_terms":["zqquery71"],"keyword_score":21,"temporal_as_of":"2026-10-04T00:50:07.517106Z"}}]}
+E       assert 200 == 500
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:context] _
+
+client = <starlette.testclient.TestClient object at 0x10a803020>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('no such table: memory_fact_fts'), 'calls'...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':context', message = 'no such table: memory_fact_fts'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"error":{"code":"MEMORY_INDEX_UNAVAILABLE","message":"M2-A 关键词索引不可用；不能把索引故障伪装成无历史。","retryable":false,"request_id":"req_50522004890d4ef0bb71ff3a9795c7b1"}}
+E       assert 503 == 500
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:recall] _
+
+client = <starlette.testclient.TestClient object at 0x10c8dbdf0>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('PRIVATE invalid query'), 'calls': ['PRAGM...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':recall', message = 'PRIVATE invalid query'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"schema_version":"evidence-bundle@1","bank_id":"membank_b4f78c72fed64105b4c68dd160ef7752","query":"zqquery71","memory_status":"available","channels":["keyword","temporal"],"evidence":[{"evidence_id":"memfact_fdc9afe853a3430a95abb7b38658f9ee","type":"fact","statement":"Fact zqquery71","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:50:07.604005Z","valid_from":null,"valid_to":null,"status":"active","source_evidence":{"source_id":"memsrc_31b228eb19ed408fa2f56b301b3dfe8a","source_ref":"fixture:zqquery71","content_sha256":"c673c237db3136eeaad6d07d33858de41aa805f106d6cca4a776a38c63fea029","occurred_at":"2026-01-01T00:00:00Z"},"score_explanation":{"channel":"keyword","matched_terms":["zqquery71"],"keyword_score":21,"temporal_as_of":"2026-10-04T00:50:07.605149Z"}}]}
+E       assert 200 == 500
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:context] _
+
+client = <starlette.testclient.TestClient object at 0x10d939040>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('PRIVATE invalid query'), 'calls': ['PRAGM...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':context', message = 'PRIVATE invalid query'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"error":{"code":"MEMORY_INDEX_UNAVAILABLE","message":"M2-A 关键词索引不可用；不能把索引故障伪装成无历史。","retryable":false,"request_id":"req_bbe5bc195b244083b24e9af7d42cb132"}}
+E       assert 503 == 500
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_real_runtime_projection_loss_fails_read_and_write_without_canonical_loss _
+
+client = <starlette.testclient.TestClient object at 0x10c65f570>
+
+    def test_real_runtime_projection_loss_fails_read_and_write_without_canonical_loss(client):
+        bank = post_bank(client, 'lost71', 'lost-bank71')
+        first, _, path = retain(client, bank, 'zqlost71')
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            db.execute('DROP TABLE memory_fact_fts')
+        before = persistent(client)
+        for suffix in [':recall', ':context']:
+            response = client.post(path.removesuffix('/retain') + suffix, json={'query': 'zqlost71'})
+>           assert response.status_code == 500, response.text
+E           AssertionError: {"schema_version":"evidence-bundle@1","bank_id":"membank_3b11a7bd45394b638a8ac009b3115917","query":"zqlost71","memory_status":"available","channels":["keyword","temporal"],"evidence":[{"evidence_id":"memfact_98826eeb073944a4819f860cd02935a3","type":"fact","statement":"Fact zqlost71","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:50:07.691768Z","valid_from":null,"valid_to":null,"status":"active","source_evidence":{"source_id":"memsrc_fdee298ebe65469a9c93e19e34ddd134","source_ref":"fixture:zqlost71","content_sha256":"9d2c1196d361ba8b9fa539e69a027f854668b92d0520319f8279c685cfce143e","occurred_at":"2026-01-01T00:00:00Z"},"score_explanation":{"channel":"keyword","matched_terms":["zqlost71"],"keyword_score":21,"temporal_as_of":"2026-10-04T00:50:07.693310Z"}}]}
+E           assert 200 == 500
+E            +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_fts_availability.py:252: AssertionError
+__________ test_degraded_canonical_failure_is_not_swallowed[database] __________
+
+unavailable = <starlette.testclient.TestClient object at 0x10d1a1bf0>
+fault = {'prefix': None, 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA forei...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = OperationalError('PRIVATE busy')
+
+    @pytest.mark.parametrize('error', [sql_error('PRIVATE busy', sqlite3.SQLITE_BUSY), RuntimeError('PRIVATE fault')],
+                             ids=['database', 'program'])
+    def test_degraded_canonical_failure_is_not_swallowed(unavailable, fault, error):
+        c = unavailable
+        bank = post_bank(c, 'canonical71', 'canonical-bank71')
+        before = persistent(c)
+        fail(fault, 'INSERT INTO memory_facts', error)
+        path = '/api/local/memory/banks/' + bank['id'] + '/retain'
+        response = c.post(path, json=body('zqcanonical71'), headers={'Idempotency-Key': 'canonical71'})
+        assert response.status_code == 500 and 'PRIVATE' not in response.text
+        fail(fault, None)
+        assert persistent(c) == before
+>       assert c.post(path, json=body('zqcanonical71'), headers={'Idempotency-Key': 'canonical71'}).status_code == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+E        +    where <Response [500 Internal Server Error]> = post('/api/local/memory/banks/membank_8932029aecc545ecabcc84bf64dc83c2/retain', json={'source': {'source_ref': 'fixture:zqcanonical71', 'content': 'RAW_SOURCE_zqcanonical71', 'occurred_at': '2026-01-01T0...{'statement': 'Fact zqcanonical71', 'detail': 'Derived detail zqcanonical71', 'kind': 'fact', 'confidence': 0.9, ...}]}, headers={'Idempotency-Key': 'canonical71'})
+E        +      where post = <starlette.testclient.TestClient object at 0x10d1a1bf0>.post
+E        +      and   {'source': {'source_ref': 'fixture:zqcanonical71', 'content': 'RAW_SOURCE_zqcanonical71', 'occurred_at': '2026-01-01T0...{'statement': 'Fact zqcanonical71', 'detail': 'Derived detail zqcanonical71', 'kind': 'fact', 'confidence': 0.9, ...}]} = body('zqcanonical71')
+
+tests/test_memory_fts_availability.py:274: AssertionError
+__________ test_degraded_canonical_failure_is_not_swallowed[program] ___________
+
+unavailable = <starlette.testclient.TestClient object at 0x10cc40490>
+fault = {'prefix': None, 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA forei...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+error = RuntimeError('PRIVATE fault')
+
+    @pytest.mark.parametrize('error', [sql_error('PRIVATE busy', sqlite3.SQLITE_BUSY), RuntimeError('PRIVATE fault')],
+                             ids=['database', 'program'])
+    def test_degraded_canonical_failure_is_not_swallowed(unavailable, fault, error):
+        c = unavailable
+        bank = post_bank(c, 'canonical71', 'canonical-bank71')
+        before = persistent(c)
+        fail(fault, 'INSERT INTO memory_facts', error)
+        path = '/api/local/memory/banks/' + bank['id'] + '/retain'
+        response = c.post(path, json=body('zqcanonical71'), headers={'Idempotency-Key': 'canonical71'})
+        assert response.status_code == 500 and 'PRIVATE' not in response.text
+        fail(fault, None)
+        assert persistent(c) == before
+>       assert c.post(path, json=body('zqcanonical71'), headers={'Idempotency-Key': 'canonical71'}).status_code == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+E        +    where <Response [500 Internal Server Error]> = post('/api/local/memory/banks/membank_6e80c4cb80e9457ba80bbb03e5007705/retain', json={'source': {'source_ref': 'fixture:zqcanonical71', 'content': 'RAW_SOURCE_zqcanonical71', 'occurred_at': '2026-01-01T0...{'statement': 'Fact zqcanonical71', 'detail': 'Derived detail zqcanonical71', 'kind': 'fact', 'confidence': 0.9, ...}]}, headers={'Idempotency-Key': 'canonical71'})
+E        +      where post = <starlette.testclient.TestClient object at 0x10cc40490>.post
+E        +      and   {'source': {'source_ref': 'fixture:zqcanonical71', 'content': 'RAW_SOURCE_zqcanonical71', 'occurred_at': '2026-01-01T0...{'statement': 'Fact zqcanonical71', 'detail': 'Derived detail zqcanonical71', 'kind': 'fact', 'confidence': 0.9, ...}]} = body('zqcanonical71')
+
+tests/test_memory_fts_availability.py:274: AssertionError
+_ test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state _
+
+client = <starlette.testclient.TestClient object at 0x10df7a7a0>
+fault = {'prefix': 'COMMIT', 'error': OperationalError('database is locked'), 'calls': ['PRAGMA journal_mode=WAL', 'PRAGMA for...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state(client, fault):
+        plane = client.app.state.service.memory
+        plane._fts_ready, plane._fts_error = False, 'FTS5_UNAVAILABLE'
+        observations = []
+        fault['before_commit'] = lambda: observations.append(plane._fts_ready)
+        plane._ensure_keyword_index()
+        fault['before_commit'] = None
+        assert observations == [False] and plane._fts_ready is True
+        fail(fault, 'COMMIT', sql_error('database is locked', sqlite3.SQLITE_BUSY))
+>       with pytest.raises(sqlite3.OperationalError, match='database is locked'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE OperationalError
+
+tests/test_memory_fts_availability.py:310: Failed
+________ test_restart_after_module_restored_rebuilds_only_active_facts _________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1217/test_restart_after_module_rest0')
+fault = {'prefix': 'CREATE VIRTUAL TABLE', 'error': OperationalError('no such module: fts5'), 'calls': ['PRAGMA journal_mode=W...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+
+    def test_restart_after_module_restored_rebuilds_only_active_facts(tmp_path, fault):
+        path = tmp_path / 'restart71.db'
+        fail(fault, 'CREATE VIRTUAL TABLE')
+        with TestClient(create_app(path, False), base_url='http://127.0.0.1', raise_server_exceptions=False) as c:
+            bank = post_bank(c, 'restart71', 'restart-bank71')
+>           old, _, _ = retain(c, bank, 'zqoldrestart71')
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_fts_availability.py:322:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+c = <starlette.testclient.TestClient object at 0x10cc42030>
+bank = {'id': 'membank_945ac886ebeb4c92ba7492fc6c6174ce', 'workspace_id': 'ws_local', 'owner': 'local_admin', 'name': 'restart71', ...}
+label = 'zqoldrestart71', supersedes = None
+
+    def retain(c, bank, label, supersedes=None):
+        request = body(label)
+        if supersedes:
+            request['facts'][0]['supersedes_fact_id'] = supersedes
+        path = '/api/local/memory/banks/' + bank['id'] + '/retain'
+        response = c.post(path, json=request, headers={'Idempotency-Key': label})
+>       assert response.status_code == 201, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_bbeb9e637d4848e6975696dac662a001"}}
+E       assert 500 == 201
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests/test_memory_fts_availability.py:81: AssertionError
+____ test_failed_memory_initialization_releases_store_and_lease_without_gc _____
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1217/test_failed_memory_initializat0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c94b460>
+
+    def test_failed_memory_initialization_releases_store_and_lease_without_gc(tmp_path, monkeypatch):
+        path = tmp_path / 'startup-failure.db'
+        failure = RuntimeError('PRIVATE initialization failure')
+        stores = []
+        original = MemoryPlane._ensure_keyword_index
+        def broken(self):
+            stores.append(self.store)
+            raise failure
+        monkeypatch.setattr(MemoryPlane, '_ensure_keyword_index', broken)
+        with pytest.raises(RuntimeError) as captured:
+            with TestClient(create_app(path, False)):
+                pytest.fail('Startup must fail')
+        assert captured.value is failure
+>       with pytest.raises(sqlite3.ProgrammingError, match='closed'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProgrammingError
+
+tests/test_memory_fts_availability.py:360: Failed
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_missing_module_status_is_sanitized_and_matches_public_contract
+FAILED tests/test_memory_fts_availability.py::test_missing_module_retain_dedup_replay_and_delete_never_touch_index
+FAILED tests/test_memory_fts_availability.py::test_missing_module_supersede_retract_scope_and_context
+FAILED tests/test_memory_fts_availability.py::test_degraded_scan_keeps_temporal_filters[source.occurred_at]
+FAILED tests/test_memory_fts_availability.py::test_degraded_scan_keeps_temporal_filters[fact.occurred_at]
+FAILED tests/test_memory_fts_availability.py::test_degraded_scan_keeps_temporal_filters[fact.valid_to]
+FAILED tests/test_memory_fts_availability.py::test_creation_errors_other_than_exact_absence_propagate[locked]
+FAILED tests/test_memory_fts_availability.py::test_creation_errors_other_than_exact_absence_propagate[readonly]
+FAILED tests/test_memory_fts_availability.py::test_creation_errors_other_than_exact_absence_propagate[syntax]
+FAILED tests/test_memory_fts_availability.py::test_creation_errors_other_than_exact_absence_propagate[near-match]
+FAILED tests/test_memory_fts_availability.py::test_creation_errors_other_than_exact_absence_propagate[wrong-code]
+FAILED tests/test_memory_fts_availability.py::test_missing_module_message_outside_creation_is_not_a_degradation[DELETE FROM memory_fact_fts]
+FAILED tests/test_memory_fts_availability.py::test_missing_module_message_outside_creation_is_not_a_degradation[SELECT fact_id FROM memory_fact_fts]
+FAILED tests/test_memory_fts_availability.py::test_existing_index_cannot_degrade_even_with_exact_creation_error
+FAILED tests/test_memory_fts_availability.py::test_wrong_named_object_is_not_a_healthy_index[view]
+FAILED tests/test_memory_fts_availability.py::test_wrong_named_object_is_not_a_healthy_index[table]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:recall]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:context]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:recall]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:context]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:recall]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:context]
+FAILED tests/test_memory_fts_availability.py::test_real_runtime_projection_loss_fails_read_and_write_without_canonical_loss
+FAILED tests/test_memory_fts_availability.py::test_degraded_canonical_failure_is_not_swallowed[database]
+FAILED tests/test_memory_fts_availability.py::test_degraded_canonical_failure_is_not_swallowed[program]
+FAILED tests/test_memory_fts_availability.py::test_ready_only_published_after_commit_and_failed_rebuild_keeps_previous_state
+FAILED tests/test_memory_fts_availability.py::test_restart_after_module_restored_rebuilds_only_active_facts
+FAILED tests/test_memory_fts_availability.py::test_failed_memory_initialization_releases_store_and_lease_without_gc
+28 failed, 3 passed, 1 warning in 1.73s

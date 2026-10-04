@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-04T00:27:00Z",
+  "generated_at": "2026-10-04T00:58:09Z",
   "tasks": [
+    {
+      "id": "HA-0071",
+      "title": "FTS缺模块的M1写入降级与数据库故障传播",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["限定FTS初始化缺模块降级", "M1生命周期与查询故障传播", "故障矩阵、事务重试、重启与回归突变"],
+      "non_goals": ["FTS影子词项擦除", "启用semantic或模型", "在线重建与大库性能", "绕过本机部署132"],
+      "acceptance": ["缺模块M1写入及生命周期可用，context明确503", "真实DB/程序故障不吞且事务不半写", "基线行为反例、重启及定向突变", "全量verify、独立review和双部署证据"],
+      "depends_on": ["HA-0070"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/blocked/HA-0071-memory-fts-availability.md",
+      "blocked_reason": "新31/相关255、基线28行为反例及14有效突变通过；全量1328 passed/16 skipped与verify退出0。待独立review及兼容本机拓扑后的双部署。",
+      "recovery_condition": "固定提交独立Approved；兼容本机拓扑批准后先8765再132验收。",
+      "evidence": ["harness/evidence/HA-0071/acceptance.md", "harness/evidence/HA-0071/mutation-plan.json", "harness/evidence/HA-0071/mutation-results.json"]
+    },
     {
       "id": "HA-0070",
       "title": "Memory删除传播到历史内容收据且禁止旧键复活",

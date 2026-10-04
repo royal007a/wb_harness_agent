@@ -31,6 +31,13 @@ POST :recall-details → 重新验证有效性 → Detail Bundle + Source 引用
 
 ADR-0031 已将后续 M2-B semantic/vector/RRF 的准入固定为机器 Gate：当前 `not_admitted`、runtime disabled、模型/外部调用为 0。变为 admitted 前必须有版本化去标识语料、数据外发、删除/重建、离线相关性和成本/延迟 Evidence；变为 admitted 后仍不等于已接入或上线。
 
+HA-0071/ADR-0071限定FTS降级：只在无既有索引且创建FTS5明确缺模块时标记
+`ready=false, error=FTS5_UNAVAILABLE`，M1沿用canonical关键词扫描且可写入。
+M2 context仍503 MEMORY_INDEX_UNAVAILABLE，不提供“空历史”假象。已有索引、
+同名对象冲突、重建/运行查询中的DB或程序错误不能触发这项降级，启动失败或
+HTTP 500；写入事务回滚。修复环境后重启重建active Fact，GET不自动修复。
+ready是最近初始化成功记录，不是持续健康探针；不承诺两条召回路径的排序等价。
+
 ## 评测
 
 评测集必须使用合成去标识 Source，分别测量：关键 Fact hit/precision、摘要中目标/约束/决策/状态的保真、目录到 Detail 的精确读取、supersede/retract/delete 后的不召回、跨 Bank 零泄漏、最近轮不落盘、索引重建与安全拒绝。任何语义或最终回答质量指标都等待后续 M2-B 的真实受控模型/embedding 基线。

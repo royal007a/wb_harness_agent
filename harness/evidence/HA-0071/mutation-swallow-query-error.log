@@ -1,0 +1,136 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+_ test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:recall] _
+
+client = <starlette.testclient.TestClient object at 0x10acd4050>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('database is locked'), 'calls': ['PRAGMA j...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':recall', message = 'database is locked'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"schema_version":"evidence-bundle@1","bank_id":"membank_ef40afd9574f42d0ab336f47a4b9f8bd","query":"zqquery71","memory_status":"available","channels":["keyword","temporal"],"evidence":[{"evidence_id":"memfact_34a456508ea843dba60b6dcec466c134","type":"fact","statement":"Fact zqquery71","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:54:18.488886Z","valid_from":null,"valid_to":null,"status":"active","source_evidence":{"source_id":"memsrc_3cc85c281269442a8e151b6c9f5d2066","source_ref":"fixture:zqquery71","content_sha256":"c673c237db3136eeaad6d07d33858de41aa805f106d6cca4a776a38c63fea029","occurred_at":"2026-01-01T00:00:00Z"},"score_explanation":{"channel":"keyword","matched_terms":["zqquery71"],"keyword_score":21,"temporal_as_of":"2026-10-04T00:54:18.491993Z"}}]}
+E       assert 200 == 500
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:context] _
+
+client = <starlette.testclient.TestClient object at 0x10cb28f50>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('database is locked'), 'calls': ['PRAGMA j...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':context', message = 'database is locked'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"error":{"code":"MEMORY_INDEX_UNAVAILABLE","message":"M2-A 关键词索引不可用；不能把索引故障伪装成无历史。","retryable":false,"request_id":"req_a1970950c37747e391d3c757e592a3d3"}}
+E       assert 503 == 500
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:recall] _
+
+client = <starlette.testclient.TestClient object at 0x10adf4190>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('no such table: memory_fact_fts'), 'calls'...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':recall', message = 'no such table: memory_fact_fts'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"schema_version":"evidence-bundle@1","bank_id":"membank_df9627e6660c4865a4c9f79e94e9e00c","query":"zqquery71","memory_status":"available","channels":["keyword","temporal"],"evidence":[{"evidence_id":"memfact_a65a1f67f5ea46a68170356804ec46ca","type":"fact","statement":"Fact zqquery71","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:54:18.653166Z","valid_from":null,"valid_to":null,"status":"active","source_evidence":{"source_id":"memsrc_cf6bb1da20c947a8938492ead0e245f6","source_ref":"fixture:zqquery71","content_sha256":"c673c237db3136eeaad6d07d33858de41aa805f106d6cca4a776a38c63fea029","occurred_at":"2026-01-01T00:00:00Z"},"score_explanation":{"channel":"keyword","matched_terms":["zqquery71"],"keyword_score":21,"temporal_as_of":"2026-10-04T00:54:18.655074Z"}}]}
+E       assert 200 == 500
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:context] _
+
+client = <starlette.testclient.TestClient object at 0x108b67100>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('no such table: memory_fact_fts'), 'calls'...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':context', message = 'no such table: memory_fact_fts'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"error":{"code":"MEMORY_INDEX_UNAVAILABLE","message":"M2-A 关键词索引不可用；不能把索引故障伪装成无历史。","retryable":false,"request_id":"req_322ed0c29afe41c6aff582885a0c6837"}}
+E       assert 503 == 500
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:recall] _
+
+client = <starlette.testclient.TestClient object at 0x10cd08fc0>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('PRIVATE invalid query'), 'calls': ['PRAGM...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':recall', message = 'PRIVATE invalid query'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"schema_version":"evidence-bundle@1","bank_id":"membank_5a4ef530b0ba4ec282034a074616a590","query":"zqquery71","memory_status":"available","channels":["keyword","temporal"],"evidence":[{"evidence_id":"memfact_ca2f2293e3314ecb808296de191a3b1c","type":"fact","statement":"Fact zqquery71","kind":"fact","confidence":0.9,"occurred_at":"2026-01-01T00:00:00Z","recorded_at":"2026-10-04T00:54:18.744399Z","valid_from":null,"valid_to":null,"status":"active","source_evidence":{"source_id":"memsrc_9bbefaa742b7400286d26c67e76c008b","source_ref":"fixture:zqquery71","content_sha256":"c673c237db3136eeaad6d07d33858de41aa805f106d6cca4a776a38c63fea029","occurred_at":"2026-01-01T00:00:00Z"},"score_explanation":{"channel":"keyword","matched_terms":["zqquery71"],"keyword_score":21,"temporal_as_of":"2026-10-04T00:54:18.745666Z"}}]}
+E       assert 200 == 500
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+_ test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:context] _
+
+client = <starlette.testclient.TestClient object at 0x10c975eb0>
+fault = {'prefix': 'SELECT fact_id FROM memory_fact_fts', 'error': OperationalError('PRIVATE invalid query'), 'calls': ['PRAGM...es:*' OR scope GLOB 'memory:relations:*' ORDER BY scope,key", 'COMMIT', 'BEGIN IMMEDIATE', ...], 'before_commit': None}
+route = ':context', message = 'PRIVATE invalid query'
+
+    @pytest.mark.parametrize('route', [':recall', ':context'])
+    @pytest.mark.parametrize('message', ['database is locked', 'no such table: memory_fact_fts', 'PRIVATE invalid query'])
+    def test_runtime_query_fault_is_500_not_scan_or_empty(client, fault, route, message):
+        bank = post_bank(client, 'query71', 'query-bank71')
+        retain(client, bank, 'zqquery71')
+        before = snapshot(client)
+        fail(fault, 'SELECT fact_id FROM memory_fact_fts', sql_error(message))
+        result = client.post('/api/local/memory/banks/' + bank['id'] + route, json={'query': 'zqquery71'})
+>       assert result.status_code == 500, result.text
+E       AssertionError: {"error":{"code":"MEMORY_INDEX_UNAVAILABLE","message":"M2-A 关键词索引不可用；不能把索引故障伪装成无历史。","retryable":false,"request_id":"req_157b33425fd049b3a07060d93df03898"}}
+E       assert 503 == 500
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests/test_memory_fts_availability.py:236: AssertionError
+=============================== warnings summary ===============================
+../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:recall]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[database is locked-:context]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:recall]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[no such table: memory_fact_fts-:context]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:recall]
+FAILED tests/test_memory_fts_availability.py::test_runtime_query_fault_is_500_not_scan_or_empty[PRIVATE invalid query-:context]
+6 failed, 25 deselected, 1 warning in 0.62s

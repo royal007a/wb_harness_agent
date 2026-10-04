@@ -1,0 +1,88 @@
+[
+  {
+    "id": "write-despite-absent-index",
+    "old": "if self._fts_ready:\n                    self._index_fact(db, fact)",
+    "next": "if True:\n                    self._index_fact(db, fact)",
+    "select": "missing_module_retain"
+  },
+  {
+    "id": "cleanup-despite-absent-index",
+    "old": "if self._fts_ready:\n            db.executemany(",
+    "next": "if True:\n            db.executemany(",
+    "select": "missing_module_retain"
+  },
+  {
+    "id": "ignore-existing-index",
+    "old": "existing is not None or str(exc)",
+    "next": "str(exc)",
+    "select": "existing_index_cannot_degrade"
+  },
+  {
+    "id": "ignore-error-message",
+    "old": "or str(exc) != 'no such module: fts5'",
+    "next": "",
+    "select": "creation_errors_other_than_exact_absence"
+  },
+  {
+    "id": "ignore-error-code",
+    "old": "or getattr(exc, 'sqlite_errorcode', None) != sqlite3.SQLITE_ERROR",
+    "next": "",
+    "select": "creation_errors_other_than_exact_absence"
+  },
+  {
+    "id": "skip-rebuild",
+    "old": "self._rebuild_keyword_index(db)\n                    # A same-named",
+    "next": "pass\n                    # A same-named",
+    "select": "restart_after_module_restored"
+  },
+  {
+    "id": "skip-match-probe",
+    "old": "db.execute('SELECT fact_id FROM memory_fact_fts WHERE memory_fact_fts MATCH ? LIMIT 1',\n                               ('\"harnessftsprobe\"',)).fetchall()",
+    "next": "pass",
+    "select": "wrong_named_object"
+  },
+  {
+    "id": "rebuild-inactive-facts",
+    "old": "if fact['status'] == 'active' and fact['source_id'] in sources:",
+    "next": "if fact['source_id'] in sources:",
+    "select": "restart_after_module_restored"
+  },
+  {
+    "id": "ready-before-commit",
+    "old": "if available:\n                    self._rebuild_keyword_index(db)",
+    "next": "if available:\n                    self._fts_ready = True\n                    self._rebuild_keyword_index(db)",
+    "select": "ready_only_published"
+  },
+  {
+    "id": "error-text-not-sanitized",
+    "old": "None if available else 'FTS5_UNAVAILABLE'",
+    "next": "None if available else 'no such module: fts5'",
+    "select": "missing_module_status"
+  },
+  {
+    "id": "swallow-query-error",
+    "old": "with self.store.lock:\n            rows = self.store.db.execute(\n                'SELECT fact_id FROM memory_fact_fts WHERE memory_fact_fts MATCH ? AND bank_id=? LIMIT 80',\n                (expression, bank_id),\n            ).fetchall()\n        return {row['fact_id'] for row in rows}",
+    "next": "try:\n            with self.store.lock:\n                rows = self.store.db.execute(\n                    'SELECT fact_id FROM memory_fact_fts WHERE memory_fact_fts MATCH ? AND bank_id=? LIMIT 80',\n                    (expression, bank_id),\n                ).fetchall()\n            return {row['fact_id'] for row in rows}\n        except sqlite3.OperationalError:\n            return None",
+    "select": "runtime_query_fault"
+  },
+  {
+    "id": "early-retain-commit",
+    "old": "if self._fts_ready:\n                    self._index_fact(db, fact)",
+    "next": "if self._fts_ready:\n                    db.execute('COMMIT')\n                    db.execute('BEGIN IMMEDIATE')\n                    self._index_fact(db, fact)",
+    "select": "ready_index_write_failure and INSERT"
+  },
+  {
+    "id": "leak-startup-store",
+    "file": "backend/app.py",
+    "old": "cleanup.callback(store.close)",
+    "next": "pass",
+    "select": "failed_memory_initialization"
+  },
+  {
+    "id": "leak-startup-lease",
+    "file": "backend/app.py",
+    "old": "lease = cleanup.enter_context(target.with_suffix('.lock').open('a'))",
+    "next": "lease = target.with_suffix('.lock').open('a')",
+    "select": "failed_memory_initialization"
+  }
+]
