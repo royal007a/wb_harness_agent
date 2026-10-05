@@ -316,7 +316,10 @@ def options_snapshot(options) -> dict[str, Any]:
 
 
 def normalize_sdk_message(message: Any) -> list[dict[str, Any]]:
-    """Map SDK message objects to bounded, secret-free platform-event payloads."""
+    """Map SDK messages to bounded in-memory observations (may contain text).
+
+    The control plane must project these before persisting Product Events.
+    """
     from claude_agent_sdk import AssistantMessage, RateLimitEvent, ResultMessage, SystemMessage, ToolResultBlock, ToolUseBlock, TextBlock
     output: list[dict[str, Any]] = []
     if isinstance(message, AssistantMessage):

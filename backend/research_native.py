@@ -23,6 +23,7 @@ from .research import Research
 from .research_sources import ResearchSourceGateway, policy_from_env
 from .service import DENY, ROOT, TERMINAL, local_task, validate
 from .store import dumps, now, uid
+from .runtime_event_metadata import fingerprint, project_runtime_event
 
 
 ENGINE = 'engine_claude_research_native'
@@ -194,6 +195,7 @@ class NativeResearch(Research):
         """Persist an SDK observation to its parent or delegated Child Run."""
         target = root_id
         payload = copy.deepcopy(event['payload'])
+        metadata = project_runtime_event(event['kind'], payload)
         if event['kind'] == 'assistant.tool_use' and event['agent_scope'] == 'parent' and payload.get('tool') == 'Agent':
             # The normalizer intentionally does not persist arbitrary input;
             # subagent_type is the one fixed, non-secret routing field.
@@ -208,7 +210,7 @@ class NativeResearch(Research):
                         self.store.event(db, current, 'run.started', {'origin': 'native_sdk_agent'})
                     root = self.store.get('runs', root_id)
                     self.store.event(db, root, 'agent.delegated', {'child_run_id': child['id'], 'role': role,
-                                                                   'sdk_tool_use_id': payload['tool_use_id']})
+                                                                   'sdk_tool_use_id_sha256': fingerprint(payload['tool_use_id'])['sha256']})
                 return
         if event['agent_scope'] == 'child':
             role = delegation.get(event['parent_tool_use_id'])
@@ -226,7 +228,7 @@ class NativeResearch(Research):
             self.check(root_id)
             if target != root_id:
                 self.check(target)
-            self.store.event(db, run, event_type, payload)
+            self.store.event(db, run, event_type, metadata)
 
     def execute(self, root_id):
         try:

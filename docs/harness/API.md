@@ -1,5 +1,13 @@
 # API 规格
 
+HA-0076：新写入的 Native `agent.sdk.*` 事件 data、Pi `pi.*` 事件的
+`data.payload` 使用 `runtime-event-metadata@1`（见
+`specs/v1/runtime-event-metadata.schema.json`）。只保存固定类型、规范化 payload
+摘要/长度与受限错误元数据，不返回观察中的正文。原文仍经内存聚合和受控 Artifact
+发布；旧事件不迁移、不清除，客户端需按 schema_version 区分。Native 新委派事件
+用 `sdk_tool_use_id_sha256` 替代原始 SDK ID，真实关联在内存与受控 manifest 中保留。
+这不改变通用 Event 信封、事件游标或 Run/Gate 状态，也不代表全库脱敏。
+
 HA-0058 修复动态 OpenAPI 的契约归属：Lab、Runtime、研究模拟使用独立 component
 命名空间，注册时拒绝同名不同义；Lab/Runtime 的列表、状态、详情、readiness 与
 创建响应均引用本域 JSON Schema，静态 OpenAPI 同源。请求 JSON 和持久 ID 不变，

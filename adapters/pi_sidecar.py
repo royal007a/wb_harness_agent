@@ -43,7 +43,7 @@ class PiSidecarClient:
             raise RuntimeError('PI_SIDECAR_SCRIPT_MISSING')
         self.process = subprocess.Popen(
             [self.config.node_path, str(self.config.script_path)],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
             text=True, bufsize=1,
         )
 
@@ -70,8 +70,7 @@ class PiSidecarClient:
             raise RuntimeError('PI_SIDECAR_NOT_RUNNING')
         line = self.process.stdout.readline()
         if not line:
-            detail = self.process.stderr.read() if self.process.stderr else ''
-            raise RuntimeError(f'PI_SIDECAR_EOF:{detail[:300]}')
+            raise RuntimeError('PI_SIDECAR_EOF')
         return json.loads(line)
 
     def health(self) -> dict[str, Any]:
@@ -82,7 +81,7 @@ class PiSidecarClient:
             if response.get('op') == 'health':
                 return response
             if response.get('op') == 'error':
-                raise RuntimeError(response.get('code', 'PI_SIDECAR_ERROR'))
+                raise RuntimeError('PI_SIDECAR_ERROR')
 
     def start(self, *, run_id: str, resource_ref: str, max_turns: int = 4) -> dict[str, Any]:
         self.start_process()
@@ -96,7 +95,7 @@ class PiSidecarClient:
             response = self._read()
             if response.get('op') in {'started', 'error'}:
                 if response.get('op') == 'error':
-                    raise RuntimeError(response.get('code', 'PI_SIDECAR_ERROR'))
+                    raise RuntimeError('PI_SIDECAR_ERROR')
                 return response
 
     def drain_until_done(self, run_id: str) -> list[dict[str, Any]]:
@@ -110,7 +109,7 @@ class PiSidecarClient:
                 if response.get('platform_type') == 'run.result.proposed':
                     return events
             elif response.get('op') == 'error':
-                raise RuntimeError(response.get('code', 'PI_SIDECAR_ERROR'))
+                raise RuntimeError('PI_SIDECAR_ERROR')
 
     def stream(self, *, run_id: str, after_seq: int = 0) -> dict[str, Any]:
         self._send({'protocol': PROTOCOL, 'op': 'stream', 'request_id': f'stream-{run_id}',
@@ -122,7 +121,7 @@ class PiSidecarClient:
                 events.append(response)
             if response.get('op') in {'stream_end', 'error'}:
                 if response.get('op') == 'error':
-                    raise RuntimeError(response.get('code', 'PI_SIDECAR_ERROR'))
+                    raise RuntimeError('PI_SIDECAR_ERROR')
                 return {'events': events, 'done': response.get('done', False),
                         'next_seq': response.get('next_seq', 0)}
 
@@ -132,5 +131,5 @@ class PiSidecarClient:
             response = self._read()
             if response.get('op') in {'cancelled', 'error'}:
                 if response.get('op') == 'error':
-                    raise RuntimeError(response.get('code', 'PI_SIDECAR_ERROR'))
+                    raise RuntimeError('PI_SIDECAR_ERROR')
                 return response

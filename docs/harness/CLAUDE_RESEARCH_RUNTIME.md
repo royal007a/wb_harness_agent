@@ -1,5 +1,11 @@
 # Native Claude 投研运行时（ADR-0024，受控准入中）
 
+HA-0076 新增持久化投影：SDK normalizer 输出是可能含正文的**内存观察**，不能
+直接写日志。NativeResearch 先供 Child 聚合使用，再以 runtime-event-metadata@1
+写入事件；Pi 观察同样投影。errors/structured_output 不复制到新事件，合法 Child
+正文只通过既有 publish() 进入产物。旧事件不清理；详见 ADR-0076。此切片尚未
+实现子进程环境白名单、独立目录、auto memory 控制或新的结构化汇总通道。
+
 `claude_native_research@1` 是 ADR-0023 模拟切片之后的真实执行适配器。它使用 Claude Agent SDK 的原生 `Agent` Tool 让父 Agent 分派财务、行业、风险三个 SubAgent；它不是 OpenAI-compatible 聊天运行时的替代，也不会从该运行时继承 Provider 配置。
 
 ## 固定拓扑

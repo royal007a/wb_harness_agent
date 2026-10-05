@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harnessagent.local/specs/v1/runtime-event-metadata.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "payload_sha256", "payload_bytes"],
+  "properties": {
+    "schema_version": {"const": "runtime-event-metadata@1"},
+    "kind": {"enum": ["assistant.text", "assistant.tool_use", "assistant.tool_result", "sdk.system", "sdk.result", "sdk.rate_limit", "run.started", "model.call.started", "model.message", "model.delta", "tool.call.requested", "tool.call.progress", "tool.call.completed", "step.completed", "run.result.proposed"]},
+    "payload_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$", "minLength": 64, "maxLength": 64},
+    "payload_bytes": {"type": "integer", "minimum": 2},
+    "is_error": {"type": "boolean"},
+    "error_count": {"type": "integer", "minimum": 0},
+    "errors": {"type": "array", "maxItems": 64, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["category", "sha256", "bytes"],
+      "properties": {
+        "category": {"const": "sdk_error"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$", "minLength": 64, "maxLength": 64},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }}
+  },
+  "if": {"properties": {"kind": {"const": "sdk.result"}}},
+  "then": {"required": ["error_count", "errors"]},
+  "else": {"properties": {"error_count": false, "errors": false}}
+}

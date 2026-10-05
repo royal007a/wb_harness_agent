@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-10-05T10:14:51.846115+00:00",
+  "read_only": true,
+  "local": {
+    "url": "http://127.0.0.1:8765",
+    "health": "connection_refused",
+    "managername": "Background",
+    "gui_domain_print_exit": 0,
+    "user_domain_print_exit": 0,
+    "gui_service_loaded": false,
+    "user_service_loaded": false,
+    "preflight": {"code": "gui_requires_aqua_caller", "action": "preflight", "attempts": 0},
+    "bootstrap_attempted": false,
+    "bootout_attempted": false
+  },
+  "remote": {
+    "host": "118.196.123.132",
+    "service": "harnessagent",
+    "systemd_status": "active",
+    "checkout_commit": "18406399318734cb7b8ab05581c1e84e81138337",
+    "publication_attempted": false,
+    "health_and_authenticated_proxy_verified": false
+  },
+  "decision": "Blocked before local activation; do not skip local release and deploy remote.",
+  "required_decision": "Run approved gui deployment from an Aqua session, or approve a separately specified and tested user/501 topology.",
+  "not_evidence": [
+    "A readable launchd domain does not prove an application can start there.",
+    "Remote systemd active and checkout SHA do not prove process release identity or health.",
+    "No production database, credentials, admission gates or service configuration changed."
+  ]
+}

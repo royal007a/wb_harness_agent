@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="8" time="0.769" timestamp="2026-10-05T18:14:16.508756+08:00" hostname="192.168.31.117"><testcase classname="tests.test_runtime_event_metadata" name="test_native_persists_only_metadata_but_publishes_original_child_text" time="0.207"><failure message="assert 'PRIVATE_SENTINEL_76_正文' not in '[{&quot;data&quot;: {...&quot;ws_local&quot;}]'&#10;  &#10;  'PRIVATE_SENTINEL_76_正文' is contained here:&#10;    use_id&quot;: &quot;PRIVATE_SENTINEL_76_正文financial&quot;}, &quot;event_id&quot;: &quot;evt_38c8e9df988843b085d1805b4e02c9be&quot;, &quot;event_type&quot;: &quot;agent.delegated&quot;, &quot;event_version&quot;: 1, &quot;occurred_at&quot;: &quot;2026-10-05T10:14:17.133401Z&quot;, &quot;project_id&quot;: &quot;prj_local&quot;, &quot;run_id&quot;: &quot;run_cf58133a6d404268a6a291c8c1a9e773&quot;, &quot;sequence&quot;: 6, &quot;step_id&quot;: null, &quot;task_id&quot;: &quot;task_3abe5ae2856e473a9f15a7f06908e73c&quot;, &quot;trace_id&quot;: &quot;trace_cf58133a6d404268a6a291c8c1a9e773&quot;, &quot;workspace_id&quot;: &quot;ws_local&quot;}, {&quot;data&quot;: {&quot;child_run_id&quot;: &quot;run_be34e050d1a54fe187e10e371d2bbbf8&quot;, &quot;role&quot;: &quot;industry&quot;, &quot;sdk_tool...&#10;  &#10;  ...Full output truncated (1 line hidden), use '-vv' to show">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1495/test_native_persists_only_meta0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x109624d60&gt;
+
+    def test_native_persists_only_metadata_but_publishes_original_child_text(tmp_path, monkeypatch):
+        enabled_env(monkeypatch, tmp_path)
+    
+        async def stream(*args):
+            for role in ('financial', 'industry', 'risk'):
+                tool_id = MARKER + role
+                yield {'kind': 'assistant.tool_use', 'agent_scope': 'parent', 'parent_tool_use_id': None,
+                       'payload': {'tool_use_id': tool_id, 'tool': 'Agent', 'subagent_type': role}}
+                yield {'kind': 'assistant.text', 'agent_scope': 'child', 'parent_tool_use_id': tool_id,
+                       'payload': {'text': '未评估：' + MARKER, 'sha256': MARKER}}
+                yield {'kind': 'assistant.tool_result', 'agent_scope': 'child', 'parent_tool_use_id': tool_id,
+                       'payload': {'tool_use_id': tool_id, 'content': MARKER}}
+            yield {'kind': 'sdk.result', 'agent_scope': 'parent', 'parent_tool_use_id': None,
+                   'payload': {'errors': [MARKER], 'structured_output': {'answer': MARKER}}}
+    
+        monkeypatch.setattr('backend.research_native.stream_native_research', stream)
+        database = tmp_path / 'native.db'
+        with TestClient(create_app(database, False), base_url='http://127.0.0.1') as client:
+            resource = client.post('/api/local/research-native/documents?name=report.pdf', content=PUBLIC_PDF,
+                                   headers={'content-type': 'application/pdf'}).json()
+            created = client.post('/api/local/research-native', json={**REQUEST, 'report_resource_id': resource['id']},
+                                  headers={'Idempotency-Key': 'privacy-native'})
+            assert created.status_code == 202, created.text
+            root = created.json()['initial_run']['id']
+            service = client.app.state.service
+            service.execute(root)
+            detail = client.get('/api/local/research-native/' + root).json()
+            assert detail['run']['status'] == 'succeeded'
+            run_ids = [root] + [c['run']['id'] for c in detail['children']]
+            saved = []
+            for run_id in run_ids:
+                events = client.get(f'/api/v1/runs/{run_id}/events').json()['items']
+&gt;               assert MARKER not in json.dumps(events, ensure_ascii=False)
+E               assert 'PRIVATE_SENTINEL_76_正文' not in '[{"data": {..."ws_local"}]'
+E                 
+E                 'PRIVATE_SENTINEL_76_正文' is contained here:
+E                   use_id": "PRIVATE_SENTINEL_76_正文financial"}, "event_id": "evt_38c8e9df988843b085d1805b4e02c9be", "event_type": "agent.delegated", "event_version": 1, "occurred_at": "2026-10-05T10:14:17.133401Z", "project_id": "prj_local", "run_id": "run_cf58133a6d404268a6a291c8c1a9e773", "sequence": 6, "step_id": null, "task_id": "task_3abe5ae2856e473a9f15a7f06908e73c", "trace_id": "trace_cf58133a6d404268a6a291c8c1a9e773", "workspace_id": "ws_local"}, {"data": {"child_run_id": "run_be34e050d1a54fe187e10e371d2bbbf8", "role": "industry", "sdk_tool...
+E                 
+E                 ...Full output truncated (1 line hidden), use '-vv' to show
+
+tests/test_runtime_event_metadata.py:97: AssertionError</failure></testcase><testcase classname="tests.test_runtime_event_metadata" name="test_pi_real_adapter_extracts_candidate_from_memory_not_persisted_event" time="0.076"><failure message="assert 'PRIVATE_SENTINEL_76_正文' not in '[{&quot;data&quot;: {...&quot;ws_local&quot;}]'&#10;  &#10;  'PRIVATE_SENTINEL_76_正文' is contained here:&#10;  ?          ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------...&#10;  &#10;  ...Full output truncated (3 lines hidden), use '-vv' to show">tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1495/test_pi_real_adapter_extracts_0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a48d220&gt;
+
+    def test_pi_real_adapter_extracts_candidate_from_memory_not_persisted_event(tmp_path, monkeypatch):
+        class SyntheticSidecar:
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def health(self): return {'runtime_enabled': False, 'external_calls': 0}
+            def start(self, **kwargs): self.resource = kwargs['resource_ref']
+            def drain_until_done(self, run_id):
+                finding = {'status': 'needs_human', 'risk_level': 'high',
+                           'evidence_refs': [f'evidence://{self.resource}/clause-12.3/page-8'],
+                           'recommendation': MARKER}
+                return [{'platform_type': 'tool.call.completed', 'payload': {'result': MARKER}},
+                        {'platform_type': 'run.result.proposed', 'payload': {
+                            'unknown': MARKER, 'messages': [{'role': 'assistant', 'content': [
+                                {'type': 'text', 'text': json.dumps(finding, ensure_ascii=False)}]}]}}]
+    
+        monkeypatch.setattr('adapters.pi_contract_review.PiSidecarClient', SyntheticSidecar)
+        with TestClient(create_app(tmp_path / 'pi.db', False), base_url='http://127.0.0.1') as client:
+            resource = client.post('/api/local/research-native/documents?name=contract.pdf', content=PUBLIC_PDF,
+                                   headers={'content-type': 'application/pdf'}).json()
+            response = client.post('/api/local/pi-contract-review', json={
+                'resource_id': resource['id'], 'objective': '审查合同', 'timeout_seconds': 30,
+            }, headers={'Idempotency-Key': 'privacy-pi'})
+            assert response.status_code == 202, response.text
+            run_id = response.json()['initial_run']['id']
+            client.app.state.service.execute(run_id)
+            detail = client.get('/api/local/pi-contract-review/' + run_id).json()
+            assert detail['run']['status'] == 'waiting_approval'
+            events = client.get(f'/api/local/pi-contract-review/{run_id}/events').json()['events']
+&gt;           assert MARKER not in json.dumps(events, ensure_ascii=False)
+E           assert 'PRIVATE_SENTINEL_76_正文' not in '[{"data": {..."ws_local"}]'
+E             
+E             'PRIVATE_SENTINEL_76_正文' is contained here:
+E             ?          ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------...
+E             
+E             ...Full output truncated (3 lines hidden), use '-vv' to show
+
+tests/test_runtime_event_metadata.py:144: AssertionError</failure></testcase><testcase classname="tests.test_runtime_event_metadata" name="test_pi_stderr_not_read_or_propagated" time="0.000"><failure message="assert -1 == -3&#10; +  where -3 = subprocess.DEVNULL">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1088c9eb0&gt;
+
+    def test_pi_stderr_not_read_or_propagated(monkeypatch):
+        def spawn(*args, **kwargs):
+            assert kwargs['stderr'] == subprocess.DEVNULL
+            return SimpleNamespace(stdout=io.StringIO(''), stderr=SimpleNamespace(read=lambda: pytest.fail('stderr read')))
+        monkeypatch.setattr(subprocess, 'Popen', spawn)
+        client = PiSidecarClient()
+&gt;       client.start_process()
+
+tests/test_runtime_event_metadata.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+adapters/pi_sidecar.py:44: in start_process
+    self.process = subprocess.Popen(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (['node', '/private/tmp/ha0076-before.2WfT4e/pi-adapter/src/sidecar.mjs'],)
+kwargs = {'stdin': -1, 'stdout': -1, 'stderr': -1, 'text': True, ...}
+
+    def spawn(*args, **kwargs):
+&gt;       assert kwargs['stderr'] == subprocess.DEVNULL
+E       assert -1 == -3
+E        +  where -3 = subprocess.DEVNULL
+
+tests/test_runtime_event_metadata.py:154: AssertionError</failure></testcase><testcase classname="tests.test_runtime_event_metadata" name="test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel[health]" time="0.000"><failure message="AssertionError: &#10;- PRIVATE_SENTINEL_76_正文&#10;+ PI_SIDECAR_ERROR">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1096a96a0&gt;
+operation = 'health'
+
+    @pytest.mark.parametrize('operation', ['health', 'start', 'drain', 'stream', 'cancel'])
+    def test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel(monkeypatch, operation):
+        client = PiSidecarClient()
+        monkeypatch.setattr(client, 'start_process', lambda: None)
+        monkeypatch.setattr(client, '_send', lambda payload: None)
+        monkeypatch.setattr(client, '_read', lambda: {'op': 'error', 'run_id': 'run_test', 'code': MARKER})
+        calls = {'health': lambda: client.health(), 'start': lambda: client.start(run_id='run_test', resource_ref='res_test'),
+                 'drain': lambda: client.drain_until_done('run_test'), 'stream': lambda: client.stream(run_id='run_test'),
+                 'cancel': lambda: client.cancel(run_id='run_test')}
+&gt;       with pytest.raises(RuntimeError, match='^PI_SIDECAR_ERROR$'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: 
+E       - PRIVATE_SENTINEL_76_正文
+E       + PI_SIDECAR_ERROR
+
+tests/test_runtime_event_metadata.py:195: AssertionError</failure></testcase><testcase classname="tests.test_runtime_event_metadata" name="test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel[start]" time="0.000"><failure message="AssertionError: &#10;- PRIVATE_SENTINEL_76_正文&#10;+ PI_SIDECAR_ERROR">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1096a9260&gt;
+operation = 'start'
+
+    @pytest.mark.parametrize('operation', ['health', 'start', 'drain', 'stream', 'cancel'])
+    def test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel(monkeypatch, operation):
+        client = PiSidecarClient()
+        monkeypatch.setattr(client, 'start_process', lambda: None)
+        monkeypatch.setattr(client, '_send', lambda payload: None)
+        monkeypatch.setattr(client, '_read', lambda: {'op': 'error', 'run_id': 'run_test', 'code': MARKER})
+        calls = {'health': lambda: client.health(), 'start': lambda: client.start(run_id='run_test', resource_ref='res_test'),
+                 'drain': lambda: client.drain_until_done('run_test'), 'stream': lambda: client.stream(run_id='run_test'),
+                 'cancel': lambda: client.cancel(run_id='run_test')}
+&gt;       with pytest.raises(RuntimeError, match='^PI_SIDECAR_ERROR$'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: 
+E       - PRIVATE_SENTINEL_76_正文
+E       + PI_SIDECAR_ERROR
+
+tests/test_runtime_event_metadata.py:195: AssertionError</failure></testcase><testcase classname="tests.test_runtime_event_metadata" name="test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel[drain]" time="0.000"><failure message="AssertionError: &#10;- PRIVATE_SENTINEL_76_正文&#10;+ PI_SIDECAR_ERROR">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a483450&gt;
+operation = 'drain'
+
+    @pytest.mark.parametrize('operation', ['health', 'start', 'drain', 'stream', 'cancel'])
+    def test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel(monkeypatch, operation):
+        client = PiSidecarClient()
+        monkeypatch.setattr(client, 'start_process', lambda: None)
+        monkeypatch.setattr(client, '_send', lambda payload: None)
+        monkeypatch.setattr(client, '_read', lambda: {'op': 'error', 'run_id': 'run_test', 'code': MARKER})
+        calls = {'health': lambda: client.health(), 'start': lambda: client.start(run_id='run_test', resource_ref='res_test'),
+                 'drain': lambda: client.drain_until_done('run_test'), 'stream': lambda: client.stream(run_id='run_test'),
+                 'cancel': lambda: client.cancel(run_id='run_test')}
+&gt;       with pytest.raises(RuntimeError, match='^PI_SIDECAR_ERROR$'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: 
+E       - PRIVATE_SENTINEL_76_正文
+E       + PI_SIDECAR_ERROR
+
+tests/test_runtime_event_metadata.py:195: AssertionError</failure></testcase><testcase classname="tests.test_runtime_event_metadata" name="test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel[stream]" time="0.000"><failure message="AssertionError: &#10;- PRIVATE_SENTINEL_76_正文&#10;+ PI_SIDECAR_ERROR">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a483c50&gt;
+operation = 'stream'
+
+    @pytest.mark.parametrize('operation', ['health', 'start', 'drain', 'stream', 'cancel'])
+    def test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel(monkeypatch, operation):
+        client = PiSidecarClient()
+        monkeypatch.setattr(client, 'start_process', lambda: None)
+        monkeypatch.setattr(client, '_send', lambda payload: None)
+        monkeypatch.setattr(client, '_read', lambda: {'op': 'error', 'run_id': 'run_test', 'code': MARKER})
+        calls = {'health': lambda: client.health(), 'start': lambda: client.start(run_id='run_test', resource_ref='res_test'),
+                 'drain': lambda: client.drain_until_done('run_test'), 'stream': lambda: client.stream(run_id='run_test'),
+                 'cancel': lambda: client.cancel(run_id='run_test')}
+&gt;       with pytest.raises(RuntimeError, match='^PI_SIDECAR_ERROR$'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: 
+E       - PRIVATE_SENTINEL_76_正文
+E       + PI_SIDECAR_ERROR
+
+tests/test_runtime_event_metadata.py:195: AssertionError</failure></testcase><testcase classname="tests.test_runtime_event_metadata" name="test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel[cancel]" time="0.000"><failure message="AssertionError: &#10;- PRIVATE_SENTINEL_76_正文&#10;+ PI_SIDECAR_ERROR">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1097258b0&gt;
+operation = 'cancel'
+
+    @pytest.mark.parametrize('operation', ['health', 'start', 'drain', 'stream', 'cancel'])
+    def test_untrusted_sidecar_error_code_is_not_a_diagnostic_channel(monkeypatch, operation):
+        client = PiSidecarClient()
+        monkeypatch.setattr(client, 'start_process', lambda: None)
+        monkeypatch.setattr(client, '_send', lambda payload: None)
+        monkeypatch.setattr(client, '_read', lambda: {'op': 'error', 'run_id': 'run_test', 'code': MARKER})
+        calls = {'health': lambda: client.health(), 'start': lambda: client.start(run_id='run_test', resource_ref='res_test'),
+                 'drain': lambda: client.drain_until_done('run_test'), 'stream': lambda: client.stream(run_id='run_test'),
+                 'cancel': lambda: client.cancel(run_id='run_test')}
+&gt;       with pytest.raises(RuntimeError, match='^PI_SIDECAR_ERROR$'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: 
+E       - PRIVATE_SENTINEL_76_正文
+E       + PI_SIDECAR_ERROR
+
+tests/test_runtime_event_metadata.py:195: AssertionError</failure></testcase></testsuite></testsuites>

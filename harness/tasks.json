@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-04T13:49:49Z",
+  "generated_at": "2026-10-05T10:18:00Z",
   "tasks": [
+    {
+      "id": "HA-0076",
+      "title": "业务Adapter内容与持久观察事件分流",
+      "status": "blocked",
+      "risk": "medium",
+      "scope": ["Native和Pi观察事件白名单投影", "Pi stderr不传播正文", "行为反例、兼容与双环境发布验证"],
+      "non_goals": ["历史正文清理", "子进程环境及目录隔离", "真实Provider桥和开门禁", "完整A/B/C方案验收"],
+      "acceptance": ["正文秘密不进入新观察事件且合法产物仍可生成", "定向和全量验证通过", "固定提交review及先8765后132的发布证据或明确阻塞"],
+      "depends_on": ["HA-0027", "HA-0068"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0076-runtime-event-projection.md",
+      "blocked_reason": "事件投影代码已完成，144定向及全量1530/16与verify通过，待独立review；8765未监听，Background调用方被现有gui发布预检拒绝，未部署132。",
+      "recovery_condition": "从Aqua执行既有gui发布，或用户批准并验证新的user/501拓扑；先8765后132。",
+      "evidence": ["harness/evidence/HA-0076/acceptance.md", "harness/evidence/HA-0076/targeted.xml", "harness/evidence/HA-0076/before.xml", "harness/evidence/HA-0076/verify.log", "harness/evidence/HA-0076/deployment-preflight.json"]
+    },
     {
       "id": "HA-0075",
       "title": "业务模型持久共享Token账本与调用边界",

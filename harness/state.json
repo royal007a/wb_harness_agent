@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "business_model_budget_foundation",
+  "phase": "runtime_event_privacy_deployment_blocked",
   "implementation_started": true,
-  "active_task_id": "HA-0075",
-  "active_plan": "exec-plans/active/HA-0075-business-token-ledger.md",
-  "last_checkpoint": "HA-0075离线账本及调用边界：69定向、199相关/5跳过，全量1500/16及verify通过；修正ZIP测试时间戳不确定性，未开启真实模型。",
-  "last_updated_at": "2026-10-04T13:49:49Z",
-  "next_action": "复审HA-0075；下一切片接入真实Provider传输、可靠输入计数和usage映射，再对接Pi业务链。真实连通及双部署尚未完成。",
+  "active_task_id": "HA-0076",
+  "active_plan": "exec-plans/active/HA-0076-runtime-event-projection.md",
+  "last_checkpoint": "HA-0076事件隐私切片：144定向、全量1530/16及verify通过，旧版8个行为反例失败；本机Background预检拒绝，未部署任一端。",
+  "last_updated_at": "2026-10-05T10:18:00Z",
+  "next_action": "独立review并请用户决定本机发布拓扑；先8765再132。A剩余环境/目录隔离及B模型工具桥、C检索尚未完成，HA-0075账本也仍未接入真实调用。",
   "release": "0.1.0-local"
 }

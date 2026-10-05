@@ -11,6 +11,7 @@ from adapters.pi_contract_review import PiContractReviewAdapter
 from .analysis import Problem, digest
 from .service import DENY, ROOT, TERMINAL, validate
 from .store import dumps, now, uid
+from .runtime_event_metadata import project_runtime_event
 
 
 ENGINE = 'engine_pi_contract_review_offline'
@@ -124,10 +125,11 @@ class PiContractReviewRuns:
             task = self.store.get('tasks', run['task_id'])
             resource = self.store.get('resources', task['context']['resource_ids'][0])
             def emit(kind, payload):
+                metadata = project_runtime_event(kind, payload)
                 with self.store.transaction() as db:
                     self.service.check(run_id)
                     current = self.store.get('runs', run_id)
-                    self.store.event(db, current, 'pi.' + kind.replace('.', '_'), {'payload': payload})
+                    self.store.event(db, current, 'pi.' + kind.replace('.', '_'), {'payload': metadata})
 
             result = self.adapter.start_run(AdapterRequest(task, run, resource, self.store.raw(resource['id'])), emit,
                                             lambda: self.service.check(run_id))
