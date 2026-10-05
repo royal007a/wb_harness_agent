@@ -10,22 +10,20 @@ import selectors
 import shutil
 import signal
 import subprocess
-import tempfile
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from backend.analysis import Problem
+from .dsh_workspace import OwnedWorkspace
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class DshAdapter:
     def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048):
-        root = Path(runtime_root).resolve()
-        root.mkdir(parents=True, exist_ok=True, mode=0o700)
-        workspace = Path(tempfile.mkdtemp(prefix='run-', dir=root))
-        workspace.chmod(0o700)
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
         for name in ('home', 'work', 'tmp'):
             (workspace / name).mkdir(mode=0o700)
         capability = secrets.token_urlsafe(32)
@@ -37,9 +35,13 @@ class DshAdapter:
                 pass
 
             def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
                 try:
-                    if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
-                        raise Problem('DSH_GATEWAY_AUTH', '拒绝未授权调用。', 403)
                     if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
                         raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
                     size = int(self.headers.get('Content-Length', '-1'))
@@ -77,6 +79,7 @@ class DshAdapter:
         node = shutil.which('node')
         if not node:
             server.shutdown(); server.server_close()
+            owned.close()
             raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
         env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
                'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
@@ -88,7 +91,8 @@ class DshAdapter:
             check()
             process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                cwd=workspace / 'work', env=env, start_new_session=True)
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
             job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
                    'max_output_tokens': output_limit}
             process.stdin.write((json.dumps(job) + '\n').encode())
@@ -153,4 +157,4 @@ class DshAdapter:
             server.server_close()
             thread.join(timeout=2)
             # Only this mkdtemp-created directory; no shared DSH/Claude home.
-            shutil.rmtree(workspace)
+            owned.close()

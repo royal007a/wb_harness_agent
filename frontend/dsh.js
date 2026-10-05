@@ -79,7 +79,8 @@ async function init() {
   $('runtime-state').textContent = status.installed ? '官方 DSH 运行时已安装 · 独立本地实例' : 'DSH 依赖未就绪';
   $('runtime-info').textContent = `${status.runtime} | 真实 Provider：${status.real_provider_enabled ? '已配置开关，仍需调用验证' : '未准入'} | 工具：${status.tools.join(' / ')}`;
   $('version').textContent = `分支 dsh/local-runtime-20261005 · 提交 ${status.release} · 与原 8765 / 132 隔离`;
-  if (status.real_provider_enabled && status.credential_ref_configured) { $('mode').value = 'real_provider'; $('tokens').value = '20000000'; }
+  // Spending real-provider quota always requires an explicit user selection.
+  $('mode').value = 'integration_probe'; $('tokens').value = '200000';
   await history();
 }
 void init().catch(showError);

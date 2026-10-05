@@ -8,7 +8,6 @@
 <key>EnvironmentVariables</key><dict>
 <key>PATH</key><string>/Users/weberzhao/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
 <key>HOME</key><string>/Users/weberzhao</string>
-<key>KEYCHAIN_PATH</key><string>/Users/weberzhao/Library/Keychains/login.keychain-db</string>
 <key>HARNESS_DSH_LOCAL</key><string>enabled</string>
 <key>HARNESS_DSH_REAL_ENABLED</key><string>1</string>
 <key>HARNESS_DSH_CREDENTIAL_REF</key><string>dsh-ark-coding-local-20261005</string>

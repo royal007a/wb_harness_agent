@@ -42,7 +42,7 @@ def test_actual_dsh_two_model_calls_and_tool_result_no_event_content(client):
     body = runtime.store.db.execute('SELECT body FROM artifacts WHERE id=?', (artifact['id'],)).fetchone()[0]
     assert b'SYNTHETIC_PRIVATE_77' in body
     assert b'clause-1' in body
-    assert not list(Path(__import__('os').environ['HARNESS_DSH_RUN_ROOT']).iterdir())
+    assert not list(Path(__import__('os').environ['HARNESS_DSH_RUN_ROOT']).glob('run-*'))
     # A terminal replay cannot make another Provider request or undo success.
     snapshot = runtime.ledger.snapshot(ident)
     runtime.execute(ident)
@@ -206,3 +206,124 @@ def test_real_route_uses_conservative_model_capacity_not_char_estimate(client, m
     runtime.credentials.resolve = lambda _: pytest.fail('insufficient reservation must not resolve credentials')
     runtime.execute(ident)
     assert runtime.detail(ident)['run']['exit_reason'] == 'BUSINESS_TOKEN_BUDGET_EXHAUSTED'
+
+
+def test_unauthorized_gateway_request_cannot_fail_run(client, monkeypatch):
+    import adapters.dsh as adapter
+    import httpx
+    original = adapter.subprocess.Popen
+    def observed(*args, **kwargs):
+        rejected = httpx.post(kwargs['env']['HARNESS_DSH_GATEWAY'] + '/model', json={}, trust_env=False)
+        assert rejected.status_code == 403
+        return original(*args, **kwargs)
+    monkeypatch.setattr(adapter.subprocess, 'Popen', observed)
+    ident = create(client)
+    runtime = client.app.state.service.dsh
+    runtime.execute(ident)
+    assert runtime.detail(ident)['run']['status'] == 'succeeded'
+
+
+@pytest.mark.parametrize('text', ['no citation', 'bad reference clause-99'])
+def test_unread_or_missing_citation_cannot_publish(client, text):
+    from backend.dsh_provider import parse_response
+    ident = create(client)
+    runtime = client.app.state.service.dsh
+    original = runtime.send_probe
+    async def altered(payload, limit):
+        if not any(m['role'] == 'tool' for m in payload['messages']):
+            return await original(payload, limit)
+        return parse_response({'choices': [{'finish_reason': 'stop', 'message': {'content': text}}],
+            'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+    runtime.send_probe = altered
+    runtime.execute(ident)
+    assert runtime.detail(ident)['run']['exit_reason'] == 'DSH_EVIDENCE_CITATION_INVALID'
+    assert not runtime.detail(ident)['artifacts']
+
+
+def _crash_worker(db_path, run_root, reached):
+    import os
+    import asyncio
+    os.environ['HARNESS_DSH_LOCAL'] = 'enabled'
+    os.environ['HARNESS_DSH_RUN_ROOT'] = run_root
+    with TestClient(create_app(db_path, run_worker=False), base_url='http://localhost') as client:
+        ident = create(client, document='SYNTH_RESIDUE_SECRET_99: payment after 30 days.')
+        runtime = client.app.state.service.dsh
+        original = runtime.send_probe
+        async def pause(payload, limit):
+            if any(m['role'] == 'tool' for m in payload['messages']):
+                reached.set()
+                await asyncio.sleep(60)
+            return await original(payload, limit)
+        runtime.send_probe = pause
+        runtime.execute(ident)
+
+
+def test_sigkill_then_recover_removes_registered_document_residue(tmp_path, monkeypatch):
+    import multiprocessing
+    root = tmp_path / 'owned'
+    db_path = tmp_path / 'crash.db'
+    context = multiprocessing.get_context('spawn')
+    reached = context.Event()
+    worker = context.Process(target=_crash_worker, args=(db_path, str(root), reached))
+    worker.start()
+    try:
+        assert reached.wait(20)
+        # Prove sensitive text really reached the SDK transcript before the crash.
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            if any(b'SYNTH_RESIDUE_SECRET_99' in path.read_bytes() for path in root.rglob('*.jsonl')):
+                break
+            time.sleep(.05)
+        assert any(b'SYNTH_RESIDUE_SECRET_99' in path.read_bytes()
+                   for path in root.rglob('*.jsonl'))
+        worker.kill()
+        worker.join(5)
+        assert not worker.is_alive()
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(root))
+        with TestClient(create_app(db_path, run_worker=False), base_url='http://localhost') as client:
+            rt = client.app.state.service.dsh
+            rt.recover()
+            assert rt.cleanup_status == {'cleaned': 1, 'pending': 0, 'retained': 0}
+            assert not list(root.glob('run-*'))
+            assert not list(root.rglob('*.jsonl'))
+            runs = client.get('/api/local/dsh/runs').json()['items']
+            assert runs[0]['exit_reason'] == 'DSH_SERVER_RESTARTED'
+            assert rt.detail(runs[0]['id'])['budget']['status'] == 'stopped_on_restart'
+    finally:
+        if worker.is_alive():
+            worker.kill()
+        worker.join(5)
+
+
+def test_recovery_preserves_live_unregistered_and_symlink_paths(tmp_path):
+    import os
+    from adapters.dsh_workspace import OwnedWorkspace, cleanup_workspaces
+    root = tmp_path / 'owned'
+    live = OwnedWorkspace(root)
+    assert cleanup_workspaces(root, wait_seconds=0)['pending'] == 1
+    (root / 'run-unregistered').mkdir()
+    outside = tmp_path / 'outside'
+    outside.mkdir()
+    marker = outside / 'sentinel'
+    marker.write_text('keep')
+    (live.path / 'unsafe').symlink_to(outside, target_is_directory=True)
+    os.close(live.lease)
+    assert cleanup_workspaces(root, wait_seconds=0)['retained'] == 1
+    assert marker.read_text() == 'keep'
+    assert (root / 'run-unregistered').is_dir()
+    (live.path / 'unsafe').unlink()
+    assert cleanup_workspaces(root, wait_seconds=0)['cleaned'] == 1
+
+
+def test_recovery_preserves_replaced_directory_and_live_process_group(tmp_path):
+    import os
+    from adapters.dsh_workspace import OwnedWorkspace, cleanup_workspaces
+    owned = OwnedWorkspace(tmp_path / 'owned')
+    owned.started(os.getpgrp())
+    os.close(owned.lease)
+    assert cleanup_workspaces(owned.root, wait_seconds=0)['pending'] == 1
+    owned.path.rename(owned.root / 'retained-original')
+    owned.path.mkdir()
+    assert cleanup_workspaces(owned.root, wait_seconds=0)['retained'] == 1
+    assert owned.path.is_dir()

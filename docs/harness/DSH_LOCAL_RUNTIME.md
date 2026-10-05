@@ -14,19 +14,20 @@ DSH 的模型/工具请求回到短期认证的 loopback 网关；平台持有 K
 3. `search_document` 做字面子串检索，最多3个结果；`read_clause` 只读取已登记编号。无语义检索、外部搜索、shell、MCP、模型代码执行。
 4. 每 Run 最多8次模型请求、16次工具执行、300秒；真实请求按完整模型容量保守预留，usage 不可靠即停止。没有自动重试、压缩或辅助模型请求。
 5. DSH 观察事件只含哈希/大小；工具事件只含固定工具名、平台编号和参数摘要。最终正文只进入资源/产物，不进入观察事件。任务 objective 仍是用户输入，DSH 日志在自有临时目录。
-6. DSH_HOME/HOME/cwd/TMPDIR 每 Run 独立，子进程环境明确允许集合。子进程没有 Provider 密钥，只有短期网关 capability。结束时终止自有进程组、关闭网关后清理自有目录；硬杀服务可能留下目录，不扫描或清理共享 home。
+6. DSH_HOME/HOME/cwd/TMPDIR 每 Run 独立，子进程环境明确允许集合。子进程没有 Provider 密钥，只有短期网关 capability。写入任何 prompt 前，先持久登记平台 mkdtemp 目录的名称、设备/inode 和进程组；结束时终止自有进程组、关闭网关后清理。重启读取自有 `.registry`，确认目录身份一致、租约释放且进程组不存在才删除。活进程、符号链接、损坏登记或身份变化保留待清理；不扫描未登记目录、不清理共享 home、不根据恢复的 PID 杀进程。硬崩溃到恢复完成之间可能存在短暂残留；遗留旧版本未登记目录不自动删除。
 7. `integration_probe` 是明确的合成 Provider 自测，不是模型能力；`real_provider` 固定用户指定豆包 Coding URL/模型，未准入就409，不降级自测。
-8. succeeded 表示引擎完整执行并发布草稿，不代表人工复核或法律/投资结论正确。取消/失败不发布部分结果，终态不可覆盖；重启不恢复模型执行。
+8. 发布要求实际读到至少一个证据块，且最终文本引用的 clause-N 均是本轮读到的块（至少一个引用）；空检索不算读到证据。这是引用关系检查，不是语义支持证明。succeeded 表示引擎完整执行并发布草稿，不代表人工复核或法律/投资结论正确。取消/失败不发布部分结果，终态不可覆盖；重启不恢复模型执行。
 
 ## 使用与部署
 
 同一机器浏览器打开 `http://127.0.0.1:8876/dsh`。在其他机器直接用这个地址会访问那台机器本身；本次没有公网部署。
-选择真实 Provider 或联调模式，输入有权处理的文本，勾选公开/合成确认，创建 Run。页面显示持久状态、Token账本、工具执行记录、历史和下载。
+页面默认合成联调；消耗真实 Provider 配额必须显式切换。输入有权处理的文本，勾选公开/合成确认，创建 Run。页面显示持久状态、Token账本、工具执行记录、历史和下载。
 主界面的默认 CSV 健康声明不是 DSH 就绪证据；以 `/api/local/dsh/runtime` 的启动提交、依赖、真实模式开关为准，并通过实际 Run 验证可调用性。
 
 依赖安装：`cd dsh-adapter && npm ci --ignore-scripts --no-audit --no-fund`。本地服务复用主仓库现有 Python venv（只读依赖），代码、进程、DB、运行目录独立。Node 22.23.0。
-部署文件 `deploy/dsh-local.macos.plist`：新 label `local.harnessagent.dsh`，新 DB `.local/dsh.db`，只监听127.0.0.1:8876；允许 Aqua/Background，注册在 user/501。不是把原8765的gui作业迁移或回滚。
-Keychain 只存不透明引用，plist没有密钥。其他 Pi/Claude/native/外部Skill 门禁不变。原工作台入口可浏览，但 DSH 不自动继承它们的工具。
+配置模板 `deploy/dsh-local.macos.plist`：新 DB `.local/dsh.db`，只监听127.0.0.1:8876。user/501 bootstrap 能起服务，但本机该安全会话读取 Keychain 报 -25308，不作为可用的真实部署。`KEYCHAIN_PATH` 在当前 keyring 后端被忽略，不能解决问题。
+实际启动命令 `.venv/bin/python deploy/start_dsh_session.py` 使用调用方已授权登录会话中的 launchctl submit，新 label `local.harnessagent.dsh-session`；检查干净提交、端口空闲和 Keychain 可读。它不修改 ACL，不把 Key 放入 argv/env/文件。会话退出、机器重启后的自动恢复没有保证；需要从同样获得授权的本机会话重新运行命令。不是把原8765的gui作业迁移或回滚。
+Keychain 只存不透明引用，plist没有密钥。其他 Pi/Claude/native/外部Skill 门禁不变。原工作台入口可浏览，但 DSH 不自动继承它们的工具。未授权网关请求返回403，不改变合法Run的状态。
 
 ## HTTP 表面
 

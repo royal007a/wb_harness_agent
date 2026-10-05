@@ -11,6 +11,7 @@ import time
 from jsonschema import Draft202012Validator
 
 from adapters.dsh import DshAdapter
+from adapters.dsh_workspace import cleanup_workspaces
 from .agent_runtime import KeyringCredentialResolver, reject_sensitive
 from .adaptive_retrieval import build_parent_child_chunks
 from .analysis import Problem, digest
@@ -45,6 +46,7 @@ class DshRuntime:
                 'installed': available, 'integration_probe': available,
                 'real_provider_enabled': os.getenv('HARNESS_DSH_REAL_ENABLED') == '1',
                 'credential_ref_configured': bool(os.getenv('HARNESS_DSH_CREDENTIAL_REF')),
+                'workspace_recovery': getattr(self, 'cleanup_status', None),
                 'model': MODEL, 'base_url': BASE, 'tools': sorted(TOOL_NAMES),
                 'shell_enabled': False, 'network_tools_enabled': False,
                 'max_model_calls': 8, 'max_tool_calls': 16, 'max_token_limit': 20_000_000,
@@ -149,6 +151,7 @@ class DshRuntime:
             chunks = build_parent_child_chunks(document, max_child_chars=1500, parent_max_chars=3000)
             clauses = {f'clause-{i+1}': chunk['text'] for i, chunk in enumerate(chunks['children'])}
             counts = {'model_calls': 0, 'tool_calls': 0}
+            seen_clauses = set()
             deadline = time.monotonic() + task['limits']['timeout_seconds']
             def check():
                 self.service.check(ident)
@@ -222,6 +225,7 @@ class DshRuntime:
                     query = args[expected].casefold()
                     selected = [key for key, text in clauses.items() if query in text.casefold()][:3]
                 counts['tool_calls'] += 1
+                seen_clauses.update(selected)
                 event('dsh.tool.completed', {'tool': body['name'], 'call_number': counts['tool_calls'],
                     'clause_ids': selected, 'arguments_sha256': digest(dumps(args).encode())})
                 return {'text': dumps([{'clause_id': key, 'text': clauses[key]} for key in selected])}
@@ -232,8 +236,11 @@ class DshRuntime:
                 Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs')), MODEL,
                 model_call, tool_call, emit, check)
             validate_dsh('result', result)
-            if not counts['model_calls'] or not counts['tool_calls']:
+            cited = set(re.findall(r'clause-[0-9]+', result['text']))
+            if not counts['model_calls'] or not seen_clauses:
                 raise Problem('DSH_EVIDENCE_NOT_READ', '没有读取文档证据，拒绝发布。', 409)
+            if not cited or not cited <= seen_clauses:
+                raise Problem('DSH_EVIDENCE_CITATION_INVALID', '引用必须指向本轮实际读取的证据块。', 409)
             with self.store.transaction() as db:
                 check()
                 current = self.store.get('runs', ident)
@@ -251,6 +258,7 @@ class DshRuntime:
                     db.execute("UPDATE business_budget_roots SET status='failed' WHERE id=? AND status='active'", (ident,))
 
     def recover(self):
+        self.cleanup_status = cleanup_workspaces(Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs')))
         # No automatic resume/model replay after restart.
         for run in self.store.listing('runs'):
             if run['selected_engine'] != ENGINE or run['status'] in TERMINAL:

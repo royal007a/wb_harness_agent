@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
@@ -15,6 +16,8 @@ with sync_playwright() as p:
     page.on('pageerror', lambda e: report['errors'].append(str(e)))
     page.goto(base + '/dsh')
     expect(page.locator('#runtime-state')).to_contain_text('官方 DSH 运行时已安装')
+    expect(page.locator('#mode')).to_have_value('integration_probe')
+    previous_count = len(page.request.get(base + '/api/local/dsh/runs').json()['items'])
     for mode in ['integration_probe'] + (['real_provider'] if os.getenv('HARNESS_DSH_TEST_REAL') == '1' else []):
         page.select_option('#mode', mode)
         page.locator('#objective').fill('这是合成合同。请先 read_clause 读取 clause-1，回答验收后多少天付款，并引用该证据块。')
@@ -24,7 +27,8 @@ with sync_playwright() as p:
             page.locator('#start').click()
         assert response.value.status == 201
         run_id = response.value.json()['initial_run']['id']
-        expect(page.locator('#run-summary')).to_contain_text('已完成', timeout=120000)
+        expect(page.locator('#run-summary')).to_contain_text(re.compile('已完成|失败|已取消|已超时'), timeout=120000)
+        expect(page.locator('#run-summary')).to_contain_text('已完成')
         expect(page.locator('#result')).to_contain_text('30', timeout=10000)
         expect(page.locator('#result')).to_contain_text('clause-1')
         expect(page.locator('#cancel')).to_be_hidden()
@@ -39,7 +43,7 @@ with sync_playwright() as p:
                               'answer_sha256': hashlib.sha256(page.locator('#result').inner_text().encode()).hexdigest()})
     page.screenshot(path=str(out / 'dsh-desktop.png'), full_page=True)
     page.reload()
-    expect(page.locator('#history button')).to_have_count(len(report['runs']))
+    expect(page.locator('#history button')).to_have_count(previous_count + len(report['runs']))
     page.locator('#history button').first.click()
     expect(page.locator('#result')).to_contain_text('30')
     page.set_viewport_size({'width': 390, 'height': 844})
