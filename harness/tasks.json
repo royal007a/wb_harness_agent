@@ -1,7 +1,22 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-05T11:36:34Z",
+  "generated_at": "2026-10-05T14:15:56Z",
   "tasks": [
+    {
+      "id": "HA-0078",
+      "title": "补充DSH边界、并发、故障和离线协议验证",
+      "status": "completed",
+      "risk": "low",
+      "scope": ["DSH真实SDK合成Provider边界", "编排并发与事务故障", "离线HTTP和目录清理反例"],
+      "non_goals": ["生产代码修改或部署", "真实模型费用和Keychain", "质量对比及OS沙箱验收"],
+      "acceptance": ["新增测试按证据层级区分且可重复运行", "相关全量回归与定向突变有结果", "新缺陷如实登记而不隐藏"],
+      "depends_on": ["HA-0077"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0078-dsh-validation.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0078/acceptance.md", "harness/evidence/HA-0078/dsh.xml", "harness/evidence/HA-0078/mutations.json", "harness/evidence/HA-0078/verify.log"]
+    },
     {
       "id": "HA-0077",
       "title": "独立DSH分支的受控工具循环与本地部署",

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="1.997" timestamp="2026-10-05T22:12:56.084270+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_adversarial" name="test_sdk_exact_model_call_cap[8]" time="0.936" /><testcase classname="tests.test_dsh_adversarial" name="test_sdk_exact_model_call_cap[9]" time="0.990"><failure message="AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-05T14:12:57.131764Z', 'effective_limits'...c2243fa86f25d8a9148c3417a476b460d0ff58e69160cd6b3bc04359f1e3', 'token_limit': 200000, 'status': 'completed', ...}, ...}&#10;assert 'succeeded' == 'failed'&#10;  &#10;  - failed&#10;  + succeeded">tests/test_dsh_adversarial.py:78: in test_sdk_exact_model_call_cap
+    detail = terminal(rt, ident, 'succeeded' if requested_calls == 8 else 'failed',
+tests/test_dsh_adversarial.py:57: in terminal
+    assert detail['run']['status'] == status, detail
+E   AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-05T14:12:57.131764Z', 'effective_limits'...c2243fa86f25d8a9148c3417a476b460d0ff58e69160cd6b3bc04359f1e3', 'token_limit': 200000, 'status': 'completed', ...}, ...}
+E   assert 'succeeded' == 'failed'
+E     
+E     - failed
+E     + succeeded</failure></testcase></testsuite></testsuites>

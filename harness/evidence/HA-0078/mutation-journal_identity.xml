@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="6" time="0.080" timestamp="2026-10-05T22:13:03.949716+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_adversarial" name="test_cleanup_rejects_corrupt_journal_without_touching_content[name-../outside]" time="0.003" /><testcase classname="tests.test_dsh_adversarial" name="test_cleanup_rejects_corrupt_journal_without_touching_content[inode--1]" time="0.002"><failure message="AssertionError: assert {'cleaned': 1...'retained': 0} == {'cleaned': 0...'retained': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'cleaned': 1} != {'cleaned': 0}&#10;  {'retained': 0} != {'retained': 1}&#10;  Use -v to get more diff">tests/test_dsh_adversarial.py:471: in test_cleanup_rejects_corrupt_journal_without_touching_content
+    assert cleanup_workspaces(owned.root, wait_seconds=0) == {'cleaned': 0, 'pending': 0, 'retained': 1}
+E   AssertionError: assert {'cleaned': 1...'retained': 0} == {'cleaned': 0...'retained': 1}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Differing items:
+E     {'cleaned': 1} != {'cleaned': 0}
+E     {'retained': 0} != {'retained': 1}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_dsh_adversarial" name="test_cleanup_rejects_corrupt_journal_without_touching_content[device--1]" time="0.002"><failure message="AssertionError: assert {'cleaned': 1...'retained': 0} == {'cleaned': 0...'retained': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'cleaned': 1} != {'cleaned': 0}&#10;  {'retained': 0} != {'retained': 1}&#10;  Use -v to get more diff">tests/test_dsh_adversarial.py:471: in test_cleanup_rejects_corrupt_journal_without_touching_content
+    assert cleanup_workspaces(owned.root, wait_seconds=0) == {'cleaned': 0, 'pending': 0, 'retained': 1}
+E   AssertionError: assert {'cleaned': 1...'retained': 0} == {'cleaned': 0...'retained': 1}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Differing items:
+E     {'cleaned': 1} != {'cleaned': 0}
+E     {'retained': 0} != {'retained': 1}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_dsh_adversarial" name="test_cleanup_rejects_corrupt_journal_without_touching_content[pgid-True]" time="0.001" /><testcase classname="tests.test_dsh_adversarial" name="test_cleanup_rejects_corrupt_journal_without_touching_content[pgid-1]" time="0.001" /><testcase classname="tests.test_dsh_adversarial" name="test_cleanup_rejects_corrupt_journal_without_touching_content[version-2]" time="0.001" /></testsuite></testsuites>

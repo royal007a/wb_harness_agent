@@ -1,0 +1,75 @@
+{
+  "method": "isolated-process in-memory source mutation; no production file writes",
+  "source_sha256": {
+    "backend/business_budget.py": "3be5952661f7fd843fab6b5d1915cd25bee6e65c82b60247756fb981416180ca",
+    "backend/dsh_provider.py": "1320fd124b6c714f48a095e08f028b6ea5f452626d4da81a7c6860995e859296",
+    "adapters/dsh_workspace.py": "68551fb8859d3c56ae4a901bc16b9f72e8ad8ce70e3d9af85839971518051f93",
+    "backend/dsh_runtime.py": "87cb5a7e79090c7eeaaa6d76b0cbc9434174180b13b768ba8d1acaa99e91b645"
+  },
+  "results": [
+    {
+      "name": "model_cap",
+      "returncode": 1,
+      "failures": 1,
+      "errors": 0,
+      "assertion_failures_only": true,
+      "killed": true,
+      "xml": "harness/evidence/HA-0078/mutation-model_cap.xml"
+    },
+    {
+      "name": "tool_cap",
+      "returncode": 1,
+      "failures": 1,
+      "errors": 0,
+      "assertion_failures_only": true,
+      "killed": true,
+      "xml": "harness/evidence/HA-0078/mutation-tool_cap.xml"
+    },
+    {
+      "name": "late_publish",
+      "returncode": 1,
+      "failures": 1,
+      "errors": 0,
+      "assertion_failures_only": true,
+      "killed": true,
+      "xml": "harness/evidence/HA-0078/mutation-late_publish.xml"
+    },
+    {
+      "name": "encoding",
+      "returncode": 1,
+      "failures": 3,
+      "errors": 0,
+      "assertion_failures_only": true,
+      "killed": true,
+      "xml": "harness/evidence/HA-0078/mutation-encoding.xml"
+    },
+    {
+      "name": "reservation_equality",
+      "returncode": 1,
+      "failures": 1,
+      "errors": 0,
+      "assertion_failures_only": true,
+      "killed": true,
+      "xml": "harness/evidence/HA-0078/mutation-reservation_equality.xml"
+    },
+    {
+      "name": "claim",
+      "returncode": 1,
+      "failures": 1,
+      "errors": 0,
+      "assertion_failures_only": true,
+      "killed": true,
+      "xml": "harness/evidence/HA-0078/mutation-claim.xml"
+    },
+    {
+      "name": "journal_identity",
+      "returncode": 1,
+      "failures": 2,
+      "errors": 0,
+      "assertion_failures_only": true,
+      "killed": true,
+      "xml": "harness/evidence/HA-0078/mutation-journal_identity.xml"
+    }
+  ],
+  "not_evidence": "targeted selectors only; not full-suite mutation score"
+}
