@@ -67,11 +67,17 @@
 
 **建议接入。** 第一条真实业务路径选择 Pi 合同审查的显式模型请求桥：sidecar 负责循环，平台受控 transport 持有实际发送权，调用 `budgeted_model_call`。这是新增协议设计，不是现有 `pi-adapter@1` 已支持。不要把 Key 发进模型 Prompt 或通用 sidecar 环境。冻结最终请求后计数、预留，再发送；任何改写必须发生在计数前，否则重新计数绑定。primary/child/retry/compaction/guard 各有 call_id/purpose，同属 root。
 
+**B 的硬依赖。** 当前平台的文本 Provider 适配器在 `backend/provider_adapters.py:193–195` 遇到 tool_calls/function_call 就报 `MODEL_PROVIDER_UNSUPPORTED_OUTPUT`，不能直接承担这个桥。需先新增业务专用、支持工具调用的 Provider 适配器，并定义它到 Pi `StreamFn` 的映射；保留聊天 Exchange 原来的文本窄契约，不顺手放宽。映射至少覆盖文本与工具调用的 start/delta/end、call_id/name/参数组装、结束原因、done/error、usage 和取消。Pi `packages/agent/src/types.ts:19–37` 要求返回 `AssistantMessageEventStream`，请求/模型/运行失败应编码成流事件及 stopReason 为 error/aborted 的最终消息，不能仅靠抛异常或返回 rejected Promise。非法、截断或超限的工具参数不得执行；未完成与未结算结果只能预览，不能作为可执行工具调用或业务成功。
+
+当前 `pi-adapter/src/sidecar.mjs:74` 使用进程内 `models.streamSimple`。B 的新桥接路径必须替换为平台 IPC 驱动的 StreamFn，不能保留静默回退至 sidecar 自行发送。sidecar 不持 Provider 凭据，且其进程执行环境须强制禁止直接 Provider 出网，只允许受控的平台通信；仅删除 API key 或 monkeypatch 网络函数不是隔离证据。现有 Python Skill 容器也不能直接算作 Node sidecar 的已验收隔离环境，所需 Node 运行镜像/进程出口策略及取消资源回收是 B 的额外依赖。
+
 Claude CLI 内部发送不可假定能逐次拦截；当前 `max_budget_usd`、max_turns、外层 timeout 是另一条限额路径，不能伪称已接入 HA-0075。若无法覆盖其内部请求，继续保留独立准入限制，不授予同等硬 Token 上限保证。
 
 **契约和代价。** 扩展 Adapter 模型请求/结果协议，绑定 Run、模型、权限与预算摘要；使用公开错误码区分未发送、已发送但用量未知、超额。取消或未知用量不自动释放已发请求预留，不切 Provider 重试。根 Run 的总截止时间、turn/工具次数和货币限额须在集成时分别强制执行，不能用单次调用 timeout 或 Token 余额替代。代价是 Node/Python 桥、供应商用量口径、辅助调用审计；输入计数若无法给可信上界，停在离线阶段。
 
 **最小验收。** 合成 transport 对普通、重试、压缩、护栏二次模型、Child 各断言发送计数和预留一致；争抢最后余额最多一方获准。丢 usage、超输出、取消与发送竞态、迟到结果、重启均不能偷偷发第二次或发布成功。真实小额 Probe 另行批准，不能把账本测试作为供应商账单硬上限证明。
+
+B 的离线纵切必须使用**平台侧合成 Provider**，让请求实际经过平台适配器解析、预算预留/结算、IPC 和 Pi StreamFn：首轮返回分帧工具调用，工具结果回流后第二轮返回候选；模型端请求计数与账本 call_id 逐笔对应。sidecar 内的 Faux 仅保留作原有组件测试，不计为预算桥证据。补负例：预留失败时平台合成 Provider 收到 0 请求；畸形工具流不会执行；sidecar 尝试直连测试 Provider（含模拟预加载代码绕过桥）时被进程出口边界拒绝、该端点收到 0 请求，而通过平台桥的正例能到达。以上是待实施的离线验收要求，不是本轮已经运行的测试。
 
 ## 3 工具执行管线接入现有护栏和沙箱
 
@@ -95,9 +101,15 @@ Product Run 的已冻结权限与资源快照
 
 **接入位置。** `pi_sidecar.py` 与 sidecar 工具回调只发请求，不直接执行；平台 service 调用 guard 与资源/隔离执行器。若以后改用 Pi coding-agent，高层会覆盖底层 before/afterToolCall，必须用正确扩展接口并测覆盖行为；当前轻量 core 不需要为了这个功能升级整层。
 
+**审批排队与取消账目。** Pi 的 parallel 路径也会按模型顺序逐个 await 准备阶段的 beforeToolCall，执行体才并发（`packages/agent/src/types.ts:39–43`、`agent-loop.ts:593–638`）。第一个调用等待人工审批时，同批后续调用不会越过它进入准备。B 保留现有 sidecar 的 `toolExecution: "sequential"`（`:75`），不把人工等待描述为各调用独立并行。审批等待必须响应取消/截止时间，不能等用户点击后才退出。
+
+Pi 串行及并行准备阶段 abort 后可能 break，不为剩余调用补结果（`agent-loop.ts:572–574,610–612`）。平台应在完整合法模型结果被接受时登记整批 call_id，而非等 beforeToolCall 才登记。取消时对等待审批、已批准未执行和尚未准备的调用，分别保存其原阶段及明确的取消终态，执行次数为 0；不能依赖 pi-ai 请求副本里的 `No result provided` 补全来充当持久终态。已开始的执行另走取消/回收流程，未确认停止时不得冒称副作用已终止。平台账目不篡改 Pi 原始 transcript 为“工具执行成功”。
+
 **收益与代价。** 一个执行入口统一审批、审计与取消；代价是往返协议、审批恢复、工具超时/副作用分类。工具实现不准另开不受控网络、进程或密钥路径。
 
 **最小验收。** approve 后仍命中 hard deny 时执行次数为 0；审批摘要被改、重放、过期和取消皆为 0。护栏抛错不执行，观察回调不能授权。隔离工具出网失败、读未绑定资源失败、超时进程被回收；迟到结果不覆盖终态。先用合成工具证明管线，真实容器边界单列验收。
+
+补两组批次反例：同批两个调用，第一个等待审批时取消；以及批准后、实际 dispatch 前取消。两组均要求已批准未执行与未准备调用执行次数为 0，审批等待被解除，整批登记的调用各有且只有一个平台取消终态；取消后不再发下一次 Provider 请求。另测已执行完的调用不被改写为取消、迟到审批不重开已取消调用。
 
 ## 4 内容通道与候选结果验收
 
@@ -168,7 +180,7 @@ Dify 只借鉴概念与阶段组织：固定基线 LICENSE 是附加条款的 Ap
 | 顺序 | 交付范围 | 依赖与完成标准 | 明确不包含 |
 |---|---|---|---|
 | A 安全底座 | 第 1 项与第 4 项事件投影；fake CLI/sidecar 生命周期 | 合成秘密零事件泄漏、无启动注入；四种终止路径和归属异常有反例；版本兼容测试 | 真实模型、共享 CLI 目录自动清理、身份体系改造 |
-| B 合同闭环 | 第 2、3、4 项：一个绑定 Public PDF 的 Pi 业务 Run，模型请求桥、只读 evidence 工具、候选 Artifact、人工交付 Gate | A 完成；离线模型发起工具调用并回读结果；预算/审批拒绝确实零执行；故障/取消/迟到候选不发布 | 不先接外部查询、不开放 bash、不新增 DSH 引擎、不宣称真实已验收 |
+| B 合同闭环 | 第 2、3、4 项：一个绑定 Public PDF 的 Pi 业务 Run，模型请求桥、只读 evidence 工具、候选 Artifact、人工交付 Gate | A 完成；先具备支持 tool_calls 的平台业务适配器、Pi StreamFn 映射及 Node sidecar 出口隔离；平台侧合成 Provider 跑通预算桥与工具结果回流，sidecar 直连反例零请求；串行审批取消无孤儿调用，故障/迟到候选不发布 | 不用 sidecar Faux 证明预算桥；不放宽聊天适配器；不先接外部查询、不开放 bash、不新增 DSH 引擎、不宣称真实已验收 |
 | C 检索与投研扩展 | 第 5、6、7 项；第 8 项按需要单独排期 | B 组件可复用，先完成非平凡评测；原生 Claude 路径仍遵守独立认证/预算边界 | 不凭代码支持启用 semantic/API，不把新流程自动扩展到所有业务 |
 
 每个包在决定实施后再建 Work Item、版本化契约/ADR、迁移计划及验收脚本。本轮不改 tasks/state，不预批任务。真实模型、真实隔离执行、部署需各自证据；若需要改变身份/凭据/外发目的地，先停在边界上另行决定。线上 8765/132 必须检查发布身份后才能声称已具备某项能力。
