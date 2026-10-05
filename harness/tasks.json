@@ -3,6 +3,21 @@
   "generated_at": "2026-10-05T10:18:00Z",
   "tasks": [
     {
+      "id": "HA-0077",
+      "title": "独立DSH分支的受控工具循环与本地部署",
+      "status": "running",
+      "risk": "high",
+      "scope": ["官方DSH SDK进程与平台模型工具桥", "独立Run及元数据事件和受控产物", "独立本地8876页面、部署、验证和review"],
+      "non_goals": ["修改main或8765", "部署132", "开放shell或任意网络工具", "迁移既有Claude/Pi认证边界"],
+      "acceptance": ["实际DSH执行模型→工具→下一轮并生成产物", "预算、取消、超时、隐私及错误路径有行为测试", "独立本地URL可访问并固定提交交付review"],
+      "depends_on": ["HA-0075", "HA-0076"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0077-dsh-local-runtime.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0077/acceptance.md", "harness/evidence/HA-0077/targeted.xml", "harness/evidence/HA-0077/predeploy.xml"]
+    },
+    {
       "id": "HA-0076",
       "title": "业务Adapter内容与持久观察事件分流",
       "status": "blocked",

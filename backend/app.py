@@ -103,13 +103,13 @@ def create_app(db_path=None, run_worker=True):
             raise Problem('TIMEOUT', '上传超时。', 408) from None
         return bytes(chunks)
 
-    async def json_body(request):
+    async def json_body(request, limit=32768):
         if request.headers.get('content-type', '').split(';')[0] != 'application/json':
             raise Problem('VALIDATION_ERROR', '请求必须为 application/json。', 415)
         try:
             def invalid_constant(value):
                 raise ValueError('Non-finite JSON constant')
-            body = json.loads(await read_body(request, 32768), parse_constant=invalid_constant)
+            body = json.loads(await read_body(request, limit), parse_constant=invalid_constant)
             json.dumps(body, allow_nan=False)
         except (ValueError, UnicodeDecodeError):
             raise Problem('VALIDATION_ERROR', 'JSON 无效。', 422) from None
@@ -120,6 +120,49 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/api/v1/health')
     def health():
         return {'status': 'ok', 'version': '0.1.0', 'mode': 'local_single_user', 'model_calls_enabled': False}
+
+    def dsh(request):
+        runtime = request.app.state.service.dsh
+        if runtime is None:
+            raise Problem('DSH_DISABLED', 'DSH 仅在独立本地分支服务启用。', 409)
+        return runtime
+
+    @app.get('/dsh', response_class=HTMLResponse)
+    def dsh_page(request: Request):
+        dsh(request)
+        return (ROOT / 'frontend/dsh.html').read_text()
+
+    @app.get('/api/local/dsh/runtime')
+    def dsh_status(request: Request):
+        return dsh(request).status()
+
+    @app.get('/api/local/dsh/runs')
+    def dsh_runs(request: Request):
+        runtime = dsh(request)
+        return {'items': [r for r in runtime.store.listing('runs') if r['selected_engine'] == 'engine_dsh_document']}
+
+    @app.post('/api/local/dsh/runs', status_code=201)
+    async def dsh_create(request: Request):
+        runtime = dsh(request)
+        body = await json_body(request, 131072)
+        return await run_in_threadpool(runtime.create, body, request.headers.get('Idempotency-Key'))
+
+    @app.get('/api/local/dsh/runs/{run_id}')
+    def dsh_detail(run_id: str, request: Request):
+        return dsh(request).detail(run_id)
+
+    @app.get('/api/local/dsh/runs/{run_id}/events')
+    def dsh_events(run_id: str, request: Request, after: int = Query(0, ge=0, le=MAX_EVENT_SEQUENCE)):
+        runtime = dsh(request)
+        runtime.detail(run_id)
+        items = runtime.store.events(run_id, after)
+        return {'items': items, 'next_cursor': items[-1]['sequence'] if items else after}
+
+    @app.post('/api/local/dsh/runs/{run_id}/cancel')
+    async def dsh_cancel(run_id: str, request: Request):
+        if await json_body(request) != {}:
+            raise Problem('VALIDATION_ERROR', '取消请求必须为空对象。', 422)
+        return dsh(request).cancel(run_id)
 
     @app.get('/api/v1/engines')
     def engines():

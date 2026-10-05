@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>local.harnessagent.dsh</string>
+<key>LimitLoadToSessionType</key><array><string>Aqua</string><string>Background</string></array>
+<key>ProgramArguments</key><array><string>/Users/weberzhao/code/ai/harnessagent/.venv/bin/python</string><string>-m</string><string>uvicorn</string><string>backend.app:app</string><string>--host</string><string>127.0.0.1</string><string>--port</string><string>8876</string><string>--workers</string><string>1</string><string>--no-access-log</string><string>--timeout-graceful-shutdown</string><string>10</string></array>
+<key>WorkingDirectory</key><string>/Users/weberzhao/code/ai/harnessagent-dsh</string>
+<key>EnvironmentVariables</key><dict>
+<key>PATH</key><string>/Users/weberzhao/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+<key>HARNESS_DSH_LOCAL</key><string>enabled</string>
+<key>HARNESS_DSH_REAL_ENABLED</key><string>1</string>
+<key>HARNESS_DSH_CREDENTIAL_REF</key><string>dsh-ark-coding-local-20261005</string>
+<key>HARNESS_DB</key><string>/Users/weberzhao/code/ai/harnessagent-dsh/.local/dsh.db</string>
+<key>HARNESS_DSH_RUN_ROOT</key><string>/Users/weberzhao/code/ai/harnessagent-dsh/.local/dsh-runs</string>
+</dict>
+<key>RunAtLoad</key><true/>
+<key>Umask</key><integer>63</integer>
+<key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
+<key>ThrottleInterval</key><integer>10</integer>
+<key>ExitTimeOut</key><integer>20</integer>
+<key>StandardOutPath</key><string>/Users/weberzhao/code/ai/harnessagent-dsh/.local/dsh.stdout.log</string>
+<key>StandardErrorPath</key><string>/Users/weberzhao/code/ai/harnessagent-dsh/.local/dsh.stderr.log</string>
+</dict></plist>

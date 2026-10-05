@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HarnessAgent · DSH</title><link rel="stylesheet" href="/static/dsh.css"></head>
+<body>
+<header><div><span class="eyebrow">HARNESSAGENT / INDEPENDENT BRANCH</span><h1>DSH 文档工作台</h1>
+<p>DeepSeek Harness 循环 · 平台工具与预算 · 可追溯的结果</p></div><a href="/">原工作台</a></header>
+<main>
+<section class="notice"><strong id="runtime-state">正在读取运行环境…</strong><p id="runtime-info"></p>
+<p>仅处理你有权使用的公开或合成文本。没有 shell、文件系统和外部检索工具；这不是操作系统沙箱。分析结果需人工核对，不构成法律或投资建议。</p></section>
+<div class="columns">
+<section class="panel"><h2>开始一次分析</h2>
+<form id="run-form">
+<label for="mode">Provider 模式</label><select id="mode"><option value="integration_probe">合成 Provider 联调（真实 DSH 循环）</option><option value="real_provider">真实豆包 Provider（需准入）</option></select>
+<label for="objective">你希望核对什么？</label><textarea id="objective" rows="3" maxlength="2000" required>核对付款条件、逾期处理和缺失信息，并引用条款编号。</textarea>
+<label for="document">文档正文</label><textarea id="document" rows="9" maxlength="20000" required>示例合同（合成数据）
+第1条：乙方提交交付物，经甲方验收后30日内支付合同款。
+第2条：甲方应在收到交付物后10个工作日内书面反馈验收意见。
+第3条：发生逾期付款时，双方另行协商处理方式。</textarea>
+<div class="inputs"><div><label for="tokens">累计 Token 预算</label><input id="tokens" type="number" value="200000" min="1000" max="20000000" required></div>
+<div><label for="timeout">截止时间（秒）</label><input id="timeout" type="number" value="120" min="5" max="300" required></div></div>
+<label class="check"><input id="public-confirm" type="checkbox" required>我确认这是公开或合成文本，可以用于所选模式。</label>
+<button type="submit" id="start">创建 DSH Run</button><p id="form-message" role="status"></p>
+</form>
+<h2>运行历史</h2><div id="history" aria-label="运行历史"></div></section>
+<section class="panel output"><div class="section-head"><h2>执行与结果</h2><button id="cancel" class="secondary" hidden>取消当前 Run</button></div>
+<div id="run-summary" role="status">创建或选择一次运行，查看真实持久状态。</div>
+<div id="metrics" class="metrics"></div><h3>执行记录</h3><ol id="events"></ol>
+<h3>结果产物</h3><p id="result-note">仅成功的完整结果才会发布；部分回复不会冒充完成。</p><pre id="result"></pre><div id="downloads"></div>
+</section></div>
+<footer id="version"></footer></main><script src="/static/dsh.js"></script>
+</body></html>

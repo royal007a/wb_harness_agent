@@ -1,5 +1,6 @@
 """Control-plane policy, idempotency and bounded worker lifecycle."""
 import json
+import os
 import threading
 import math
 import copy
@@ -103,6 +104,10 @@ class Service:
         self.team_sessions = TeamSessionContinuity(store, self.team_foundation)
         self.team = TeamCoordination(store, self.team_foundation, self.team_attention)
         self.recovery = RecoveryLoopGuard(store, self.team)
+        self.dsh = None
+        if os.getenv('HARNESS_DSH_LOCAL') == 'enabled':
+            from .dsh_runtime import DshRuntime
+            self.dsh = DshRuntime(self)
 
     def resource(self, name, raw):
         if not isinstance(name, str) or not name.lower().endswith('.csv') or len(name) > 180 or '/' in name or '\\' in name:
@@ -187,6 +192,10 @@ class Service:
 
     def new_run(self, db, task, based_on=None, restored_from_checkpoint=None, restored_limits=None,
                 plan_revision_id=None, replan_attempt_id=None):
+        if task['engine_policy']['engine_id'] == 'engine_dsh_document':
+            if self.dsh is None:
+                raise Problem('DSH_DISABLED', 'DSH 仅在独立本地分支服务启用。', 409)
+            return self.dsh.new_run(db, task, based_on)
         if task['engine_policy']['engine_id'] == 'engine_local_research_demo':
             return self.research.new_run(db, task, based_on)
         if task['engine_policy']['engine_id'] == 'engine_research_multi_agent_simulation':
@@ -244,6 +253,8 @@ class Service:
 
     def cancel(self, run_id):
         engine = self.store.get('runs', run_id)['selected_engine']
+        if engine == 'engine_dsh_document' and self.dsh is not None:
+            return self.dsh.cancel(run_id)
         if engine == 'engine_local_research_demo':
             return self.research.cancel(run_id)
         if engine == 'engine_research_multi_agent_simulation':
@@ -738,6 +749,10 @@ class Service:
 
     def execute(self, run_id):
         engine = self.store.get('runs', run_id)['selected_engine']
+        if engine == 'engine_dsh_document':
+            if self.dsh is not None:
+                return self.dsh.execute(run_id)
+            return
         if engine == 'engine_local_research_demo':
             return self.research.execute(run_id)
         if engine == 'engine_research_multi_agent_simulation':
@@ -892,6 +907,8 @@ class Service:
                     self._artifact_failure_gap(db, run, failure_event)
 
     def recover(self):
+        if self.dsh is not None:
+            self.dsh.recover()
         self.research.recover()
         self.research_agents.recover()
         self.research_native.recover()

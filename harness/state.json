@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "runtime_event_privacy_deployment_blocked",
+  "phase": "dsh_local_branch_implementation",
   "implementation_started": true,
-  "active_task_id": "HA-0076",
-  "active_plan": "exec-plans/active/HA-0076-runtime-event-projection.md",
-  "last_checkpoint": "HA-0076事件隐私切片：144定向、全量1530/16及verify通过，旧版8个行为反例失败；本机Background预检拒绝，未部署任一端。",
-  "last_updated_at": "2026-10-05T10:18:00Z",
-  "next_action": "独立review并请用户决定本机发布拓扑；先8765再132。A剩余环境/目录隔离及B模型工具桥、C检索尚未完成，HA-0075账本也仍未接入真实调用。",
+  "active_task_id": "HA-0077",
+  "active_plan": "exec-plans/active/HA-0077-dsh-local-runtime.md",
+  "last_checkpoint": "HA-0077官方DSH真实子进程+平台预算工具桥：22新测试、184相关；真实豆包合成输入4次模型/5次工具/3683Token成功。待独立本地部署和review。",
+  "last_updated_at": "2026-10-05T11:06:00Z",
+  "next_action": "固定DSH分支提交，独立8876部署与浏览器验证；不动main/8765/132。全量回归和mymacclaude review。",
   "release": "0.1.0-local"
 }

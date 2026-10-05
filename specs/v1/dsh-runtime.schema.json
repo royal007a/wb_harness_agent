@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["objective", "document", "mode", "public_data_confirmed"],
+      "properties": {
+        "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "document": {"type": "string", "minLength": 1, "maxLength": 20000},
+        "mode": {"enum": ["integration_probe", "real_provider"]},
+        "public_data_confirmed": {"const": true},
+        "timeout_seconds": {"type": "integer", "minimum": 5, "maximum": 300},
+        "token_limit": {"type": "integer", "minimum": 1000, "maximum": 20000000}
+      }
+    },
+    "observation": {
+      "type": "object", "additionalProperties": false, "required": ["type", "sha256", "bytes"],
+      "properties": {"type": {"const": "observation"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$", "maxLength": 64},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 1048576}}
+    },
+    "result": {
+      "type": "object", "additionalProperties": false,
+      "required": ["type", "text", "session_sha256", "turn_count", "runtime"],
+      "properties": {"type": {"const": "result"}, "text": {"type": "string", "minLength": 1, "maxLength": 65536},
+        "session_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$", "maxLength": 64},
+        "turn_count": {"type": "integer", "minimum": 1, "maximum": 8},
+        "runtime": {"const": "deepseek-harness@0.2.1-alpha.1"}}
+    }
+  }
+}
