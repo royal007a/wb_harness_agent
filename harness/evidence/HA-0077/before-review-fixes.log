@@ -1,0 +1,127 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+______________ test_unauthorized_gateway_request_cannot_fail_run _______________
+
+client = <starlette.testclient.TestClient object at 0x108b26660>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10859f360>
+
+    def test_unauthorized_gateway_request_cannot_fail_run(client, monkeypatch):
+        import adapters.dsh as adapter
+        import httpx
+        original = adapter.subprocess.Popen
+        statuses = []
+        def observed(*args, **kwargs):
+            rejected = httpx.post(kwargs['env']['HARNESS_DSH_GATEWAY'] + '/model', json={}, trust_env=False)
+            statuses.append(rejected.status_code)
+            return original(*args, **kwargs)
+        monkeypatch.setattr(adapter.subprocess, 'Popen', observed)
+        ident = create(client)
+        runtime = client.app.state.service.dsh
+        runtime.execute(ident)
+>       assert runtime.detail(ident)['run']['status'] == 'succeeded'
+E       AssertionError: assert 'failed' == 'succeeded'
+E         
+E         - succeeded
+E         + failed
+
+tests/test_dsh_revision.py:224: AssertionError
+_________ test_unread_or_missing_citation_cannot_publish[no citation] __________
+
+client = <starlette.testclient.TestClient object at 0x10a94e0d0>
+text = 'no citation'
+
+    @pytest.mark.parametrize('text', ['no citation', 'bad reference clause-99'])
+    def test_unread_or_missing_citation_cannot_publish(client, text):
+        from backend.dsh_provider import parse_response
+        ident = create(client)
+        runtime = client.app.state.service.dsh
+        original = runtime.send_probe
+        async def altered(payload, limit):
+            if not any(m['role'] == 'tool' for m in payload['messages']):
+                return await original(payload, limit)
+            return parse_response({'choices': [{'finish_reason': 'stop', 'message': {'content': text}}],
+                'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+        runtime.send_probe = altered
+        runtime.execute(ident)
+>       assert runtime.detail(ident)['run']['exit_reason'] == 'DSH_EVIDENCE_CITATION_INVALID'
+E       AssertionError: assert 'COMPLETED' == 'DSH_EVIDENCE...ATION_INVALID'
+E         
+E         - DSH_EVIDENCE_CITATION_INVALID
+E         + COMPLETED
+
+tests/test_dsh_revision.py:241: AssertionError
+___ test_unread_or_missing_citation_cannot_publish[bad reference clause-99] ____
+
+client = <starlette.testclient.TestClient object at 0x10aedc410>
+text = 'bad reference clause-99'
+
+    @pytest.mark.parametrize('text', ['no citation', 'bad reference clause-99'])
+    def test_unread_or_missing_citation_cannot_publish(client, text):
+        from backend.dsh_provider import parse_response
+        ident = create(client)
+        runtime = client.app.state.service.dsh
+        original = runtime.send_probe
+        async def altered(payload, limit):
+            if not any(m['role'] == 'tool' for m in payload['messages']):
+                return await original(payload, limit)
+            return parse_response({'choices': [{'finish_reason': 'stop', 'message': {'content': text}}],
+                'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+        runtime.send_probe = altered
+        runtime.execute(ident)
+>       assert runtime.detail(ident)['run']['exit_reason'] == 'DSH_EVIDENCE_CITATION_INVALID'
+E       AssertionError: assert 'COMPLETED' == 'DSH_EVIDENCE...ATION_INVALID'
+E         
+E         - DSH_EVIDENCE_CITATION_INVALID
+E         + COMPLETED
+
+tests/test_dsh_revision.py:241: AssertionError
+________ test_sigkill_then_recover_removes_registered_document_residue _________
+
+tmp_path = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1516/test_sigkill_then_recover_remo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10aff06b0>
+
+    def test_sigkill_then_recover_removes_registered_document_residue(tmp_path, monkeypatch):
+        import multiprocessing
+        root = tmp_path / 'owned'
+        db_path = tmp_path / 'crash.db'
+        context = multiprocessing.get_context('spawn')
+        reached = context.Event()
+        worker = context.Process(target=_crash_worker, args=(db_path, str(root), reached))
+        worker.start()
+        try:
+            assert reached.wait(20)
+            # Prove sensitive text really reached the SDK transcript before the crash.
+            deadline = time.monotonic() + 5
+            while time.monotonic() < deadline:
+                if any(b'SYNTH_RESIDUE_SECRET_99' in path.read_bytes() for path in root.rglob('*.jsonl')):
+                    break
+                time.sleep(.05)
+            assert any(b'SYNTH_RESIDUE_SECRET_99' in path.read_bytes()
+                       for path in root.rglob('*.jsonl'))
+            worker.kill()
+            worker.join(5)
+            assert not worker.is_alive()
+            monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+            monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(root))
+            with TestClient(create_app(db_path, run_worker=False), base_url='http://localhost') as client:
+                rt = client.app.state.service.dsh
+                rt.recover()
+>               assert not list(root.glob('run-*'))
+E               AssertionError: assert not [PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1516/test_sigkill_then_recover_remo0/owned/run-1w1ygi4_')]
+E                +  where [PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1516/test_sigkill_then_recover_remo0/owned/run-1w1ygi4_')] = list(<map object at 0x10b1f6780>)
+E                +    where <map object at 0x10b1f6780> = glob('run-*')
+E                +      where glob = PosixPath('/private/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/pytest-of-weberzhao/pytest-1516/test_sigkill_then_recover_remo0/owned').glob
+
+tests/test_dsh_revision.py:289: AssertionError
+=============================== warnings summary ===============================
+../../../../Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_revision.py::test_unauthorized_gateway_request_cannot_fail_run
+FAILED tests/test_dsh_revision.py::test_unread_or_missing_citation_cannot_publish[no citation]
+FAILED tests/test_dsh_revision.py::test_unread_or_missing_citation_cannot_publish[bad reference clause-99]
+FAILED tests/test_dsh_revision.py::test_sigkill_then_recover_removes_registered_document_residue
+4 failed, 24 deselected, 1 warning in 3.94s

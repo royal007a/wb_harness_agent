@@ -1,0 +1,68 @@
+{
+  "base": "http://127.0.0.1:8876",
+  "runs": [
+    {
+      "id": "run_4e86c90c721a44a08bcf84c49e1191ef",
+      "mode": "integration_probe",
+      "status": "succeeded",
+      "budget": {
+        "id": "run_4e86c90c721a44a08bcf84c49e1191ef",
+        "binding_digest": "6182c2243fa86f25d8a9148c3417a476b460d0ff58e69160cd6b3bc04359f1e3",
+        "token_limit": 200000,
+        "status": "completed",
+        "spent": 430,
+        "reserved": 0,
+        "calls": 2,
+        "remaining": 199570
+      },
+      "artifacts": [
+        {
+          "created_at": "2026-10-05T11:25:17.203016Z",
+          "data_class": "Public",
+          "id": "art_8bb2585226024a08b0938d6de0ca1a45",
+          "media_type": "text/plain",
+          "name": "dsh-analysis.txt",
+          "run_id": "run_4e86c90c721a44a08bcf84c49e1191ef",
+          "sha256": "f7fde450a532581602d76daff89b3f8160c6ebabb8a267964d3dca25a7c6c926",
+          "size_bytes": 202,
+          "step_id": "step_1c89897c5db54fe48589370627213b3b",
+          "validation_status": "passed"
+        }
+      ],
+      "answer_sha256": "f7fde450a532581602d76daff89b3f8160c6ebabb8a267964d3dca25a7c6c926"
+    },
+    {
+      "id": "run_ce561e298d534404bf05ba45014b4c69",
+      "mode": "real_provider",
+      "status": "succeeded",
+      "budget": {
+        "id": "run_ce561e298d534404bf05ba45014b4c69",
+        "binding_digest": "e52d27e913a322463a6acb363e8985ff1482fccb1ee15348d1705d5b9e08e4e5",
+        "token_limit": 20000000,
+        "status": "completed",
+        "spent": 1795,
+        "reserved": 0,
+        "calls": 2,
+        "remaining": 19998205
+      },
+      "artifacts": [
+        {
+          "created_at": "2026-10-05T11:25:24.978680Z",
+          "data_class": "Public",
+          "id": "art_221c00f408144b4597c88e85cd4f3146",
+          "media_type": "text/plain",
+          "name": "dsh-analysis.txt",
+          "run_id": "run_ce561e298d534404bf05ba45014b4c69",
+          "sha256": "4220a19cb64fa64c63f26d98d63ff67c455d820a8dc95ff52ec1418e05287fe5",
+          "size_bytes": 359,
+          "step_id": "step_094f448d1c424f159597ae40df79bac3",
+          "validation_status": "passed"
+        }
+      ],
+      "answer_sha256": "4220a19cb64fa64c63f26d98d63ff67c455d820a8dc95ff52ec1418e05287fe5"
+    }
+  ],
+  "errors": [],
+  "release": "d813b63fe7cd6706ffcc0bb50a91214015db8004",
+  "browser": "151.0.7922.34"
+}

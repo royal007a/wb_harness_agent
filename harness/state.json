@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_local_branch_implementation",
+  "phase": "dsh_local_branch_delivered",
   "implementation_started": true,
   "active_task_id": "HA-0077",
-  "active_plan": "exec-plans/active/HA-0077-dsh-local-runtime.md",
-  "last_checkpoint": "HA-0077官方DSH真实子进程+平台预算工具桥：22新测试、184相关；真实豆包合成输入4次模型/5次工具/3683Token成功。待独立本地部署和review。",
-  "last_updated_at": "2026-10-05T11:06:00Z",
-  "next_action": "固定DSH分支提交，独立8876部署与浏览器验证；不动main/8765/132。全量回归和mymacclaude review。",
+  "active_plan": "exec-plans/completed/HA-0077-dsh-local-runtime.md",
+  "last_checkpoint": "HA-0077代码d813b63独立review Approved；真实DSH+豆包部署Run成功，2次请求1795Token，浏览器桌面/移动及原工作台回归通过。30项DSH、87相关与最终verify通过；范围只限独立本机8876。",
+  "last_updated_at": "2026-10-05T11:36:34Z",
+  "next_action": "由用户体验DSH本地入口；后续按需处理已登记的延迟清理、OpenAPI和无人值守部署，不自动扩大权限或合并main。",
   "release": "0.1.0-local"
 }

@@ -109,6 +109,27 @@ def test_provider_failure_is_terminal_and_no_retry(client):
     assert not detail['artifacts']
 
 
+def test_timeout_while_provider_waits_leaves_no_workspace_or_artifact(client):
+    import asyncio
+    import os
+    ident = create(client, timeout_seconds=5)
+    runtime = client.app.state.service.dsh
+    calls = []
+    async def slow(*args):
+        calls.append(1)
+        await asyncio.sleep(30)
+        pytest.fail('the provider wait must have been cancelled')
+    runtime.send_probe = slow
+    start = time.monotonic()
+    runtime.execute(ident)
+    assert time.monotonic() - start < 12
+    detail = runtime.detail(ident)
+    assert detail['run']['exit_reason'] == 'TIMEOUT'
+    assert calls == [1]
+    assert not detail['artifacts']
+    assert not list(Path(os.environ['HARNESS_DSH_RUN_ROOT']).glob('run-*'))
+
+
 def test_disabled_by_default(tmp_path, monkeypatch):
     monkeypatch.delenv('HARNESS_DSH_LOCAL', raising=False)
     with TestClient(create_app(tmp_path / 'off.db', run_worker=False), base_url='http://localhost') as c:
@@ -212,15 +233,17 @@ def test_unauthorized_gateway_request_cannot_fail_run(client, monkeypatch):
     import adapters.dsh as adapter
     import httpx
     original = adapter.subprocess.Popen
+    statuses = []
     def observed(*args, **kwargs):
         rejected = httpx.post(kwargs['env']['HARNESS_DSH_GATEWAY'] + '/model', json={}, trust_env=False)
-        assert rejected.status_code == 403
+        statuses.append(rejected.status_code)
         return original(*args, **kwargs)
     monkeypatch.setattr(adapter.subprocess, 'Popen', observed)
     ident = create(client)
     runtime = client.app.state.service.dsh
     runtime.execute(ident)
     assert runtime.detail(ident)['run']['status'] == 'succeeded'
+    assert statuses == [403]
 
 
 @pytest.mark.parametrize('text', ['no citation', 'bad reference clause-99'])
@@ -237,6 +260,25 @@ def test_unread_or_missing_citation_cannot_publish(client, text):
     runtime.send_probe = altered
     runtime.execute(ident)
     assert runtime.detail(ident)['run']['exit_reason'] == 'DSH_EVIDENCE_CITATION_INVALID'
+    assert not runtime.detail(ident)['artifacts']
+
+
+def test_empty_search_is_not_evidence(client):
+    from backend.dsh_provider import parse_response
+    ident = create(client)
+    runtime = client.app.state.service.dsh
+    async def empty_search(payload, limit):
+        if any(m['role'] == 'tool' for m in payload['messages']):
+            choice = {'finish_reason': 'stop', 'message': {'content': 'Answer based on clause-1'}}
+        else:
+            choice = {'finish_reason': 'tool_calls', 'message': {'tool_calls': [
+                {'id': 'call_empty', 'type': 'function', 'function': {
+                    'name': 'search_document', 'arguments': '{"query":"NONEXISTENT_WORD"}'}}]}}
+        return parse_response({'choices': [choice],
+            'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+    runtime.send_probe = empty_search
+    runtime.execute(ident)
+    assert runtime.detail(ident)['run']['exit_reason'] == 'DSH_EVIDENCE_NOT_READ'
     assert not runtime.detail(ident)['artifacts']
 
 
@@ -284,9 +326,9 @@ def test_sigkill_then_recover_removes_registered_document_residue(tmp_path, monk
         with TestClient(create_app(db_path, run_worker=False), base_url='http://localhost') as client:
             rt = client.app.state.service.dsh
             rt.recover()
-            assert rt.cleanup_status == {'cleaned': 1, 'pending': 0, 'retained': 0}
             assert not list(root.glob('run-*'))
             assert not list(root.rglob('*.jsonl'))
+            assert rt.cleanup_status == {'cleaned': 1, 'pending': 0, 'retained': 0}
             runs = client.get('/api/local/dsh/runs').json()['items']
             assert runs[0]['exit_reason'] == 'DSH_SERVER_RESTARTED'
             assert rt.detail(runs[0]['id'])['budget']['status'] == 'stopped_on_restart'

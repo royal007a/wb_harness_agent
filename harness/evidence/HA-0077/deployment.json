@@ -1,0 +1,22 @@
+{
+  "url": "http://127.0.0.1:8876/dsh",
+  "release": "d813b63fe7cd6706ffcc0bb50a91214015db8004",
+  "pid": 55977,
+  "process_started_at": "Mon Oct  5 19:24:46 2026",
+  "listener_matches_job_pid": true,
+  "browser_execution_release": "d813b63fe7cd6706ffcc0bb50a91214015db8004",
+  "persisted_run_ids": [
+    "run_4e86c90c721a44a08bcf84c49e1191ef",
+    "run_ce561e298d534404bf05ba45014b4c69"
+  ],
+  "artifact_hashes_verified": true,
+  "owned_workspace_residue": 0,
+  "database": ".local/dsh.db",
+  "scope": "authorized_login_session_loopback_only",
+  "not_evidence": [
+    "reboot_autostart",
+    "132_deployment",
+    "OS_sandbox",
+    "analysis_semantic_correctness"
+  ]
+}

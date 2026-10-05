@@ -1,5 +1,7 @@
 # HarnessAgent
 
+本分支 `dsh/local-runtime-20261005` 的独立入口：**http://127.0.0.1:8876/dsh**。官方 DeepSeek Harness 工具循环 + 平台文档工具/预算；默认合成联调，可显式选择已配置的真实豆包 Provider。仅本机公开/合成文本，非 OS 沙箱；不改原8765/132。启动和边界见 [DSH 本地运行路径](docs/harness/DSH_LOCAL_RUNTIME.md)。以下8765地址仍是原工作台文档，不代表本次发布到该端口。
+
 HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。当前包含本地前后端工作台：CSV 上传、固定统计分析、持久 Task/Run、事件、取消/重跑、受限固定 Checkpoint 恢复和可验证产物。
 
 本机地址：**http://127.0.0.1:8765**。进入页面选择示例 CSV，即可跑通一次分析。
