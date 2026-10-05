@@ -1,0 +1,23 @@
+{
+  "review_date": "2026-10-06",
+  "course_root": "/Users/weberzhao/Downloads/生产级 Agent 排雷实战",
+  "numbering": "title lectures 01-06; file prefixes 02-07; contents and introduction excluded",
+  "total_pdf_pages": 61,
+  "reading": "full extracted text including appendix/comments; ten selected pages visually inspected, not every page",
+  "baselines": {
+    "original": {"path": "/Users/weberzhao/code/ai/harnessagent", "commit": "87968aa87370f22e0451b4e3be29b032a22b5ec8"},
+    "dsh": {"path": "/Users/weberzhao/code/ai/harnessagent-dsh", "commit": "1a4d4cec7562a8b983eab0f45765c0e616b877e4"},
+    "dsh_dependency": "0.2.1-alpha.1"
+  },
+  "pdfs": [
+    {"id": "C1", "file": "02 - 01｜用十倍速制造事故：Loop Engineering 的暗面.pdf", "pages": 9, "visual_pages": [7], "sha256": "f545877f4e024268660c05cec8dcbd776217df21a4474d15fa967d577f0c3256"},
+    {"id": "C2", "file": "03 - 02｜别把执行权交给概率：六大契约重新定义工具设计.pdf", "pages": 9, "visual_pages": [2,5], "sha256": "c599729020feb9ec120937be57c128c4ef88ebd4aa2c8b061b77f4c7c43f6729"},
+    {"id": "C3", "file": "04 - 03｜注意力稀释：当 113 个工具让模型降智时，工程师该怎么做？.pdf", "pages": 11, "visual_pages": [2,7], "sha256": "ea34912c811f73589f9ca2aca883d90d2ea5ab19d92f8ccca47538f90b690e45"},
+    {"id": "C4", "file": "05 - 04｜格式幻觉：为什么 JSON 完美合规却还能毒杀下游？.pdf", "pages": 10, "visual_pages": [4,8], "sha256": "822e0dc8fabfb57f3c84924a5e350e57be004a2c698359847f4709ee04228f2b"},
+    {"id": "C5", "file": "06 - 05｜为什么窗口越大，Agent 越容易忽略最重要的指令？.pdf", "pages": 11, "visual_pages": [3], "sha256": "6816add86cdd59881d79576626450c590a62f7efe02483ae05c8a04a3996c83b"},
+    {"id": "C6", "file": "07 - 06｜分路召回架构：如何避免安全红线被向量检索“漏掉”？.pdf", "pages": 11, "visual_pages": [5,6], "sha256": "9d5f328afa68bf11e3dbde1a718c028bedb556db9a036ba49a8cb2054d937419"}
+  ],
+  "probe_command": ".venv/bin/python -m pytest -q -s harness/evidence/course-first-six-2026-10-06/probes.py",
+  "probe_result": {"passed": 3, "failed": 0, "duration_seconds": 4.58},
+  "not_evidence": ["real model quality", "deployment or browser acceptance", "OS sandbox", "full upstream ProdAgent audit", "full regression rerun", "legal or investment advice"]
+}
