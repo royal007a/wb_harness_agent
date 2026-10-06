@@ -1,0 +1,80 @@
+<testsuites name="pytest tests">
+  <testsuite name="pytest" errors="0" failures="2" skipped="0" tests="36" time="0.175" timestamp="2026-10-07T02:10:54.470305+08:00" hostname="local-redacted">
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e300\u5929\u5185\u4ed8\u6b3e]" time="0.004">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后300天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e130\u5929\u5185\u4ed8\u6b3e]" time="0.000">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后130天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30\u4e2a\u5de5\u4f5c\u65e5\u5185\u4ed8\u6b3e]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30.5\u5929\u5185\u4ed8\u6b3e]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e-30\u5929\u5185\u4ed8\u6b3e]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e030\u5929\u5185\u4ed8\u6b3e]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30\u5929\u5185\u4ed8\u6b3e\uff0c\u53e6\u4ed8300\u5143]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u4e0d\u5e94\u9a8c\u6536\u5408\u683c\u540e30\u5929\u5185\u4ed8\u6b3e]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e\u4e09\u5341\u5929\u5185\u4ed8\u6b3e]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e\uff13\uff10\u5929\u5185\u4ed8\u6b3e]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30\u5929\u5185\u4ed8\u6b3e\n]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[30-\u5929]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[300-\u5929]" time="0.002" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[130-\u4e2a\u5de5\u4f5c\u65e5]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[1-\u5929]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[failed]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[missing_record]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[missing_candidates]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[wrong_candidates]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[unknown_term]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[duplicate_result]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[duplicate_label]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[missing_result]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[missing_label]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[wrong_id]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[empty]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[empty_id]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-DSH_FINDINGS_INVALID-False-1]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-BUSINESS_TOKEN_BUDGET_EXHAUSTED-False-0]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-DSH_INITIALIZATION_TIMEOUT-False-0]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[succeeded-DSH_FINDINGS_INVALID-False-0]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-DSH_FINDINGS_INVALID-True-0]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[cancelled-DSH_FINDINGS_INVALID-False-0]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exception_metrics_require_success[False]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exception_metrics_require_success[True]" time="0.000" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_all_fixture_labels_score_without_runtime_or_external_calls" time="0.039" />
+  </testsuite>
+</testsuites>

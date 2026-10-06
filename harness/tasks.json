@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0088",
+      "title": "固定合成付款评测评分器纠偏",
+      "status": "waiting_approval",
+      "risk": "low",
+      "scope": ["数值单位精确评分", "成功产物与ID集合门槛", "离线反例与评分版本"],
+      "non_goals": ["生产findings校验变更", "任意自然语言语义裁判", "真实Provider及部署"],
+      "acceptance": ["旧版反例行为失败", "数值单位不误计", "失败不冒充无误报", "漏跑重跑不缩小分母", "独立复审"],
+      "depends_on": ["HA-0079"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0088.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0088/acceptance.md"]
+    },
+    {
       "id": "HA-0087",
       "title": "DSH详情完整计划历史投影",
       "status": "waiting_approval",

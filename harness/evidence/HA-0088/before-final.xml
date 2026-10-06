@@ -1,0 +1,609 @@
+<testsuites name="pytest tests">
+  <testsuite name="pytest" errors="0" failures="25" skipped="0" tests="36" time="0.304" timestamp="2026-10-07T02:09:44.937700+08:00" hostname="local-redacted">
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e300\u5929\u5185\u4ed8\u6b3e]" time="0.003">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后300天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e130\u5929\u5185\u4ed8\u6b3e]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后130天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30\u4e2a\u5de5\u4f5c\u65e5\u5185\u4ed8\u6b3e]" time="0.002">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后30个工作日内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30.5\u5929\u5185\u4ed8\u6b3e]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后30.5天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e-30\u5929\u5185\u4ed8\u6b3e]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后-30天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e030\u5929\u5185\u4ed8\u6b3e]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后030天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30\u5929\u5185\u4ed8\u6b3e\uff0c\u53e6\u4ed8300\u5143]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后30天内付款，另付300元'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u4e0d\u5e94\u9a8c\u6536\u5408\u683c\u540e30\u5929\u5185\u4ed8\u6b3e]" time="0.002">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '不应验收合格后30天内付款'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e\u4e09\u5341\u5929\u5185\u4ed8\u6b3e]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e\uff13\uff10\u5929\u5185\u4ed8\u6b3e]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_numeric_and_unit_false_positives_rejected[\u9a8c\u6536\u5408\u683c\u540e30\u5929\u5185\u4ed8\u6b3e\n]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">claim = '验收合格后30天内付款\n'
+
+    @pytest.mark.parametrize('claim', [
+        '验收合格后300天内付款', '验收合格后130天内付款', '验收合格后30个工作日内付款',
+        '验收合格后30.5天内付款', '验收合格后-30天内付款', '验收合格后030天内付款',
+        '验收合格后30天内付款，另付300元', '不应验收合格后30天内付款',
+        '验收合格后三十天内付款', '验收合格后３０天内付款', '验收合格后30天内付款\n',
+    ])
+    def test_numeric_and_unit_false_positives_rejected(claim):
+        result, label = sample(claim)
+&gt;       assert score([result], [label])[1]['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:29: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[30-\u5929]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[300-\u5929]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[130-\u4e2a\u5de5\u4f5c\u65e5]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exact_script_values_pass[1-\u5929]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[failed]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">broken = 'failed'
+
+    @pytest.mark.parametrize('broken', ['failed', 'missing_record', 'missing_candidates', 'wrong_candidates', 'unknown_term'])
+    def test_incomplete_run_is_not_a_positive_result(broken):
+        result, label = sample()
+        if broken == 'failed':
+            result['status'] = 'failed'
+        elif broken == 'missing_record':
+            result['record'] = None
+        elif broken == 'missing_candidates':
+            result['record'].pop('candidates')
+        elif broken == 'wrong_candidates':
+            result['record']['candidates']['exception'] = None
+        else:
+            result['record']['findings']['term']['status'] = 'unknown'
+        metrics = score([result], [label])[1]
+        assert metrics['correct_value_published'] == {'hit': 0, 'n': 1}
+&gt;       assert metrics['no_false_exception_candidate'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:54: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[missing_record]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">broken = 'missing_record'
+
+    @pytest.mark.parametrize('broken', ['failed', 'missing_record', 'missing_candidates', 'wrong_candidates', 'unknown_term'])
+    def test_incomplete_run_is_not_a_positive_result(broken):
+        result, label = sample()
+        if broken == 'failed':
+            result['status'] = 'failed'
+        elif broken == 'missing_record':
+            result['record'] = None
+        elif broken == 'missing_candidates':
+            result['record'].pop('candidates')
+        elif broken == 'wrong_candidates':
+            result['record']['candidates']['exception'] = None
+        else:
+            result['record']['findings']['term']['status'] = 'unknown'
+        metrics = score([result], [label])[1]
+        assert metrics['correct_value_published'] == {'hit': 0, 'n': 1}
+&gt;       assert metrics['no_false_exception_candidate'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:54: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[missing_candidates]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">broken = 'missing_candidates'
+
+    @pytest.mark.parametrize('broken', ['failed', 'missing_record', 'missing_candidates', 'wrong_candidates', 'unknown_term'])
+    def test_incomplete_run_is_not_a_positive_result(broken):
+        result, label = sample()
+        if broken == 'failed':
+            result['status'] = 'failed'
+        elif broken == 'missing_record':
+            result['record'] = None
+        elif broken == 'missing_candidates':
+            result['record'].pop('candidates')
+        elif broken == 'wrong_candidates':
+            result['record']['candidates']['exception'] = None
+        else:
+            result['record']['findings']['term']['status'] = 'unknown'
+        metrics = score([result], [label])[1]
+&gt;       assert metrics['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:53: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[wrong_candidates]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">broken = 'wrong_candidates'
+
+    @pytest.mark.parametrize('broken', ['failed', 'missing_record', 'missing_candidates', 'wrong_candidates', 'unknown_term'])
+    def test_incomplete_run_is_not_a_positive_result(broken):
+        result, label = sample()
+        if broken == 'failed':
+            result['status'] = 'failed'
+        elif broken == 'missing_record':
+            result['record'] = None
+        elif broken == 'missing_candidates':
+            result['record'].pop('candidates')
+        elif broken == 'wrong_candidates':
+            result['record']['candidates']['exception'] = None
+        else:
+            result['record']['findings']['term']['status'] = 'unknown'
+        metrics = score([result], [label])[1]
+&gt;       assert metrics['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:53: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_incomplete_run_is_not_a_positive_result[unknown_term]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">broken = 'unknown_term'
+
+    @pytest.mark.parametrize('broken', ['failed', 'missing_record', 'missing_candidates', 'wrong_candidates', 'unknown_term'])
+    def test_incomplete_run_is_not_a_positive_result(broken):
+        result, label = sample()
+        if broken == 'failed':
+            result['status'] = 'failed'
+        elif broken == 'missing_record':
+            result['record'] = None
+        elif broken == 'missing_candidates':
+            result['record'].pop('candidates')
+        elif broken == 'wrong_candidates':
+            result['record']['candidates']['exception'] = None
+        else:
+            result['record']['findings']['term']['status'] = 'unknown'
+        metrics = score([result], [label])[1]
+&gt;       assert metrics['correct_value_published'] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:53: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[duplicate_result]" time="0.002">
+      <failure message="Failed: DID NOT RAISE ValueError">case = 'duplicate_result'
+
+    @pytest.mark.parametrize('case', ['duplicate_result', 'duplicate_label', 'missing_result', 'missing_label', 'wrong_id', 'empty', 'empty_id'])
+    def test_denominator_cannot_drop_or_duplicate_cases(case):
+        result, label = sample()
+        results, labels = [result], [label]
+        if case == 'duplicate_result': results *= 2
+        elif case == 'duplicate_label': labels *= 2
+        elif case == 'missing_result': results = []
+        elif case == 'missing_label': labels = []
+        elif case == 'wrong_id': result['id'] = 'different'
+        elif case == 'empty': results, labels = [], []
+        else: result['id'] = label['id'] = ''
+&gt;       with pytest.raises(ValueError, match='case IDs'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_dsh_payment_scoring.py:68: Failed</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[duplicate_label]" time="0.001">
+      <failure message="Failed: DID NOT RAISE ValueError">case = 'duplicate_label'
+
+    @pytest.mark.parametrize('case', ['duplicate_result', 'duplicate_label', 'missing_result', 'missing_label', 'wrong_id', 'empty', 'empty_id'])
+    def test_denominator_cannot_drop_or_duplicate_cases(case):
+        result, label = sample()
+        results, labels = [result], [label]
+        if case == 'duplicate_result': results *= 2
+        elif case == 'duplicate_label': labels *= 2
+        elif case == 'missing_result': results = []
+        elif case == 'missing_label': labels = []
+        elif case == 'wrong_id': result['id'] = 'different'
+        elif case == 'empty': results, labels = [], []
+        else: result['id'] = label['id'] = ''
+&gt;       with pytest.raises(ValueError, match='case IDs'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_dsh_payment_scoring.py:68: Failed</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[missing_result]" time="0.000">
+      <failure message="Failed: DID NOT RAISE ValueError">case = 'missing_result'
+
+    @pytest.mark.parametrize('case', ['duplicate_result', 'duplicate_label', 'missing_result', 'missing_label', 'wrong_id', 'empty', 'empty_id'])
+    def test_denominator_cannot_drop_or_duplicate_cases(case):
+        result, label = sample()
+        results, labels = [result], [label]
+        if case == 'duplicate_result': results *= 2
+        elif case == 'duplicate_label': labels *= 2
+        elif case == 'missing_result': results = []
+        elif case == 'missing_label': labels = []
+        elif case == 'wrong_id': result['id'] = 'different'
+        elif case == 'empty': results, labels = [], []
+        else: result['id'] = label['id'] = ''
+&gt;       with pytest.raises(ValueError, match='case IDs'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_dsh_payment_scoring.py:68: Failed</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[missing_label]" time="0.000">
+      <failure message="KeyError: 'probe'">case = 'missing_label'
+
+    @pytest.mark.parametrize('case', ['duplicate_result', 'duplicate_label', 'missing_result', 'missing_label', 'wrong_id', 'empty', 'empty_id'])
+    def test_denominator_cannot_drop_or_duplicate_cases(case):
+        result, label = sample()
+        results, labels = [result], [label]
+        if case == 'duplicate_result': results *= 2
+        elif case == 'duplicate_label': labels *= 2
+        elif case == 'missing_result': results = []
+        elif case == 'missing_label': labels = []
+        elif case == 'wrong_id': result['id'] = 'different'
+        elif case == 'empty': results, labels = [], []
+        else: result['id'] = label['id'] = ''
+        with pytest.raises(ValueError, match='case IDs'):
+&gt;           score(results, labels)
+
+tests/test_dsh_payment_scoring.py:69:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'id': 'probe', 'status': 'succeeded', 'exit_reason': None, 'record': {'findings': {'term': {'status': 'supported', '...: 'unknown', 'quotes': []}}, 'candidates': {'exception': []}, 'platform_gaps': [], 'business_status': 'partial'}, ...}]
+labels = []
+
+    def _case_ids(items):
+        ids = [item.get('id') for item in items]
+        if not ids or any(not isinstance(ident, str) or not ident for ident in ids) or len(set(ids)) != len(ids):
+            raise ValueError('case IDs must be non-empty and unique')
+        return set(ids)
+
+
+&gt;   def _scorable_record(record):
+                    ^^^^^^^^^^^^^^
+E   KeyError: 'probe'
+
+harness/dsh_payment_eval.py:109: KeyError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[wrong_id]" time="0.001">
+      <failure message="KeyError: 'different'">case = 'wrong_id'
+
+    @pytest.mark.parametrize('case', ['duplicate_result', 'duplicate_label', 'missing_result', 'missing_label', 'wrong_id', 'empty', 'empty_id'])
+    def test_denominator_cannot_drop_or_duplicate_cases(case):
+        result, label = sample()
+        results, labels = [result], [label]
+        if case == 'duplicate_result': results *= 2
+        elif case == 'duplicate_label': labels *= 2
+        elif case == 'missing_result': results = []
+        elif case == 'missing_label': labels = []
+        elif case == 'wrong_id': result['id'] = 'different'
+        elif case == 'empty': results, labels = [], []
+        else: result['id'] = label['id'] = ''
+        with pytest.raises(ValueError, match='case IDs'):
+&gt;           score(results, labels)
+
+tests/test_dsh_payment_scoring.py:69:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+results = [{'id': 'different', 'status': 'succeeded', 'exit_reason': None, 'record': {'findings': {'term': {'status': 'supported...: 'unknown', 'quotes': []}}, 'candidates': {'exception': []}, 'platform_gaps': [], 'business_status': 'partial'}, ...}]
+labels = [{'id': 'probe', 'family': 'synthetic', 'true_value': 30, 'unit': '天', ...}]
+
+    def _case_ids(items):
+        ids = [item.get('id') for item in items]
+        if not ids or any(not isinstance(ident, str) or not ident for ident in ids) or len(set(ids)) != len(ids):
+            raise ValueError('case IDs must be non-empty and unique')
+        return set(ids)
+
+
+&gt;   def _scorable_record(record):
+                    ^^^^^^^^^^^^^^
+E   KeyError: 'different'
+
+harness/dsh_payment_eval.py:109: KeyError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[empty]" time="0.001">
+      <failure message="Failed: DID NOT RAISE ValueError">case = 'empty'
+
+    @pytest.mark.parametrize('case', ['duplicate_result', 'duplicate_label', 'missing_result', 'missing_label', 'wrong_id', 'empty', 'empty_id'])
+    def test_denominator_cannot_drop_or_duplicate_cases(case):
+        result, label = sample()
+        results, labels = [result], [label]
+        if case == 'duplicate_result': results *= 2
+        elif case == 'duplicate_label': labels *= 2
+        elif case == 'missing_result': results = []
+        elif case == 'missing_label': labels = []
+        elif case == 'wrong_id': result['id'] = 'different'
+        elif case == 'empty': results, labels = [], []
+        else: result['id'] = label['id'] = ''
+&gt;       with pytest.raises(ValueError, match='case IDs'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_dsh_payment_scoring.py:68: Failed</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_denominator_cannot_drop_or_duplicate_cases[empty_id]" time="0.010">
+      <failure message="Failed: DID NOT RAISE ValueError">case = 'empty_id'
+
+    @pytest.mark.parametrize('case', ['duplicate_result', 'duplicate_label', 'missing_result', 'missing_label', 'wrong_id', 'empty', 'empty_id'])
+    def test_denominator_cannot_drop_or_duplicate_cases(case):
+        result, label = sample()
+        results, labels = [result], [label]
+        if case == 'duplicate_result': results *= 2
+        elif case == 'duplicate_label': labels *= 2
+        elif case == 'missing_result': results = []
+        elif case == 'missing_label': labels = []
+        elif case == 'wrong_id': result['id'] = 'different'
+        elif case == 'empty': results, labels = [], []
+        else: result['id'] = label['id'] = ''
+&gt;       with pytest.raises(ValueError, match='case IDs'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_dsh_payment_scoring.py:68: Failed</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-DSH_FINDINGS_INVALID-False-1]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-BUSINESS_TOKEN_BUDGET_EXHAUSTED-False-0]" time="0.002" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-DSH_INITIALIZATION_TIMEOUT-False-0]" time="0.002" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[succeeded-DSH_FINDINGS_INVALID-False-0]" time="0.001" />
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[failed-DSH_FINDINGS_INVALID-True-0]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">status = 'failed', reason = 'DSH_FINDINGS_INVALID', artifact = True, hit = 0
+
+    @pytest.mark.parametrize('status,reason,artifact,hit', [
+        ('failed', 'DSH_FINDINGS_INVALID', False, 1),
+        ('failed', 'BUSINESS_TOKEN_BUDGET_EXHAUSTED', False, 0),
+        ('failed', 'DSH_INITIALIZATION_TIMEOUT', False, 0),
+        ('succeeded', 'DSH_FINDINGS_INVALID', False, 0),
+        ('failed', 'DSH_FINDINGS_INVALID', True, 0),
+        ('cancelled', 'DSH_FINDINGS_INVALID', False, 0),
+    ])
+    def test_only_correct_rejection_without_publication_counts(status, reason, artifact, hit):
+        result, label = sample()
+        label['value_misstated_by_script'] = True
+        result.update(status=status, exit_reason=reason)
+        if not artifact: result['record'] = None
+&gt;       assert score([result], [label])[1]['misstated_value_not_published'] == {'hit': hit, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:85: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_only_correct_rejection_without_publication_counts[cancelled-DSH_FINDINGS_INVALID-False-0]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">status = 'cancelled', reason = 'DSH_FINDINGS_INVALID', artifact = False, hit = 0
+
+    @pytest.mark.parametrize('status,reason,artifact,hit', [
+        ('failed', 'DSH_FINDINGS_INVALID', False, 1),
+        ('failed', 'BUSINESS_TOKEN_BUDGET_EXHAUSTED', False, 0),
+        ('failed', 'DSH_INITIALIZATION_TIMEOUT', False, 0),
+        ('succeeded', 'DSH_FINDINGS_INVALID', False, 0),
+        ('failed', 'DSH_FINDINGS_INVALID', True, 0),
+        ('cancelled', 'DSH_FINDINGS_INVALID', False, 0),
+    ])
+    def test_only_correct_rejection_without_publication_counts(status, reason, artifact, hit):
+        result, label = sample()
+        label['value_misstated_by_script'] = True
+        result.update(status=status, exit_reason=reason)
+        if not artifact: result['record'] = None
+&gt;       assert score([result], [label])[1]['misstated_value_not_published'] == {'hit': hit, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:85: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exception_metrics_require_success[False]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">implicit = False
+
+    @pytest.mark.parametrize('implicit', [False, True])
+    def test_exception_metrics_require_success(implicit):
+        result, label = sample()
+        label.update(exception_clause='clause-4', exception_implicit=implicit)
+        result['record']['candidates']['exception'] = ['clause-4']
+        result['record']['findings']['exception'] = {'status': 'supported', 'quotes': [{'clause_id': 'clause-4'}]}
+        name = 'implicit_exception_detected_by_platform_lexicon' if implicit else 'lexical_exception_surfaced'
+        assert score([result], [label])[1][name] == {'hit': 1, 'n': 1}
+        result['status'] = 'failed'
+&gt;       assert score([result], [label])[1][name] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:97: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_exception_metrics_require_success[True]" time="0.001">
+      <failure message="AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'hit': 1} != {'hit': 0}&#10;  Use -v to get more diff">implicit = True
+
+    @pytest.mark.parametrize('implicit', [False, True])
+    def test_exception_metrics_require_success(implicit):
+        result, label = sample()
+        label.update(exception_clause='clause-4', exception_implicit=implicit)
+        result['record']['candidates']['exception'] = ['clause-4']
+        result['record']['findings']['exception'] = {'status': 'supported', 'quotes': [{'clause_id': 'clause-4'}]}
+        name = 'implicit_exception_detected_by_platform_lexicon' if implicit else 'lexical_exception_surfaced'
+        assert score([result], [label])[1][name] == {'hit': 1, 'n': 1}
+        result['status'] = 'failed'
+&gt;       assert score([result], [label])[1][name] == {'hit': 0, 'n': 1}
+E       AssertionError: assert {'hit': 1, 'n': 1} == {'hit': 0, 'n': 1}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'hit': 1} != {'hit': 0}
+E         Use -v to get more diff
+
+tests/test_dsh_payment_scoring.py:97: AssertionError</failure>
+    </testcase>
+    <testcase classname="tests.test_dsh_payment_scoring" name="test_all_fixture_labels_score_without_runtime_or_external_calls" time="0.004" />
+  </testsuite>
+</testsuites>
