@@ -22,6 +22,7 @@
 - 第八批成本装饰器与Tracing两篇25页全文阅读完成，累计二十九篇303页。核对了Tracing实际计时日志和作者对defer问题的承认；失败不计费、原文预览和币种混用不可照搬。见 `docs/research/JIKESUMMARY_COST_TRACE_2026_10_07.md`。
 - 第九批Hooks两篇22页全文阅读完成，累计三十一篇325页；对照SDK 0.2.152核对tool_response/error/defer，渲染格式化命令后确认未引用路径和2>&1解释边界。见 `docs/research/JIKESUMMARY_HOOKS_2026_10_07.md`。
 - 第十批Loop Engineering与Provider两篇34页全文阅读完成，累计三十三篇359页；Loop第11–18页图逐页核对。明确计划投影不等于DAG调度、同一接口不等于协议保真，见 `docs/research/JIKESUMMARY_LOOP_PROVIDER_2026_10_07.md`。
+- 第十一批生成评审一篇15页全文阅读完成，累计三十四篇374页。区分版本批准、证据字符串与真实事实，核对了正文和grounded代码的差异，见 `docs/research/JIKESUMMARY_REVIEW_VERSIONS_2026_10_07.md`。
 - 本研究任务不修改运行时、不部署、不调用真实 Provider；HA-0085/0086 是分开的实现任务，不能混算研究验收。
 
 ## 非目标
