@@ -2,29 +2,405 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$defs": {
     "request": {
-      "type": "object", "additionalProperties": false,
-      "required": ["objective", "document", "mode", "public_data_confirmed"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objective",
+        "document",
+        "mode",
+        "public_data_confirmed"
+      ],
       "properties": {
-        "objective": {"type": "string", "minLength": 1, "maxLength": 2000},
-        "document": {"type": "string", "minLength": 1, "maxLength": 20000},
-        "mode": {"enum": ["integration_probe", "real_provider"]},
-        "public_data_confirmed": {"const": true},
-        "timeout_seconds": {"type": "integer", "minimum": 5, "maximum": 300},
-        "token_limit": {"type": "integer", "minimum": 1000, "maximum": 20000000}
+        "objective": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "document": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "mode": {
+          "enum": [
+            "integration_probe",
+            "real_provider"
+          ]
+        },
+        "public_data_confirmed": {
+          "const": true
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 300
+        },
+        "token_limit": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 20000000
+        },
+        "template": {
+          "enum": [
+            "free",
+            "payment_terms"
+          ]
+        }
       }
     },
     "observation": {
-      "type": "object", "additionalProperties": false, "required": ["type", "sha256", "bytes"],
-      "properties": {"type": {"const": "observation"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$", "maxLength": 64},
-        "bytes": {"type": "integer", "minimum": 0, "maximum": 1048576}}
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "sha256",
+        "bytes"
+      ],
+      "properties": {
+        "type": {
+          "const": "observation"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "maxLength": 64
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        }
+      }
     },
     "result": {
-      "type": "object", "additionalProperties": false,
-      "required": ["type", "text", "session_sha256", "turn_count", "runtime"],
-      "properties": {"type": {"const": "result"}, "text": {"type": "string", "minLength": 1, "maxLength": 65536},
-        "session_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$", "maxLength": 64},
-        "turn_count": {"type": "integer", "minimum": 1, "maximum": 8},
-        "runtime": {"const": "deepseek-harness@0.2.1-alpha.1"}}
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "text",
+        "session_sha256",
+        "turn_count",
+        "runtime"
+      ],
+      "properties": {
+        "type": {
+          "const": "result"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "session_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "maxLength": 64
+        },
+        "turn_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "runtime": {
+          "const": "deepseek-harness@0.2.1-alpha.1"
+        }
+      }
+    },
+    "findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "template",
+        "business_status",
+        "findings",
+        "model_gaps",
+        "platform_gaps",
+        "candidates",
+        "read_clause_ids",
+        "verification",
+        "human_review_required"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "dsh-payment-findings@1"
+        },
+        "template": {
+          "const": "payment_terms"
+        },
+        "business_status": {
+          "enum": [
+            "mechanically_checked",
+            "partial",
+            "conflicting"
+          ]
+        },
+        "findings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "term",
+            "trigger",
+            "exception",
+            "conflict"
+          ],
+          "properties": {
+            "term": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status",
+                "claim",
+                "quotes"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "supported",
+                    "unknown",
+                    "conflicting"
+                  ]
+                },
+                "claim": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "quotes": {
+                  "type": "array",
+                  "maxItems": 3,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "clause_id",
+                      "text"
+                    ],
+                    "properties": {
+                      "clause_id": {
+                        "type": "string",
+                        "pattern": "^clause-[1-9][0-9]{0,3}$"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 300
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "trigger": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status",
+                "claim",
+                "quotes"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "supported",
+                    "unknown",
+                    "conflicting"
+                  ]
+                },
+                "claim": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "quotes": {
+                  "type": "array",
+                  "maxItems": 3,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "clause_id",
+                      "text"
+                    ],
+                    "properties": {
+                      "clause_id": {
+                        "type": "string",
+                        "pattern": "^clause-[1-9][0-9]{0,3}$"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 300
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "exception": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status",
+                "claim",
+                "quotes"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "supported",
+                    "unknown",
+                    "conflicting"
+                  ]
+                },
+                "claim": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "quotes": {
+                  "type": "array",
+                  "maxItems": 3,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "clause_id",
+                      "text"
+                    ],
+                    "properties": {
+                      "clause_id": {
+                        "type": "string",
+                        "pattern": "^clause-[1-9][0-9]{0,3}$"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 300
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "conflict": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status",
+                "claim",
+                "quotes"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "supported",
+                    "unknown",
+                    "conflicting"
+                  ]
+                },
+                "claim": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "quotes": {
+                  "type": "array",
+                  "maxItems": 3,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "clause_id",
+                      "text"
+                    ],
+                    "properties": {
+                      "clause_id": {
+                        "type": "string",
+                        "pattern": "^clause-[1-9][0-9]{0,3}$"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 300
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "model_gaps": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "platform_gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "clause_ids"
+            ],
+            "properties": {
+              "code": {
+                "enum": [
+                  "EXCEPTION_CANDIDATES_UNREAD",
+                  "PAYMENT_CLAUSES_UNREAD",
+                  "EXCEPTION_CANDIDATE_NOT_REPORTED"
+                ]
+              },
+              "clause_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^clause-[1-9][0-9]{0,3}$"
+                }
+              }
+            }
+          }
+        },
+        "candidates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "payment",
+            "exception"
+          ],
+          "properties": {
+            "payment": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^clause-[1-9][0-9]{0,3}$"
+              }
+            },
+            "exception": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^clause-[1-9][0-9]{0,3}$"
+              }
+            }
+          }
+        },
+        "read_clause_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^clause-[1-9][0-9]{0,3}$"
+          }
+        },
+        "verification": {
+          "const": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+        },
+        "human_review_required": {
+          "const": true
+        }
+      }
     }
   }
 }

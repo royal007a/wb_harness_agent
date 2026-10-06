@@ -10,7 +10,7 @@ const input = await new Promise(resolve => lines.once('line', resolve));
 lines.close();
 const job = JSON.parse(input);
 const env = Object.fromEntries(['PATH', 'HOME', 'TMPDIR', 'HARNESS_DSH_GATEWAY',
-  'HARNESS_DSH_CAPABILITY', 'HARNESS_DSH_MODEL'].filter(k => process.env[k]).map(k => [k, process.env[k]]));
+  'HARNESS_DSH_CAPABILITY', 'HARNESS_DSH_MODEL', 'HARNESS_DSH_TOOLS'].filter(k => process.env[k]).map(k => [k, process.env[k]]));
 env.HARNESS_DSH_PLUGIN = fileURLToPath(new URL('./platform-plugin.mjs', import.meta.url));
 const harness = new DeepSeekHarness({
   profile: 'sdk-minimal', patches: [fileURLToPath(new URL('./controlled.patch.yml', import.meta.url))],

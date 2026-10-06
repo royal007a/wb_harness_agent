@@ -55,6 +55,36 @@ async function refresh(current) {
         const a = document.createElement('a'); a.href = `/api/v1/artifacts/${artifact.id}/content?download=true`; a.textContent = '下载分析产物'; $('downloads').append(a);
       }
     }
+    const findingsArtifact = detail.artifacts.find(a => a.name === 'dsh-findings.json');
+    $('findings').hidden = !findingsArtifact;
+    if (findingsArtifact) {
+      const response = await fetch(`/api/v1/artifacts/${findingsArtifact.id}/content`, {signal: AbortSignal.timeout(10000)});
+      if (!response.ok) throw new Error('核对结果读取失败');
+      const record = await response.json();
+      if (current !== generation || ident !== selected) return;
+      const statusText = {mechanically_checked: '机械校验通过（仍需人工复核）', partial: '部分结果：有未知项或缺口', conflicting: '存在冲突'};
+      $('findings-status').textContent = statusText[record.business_status] || record.business_status;
+      const slotName = {term: '付款期限', trigger: '触发条件', exception: '例外', conflict: '冲突'};
+      const stateName = {supported: '有证据', unknown: '未知', conflicting: '冲突'};
+      const table = $('findings-table'); table.replaceChildren();
+      for (const [slot, item] of Object.entries(record.findings)) {
+        const tr = document.createElement('tr');
+        for (const text of [slotName[slot] || slot, stateName[item.status] || item.status, item.claim || '—',
+                            item.quotes.map(q => `${q.clause_id}：「${q.text}」`).join('\n') || '—']) {
+          const td = document.createElement('td'); td.textContent = text; tr.append(td);
+        }
+        table.append(tr);
+      }
+      const gaps = $('findings-gaps'); gaps.replaceChildren();
+      const gapName = {EXCEPTION_CANDIDATES_UNREAD: '有付款例外候选未读取', PAYMENT_CLAUSES_UNREAD: '有付款相关证据块未读取',
+                       EXCEPTION_CANDIDATE_NOT_REPORTED: '读到了例外候选但未报告例外'};
+      for (const gap of record.platform_gaps) {
+        const li = document.createElement('li'); li.textContent = `平台：${gapName[gap.code] || gap.code}（${gap.clause_ids.join('、')}）`; gaps.append(li);
+      }
+      for (const gap of record.model_gaps) {
+        const li = document.createElement('li'); li.textContent = `模型自述：${gap}`; gaps.append(li);
+      }
+    }
     if (!terminal.has(run.status)) timer = setTimeout(() => refresh(current), 800);
     else void history().catch(showError);
   } catch (error) { if (current === generation) {showError(error); $('run-summary').textContent = '读取失败，未确认终态。请重新选择该 Run。';} }
@@ -63,7 +93,7 @@ $('run-form').onsubmit = async event => {
   event.preventDefault(); $('start').disabled = true; $('form-message').textContent = '';
   try {
     const value = await api('/api/local/dsh/runs', {method:'POST', headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},
-      body:JSON.stringify({objective:$('objective').value,document:$('document').value,mode:$('mode').value,
+      body:JSON.stringify({template:$('template').value,objective:$('objective').value,document:$('document').value,mode:$('mode').value,
         public_data_confirmed:$('public-confirm').checked,token_limit:Number($('tokens').value),timeout_seconds:Number($('timeout').value)})});
     await select(value.initial_run.id);
   } catch (error) {showError(error);} finally {$('start').disabled = false;}

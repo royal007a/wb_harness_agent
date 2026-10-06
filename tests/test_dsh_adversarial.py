@@ -30,6 +30,9 @@ def client(tmp_path, monkeypatch):
         yield value
 
 
+MANY_CLAUSES = '\n'.join(f'第{i}条 条款{i}\n内容编号{i}。' for i in range(1, 21))
+
+
 def body(**changes):
     return dict(objective='Read and cite evidence.', document='DOCUMENT_ALPHA: acceptance then payment.',
                 mode='integration_probe', public_data_confirmed=True, **changes)
@@ -66,12 +69,13 @@ def terminal(runtime, ident, status, reason):
 # Actual official DSH SDK subprocess; only the Provider is synthetic.
 @pytest.mark.parametrize('requested_calls', [8, 9])
 def test_sdk_exact_model_call_cap(client, requested_calls):
-    ident = submit(client)
+    # HA-0079: distinct evidence each turn, so the cap (not the no-progress stop) is what is tested.
+    ident = submit(client, document=MANY_CLAUSES)
     rt = client.app.state.service.dsh
     calls = []
     async def send(payload, limit):
         calls.append(payload)
-        return parse_response(response(calls=[('read_clause', {'clause_id': 'clause-1'})]
+        return parse_response(response(calls=[('read_clause', {'clause_id': f'clause-{len(calls)}'})]
                                        if len(calls) < requested_calls else None))
     rt.send_probe = send
     rt.execute(ident)
@@ -85,14 +89,15 @@ def test_sdk_exact_model_call_cap(client, requested_calls):
 
 @pytest.mark.parametrize('requested_tools', [16, 17])
 def test_sdk_exact_tool_call_cap(client, requested_tools):
-    ident = submit(client)
+    ident = submit(client, document=MANY_CLAUSES)
     rt = client.app.state.service.dsh
     sent = 0
     async def send(payload, limit):
         nonlocal sent
         batch = min(4, requested_tools - sent)
-        sent += batch
-        return parse_response(response(calls=[('read_clause', {'clause_id': 'clause-1'})] * batch))
+        start, sent = sent, sent + batch
+        return parse_response(response(calls=[('read_clause', {'clause_id': f'clause-{start + i + 1}'})
+                                              for i in range(batch)]))
     rt.send_probe = send
     rt.execute(ident)
     detail = terminal(rt, ident, 'succeeded' if requested_tools == 16 else 'failed',
@@ -164,7 +169,7 @@ def test_sdk_search_then_read_has_real_tool_feedback(client):
         tools = [m for m in payload['messages'] if m['role'] == 'tool']
         if not tools:
             return parse_response(response(calls=[('search_document', {'query': '发票'})]))
-        matches = json.loads(tools[-1]['content'])
+        matches = json.loads(tools[0]['content'])['matches']
         assert matches and '发票' in matches[0]['text']
         ident = matches[0]['clause_id']
         if len(tools) == 1:

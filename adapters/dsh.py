@@ -21,7 +21,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class DshAdapter:
-    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048):
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
         owned = OwnedWorkspace(runtime_root)
         workspace = owned.path
         for name in ('home', 'work', 'tmp'):
@@ -84,7 +85,8 @@ class DshAdapter:
         env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
                'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
                'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
-               'HARNESS_DSH_CAPABILITY': capability}
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
         process = None
         result = None
         try:

@@ -16,11 +16,16 @@ from .agent_runtime import KeyringCredentialResolver, reject_sensitive
 from .adaptive_retrieval import build_parent_child_chunks
 from .analysis import Problem, digest
 from .business_budget import BusinessTokenLedger, budgeted_model_call
-from .dsh_provider import MODEL, BASE, TOOL_NAMES, provider_payload, send_real, send_probe
+from .dsh_findings import verify as verify_findings
+from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
 from .service import ROOT, DENY, TERMINAL, validate
 from .store import dumps, uid, now
 
 ENGINE = 'engine_dsh_document'
+SEARCH_PAGE = 3
+MAX_FINDINGS_REJECTIONS = 2
+MAX_REPEATED_NO_PROGRESS = 2  # identical action twice in a row without new evidence
+MAX_NO_PROGRESS = 4  # any consecutive actions without new evidence
 SCHEMA = json.loads((ROOT / 'specs/v1/dsh-runtime.schema.json').read_text())
 
 
@@ -78,7 +83,7 @@ class DshRuntime:
             task = {'id': uid('task'), 'project_id': 'prj_local', 'objective': body['objective'],
                 'agent_spec_version': 'dsh_document@1',
                 'context': {'resource_ids': [resource['id']], 'variables': {
-                    'mode': body['mode'], 'token_limit': body.get('token_limit', 20000000 if body['mode'] == 'real_provider' else 200000),
+                    'mode': body['mode'], 'template': body.get('template', 'free'), 'token_limit': body.get('token_limit', 20000000 if body['mode'] == 'real_provider' else 200000),
                     'billing_mode': 'coding_plan_no_balance_fallback' if body['mode'] == 'real_provider' else 'synthetic',
                     'credential_ref': os.getenv('HARNESS_DSH_CREDENTIAL_REF') if body['mode'] == 'real_provider' else None}},
                 'engine_policy': {'mode': 'explicit', 'engine_id': ENGINE,
@@ -86,7 +91,7 @@ class DshRuntime:
                 'model_policy': {'text_and_code': MODEL if body['mode'] == 'real_provider' else 'synthetic:dsh-integration-probe',
                                  'vision': None, 'allow_fallback': False},
                 'requested_permissions': {'profile': 'analysis_read_only', 'profile_version': 1,
-                                         'allow_tools': sorted(TOOL_NAMES), 'deny_capabilities': list(DENY)},
+                                         'allow_tools': sorted(tool_names_for(body.get('template', 'free'))), 'deny_capabilities': list(DENY)},
                 'limits': {'max_turns': 8, 'timeout_seconds': body.get('timeout_seconds', 120),
                            'max_input_tokens': 64000, 'max_cost_minor': 0}, 'created_at': now()}
             validate('task', task)
@@ -100,7 +105,7 @@ class DshRuntime:
         if sum(r['status'] not in TERMINAL for r in self.store.listing('runs')) >= 8:
             raise Problem('RATE_LIMITED', 'DSH 待执行队列已满。', 429)
         permissions = {'profile_id': 'analysis_read_only', 'profile_version': 1,
-            'allowed_tools': sorted(TOOL_NAMES), 'denied_capabilities': list(DENY),
+            'allowed_tools': sorted(task['requested_permissions']['allow_tools']), 'denied_capabilities': list(DENY),
             'decision_digest': digest(dumps(task['requested_permissions']).encode())}
         run = {'id': uid('run'), 'task_id': task['id'], 'status': 'queued', 'selected_engine': ENGINE,
                'selected_models': {'text_and_code': task['model_policy']['text_and_code']},
@@ -152,6 +157,10 @@ class DshRuntime:
             clauses = {f'clause-{i+1}': chunk['text'] for i, chunk in enumerate(chunks['children'])}
             counts = {'model_calls': 0, 'tool_calls': 0}
             seen_clauses = set()
+            template = settings.get('template', 'free')
+            allowed = set(task['requested_permissions']['allow_tools'])
+            progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0}
+            review = {'rejections': 0, 'coverage_warned': False, 'accepted': None}
             deadline = time.monotonic() + task['limits']['timeout_seconds']
             def check():
                 self.service.check(ident)
@@ -168,7 +177,7 @@ class DshRuntime:
                 check()
                 if counts['model_calls'] >= 8:
                     raise Problem('DSH_MODEL_CALL_LIMIT', '达到 8 次模型调用上限。', 409)
-                payload = provider_payload(request)
+                payload = provider_payload(request, allowed)
                 counts['model_calls'] += 1
                 async def send(value, limit):
                     check()
@@ -203,51 +212,135 @@ class DshRuntime:
                         await asyncio.gather(watcher, return_exceptions=True)
                 result = asyncio.run(controlled_call())
                 check()
+                if any(call['name'] not in allowed for call in result['tool_calls']):
+                    # Defense in depth: a tool this Run does not offer is a policy error, not a retry loop.
+                    raise Problem('DSH_TOOL_POLICY', '模型请求了本 Run 未提供的工具。', 403)
                 event('dsh.model.completed', {'call_number': counts['model_calls'],
                     'mode': settings['mode'], 'usage': result['usage']})
                 return result
             def tool_call(body):
                 check()
-                if not isinstance(body, dict) or set(body) != {'name', 'arguments'} or body['name'] not in TOOL_NAMES:
+                if not isinstance(body, dict) or set(body) != {'name', 'arguments'} or body['name'] not in allowed:
                     raise Problem('DSH_TOOL_POLICY', '工具未准入。', 403)
                 if counts['tool_calls'] >= 16:
                     raise Problem('DSH_TOOL_LIMIT', '达到工具上限。', 409)
+                if body['name'] == FINDINGS_TOOL:
+                    return submit_findings(body['arguments'])
                 args = body['arguments']
-                expected = 'clause_id' if body['name'] == 'read_clause' else 'query'
-                if (not isinstance(args, dict) or set(args) != {expected} or
-                    not isinstance(args[expected], str) or not 1 <= len(args[expected]) <= 200):
-                    raise Problem('DSH_TOOL_INPUT', '工具参数无效。', 422)
-                if expected == 'clause_id':
-                    if args[expected] not in clauses:
+                if body['name'] == 'read_clause':
+                    if (not isinstance(args, dict) or set(args) != {'clause_id'} or
+                            not isinstance(args['clause_id'], str) or not 1 <= len(args['clause_id']) <= 200):
+                        raise Problem('DSH_TOOL_INPUT', '工具参数无效。', 422)
+                    if args['clause_id'] not in clauses:
                         raise Problem('DSH_CLAUSE_NOT_FOUND', '条款不存在。', 404)
-                    selected = [args[expected]]
+                    selected, page = [args['clause_id']], None
                 else:
-                    query = args[expected].casefold()
-                    selected = [key for key, text in clauses.items() if query in text.casefold()][:3]
+                    if (not isinstance(args, dict) or 'query' not in args or set(args) - {'query', 'offset'} or
+                            not isinstance(args['query'], str) or not 1 <= len(args['query']) <= 200 or
+                            type(args.get('offset', 0)) is not int or not 0 <= args.get('offset', 0) <= 1000):
+                        raise Problem('DSH_TOOL_INPUT', '工具参数无效。', 422)
+                    query, offset = args['query'].casefold(), args.get('offset', 0)
+                    matches = [key for key, text in clauses.items() if query in text.casefold()]
+                    selected = matches[offset:offset + SEARCH_PAGE]
+                    more = offset + SEARCH_PAGE < len(matches)
+                    page = {'total': len(matches), 'offset': offset,
+                            'next_offset': offset + SEARCH_PAGE if more else None, 'truncated': more}
                 counts['tool_calls'] += 1
+                # Progress is judged by the platform: same normalized action or no
+                # clause the model has not already received is not new evidence.
+                fingerprint = digest(dumps({'tool': body['name'], 'args': args, 'resource': task['context']['resource_ids'][0]}).encode())
+                new = [key for key in selected if key not in seen_clauses]
+                repeated = fingerprint in progress['fingerprints']
+                progress['fingerprints'].add(fingerprint)
+                if new:
+                    progress['no_progress'], progress['repeats'] = 0, 0
+                else:
+                    progress['no_progress'] += 1
+                    progress['repeats'] = progress['repeats'] + 1 if repeated else 0
                 seen_clauses.update(selected)
                 event('dsh.tool.completed', {'tool': body['name'], 'call_number': counts['tool_calls'],
-                    'clause_ids': selected, 'arguments_sha256': digest(dumps(args).encode())})
-                return {'text': dumps([{'clause_id': key, 'text': clauses[key]} for key in selected])}
+                    'clause_ids': selected, 'arguments_sha256': digest(dumps(args).encode()),
+                    'new_evidence': len(new), 'no_progress_streak': progress['no_progress'],
+                    'repeat_streak': progress['repeats'],
+                    **({'total_matches': page['total'], 'truncated': page['truncated']} if page else {})})
+                if progress['repeats'] >= MAX_REPEATED_NO_PROGRESS or progress['no_progress'] >= MAX_NO_PROGRESS:
+                    raise Problem('DSH_NO_PROGRESS', '连续动作没有带来新证据，提前停止。', 409)
+                value = {'matches': [{'clause_id': key, 'text': clauses[key]} for key in selected]}
+                if page:
+                    value.update(page)
+                warn = progress['repeats'] or progress['no_progress'] == MAX_NO_PROGRESS - 1
+                if warn:
+                    progress['notices'] += 1
+                    value['notice'] = ('NO_NEW_EVIDENCE：本次没有带来新的证据块。换一个不同的查询或读取未读证据块；'
+                                       '若已无可读证据，请据已有证据作答并说明缺口。再次无进展将停止。')
+                return {'text': dumps(value) if page or warn else dumps(value['matches'])}
+            def submit_findings(args):
+                counts['tool_calls'] += 1
+                checked = verify_findings(args, clauses, seen_clauses)
+                if checked['errors']:
+                    review['rejections'] += 1
+                    codes = sorted({e['code'] for e in checked['errors']})
+                    event('dsh.findings.checked', {'accepted': False, 'error_codes': codes,
+                        'rejections': review['rejections']})
+                    if review['rejections'] > MAX_FINDINGS_REJECTIONS:
+                        raise Problem('DSH_FINDINGS_INVALID', '结构化结果多次未通过平台校验。', 409)
+                    return {'text': dumps({'accepted': False, 'errors': checked['errors'],
+                        'hint': '引文必须逐字摘自本轮读过的证据块；结论中的数值、单位、甲乙方须出现在引文中；缺证据用 unknown。'})}
+                gap = next((g for g in checked['platform_gaps'] if g['code'] == 'EXCEPTION_CANDIDATES_UNREAD'), None)
+                if gap and not review['coverage_warned']:
+                    review['coverage_warned'] = True
+                    event('dsh.findings.checked', {'accepted': False, 'error_codes': ['COVERAGE_GAP'],
+                        'rejections': review['rejections']})
+                    return {'text': dumps({'accepted': False, 'coverage_gap': gap,
+                        'hint': '平台发现未读的付款例外候选证据块。请读取后重新提交；确实无法读取时可再次提交，将记为部分结果。'})}
+                review['accepted'] = checked
+                event('dsh.findings.checked', {'accepted': True, 'business_status': checked['business_status'],
+                    'platform_gap_count': len(checked['platform_gaps']), 'model_gap_count': len(checked['model_gaps'])})
+                return {'text': dumps({'accepted': True, 'business_status': checked['business_status'],
+                    'platform_gaps': checked['platform_gaps']})}
             prompt = (f'平台文档已登记为 {len(clauses)} 个证据块，ID 范围 clause-1 到 clause-{len(clauses)}。'
                       'ID 是平台证据块编号，不等于合同原文条号。search_document 是字面子串检索，不支持正则。\n'
+                      + ('这是付款条件核对：请检索并读取付款期限、触发条件、例外和冲突相关证据块，'
+                         '先调用 submit_findings 提交四个槽位（缺证据用 unknown，不要猜），通过校验后再给最终中文答复。\n'
+                         if template == 'payment_terms' else '')
                       + task['objective'])
             result = self.adapter.run(prompt,
                 Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs')), MODEL,
-                model_call, tool_call, emit, check)
+                model_call, tool_call, emit, check,
+                **({'tools': sorted(allowed)} if allowed != TOOL_NAMES else {}))
             validate_dsh('result', result)
             cited = set(re.findall(r'clause-[0-9]+', result['text']))
             if not counts['model_calls'] or not seen_clauses:
                 raise Problem('DSH_EVIDENCE_NOT_READ', '没有读取文档证据，拒绝发布。', 409)
-            if not cited or not cited <= seen_clauses:
+            if template == 'payment_terms':
+                if review['accepted'] is None:
+                    raise Problem('DSH_FINDINGS_MISSING', '付款核对没有通过平台校验的结构化结果，拒绝发布。', 409)
+                if cited and not cited <= seen_clauses:
+                    raise Problem('DSH_EVIDENCE_CITATION_INVALID', '引用必须指向本轮实际读取的证据块。', 409)
+            elif not cited or not cited <= seen_clauses:
                 raise Problem('DSH_EVIDENCE_CITATION_INVALID', '引用必须指向本轮实际读取的证据块。', 409)
             with self.store.transaction() as db:
                 check()
                 current = self.store.get('runs', ident)
                 artifact = self.service.pi_contract_review._publish(db, current, 'dsh-analysis.txt', result['text'], 'text/plain')
+                business = {}
+                if template == 'payment_terms':
+                    accepted = review['accepted']
+                    record = {'schema_version': 'dsh-payment-findings@1', 'template': template,
+                              'business_status': accepted['business_status'], 'findings': accepted['findings'],
+                              'model_gaps': accepted['model_gaps'], 'platform_gaps': accepted['platform_gaps'],
+                              'candidates': accepted['candidates'], 'read_clause_ids': sorted(seen_clauses),
+                              'verification': 'quotes_literal_values_units_parties_checked_semantics_not_verified',
+                              'human_review_required': True}
+                    validate_dsh('findings', record)
+                    findings_artifact = self.service.pi_contract_review._publish(
+                        db, current, 'dsh-findings.json', dumps(record), 'application/json')
+                    business = {'business_status': accepted['business_status'],
+                                'findings_artifact_id': findings_artifact['id']}
                 current['status'], current['exit_reason'] = 'succeeded', 'COMPLETED'
                 self.store.event(db, current, 'run.succeeded', {'artifact_id': artifact['id'], **counts,
-                    'session_sha256': result['session_sha256'], 'mode': settings['mode'], 'human_review_required': True})
+                    'session_sha256': result['session_sha256'], 'mode': settings['mode'],
+                    'template': template, **business, 'human_review_required': True})
                 db.execute("UPDATE business_budget_roots SET status='completed' WHERE id=? AND status='active'", (ident,))
         except Exception as exc:
             with self.store.transaction() as db:

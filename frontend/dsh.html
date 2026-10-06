@@ -12,6 +12,7 @@
 <section class="panel"><h2>开始一次分析</h2>
 <form id="run-form">
 <label for="mode">Provider 模式</label><select id="mode"><option value="integration_probe">合成 Provider 联调（真实 DSH 循环）</option><option value="real_provider">真实豆包 Provider（需准入）</option></select>
+<label for="template">核对模板</label><select id="template"><option value="free">自由问答（草稿，需人工核对）</option><option value="payment_terms">付款条件核对（期限/触发/例外/冲突，平台逐条校验引文）</option></select>
 <label for="objective">你希望核对什么？</label><textarea id="objective" rows="3" maxlength="2000" required>核对付款条件、逾期处理和缺失信息，并引用条款编号。</textarea>
 <label for="document">文档正文</label><textarea id="document" rows="9" maxlength="20000" required>示例合同（合成数据）
 第1条：乙方提交交付物，经甲方验收后30日内支付合同款。
@@ -26,7 +27,8 @@
 <section class="panel output"><div class="section-head"><h2>执行与结果</h2><button id="cancel" class="secondary" hidden>取消当前 Run</button></div>
 <div id="run-summary" role="status">创建或选择一次运行，查看真实持久状态。</div>
 <div id="metrics" class="metrics"></div><h3>执行记录</h3><ol id="events"></ol>
-<h3>结果产物</h3><p id="result-note">仅成功的完整结果才会发布；部分回复不会冒充完成。</p><pre id="result"></pre><div id="downloads"></div>
+<h3>结果产物</h3><p id="result-note">仅成功的完整结果才会发布；部分回复不会冒充完成。</p><div id="findings" hidden><h3>付款核对结果</h3><p id="findings-status"></p><table id="findings-table"></table><ul id="findings-gaps"></ul><p class="note">平台只校验：引文逐字来自本轮读过的证据块、结论中的数值/单位/甲乙方出现在引文里、例外候选是否读到。结论是否真被证据支持（例如否定词）仍需人工核对。</p></div>
+<pre id="result"></pre><div id="downloads"></div>
 </section></div>
 <footer id="version"></footer></main><script src="/static/dsh.js"></script>
 </body></html>

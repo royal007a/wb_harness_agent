@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_validation_completed",
+  "phase": "dsh_payment_findings_in_review",
   "implementation_started": true,
-  "active_task_id": "HA-0078",
-  "active_plan": "exec-plans/completed/HA-0078-dsh-validation.md",
-  "last_checkpoint": "HA-0078新增60项，加既有30项共90通过；7定向突变全部捕获；verify exit0，1614 passed/22 skipped。生产代码无改动，不部署、不调用真实模型；8876部署仍c43df5b。",
-  "last_updated_at": "2026-10-05T14:15:56Z",
-  "next_action": "补充验证已交付；质量评测、真实Provider扩展、延迟清理和OpenAPI等按后续任务处理，不视为已验收。",
+  "active_task_id": "HA-0079",
+  "active_plan": "exec-plans/active/HA-0079-dsh-payment-findings.md",
+  "last_checkpoint": "HA-0079：payment_terms结构化校验、分页、无进展停止；新增32项，DSH定向122通过；verify exit0 1646 passed/22 skipped；6项定向突变全捕获；20例合成评测。未部署、未调用真实模型。",
+  "last_updated_at": "2026-10-06T04:10:00Z",
+  "next_action": "mymaccodex只读review；通过后再决定是否部署到独立端口及真实Provider小额验证。",
   "release": "0.1.0-local"
 }

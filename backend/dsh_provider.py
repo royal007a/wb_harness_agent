@@ -8,13 +8,21 @@ from .business_budget import ModelCallResult
 MODEL = 'doubao-seed-2.1-lite'
 BASE = 'https://ark.cn-beijing.volces.com/api/coding/v3'
 TOOL_NAMES = {'search_document', 'read_clause'}
+FINDINGS_TOOL = 'submit_findings'
+ALL_TOOL_NAMES = TOOL_NAMES | {FINDINGS_TOOL}
+# Per-tool argument size: structured findings need more room than a query.
+ARGUMENT_LIMITS = {'search_document': 1024, 'read_clause': 1024, FINDINGS_TOOL: 8192}
+
+
+def tool_names_for(template):
+    return TOOL_NAMES | {FINDINGS_TOOL} if template == 'payment_terms' else set(TOOL_NAMES)
 
 
 def invalid():
     return Problem('DSH_PROVIDER_INVALID', '模型响应不满足受控工具协议。', 502)
 
 
-def provider_payload(request):
+def provider_payload(request, expected_tools=TOOL_NAMES):
     if not isinstance(request, dict) or request.get('model') != MODEL or request.get('purpose') != 'primary':
         raise invalid()
     messages = []
@@ -41,7 +49,7 @@ def provider_payload(request):
             value['tool_call_id'] = message['toolCallId']
         messages.append(value)
     tools = request.get('tools', [])
-    if {t['name'] for t in tools} != TOOL_NAMES or len(tools) != 2:
+    if {t['name'] for t in tools} != set(expected_tools) or len(tools) != len(expected_tools):
         raise Problem('DSH_TOOL_POLICY', 'DSH 工具集合与平台策略不一致。', 409)
     return {'model': MODEL, 'messages': messages,
             'tools': [{'type': 'function', 'function': t} for t in tools], 'stream': False}
@@ -64,11 +72,12 @@ def parse_response(value):
         calls, ids = [], set()
         for call in raw_calls:
             ident, function = call['id'], call['function']
-            if (call['type'] != 'function' or function['name'] not in TOOL_NAMES or
+            if (call['type'] != 'function' or function['name'] not in ALL_TOOL_NAMES or
                 not isinstance(ident, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', ident) or ident in ids):
                 raise invalid()
             args = function['arguments']
-            if not isinstance(args, str) or len(args) > 1024 or not isinstance(json.loads(args), dict):
+            if (not isinstance(args, str) or len(args) > ARGUMENT_LIMITS[function['name']]
+                    or not isinstance(json.loads(args), dict)):
                 raise invalid()
             ids.add(ident)
             calls.append({'id': ident, 'name': function['name'], 'arguments': args})

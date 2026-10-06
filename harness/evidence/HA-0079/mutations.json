@@ -1,0 +1,12 @@
+{
+  "method": "copy file to scratch backup, apply one-line mutation, run tests/test_dsh_payment_findings.py, restore from backup (not git checkout)",
+  "mutations": [
+    {"id": "M1", "file": "backend/dsh_findings.py", "removed": "claim values/units must appear in quotes", "result": "5 failed, 26 passed"},
+    {"id": "M2", "file": "backend/dsh_findings.py", "removed": "quote must be literal slice of the read clause", "result": "1 failed, 30 passed"},
+    {"id": "M3", "file": "backend/dsh_runtime.py", "removed": "no-progress stop", "result": "2 failed, 29 passed"},
+    {"id": "M4", "file": "backend/dsh_runtime.py", "removed": "first-submission coverage-gap warning", "result": "1 failed, 30 passed"},
+    {"id": "M5", "file": "backend/dsh_runtime.py", "removed": "payment_terms requires accepted findings before publish", "result": "1 failed, 30 passed"},
+    {"id": "M6", "file": "backend/dsh_findings.py", "removed": "claim parties must appear in quotes", "result": "1 failed, 30 passed"}
+  ],
+  "note": "run on the 31-test file before EXCEPTION_CANDIDATE_NOT_REPORTED was added (now 32 tests); all mutations caught, files restored and diff-checked"
+}
