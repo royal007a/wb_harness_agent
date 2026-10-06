@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "runtime_event_privacy_deployment_blocked",
+  "phase": "customer_support_implementation",
   "implementation_started": true,
-  "active_task_id": "HA-0076",
-  "active_plan": "exec-plans/active/HA-0076-runtime-event-projection.md",
-  "last_checkpoint": "HA-0076事件隐私切片：144定向、全量1530/16及verify通过，旧版8个行为反例失败；本机Background预检拒绝，未部署任一端。",
-  "last_updated_at": "2026-10-05T10:18:00Z",
-  "next_action": "独立review并请用户决定本机发布拓扑；先8765再132。A剩余环境/目录隔离及B模型工具桥、C检索尚未完成，HA-0075账本也仍未接入真实调用。",
+  "active_task_id": "HA-0080",
+  "active_plan": "exec-plans/active/HA-0080-customer-support.md",
+  "last_checkpoint": "Provider加密存储/自动探测已实现，18项离线测试通过，尚未导入真实凭证或部署。",
+  "last_updated_at": "2026-10-06T07:10:00Z",
+  "next_action": "继续Agent/流式会话、知识库RAG、工作流与MCP，再逐项验证并双部署；HA0079由claude独立维护DSH8876。",
   "release": "0.1.0-local"
 }

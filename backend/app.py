@@ -39,9 +39,15 @@ def create_app(db_path=None, run_worker=True):
             cleanup.callback(service.stop)
             app.state.service = service
             service.agent_runtime.recover()
-            if run_worker:
-                service.start()
-            yield
+            from .support_providers import SupportProviders
+            app.state.support_providers = SupportProviders(store)
+            app.state.support_providers.start()
+            try:
+                if run_worker:
+                    service.start()
+                yield
+            finally:
+                await app.state.support_providers.close()
 
     app = FastAPI(title='HarnessAgent Local API', version='0.1.0', lifespan=lifespan, docs_url=None, redoc_url=None)
 
@@ -120,6 +126,43 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/api/v1/health')
     def health():
         return {'status': 'ok', 'version': '0.1.0', 'mode': 'local_single_user', 'model_calls_enabled': False}
+
+    def support_secret_boundary(request):
+        # Only the deployed trusted nginx may assert forwarded HTTPS; nginx must
+        # overwrite these headers. Direct loopback cannot be reached remotely.
+        proxied = any(h in request.headers for h in ('x-forwarded-prefix', 'x-forwarded-for', 'forwarded', 'x-real-ip'))
+        if proxied and request.headers.get('x-forwarded-proto') != 'https':
+            raise Problem('SUPPORT_KEY_TRANSPORT_REQUIRED', '凭证写入请使用 HTTPS 或 SSH 隧道。', 403)
+
+    @app.get('/api/local/support/status')
+    def support_status(request: Request):
+        return request.app.state.support_providers.status()
+
+    @app.get('/api/local/support/providers')
+    def support_providers(request: Request):
+        return {'items': request.app.state.support_providers.listing()}
+
+    @app.post('/api/local/support/providers', status_code=201)
+    async def support_provider_create(request: Request):
+        support_secret_boundary(request)
+        return request.app.state.support_providers.save(await json_body(request))
+
+    @app.put('/api/local/support/providers/{provider_id}')
+    async def support_provider_update(provider_id: str, request: Request):
+        body = await json_body(request)
+        if 'api_key' in body:
+            support_secret_boundary(request)
+        return request.app.state.support_providers.save(body, provider_id)
+
+    @app.delete('/api/local/support/providers/{provider_id}')
+    def support_provider_delete(provider_id: str, request: Request):
+        return request.app.state.support_providers.delete(provider_id)
+
+    @app.post('/api/local/support/providers/{provider_id}/probe')
+    async def support_provider_probe(provider_id: str, request: Request):
+        if await json_body(request) != {}:
+            raise Problem('VALIDATION_ERROR', '探测请求体必须为空对象。', 422)
+        return await request.app.state.support_providers.probe(provider_id)
 
     @app.get('/api/v1/engines')
     def engines():

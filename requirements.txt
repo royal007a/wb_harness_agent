@@ -6,3 +6,4 @@ keyring==25.7.0
 pytest==9.1.1
 PyYAML==6.0.3
 pypdf==6.16.2
+cryptography==50.0.1
