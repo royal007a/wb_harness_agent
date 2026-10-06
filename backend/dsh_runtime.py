@@ -21,6 +21,7 @@ from .business_budget import BusinessTokenLedger, budgeted_model_call
 from .dsh_context import assemble as assemble_context
 from .dsh_crossings import Crossings, initialize as initialize_crossings, retire as retire_crossings
 from .dsh_plan import failed_step as plan_failed_step, failure_point as plan_failure_point, project as project_plan, summary as plan_summary
+from .dsh_output_scan import SCAN_VERSION, scan as scan_output
 from .dsh_findings import candidates as finding_candidates, render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
 from .service import ROOT, DENY, TERMINAL, validate
@@ -313,15 +314,18 @@ class DshRuntime:
                     finally:
                         watcher.cancel()
                         await asyncio.gather(watcher, return_exceptions=True)
+                started = time.monotonic()
                 result = asyncio.run(controlled_call())
+                latency_ms = int((time.monotonic() - started) * 1000)  # numbers only (HA-0097)
                 check()
                 if any(call['name'] not in allowed for call in result['tool_calls']):
                     # Defense in depth: a tool this Run does not offer is a policy error, not a retry loop.
                     raise Problem('DSH_TOOL_POLICY', '模型请求了本 Run 未提供的工具。', 403)
                 event('dsh.model.completed', {'call_number': counts['model_calls'],
-                    'mode': settings['mode'], 'usage': result['usage']})
+                    'mode': settings['mode'], 'usage': result['usage'], 'latency_ms': latency_ms})
                 return result
             def tool_call(body):
+                tool_started = time.monotonic()
                 check()
                 if not isinstance(body, dict) or set(body) != {'name', 'arguments'} or body['name'] not in allowed:
                     raise Problem('DSH_TOOL_POLICY', '工具未准入。', 403)
@@ -372,6 +376,7 @@ class DshRuntime:
                     'clause_ids': selected, 'arguments_sha256': digest(dumps(args).encode()),
                     'new_evidence': len(new), 'repeated_action': repeated,
                     'no_progress_turns': progress['no_progress'], 'repeat_turns': progress['repeats'],
+                    'latency_ms': int((time.monotonic() - tool_started) * 1000),
                     **({'total_matches': page['total'], 'truncated': page['truncated']} if page else {})})
                 value = {'matches': [{'clause_id': key, 'text': clauses[key]} for key in selected]}
                 if page:
@@ -482,6 +487,12 @@ class DshRuntime:
                                 'findings_artifact_id': findings_artifact['id'], 'model_final_text_published': False}
                 else:
                     artifact = self.service.pi_contract_review._publish(db, current, 'dsh-analysis.txt', result['text'], 'text/plain')
+                    # Shadow mode: the model's free text is published unchanged; only counts are recorded.
+                    counts_by_category = scan_output(result['text'])
+                    self.store.event(db, current, 'dsh.output.scanned', {
+                        'scan_version': SCAN_VERSION, 'mode': 'shadow', 'categories': counts_by_category,
+                        'flagged': any(counts_by_category.values())})
+                    business = {'output_scan_flagged': any(counts_by_category.values())}
                 current['status'], current['exit_reason'] = 'succeeded', 'COMPLETED'
                 self.store.event(db, current, 'run.succeeded', {'artifact_id': artifact['id'], **counts,
                     'session_sha256': result['session_sha256'], 'mode': settings['mode'],
