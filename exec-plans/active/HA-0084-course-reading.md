@@ -39,6 +39,7 @@
 - 第二十五批对话引擎两篇16页全文阅读完成，累计六十篇690页。核对传输、持久成功、双写和窗口条数的边界，并区分当前聊天与DSH路径，见 `docs/research/JIKESUMMARY_CHAT_TRANSPORT_2026_10_07.md`。
 - 第二十六批工具准入与段间契约两篇35页全文阅读完成，累计六十二篇725页。核对注册元数据未消费、调用配额与业务幂等、弱字段检查和数值强转，见 `docs/research/JIKESUMMARY_DISPATCH_HANDOFF_2026_10_07.md`。
 - 第二十七批日志诊断与独立评审两篇20页全文阅读完成，累计六十四篇745页。核对日志行数与字节限制、RBAC建议与授权边界、评审独立性及批准版本失效，见 `docs/research/JIKESUMMARY_DIAGNOSTIC_REVIEW_2026_10_07.md`。
+- 第二十八批局部恢复与GOAP两篇22页全文阅读完成，累计六十六篇767页。区分外部效果与可撤销投影、过程终止与质量达标、规划顺序与真实执行结果，见 `docs/research/JIKESUMMARY_PLAN_EXECUTION_BOUNDARIES_2026_10_07.md`。
 - 本研究任务不修改运行时、不部署、不调用真实 Provider；HA-0085/0086 是分开的实现任务，不能混算研究验收。
 
 ## 非目标
