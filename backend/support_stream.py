@@ -28,6 +28,7 @@ async def stream_completion(providers, provider_id, payload):
                 if 'content-encoding' in response.headers or response.headers.get('content-type', '').split(';')[0] != 'text/event-stream':
                     raise fail('SUPPORT_PROVIDER_INVALID', 502)
                 text, calls, finished, usage, completion_id = '', {}, None, None, None
+                usage_raw, usage_on_finish, usage_echoed = None, False, False
                 async for data in _sse_data(response):
                     if data == '[DONE]':
                         if finished is None or usage is None:
@@ -54,12 +55,23 @@ async def stream_completion(providers, provider_id, payload):
                         raise fail('SUPPORT_PROVIDER_INVALID', 502)
                     completion_id = item['id']
                     if item.get('usage') is not None:
-                        if usage is not None:
-                            raise fail('SUPPORT_PROVIDER_INVALID', 502)
                         raw_usage = item['usage']
                         if not isinstance(raw_usage, dict) or any(type(raw_usage.get(k)) is not int or not 0 <= raw_usage[k] <= 20000000
                                 for k in ('prompt_tokens', 'completion_tokens')):
                             raise fail('SUPPORT_USAGE_INVALID', 502)
+                        choices_for_usage = item.get('choices')
+                        on_finish = (isinstance(choices_for_usage, list) and len(choices_for_usage) == 1
+                            and isinstance(choices_for_usage[0], dict)
+                            and choices_for_usage[0].get('finish_reason') in ('stop', 'tool_calls'))
+                        if usage is not None:
+                            if not (finished is not None and choices_for_usage == [] and usage_on_finish
+                                    and not usage_echoed and raw_usage == usage_raw):
+                                raise fail('SUPPORT_PROVIDER_INVALID', 502)
+                            usage_echoed = True
+                        else:
+                            if not on_finish and not (finished is not None and choices_for_usage == []):
+                                raise fail('SUPPORT_PROVIDER_INVALID', 502)
+                            usage_raw, usage_on_finish = raw_usage, on_finish
                         usage = {'input_tokens': raw_usage['prompt_tokens'], 'output_tokens': raw_usage['completion_tokens']}
                         usage['total_tokens'] = usage['input_tokens'] + usage['output_tokens']
                     choices = item.get('choices')

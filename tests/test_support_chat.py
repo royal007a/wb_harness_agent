@@ -122,6 +122,24 @@ def test_budget_rejects_before_send(chat):
     assert len(calls) == 0 and chat.ledger.snapshot(e['id'])['reserved'] == 0
 
 
+@pytest.mark.parametrize('variant', ['ark', 'conflicting', 'third', 'early', 'duplicate_empty'])
+def test_ark_terminal_usage_echo_is_exact_and_settled_once(chat, variant):
+    value=frames()
+    value[1]['usage']=dict(value[-2]['usage'])
+    if variant=='conflicting': value[-2]['usage']['completion_tokens']=11
+    if variant=='third': value.insert(-1,dict(value[-2]))
+    if variant=='early': value[0]['usage']=value[1].pop('usage')
+    if variant=='duplicate_empty':
+        value[1].pop('usage');value.insert(-1,dict(value[-2]))
+    s=session(chat);calls,bodies=transport(chat,value)
+    e=chat.begin(s['id'],{'content':'synthetic'},'key')
+    events=asyncio.run(collect(chat,e['id']))
+    assert events[-1]['type']==('done' if variant=='ark' else 'error')
+    if variant=='ark': assert events[-1]['budget']['spent']==40
+    else: assert len(chat.detail(s['id'])['messages'])==1
+    assert len(calls)==1 and bodies[0].closed==1
+
+
 def test_tool_loop_schema_permissions_and_usage(chat):
     seen = []
     async def lookup(args, agent, context):

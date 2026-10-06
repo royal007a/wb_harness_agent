@@ -39,6 +39,8 @@ Session：`GET/POST /sessions`、`GET/DELETE /sessions/{id}`。创建时快照 A
 事务提交成功后发送。`POST /exchanges/{id}/cancel` 取消指定会话执行。
 相同 key 重放终态不再调用 Provider；异 key 在 busy 时409。断线取消，不自动续模型。
 每次真实请求先走 HA-0075 预留与结算；上下文有界，缺 usage 冻结而非当0。
+Ark 可在终止 choice 和紧随的空 choices 帧重复相同 usage；只允许这个精确组合、
+内容逐值一致且只结算一次。冲突、提前或多次 usage 仍拒绝；不保留 reasoning_content。
 重启将 queued/running 标为 failed/SUPPORT_RESTARTED；完整历史仍可读取。
 
 ## 知识库 API v1（第三原子切片）
