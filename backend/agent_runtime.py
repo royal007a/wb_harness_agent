@@ -15,6 +15,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from .analysis import Problem, digest
 from .provider_adapters import ProviderAdapterRegistry, ProviderRequest
 from .store import dumps, now, uid
+from .sensitive_patterns import CREDENTIAL_SHAPE
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +23,7 @@ CONTRACT = json.loads((ROOT / 'specs/v1/agent-runtime.schema.json').read_text())
 STREAM_TIMEOUT_SECONDS = 90.0
 CANCEL_POLL_SECONDS = 0.1
 MAX_OUTPUT_CHARS = CONTRACT['$defs']['chat_message']['properties']['content']['maxLength']
-SENSITIVE_INPUT = re.compile(r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token)\s*[:=]|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
+SENSITIVE_INPUT = CREDENTIAL_SHAPE  # single shared definition (backend/sensitive_patterns.py)
 
 
 def validate_contract(name, value):

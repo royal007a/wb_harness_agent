@@ -11,6 +11,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
+from .sensitive_patterns import CREDENTIAL_SHAPE
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +22,7 @@ ENTITY_CATALOG_CONTRACT = json.loads((ROOT / 'specs/v1/memory-entity-catalog.sch
 LINEAGE_CONTRACT = json.loads((ROOT / 'specs/v1/memory-fact-lineage.schema.json').read_text())
 SEMANTIC_ADMISSION_CONTRACT = json.loads((ROOT / 'specs/v1/memory-semantic-admission.schema.json').read_text())
 SEMANTIC_ADMISSION_STATE = ROOT / 'harness/semantic-retrieval-admission.json'
-SENSITIVE_INPUT = re.compile(r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token|password)\s*[:=]|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
+SENSITIVE_INPUT = CREDENTIAL_SHAPE  # single shared definition (backend/sensitive_patterns.py)
 WORD = re.compile(r'[a-z0-9_]{2,}|[\u4e00-\u9fff]+', re.I)
 RECEIPT_TOMBSTONE = {'schema_version': 'memory-receipt-tombstone@1', 'receipt_status': 'unavailable'}
 CONTENT_RECEIPTS = (

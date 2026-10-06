@@ -18,13 +18,14 @@ from .analysis import Problem, digest
 from .external_skill_sandbox import ExternalSkillSandbox, PROFILE_VERSION, image_id
 from .sandbox import sandbox_backend
 from .store import dumps, now, uid
+from .sensitive_patterns import CREDENTIAL_SHAPE
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = json.loads((ROOT / 'specs/v1/external-skill-runtime.schema.json').read_text())
 PACKAGE_ROOT = ROOT / '.local/external-skill-packages'
 MAX_PACKAGE_BYTES = 128 * 1024
-SENSITIVE_INPUT = re.compile(r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token|password)\s*[:=]|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
+SENSITIVE_INPUT = CREDENTIAL_SHAPE  # single shared definition (backend/sensitive_patterns.py)
 
 
 def validate_contract(name, value):

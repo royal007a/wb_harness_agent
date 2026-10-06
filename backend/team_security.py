@@ -1,14 +1,12 @@
 """Shared local control-plane metadata safety checks for Team objects."""
 from __future__ import annotations
 
-import re
 
 from .analysis import Problem
+from .sensitive_patterns import CREDENTIAL_SHAPE
 
 
-SENSITIVE_INPUT = re.compile(
-    r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token|password)\s*[:=]'
-    r'|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
+SENSITIVE_INPUT = CREDENTIAL_SHAPE  # single shared definition (backend/sensitive_patterns.py)
 
 
 def reject_sensitive(value):

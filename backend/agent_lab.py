@@ -8,11 +8,12 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .analysis import Problem, digest
 from .store import dumps, now, uid
+from .sensitive_patterns import CREDENTIAL_SHAPE
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = json.loads((ROOT / 'specs/v1/local-agent-lab.schema.json').read_text())
-SENSITIVE_INPUT = re.compile(r'(?:\b(?:api[_ -]?key|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token)\s*[:=]|\bsk-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b)', re.I)
+SENSITIVE_INPUT = CREDENTIAL_SHAPE  # single shared definition (backend/sensitive_patterns.py)
 LOCAL_DEMO_REPLY = '本地演示已完成：配置、会话、消息持久化与 POST SSE 流均已验证。当前没有调用模型、Provider、网络或工具，因此这不是模型对问题的实际回答。'
 
 
