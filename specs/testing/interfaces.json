@@ -8,7 +8,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_source_delete",
-      "source": "backend/app.py:331",
+      "source": "backend/app.py:375",
       "in_openapi": true
     },
     {
@@ -18,7 +18,27 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_agent_delete",
-      "source": "backend/app.py:186",
+      "source": "backend/app.py:230",
+      "in_openapi": true
+    },
+    {
+      "id": "DELETE /api/local/support/documents/{document_id}",
+      "method": "DELETE",
+      "path": "/api/local/support/documents/{document_id}",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_document_delete",
+      "source": "backend/app.py:210",
+      "in_openapi": true
+    },
+    {
+      "id": "DELETE /api/local/support/knowledge/{kb_id}",
+      "method": "DELETE",
+      "path": "/api/local/support/knowledge/{kb_id}",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_knowledge_delete",
+      "source": "backend/app.py:198",
       "in_openapi": true
     },
     {
@@ -28,7 +48,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_provider_delete",
-      "source": "backend/app.py:160",
+      "source": "backend/app.py:164",
       "in_openapi": true
     },
     {
@@ -38,7 +58,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_session_delete",
-      "source": "backend/app.py:202",
+      "source": "backend/app.py:246",
       "in_openapi": true
     },
     {
@@ -48,7 +68,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "index",
-      "source": "backend/app.py:931",
+      "source": "backend/app.py:975",
       "in_openapi": true
     },
     {
@@ -58,7 +78,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "agent_lab_page",
-      "source": "backend/app.py:805",
+      "source": "backend/app.py:849",
       "in_openapi": false
     },
     {
@@ -68,7 +88,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "agent_runtime_page",
-      "source": "backend/app.py:809",
+      "source": "backend/app.py:853",
       "in_openapi": false
     },
     {
@@ -78,7 +98,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_agents",
-      "source": "backend/app.py:603",
+      "source": "backend/app.py:647",
       "in_openapi": true
     },
     {
@@ -88,7 +108,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_models",
-      "source": "backend/app.py:595",
+      "source": "backend/app.py:639",
       "in_openapi": true
     },
     {
@@ -98,7 +118,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_providers",
-      "source": "backend/app.py:587",
+      "source": "backend/app.py:631",
       "in_openapi": true
     },
     {
@@ -108,7 +128,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_runtime",
-      "source": "backend/app.py:520",
+      "source": "backend/app.py:564",
       "in_openapi": true
     },
     {
@@ -118,7 +138,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_sessions",
-      "source": "backend/app.py:611",
+      "source": "backend/app.py:655",
       "in_openapi": true
     },
     {
@@ -128,7 +148,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_session_detail",
-      "source": "backend/app.py:619",
+      "source": "backend/app.py:663",
       "in_openapi": true
     },
     {
@@ -138,7 +158,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_agents",
-      "source": "backend/app.py:548",
+      "source": "backend/app.py:592",
       "in_openapi": true
     },
     {
@@ -148,7 +168,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_models",
-      "source": "backend/app.py:540",
+      "source": "backend/app.py:584",
       "in_openapi": true
     },
     {
@@ -158,7 +178,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_providers",
-      "source": "backend/app.py:528",
+      "source": "backend/app.py:572",
       "in_openapi": true
     },
     {
@@ -168,7 +188,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_provider_readiness",
-      "source": "backend/app.py:536",
+      "source": "backend/app.py:580",
       "in_openapi": true
     },
     {
@@ -178,7 +198,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_status",
-      "source": "backend/app.py:524",
+      "source": "backend/app.py:568",
       "in_openapi": true
     },
     {
@@ -188,7 +208,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_sessions",
-      "source": "backend/app.py:556",
+      "source": "backend/app.py:600",
       "in_openapi": true
     },
     {
@@ -198,7 +218,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_session_detail",
-      "source": "backend/app.py:564",
+      "source": "backend/app.py:608",
       "in_openapi": true
     },
     {
@@ -208,7 +228,7 @@
       "kind": "api",
       "feature": "baidu",
       "handler": "baidu_netdisk_status",
-      "source": "backend/app.py:655",
+      "source": "backend/app.py:699",
       "in_openapi": true
     },
     {
@@ -218,7 +238,7 @@
       "kind": "api",
       "feature": "baidu",
       "handler": "baidu_netdisk_callback",
-      "source": "backend/app.py:667",
+      "source": "backend/app.py:711",
       "in_openapi": false
     },
     {
@@ -228,7 +248,7 @@
       "kind": "api",
       "feature": "external-skills",
       "handler": "external_skill_packages",
-      "source": "backend/app.py:254",
+      "source": "backend/app.py:298",
       "in_openapi": true
     },
     {
@@ -238,7 +258,7 @@
       "kind": "api",
       "feature": "external-skills",
       "handler": "external_skill_runtime",
-      "source": "backend/app.py:250",
+      "source": "backend/app.py:294",
       "in_openapi": true
     },
     {
@@ -248,7 +268,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_banks",
-      "source": "backend/app.py:277",
+      "source": "backend/app.py:321",
       "in_openapi": true
     },
     {
@@ -258,7 +278,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_bank_detail",
-      "source": "backend/app.py:285",
+      "source": "backend/app.py:329",
       "in_openapi": true
     },
     {
@@ -268,7 +288,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_runtime",
-      "source": "backend/app.py:273",
+      "source": "backend/app.py:317",
       "in_openapi": true
     },
     {
@@ -278,7 +298,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_review_list",
-      "source": "backend/app.py:754",
+      "source": "backend/app.py:798",
       "in_openapi": true
     },
     {
@@ -288,7 +308,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_review_detail",
-      "source": "backend/app.py:758",
+      "source": "backend/app.py:802",
       "in_openapi": true
     },
     {
@@ -298,7 +318,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_review_events",
-      "source": "backend/app.py:762",
+      "source": "backend/app.py:806",
       "in_openapi": true
     },
     {
@@ -308,7 +328,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_runtime",
-      "source": "backend/app.py:726",
+      "source": "backend/app.py:770",
       "in_openapi": true
     },
     {
@@ -318,7 +338,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_cases",
-      "source": "backend/app.py:484",
+      "source": "backend/app.py:528",
       "in_openapi": true
     },
     {
@@ -328,7 +348,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_case_detail",
-      "source": "backend/app.py:492",
+      "source": "backend/app.py:536",
       "in_openapi": true
     },
     {
@@ -338,7 +358,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_runtime",
-      "source": "backend/app.py:480",
+      "source": "backend/app.py:524",
       "in_openapi": true
     },
     {
@@ -348,7 +368,7 @@
       "kind": "api",
       "feature": "research",
       "handler": "research_list",
-      "source": "backend/app.py:693",
+      "source": "backend/app.py:737",
       "in_openapi": true
     },
     {
@@ -358,7 +378,7 @@
       "kind": "api",
       "feature": "research-agents",
       "handler": "research_agents_list",
-      "source": "backend/app.py:711",
+      "source": "backend/app.py:755",
       "in_openapi": true
     },
     {
@@ -368,7 +388,7 @@
       "kind": "api",
       "feature": "research-agents",
       "handler": "research_agents_detail",
-      "source": "backend/app.py:717",
+      "source": "backend/app.py:761",
       "in_openapi": true
     },
     {
@@ -378,7 +398,7 @@
       "kind": "api",
       "feature": "research-native",
       "handler": "research_native_list",
-      "source": "backend/app.py:741",
+      "source": "backend/app.py:785",
       "in_openapi": true
     },
     {
@@ -388,7 +408,7 @@
       "kind": "api",
       "feature": "research-native",
       "handler": "research_native_runtime",
-      "source": "backend/app.py:721",
+      "source": "backend/app.py:765",
       "in_openapi": true
     },
     {
@@ -398,7 +418,7 @@
       "kind": "api",
       "feature": "research-native",
       "handler": "research_native_detail",
-      "source": "backend/app.py:746",
+      "source": "backend/app.py:790",
       "in_openapi": true
     },
     {
@@ -408,7 +428,7 @@
       "kind": "api",
       "feature": "research",
       "handler": "research_detail",
-      "source": "backend/app.py:699",
+      "source": "backend/app.py:743",
       "in_openapi": true
     },
     {
@@ -418,7 +438,7 @@
       "kind": "api",
       "feature": "replan",
       "handler": "restore_status",
-      "source": "backend/app.py:903",
+      "source": "backend/app.py:947",
       "in_openapi": true
     },
     {
@@ -428,7 +448,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "sample",
-      "source": "backend/app.py:825",
+      "source": "backend/app.py:869",
       "in_openapi": true
     },
     {
@@ -438,7 +458,37 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_agents",
-      "source": "backend/app.py:174",
+      "source": "backend/app.py:178",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/support/documents/{document_id}",
+      "method": "GET",
+      "path": "/api/local/support/documents/{document_id}",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_document_detail",
+      "source": "backend/app.py:206",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/support/knowledge",
+      "method": "GET",
+      "path": "/api/local/support/knowledge",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_knowledge_list",
+      "source": "backend/app.py:182",
+      "in_openapi": true
+    },
+    {
+      "id": "GET /api/local/support/knowledge/{kb_id}",
+      "method": "GET",
+      "path": "/api/local/support/knowledge/{kb_id}",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_knowledge_detail",
+      "source": "backend/app.py:190",
       "in_openapi": true
     },
     {
@@ -448,7 +498,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_providers",
-      "source": "backend/app.py:144",
+      "source": "backend/app.py:148",
       "in_openapi": true
     },
     {
@@ -458,7 +508,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_sessions",
-      "source": "backend/app.py:190",
+      "source": "backend/app.py:234",
       "in_openapi": true
     },
     {
@@ -468,7 +518,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_session_detail",
-      "source": "backend/app.py:198",
+      "source": "backend/app.py:242",
       "in_openapi": true
     },
     {
@@ -478,7 +528,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_status",
-      "source": "backend/app.py:140",
+      "source": "backend/app.py:144",
       "in_openapi": true
     },
     {
@@ -488,7 +538,7 @@
       "kind": "api",
       "feature": "attention",
       "handler": "team_attention_runtime",
-      "source": "backend/app.py:348",
+      "source": "backend/app.py:392",
       "in_openapi": true
     },
     {
@@ -498,7 +548,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_channel_detail",
-      "source": "backend/app.py:439",
+      "source": "backend/app.py:483",
       "in_openapi": true
     },
     {
@@ -508,7 +558,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_foundation_runtime",
-      "source": "backend/app.py:344",
+      "source": "backend/app.py:388",
       "in_openapi": true
     },
     {
@@ -518,7 +568,7 @@
       "kind": "api",
       "feature": "attention",
       "handler": "team_inbox",
-      "source": "backend/app.py:374",
+      "source": "backend/app.py:418",
       "in_openapi": true
     },
     {
@@ -528,7 +578,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_runtime",
-      "source": "backend/app.py:340",
+      "source": "backend/app.py:384",
       "in_openapi": true
     },
     {
@@ -538,7 +588,7 @@
       "kind": "api",
       "feature": "continuity",
       "handler": "team_sessions",
-      "source": "backend/app.py:356",
+      "source": "backend/app.py:400",
       "in_openapi": true
     },
     {
@@ -548,7 +598,7 @@
       "kind": "api",
       "feature": "continuity",
       "handler": "team_session_runtime",
-      "source": "backend/app.py:352",
+      "source": "backend/app.py:396",
       "in_openapi": true
     },
     {
@@ -558,7 +608,7 @@
       "kind": "api",
       "feature": "continuity",
       "handler": "team_session_detail",
-      "source": "backend/app.py:365",
+      "source": "backend/app.py:409",
       "in_openapi": true
     },
     {
@@ -568,7 +618,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_tasks",
-      "source": "backend/app.py:448",
+      "source": "backend/app.py:492",
       "in_openapi": true
     },
     {
@@ -578,7 +628,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_task_detail",
-      "source": "backend/app.py:456",
+      "source": "backend/app.py:500",
       "in_openapi": true
     },
     {
@@ -588,7 +638,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_workspaces",
-      "source": "backend/app.py:403",
+      "source": "backend/app.py:447",
       "in_openapi": true
     },
     {
@@ -598,7 +648,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_workspace_detail",
-      "source": "backend/app.py:412",
+      "source": "backend/app.py:456",
       "in_openapi": true
     },
     {
@@ -608,7 +658,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_workspace_agents",
-      "source": "backend/app.py:416",
+      "source": "backend/app.py:460",
       "in_openapi": true
     },
     {
@@ -618,7 +668,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_workspace_channels",
-      "source": "backend/app.py:430",
+      "source": "backend/app.py:474",
       "in_openapi": true
     },
     {
@@ -628,7 +678,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "content",
-      "source": "backend/app.py:923",
+      "source": "backend/app.py:967",
       "in_openapi": true
     },
     {
@@ -638,7 +688,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "engines",
-      "source": "backend/app.py:224",
+      "source": "backend/app.py:268",
       "in_openapi": true
     },
     {
@@ -648,7 +698,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "frameworks",
-      "source": "backend/app.py:237",
+      "source": "backend/app.py:281",
       "in_openapi": true
     },
     {
@@ -658,7 +708,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "health",
-      "source": "backend/app.py:129",
+      "source": "backend/app.py:133",
       "in_openapi": true
     },
     {
@@ -668,7 +718,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "engine_readiness",
-      "source": "backend/app.py:242",
+      "source": "backend/app.py:286",
       "in_openapi": true
     },
     {
@@ -678,7 +728,7 @@
       "kind": "api",
       "feature": "replan",
       "handler": "replan_detail",
-      "source": "backend/app.py:879",
+      "source": "backend/app.py:923",
       "in_openapi": true
     },
     {
@@ -688,7 +738,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "resources",
-      "source": "backend/app.py:246",
+      "source": "backend/app.py:290",
       "in_openapi": true
     },
     {
@@ -698,7 +748,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "resource",
-      "source": "backend/app.py:821",
+      "source": "backend/app.py:865",
       "in_openapi": true
     },
     {
@@ -708,7 +758,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "run",
-      "source": "backend/app.py:867",
+      "source": "backend/app.py:911",
       "in_openapi": true
     },
     {
@@ -718,7 +768,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "artifact_list",
-      "source": "backend/app.py:912",
+      "source": "backend/app.py:956",
       "in_openapi": true
     },
     {
@@ -728,7 +778,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "events",
-      "source": "backend/app.py:907",
+      "source": "backend/app.py:951",
       "in_openapi": true
     },
     {
@@ -738,7 +788,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "replan_list",
-      "source": "backend/app.py:875",
+      "source": "backend/app.py:919",
       "in_openapi": true
     },
     {
@@ -748,7 +798,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "tasks",
-      "source": "backend/app.py:852",
+      "source": "backend/app.py:896",
       "in_openapi": true
     },
     {
@@ -758,7 +808,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "task_detail",
-      "source": "backend/app.py:858",
+      "source": "backend/app.py:902",
       "in_openapi": true
     },
     {
@@ -768,7 +818,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "task_artifacts",
-      "source": "backend/app.py:916",
+      "source": "backend/app.py:960",
       "in_openapi": true
     },
     {
@@ -778,7 +828,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "baidu_netdisk_page",
-      "source": "backend/app.py:813",
+      "source": "backend/app.py:857",
       "in_openapi": false
     },
     {
@@ -788,7 +838,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "api_docs",
-      "source": "backend/app.py:935",
+      "source": "backend/app.py:979",
       "in_openapi": false
     },
     {
@@ -808,7 +858,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "research_page",
-      "source": "backend/app.py:703",
+      "source": "backend/app.py:747",
       "in_openapi": false
     },
     {
@@ -818,7 +868,7 @@
       "kind": "page_or_schema",
       "feature": "web",
       "handler": "research_agents_page",
-      "source": "backend/app.py:801",
+      "source": "backend/app.py:845",
       "in_openapi": false
     },
     {
@@ -838,7 +888,7 @@
       "kind": "page_or_schema",
       "feature": "customer-support",
       "handler": "support_page",
-      "source": "backend/app.py:170",
+      "source": "backend/app.py:174",
       "in_openapi": true
     },
     {
@@ -868,7 +918,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_agent_create",
-      "source": "backend/app.py:607",
+      "source": "backend/app.py:651",
       "in_openapi": true
     },
     {
@@ -878,7 +928,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_model_create",
-      "source": "backend/app.py:599",
+      "source": "backend/app.py:643",
       "in_openapi": true
     },
     {
@@ -888,7 +938,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_provider_create",
-      "source": "backend/app.py:591",
+      "source": "backend/app.py:635",
       "in_openapi": true
     },
     {
@@ -898,7 +948,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_session_create",
-      "source": "backend/app.py:615",
+      "source": "backend/app.py:659",
       "in_openapi": true
     },
     {
@@ -908,7 +958,7 @@
       "kind": "api",
       "feature": "agent-lab",
       "handler": "agent_lab_message_create",
-      "source": "backend/app.py:623",
+      "source": "backend/app.py:667",
       "in_openapi": true
     },
     {
@@ -918,7 +968,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_agent_create",
-      "source": "backend/app.py:552",
+      "source": "backend/app.py:596",
       "in_openapi": true
     },
     {
@@ -928,7 +978,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_model_create",
-      "source": "backend/app.py:544",
+      "source": "backend/app.py:588",
       "in_openapi": true
     },
     {
@@ -938,7 +988,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_provider_create",
-      "source": "backend/app.py:532",
+      "source": "backend/app.py:576",
       "in_openapi": true
     },
     {
@@ -948,7 +998,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_session_create",
-      "source": "backend/app.py:560",
+      "source": "backend/app.py:604",
       "in_openapi": true
     },
     {
@@ -958,7 +1008,7 @@
       "kind": "api",
       "feature": "agent-runtime",
       "handler": "agent_runtime_message_create",
-      "source": "backend/app.py:568",
+      "source": "backend/app.py:612",
       "in_openapi": true
     },
     {
@@ -968,7 +1018,7 @@
       "kind": "api",
       "feature": "baidu",
       "handler": "baidu_netdisk_authorization",
-      "source": "backend/app.py:659",
+      "source": "backend/app.py:703",
       "in_openapi": true
     },
     {
@@ -978,7 +1028,7 @@
       "kind": "api",
       "feature": "baidu",
       "handler": "baidu_netdisk_disconnect",
-      "source": "backend/app.py:675",
+      "source": "backend/app.py:719",
       "in_openapi": true
     },
     {
@@ -988,7 +1038,7 @@
       "kind": "api",
       "feature": "external-skills",
       "handler": "external_skill_package_register",
-      "source": "backend/app.py:258",
+      "source": "backend/app.py:302",
       "in_openapi": true
     },
     {
@@ -998,7 +1048,7 @@
       "kind": "api",
       "feature": "external-skills",
       "handler": "external_skill_execute",
-      "source": "backend/app.py:267",
+      "source": "backend/app.py:311",
       "in_openapi": true
     },
     {
@@ -1008,7 +1058,7 @@
       "kind": "api",
       "feature": "intent",
       "handler": "interpret_intent",
-      "source": "backend/app.py:829",
+      "source": "backend/app.py:873",
       "in_openapi": true
     },
     {
@@ -1018,7 +1068,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_bank_create",
-      "source": "backend/app.py:281",
+      "source": "backend/app.py:325",
       "in_openapi": true
     },
     {
@@ -1028,7 +1078,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_entity_create",
-      "source": "backend/app.py:293",
+      "source": "backend/app.py:337",
       "in_openapi": true
     },
     {
@@ -1038,7 +1088,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_relation_create",
-      "source": "backend/app.py:297",
+      "source": "backend/app.py:341",
       "in_openapi": true
     },
     {
@@ -1048,7 +1098,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_retain",
-      "source": "backend/app.py:289",
+      "source": "backend/app.py:333",
       "in_openapi": true
     },
     {
@@ -1058,7 +1108,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_context",
-      "source": "backend/app.py:305",
+      "source": "backend/app.py:349",
       "in_openapi": true
     },
     {
@@ -1068,7 +1118,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_fact_lineage",
-      "source": "backend/app.py:321",
+      "source": "backend/app.py:365",
       "in_openapi": true
     },
     {
@@ -1078,7 +1128,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_graph_recall",
-      "source": "backend/app.py:313",
+      "source": "backend/app.py:357",
       "in_openapi": true
     },
     {
@@ -1088,7 +1138,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_recall",
-      "source": "backend/app.py:301",
+      "source": "backend/app.py:345",
       "in_openapi": true
     },
     {
@@ -1098,7 +1148,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_recall_details",
-      "source": "backend/app.py:309",
+      "source": "backend/app.py:353",
       "in_openapi": true
     },
     {
@@ -1108,7 +1158,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_entity_resolve",
-      "source": "backend/app.py:317",
+      "source": "backend/app.py:361",
       "in_openapi": true
     },
     {
@@ -1118,7 +1168,7 @@
       "kind": "api",
       "feature": "memory",
       "handler": "memory_source_retract",
-      "source": "backend/app.py:325",
+      "source": "backend/app.py:369",
       "in_openapi": true
     },
     {
@@ -1128,7 +1178,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_pipeline_preview",
-      "source": "backend/app.py:770",
+      "source": "backend/app.py:814",
       "in_openapi": true
     },
     {
@@ -1138,7 +1188,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_pipeline_review",
-      "source": "backend/app.py:774",
+      "source": "backend/app.py:818",
       "in_openapi": true
     },
     {
@@ -1148,7 +1198,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_pipeline_review_stream",
-      "source": "backend/app.py:782",
+      "source": "backend/app.py:826",
       "in_openapi": true
     },
     {
@@ -1158,7 +1208,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_pipeline_security_check",
-      "source": "backend/app.py:778",
+      "source": "backend/app.py:822",
       "in_openapi": true
     },
     {
@@ -1168,7 +1218,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_review_create",
-      "source": "backend/app.py:750",
+      "source": "backend/app.py:794",
       "in_openapi": true
     },
     {
@@ -1178,7 +1228,7 @@
       "kind": "api",
       "feature": "pi",
       "handler": "pi_contract_review_gate",
-      "source": "backend/app.py:766",
+      "source": "backend/app.py:810",
       "in_openapi": true
     },
     {
@@ -1188,7 +1238,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_case_create",
-      "source": "backend/app.py:488",
+      "source": "backend/app.py:532",
       "in_openapi": true
     },
     {
@@ -1198,7 +1248,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_observation_create",
-      "source": "backend/app.py:496",
+      "source": "backend/app.py:540",
       "in_openapi": true
     },
     {
@@ -1208,7 +1258,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_cancel",
-      "source": "backend/app.py:508",
+      "source": "backend/app.py:552",
       "in_openapi": true
     },
     {
@@ -1218,7 +1268,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_complete",
-      "source": "backend/app.py:516",
+      "source": "backend/app.py:560",
       "in_openapi": true
     },
     {
@@ -1228,7 +1278,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_confirm",
-      "source": "backend/app.py:504",
+      "source": "backend/app.py:548",
       "in_openapi": true
     },
     {
@@ -1238,7 +1288,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_link_handoff",
-      "source": "backend/app.py:512",
+      "source": "backend/app.py:556",
       "in_openapi": true
     },
     {
@@ -1248,7 +1298,7 @@
       "kind": "api",
       "feature": "recovery",
       "handler": "recovery_try",
-      "source": "backend/app.py:500",
+      "source": "backend/app.py:544",
       "in_openapi": true
     },
     {
@@ -1258,7 +1308,7 @@
       "kind": "api",
       "feature": "research",
       "handler": "research_create",
-      "source": "backend/app.py:689",
+      "source": "backend/app.py:733",
       "in_openapi": true
     },
     {
@@ -1268,7 +1318,7 @@
       "kind": "api",
       "feature": "research-agents",
       "handler": "research_agents_create",
-      "source": "backend/app.py:707",
+      "source": "backend/app.py:751",
       "in_openapi": true
     },
     {
@@ -1278,7 +1328,7 @@
       "kind": "api",
       "feature": "research-native",
       "handler": "research_native_create",
-      "source": "backend/app.py:737",
+      "source": "backend/app.py:781",
       "in_openapi": true
     },
     {
@@ -1288,7 +1338,7 @@
       "kind": "api",
       "feature": "research-native",
       "handler": "research_native_document",
-      "source": "backend/app.py:731",
+      "source": "backend/app.py:775",
       "in_openapi": true
     },
     {
@@ -1298,7 +1348,7 @@
       "kind": "api",
       "feature": "replan",
       "handler": "restore",
-      "source": "backend/app.py:899",
+      "source": "backend/app.py:943",
       "in_openapi": true
     },
     {
@@ -1308,7 +1358,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_agent_create",
-      "source": "backend/app.py:178",
+      "source": "backend/app.py:222",
       "in_openapi": true
     },
     {
@@ -1318,7 +1368,37 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_exchange_cancel",
-      "source": "backend/app.py:206",
+      "source": "backend/app.py:250",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/support/knowledge",
+      "method": "POST",
+      "path": "/api/local/support/knowledge",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_knowledge_create",
+      "source": "backend/app.py:186",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/support/knowledge/{kb_id}/documents",
+      "method": "POST",
+      "path": "/api/local/support/knowledge/{kb_id}/documents",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_document_upload",
+      "source": "backend/app.py:202",
+      "in_openapi": true
+    },
+    {
+      "id": "POST /api/local/support/knowledge/{kb_id}/search",
+      "method": "POST",
+      "path": "/api/local/support/knowledge/{kb_id}/search",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_knowledge_search",
+      "source": "backend/app.py:214",
       "in_openapi": true
     },
     {
@@ -1328,7 +1408,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_provider_create",
-      "source": "backend/app.py:148",
+      "source": "backend/app.py:152",
       "in_openapi": true
     },
     {
@@ -1338,7 +1418,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_provider_probe",
-      "source": "backend/app.py:164",
+      "source": "backend/app.py:168",
       "in_openapi": true
     },
     {
@@ -1348,7 +1428,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_session_create",
-      "source": "backend/app.py:194",
+      "source": "backend/app.py:238",
       "in_openapi": true
     },
     {
@@ -1358,7 +1438,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_message",
-      "source": "backend/app.py:212",
+      "source": "backend/app.py:256",
       "in_openapi": true
     },
     {
@@ -1368,7 +1448,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "quick_task",
-      "source": "backend/app.py:836",
+      "source": "backend/app.py:880",
       "in_openapi": true
     },
     {
@@ -1378,7 +1458,7 @@
       "kind": "api",
       "feature": "attention",
       "handler": "team_attention_item_create",
-      "source": "backend/app.py:378",
+      "source": "backend/app.py:422",
       "in_openapi": true
     },
     {
@@ -1388,7 +1468,7 @@
       "kind": "api",
       "feature": "attention",
       "handler": "team_attention_item_claim",
-      "source": "backend/app.py:383",
+      "source": "backend/app.py:427",
       "in_openapi": true
     },
     {
@@ -1398,7 +1478,7 @@
       "kind": "api",
       "feature": "attention",
       "handler": "team_attention_item_complete",
-      "source": "backend/app.py:393",
+      "source": "backend/app.py:437",
       "in_openapi": true
     },
     {
@@ -1408,7 +1488,7 @@
       "kind": "api",
       "feature": "attention",
       "handler": "team_attention_item_release",
-      "source": "backend/app.py:388",
+      "source": "backend/app.py:432",
       "in_openapi": true
     },
     {
@@ -1418,7 +1498,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_channel_membership_grant",
-      "source": "backend/app.py:443",
+      "source": "backend/app.py:487",
       "in_openapi": true
     },
     {
@@ -1428,7 +1508,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_attention_read",
-      "source": "backend/app.py:398",
+      "source": "backend/app.py:442",
       "in_openapi": true
     },
     {
@@ -1438,7 +1518,7 @@
       "kind": "api",
       "feature": "continuity",
       "handler": "team_session_create",
-      "source": "backend/app.py:360",
+      "source": "backend/app.py:404",
       "in_openapi": true
     },
     {
@@ -1448,7 +1528,7 @@
       "kind": "api",
       "feature": "continuity",
       "handler": "team_session_handoff",
-      "source": "backend/app.py:369",
+      "source": "backend/app.py:413",
       "in_openapi": true
     },
     {
@@ -1458,7 +1538,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_task_create",
-      "source": "backend/app.py:452",
+      "source": "backend/app.py:496",
       "in_openapi": true
     },
     {
@@ -1468,7 +1548,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_task_gate_decision",
-      "source": "backend/app.py:476",
+      "source": "backend/app.py:520",
       "in_openapi": true
     },
     {
@@ -1478,7 +1558,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_task_handoff",
-      "source": "backend/app.py:464",
+      "source": "backend/app.py:508",
       "in_openapi": true
     },
     {
@@ -1488,7 +1568,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_task_claim",
-      "source": "backend/app.py:460",
+      "source": "backend/app.py:504",
       "in_openapi": true
     },
     {
@@ -1498,7 +1578,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_task_close",
-      "source": "backend/app.py:472",
+      "source": "backend/app.py:516",
       "in_openapi": true
     },
     {
@@ -1508,7 +1588,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_task_submit",
-      "source": "backend/app.py:468",
+      "source": "backend/app.py:512",
       "in_openapi": true
     },
     {
@@ -1518,7 +1598,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_workspace_create",
-      "source": "backend/app.py:407",
+      "source": "backend/app.py:451",
       "in_openapi": true
     },
     {
@@ -1528,7 +1608,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_agent_create",
-      "source": "backend/app.py:420",
+      "source": "backend/app.py:464",
       "in_openapi": true
     },
     {
@@ -1538,7 +1618,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_channel_create",
-      "source": "backend/app.py:434",
+      "source": "backend/app.py:478",
       "in_openapi": true
     },
     {
@@ -1548,7 +1628,7 @@
       "kind": "api",
       "feature": "team",
       "handler": "team_workspace_membership_grant",
-      "source": "backend/app.py:425",
+      "source": "backend/app.py:469",
       "in_openapi": true
     },
     {
@@ -1558,7 +1638,7 @@
       "kind": "api",
       "feature": "replan",
       "handler": "replan_cancel",
-      "source": "backend/app.py:891",
+      "source": "backend/app.py:935",
       "in_openapi": true
     },
     {
@@ -1568,7 +1648,7 @@
       "kind": "api",
       "feature": "replan",
       "handler": "replan_confirm",
-      "source": "backend/app.py:887",
+      "source": "backend/app.py:931",
       "in_openapi": true
     },
     {
@@ -1578,7 +1658,7 @@
       "kind": "api",
       "feature": "replan",
       "handler": "replan_try",
-      "source": "backend/app.py:883",
+      "source": "backend/app.py:927",
       "in_openapi": true
     },
     {
@@ -1588,7 +1668,7 @@
       "kind": "api",
       "feature": "platform",
       "handler": "upload",
-      "source": "backend/app.py:817",
+      "source": "backend/app.py:861",
       "in_openapi": true
     },
     {
@@ -1598,7 +1678,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "replan_create",
-      "source": "backend/app.py:871",
+      "source": "backend/app.py:915",
       "in_openapi": true
     },
     {
@@ -1608,7 +1688,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "cancel",
-      "source": "backend/app.py:895",
+      "source": "backend/app.py:939",
       "in_openapi": true
     },
     {
@@ -1618,7 +1698,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "task_create",
-      "source": "backend/app.py:848",
+      "source": "backend/app.py:892",
       "in_openapi": true
     },
     {
@@ -1628,7 +1708,7 @@
       "kind": "api",
       "feature": "product",
       "handler": "rerun",
-      "source": "backend/app.py:863",
+      "source": "backend/app.py:907",
       "in_openapi": true
     },
     {
@@ -1638,7 +1718,17 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_agent_update",
-      "source": "backend/app.py:182",
+      "source": "backend/app.py:226",
+      "in_openapi": true
+    },
+    {
+      "id": "PUT /api/local/support/knowledge/{kb_id}",
+      "method": "PUT",
+      "path": "/api/local/support/knowledge/{kb_id}",
+      "kind": "api",
+      "feature": "customer-support",
+      "handler": "support_knowledge_update",
+      "source": "backend/app.py:194",
       "in_openapi": true
     },
     {
@@ -1648,7 +1738,7 @@
       "kind": "api",
       "feature": "customer-support",
       "handler": "support_provider_update",
-      "source": "backend/app.py:153",
+      "source": "backend/app.py:157",
       "in_openapi": true
     }
   ]

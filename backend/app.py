@@ -41,8 +41,11 @@ def create_app(db_path=None, run_worker=True):
             service.agent_runtime.recover()
             from .support_providers import SupportProviders
             from .support_chat import SupportChat
+            from .support_knowledge import SupportKnowledge
             app.state.support_providers = SupportProviders(store)
+            app.state.support_knowledge = SupportKnowledge(store, app.state.support_providers)
             app.state.support_chat = SupportChat(store, app.state.support_providers)
+            app.state.support_chat.knowledge = app.state.support_knowledge
             app.state.support_chat.recover()
             app.state.support_providers.start()
             try:
@@ -50,6 +53,7 @@ def create_app(db_path=None, run_worker=True):
                     service.start()
                 yield
             finally:
+                await app.state.support_knowledge.close()
                 await app.state.support_providers.close()
 
     app = FastAPI(title='HarnessAgent Local API', version='0.1.0', lifespan=lifespan, docs_url=None, redoc_url=None)
@@ -112,13 +116,13 @@ def create_app(db_path=None, run_worker=True):
             raise Problem('TIMEOUT', '上传超时。', 408) from None
         return bytes(chunks)
 
-    async def json_body(request):
+    async def json_body(request, limit=32768):
         if request.headers.get('content-type', '').split(';')[0] != 'application/json':
             raise Problem('VALIDATION_ERROR', '请求必须为 application/json。', 415)
         try:
             def invalid_constant(value):
                 raise ValueError('Non-finite JSON constant')
-            body = json.loads(await read_body(request, 32768), parse_constant=invalid_constant)
+            body = json.loads(await read_body(request, limit), parse_constant=invalid_constant)
             json.dumps(body, allow_nan=False)
         except (ValueError, UnicodeDecodeError):
             raise Problem('VALIDATION_ERROR', 'JSON 无效。', 422) from None
@@ -174,6 +178,46 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/api/local/support/agents')
     def support_agents(request: Request):
         return {'items': request.app.state.support_chat.listing('agents')}
+
+    @app.get('/api/local/support/knowledge')
+    def support_knowledge_list(request: Request):
+        return {'items': request.app.state.support_knowledge.listing()}
+
+    @app.post('/api/local/support/knowledge', status_code=201)
+    async def support_knowledge_create(request: Request):
+        return request.app.state.support_knowledge.save(await json_body(request))
+
+    @app.get('/api/local/support/knowledge/{kb_id}')
+    def support_knowledge_detail(kb_id: str, request: Request):
+        return request.app.state.support_knowledge.detail(kb_id)
+
+    @app.put('/api/local/support/knowledge/{kb_id}')
+    async def support_knowledge_update(kb_id: str, request: Request):
+        return request.app.state.support_knowledge.save(await json_body(request), kb_id)
+
+    @app.delete('/api/local/support/knowledge/{kb_id}')
+    def support_knowledge_delete(kb_id: str, request: Request):
+        return request.app.state.support_knowledge.delete(kb_id)
+
+    @app.post('/api/local/support/knowledge/{kb_id}/documents', status_code=202)
+    async def support_document_upload(kb_id: str, request: Request):
+        return await request.app.state.support_knowledge.upload(kb_id, await json_body(request, 500000))
+
+    @app.get('/api/local/support/documents/{document_id}')
+    def support_document_detail(document_id: str, request: Request):
+        return request.app.state.support_knowledge.document(document_id)
+
+    @app.delete('/api/local/support/documents/{document_id}')
+    def support_document_delete(document_id: str, request: Request):
+        return request.app.state.support_knowledge.delete(document_id, document=True)
+
+    @app.post('/api/local/support/knowledge/{kb_id}/search')
+    async def support_knowledge_search(kb_id: str, request: Request):
+        body = await json_body(request)
+        if set(body) - {'query', 'top_k', 'min_score'}:
+            raise Problem('SUPPORT_SEARCH_INVALID', '检索参数不合法。', 422)
+        return await request.app.state.support_knowledge.search([kb_id], body.get('query'),
+            top_k=body.get('top_k', 3), min_score=body.get('min_score', .5))
 
     @app.post('/api/local/support/agents', status_code=201)
     async def support_agent_create(request: Request):

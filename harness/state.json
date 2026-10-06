@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0090",
   "active_plan": "exec-plans/active/HA-0090-customer-support.md",
-  "last_checkpoint": "Provider加密存储/自动探测、客服Agent和持久流式会话已实现，93项相关测试通过，尚未导入真实凭证或部署。",
+  "last_checkpoint": "Provider/Agent/会话及本地BGE知识库已实现；48控制测试、真实向量1例、真实Chromium1例通过。尚未导入真实凭证或部署。",
   "last_updated_at": "2026-10-06T07:10:00Z",
-  "next_action": "继续Agent/流式会话、知识库RAG、工作流与MCP，再逐项验证并双部署；HA0079由claude独立维护DSH8876。",
+  "next_action": "继续JSON工作流与MCP，再补HTTP合同、真实模型和双端发布；HA0080由claude独立维护DSH8876。",
   "release": "0.1.0-local"
 }

@@ -40,3 +40,23 @@ Session：`GET/POST /sessions`、`GET/DELETE /sessions/{id}`。创建时快照 A
 相同 key 重放终态不再调用 Provider；异 key 在 busy 时409。断线取消，不自动续模型。
 每次真实请求先走 HA-0075 预留与结算；上下文有界，缺 usage 冻结而非当0。
 重启将 queued/running 标为 failed/SUPPORT_RESTARTED；完整历史仍可读取。
+
+## 知识库 API v1（第三原子切片）
+
+`GET/POST /knowledge`、`PUT/DELETE /knowledge/{id}` 管理名称、说明、enabled。
+`POST /knowledge/{id}/documents` 接收 JSON `{name,text}`（TXT/MD，UTF-8，最多10万字符）；
+文件字节由前端读取，后台仅保存规范化文本，不开放服务器文件路径。返回202，持久
+processing 状态，后台生成全部向量后原子提交 ready；失败或重启明确 failed，无半份索引。
+`GET /knowledge/{id}` 含文档元信息；`GET/DELETE /documents/{id}` 查看分块或删除。
+`POST /knowledge/{id}/search` 接收 `{query,top_k,min_score}`；跨库只检索 Agent 显式绑定集合。
+
+采用固定 BAAI/bge-small-zh-v1.5（512维）本地 ONNX 语义向量，模型部署时预下载并
+登记固定修订，运行时离线加载，不自动联网下载、不发送知识正文到 Embedding 服务。
+语义索引存在 SQLite 并做归一化余弦排序，适用小型客服知识库，不声称 ANN/pgvector规模。
+结构切块复用父子文档 helper；子块最多400字符，父块最多2000字符，单文档至多256子块，
+全库至多4000子块。文本与偏移对齐；子块召回扩展至去重父上下文，总注入不超过8000字符。
+查询无命中仍显式告诉模型资料不足，不伪造答案。分数阈值是可配置策略，不是相关性保证。
+知识库未绑定时不触发检索。RAG来源元信息随 Exchange 保留，不保存重复的检索正文；
+正文作为不可信参考数据，不授予工具权限。删除/禁用在检索提交和回答发布前重新检查。
+运行时向量进程有独立时间/输出/并发上限，取消时杀掉并等待退出；模型调用仍用同一账本。
+PDF 导入、扫描OCR和大规模向量数据库不在此原子切片里；整体后续是否支持另记证据。

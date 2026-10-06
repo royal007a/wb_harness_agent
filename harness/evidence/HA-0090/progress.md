@@ -25,3 +25,22 @@
 - 预算目前为 Ark 模型保守预留完整 1,024,000 输入上限，不将字符估计冒充硬预算。
   小于此预留的消息预算会在发送前拒绝；实际 usage 结算后释放差额。
 - 知识库、工作流、MCP、真实 Provider、双部署仍未完成。
+
+## 知识库原子切片
+
+- Provider + Chat + Knowledge：48 passed / 1 skipped（knowledge.xml）。跳过项是需要显式模型目录的真实 BGE 探针。
+- 显式配置模型后单跑该探针：1 passed（knowledge-real-embedding.xml）；真实本地 ONNX
+  语义向量将“买的东西不想要了，可以退回去吗？”在三个独立候选中排到退货条款。
+  此单例只证明真实向量链路，不是检索质量评测，更不是真实豆包回答评测。
+- Chromium + 随机回环端口 + 临时库：1 passed（support-ui.xml）。页面实际创建库、
+  上传、索引、检索、绑定 Agent、流式回答、来源展示、刷新历史、390px无横向溢出。
+  该浏览器测试的模型和向量均为明确的合成适配器，外发0次。
+- 反例覆盖：跨库隔离、删除失效、回答发布前删除/停用重查、坏向量、嵌入/第二块写入
+  失败时无半份索引、取消工作进程、重启遗留处理状态、上传/检索上限。
+- FastEmbed 0.8.1，模型 BAAI/bge-small-zh-v1.5（512维），Qdrant ONNX 修订
+  `46fbe35fd4374a00fee7de77dfddaeb6dd6a2c59`。部署时显式下载6文件并记录SHA，
+  运行时只读本地文件、校验摘要、offline环境，不自动下载。依赖来源：
+  https://qdrant.github.io/fastembed/examples/Supported_Models/
+- 工程取舍：SQLite精确余弦适用≤4000块的小库；不是pgvector/ANN。TXT/MD已实现；
+  PDF/OCR不在此原子切片。课程知识库的异步管线、状态、删除、绑定与聊天注入已落地。
+- 仍未完成：工作流、MCP、完整机器HTTP合同、真实对话与自动探测部署验证、8765/132发布。
