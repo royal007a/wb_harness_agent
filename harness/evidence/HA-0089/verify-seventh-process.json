@@ -1,0 +1,19 @@
+{
+  "schema_version": "verification-process-observation@1",
+  "command": ["sh", "harness/verify.sh"],
+  "start_commit": "1936d9c",
+  "end_commit": "63d0c4bfa610f48e237cd51e3677ada04f475b99",
+  "runtime_changed_during_execution": false,
+  "subprocess_pid": 59447,
+  "tool_session_id": 67307,
+  "completion_chunk_id": "679dbd",
+  "subprocess_returncode": 0,
+  "execution_tool_exit_code": 0,
+  "elapsed_seconds": 294.17,
+  "runner_completion_stdout": "verify_exit 0 elapsed_seconds 294.17",
+  "provenance": "Transcribed after completion from the observed execution-tool result, not generated inside verify.sh and not a signed receipt.",
+  "log_sha256": "d4e38ee87a15bce3b19ac6a9fb646da2f21d70077c0340bc98ce76a5ad89957a",
+  "exclusive_host_resources": false,
+  "deployment_performed": false,
+  "real_provider_called": false
+}
