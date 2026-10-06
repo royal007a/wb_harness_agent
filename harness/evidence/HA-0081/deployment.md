@@ -6,3 +6,8 @@
 - 部署后真实验证（经 8876 HTTP）：long-01（18320 字）`run_ab68dec9a70a4b78a0056546d5bb6818` succeeded，7 次调用、74376 Token；pay-13（隐含例外）`run_4ea23a322f9f4b8e8eb12ac3ccf23dbb` succeeded，3 次调用、8039 Token；预留均归零。两条 Run 在页面历史中可查看。
 - 中间版本 `873a5f7` 曾部署约 20 分钟，期间一次真实长合同 Run（`run_596538589c534ce9946dcf4dfb1d943a`）以 `DSH_PROVIDER_INVALID` 失败并冻结 1280000 预留（用量未知，按账本设计不释放），该 Run 已终止，不影响后续 Run 的独立账本。
 - 回滚：`launchctl remove local.harnessagent.dsh-session`，在 `~/code/ai/harnessagent-dsh` 检出 `cbb3e9e`（HA-0080 版本）或 `c43df5b`（原始版本），再运行启动脚本。
+
+## 复审修订后重新部署
+
+- 分支 ff 到 `73e7e25`；按同样方式核对 label PID（40845）与 8876 监听一致后只移除该 label 并重新启动；release `73e7e25`。
+- 部署后真实冒烟：pay-05 `run_7a6de2414a08415786447f4362048782` succeeded，5 次调用、12409 Token，预留归零。
