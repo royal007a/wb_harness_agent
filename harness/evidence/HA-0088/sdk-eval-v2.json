@@ -1,0 +1,221 @@
+{
+ "eval": "dsh-payment-control@2",
+ "scoring_version": "fixed-script-value-unit@2",
+ "cases": 21,
+ "provider": "synthetic scripted (label-blind)",
+ "measures": "platform control logic only; not model quality",
+ "metrics": {
+  "correct_value_published": {
+   "hit": 11,
+   "n": 11
+  },
+  "implicit_exception_detected_by_platform_lexicon": {
+   "hit": 0,
+   "n": 2
+  },
+  "lexical_exception_surfaced": {
+   "hit": 5,
+   "n": 5
+  },
+  "misstated_value_not_published": {
+   "hit": 10,
+   "n": 10
+  },
+  "no_false_exception_candidate": {
+   "hit": 4,
+   "n": 4
+  }
+ },
+ "rows": [
+  {
+   "id": "pay-01",
+   "family": "exception_after_page",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 5,
+   "coverage_warned": true,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-02",
+   "family": "exception_after_page",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-03",
+   "family": "exception_after_page",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 5,
+   "coverage_warned": true,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-04",
+   "family": "exception_after_page",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-05",
+   "family": "exception_in_page",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-06",
+   "family": "exception_in_page",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-07",
+   "family": "exception_in_page",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-08",
+   "family": "exception_in_page",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-09",
+   "family": "no_exception",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-10",
+   "family": "no_exception",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-11",
+   "family": "no_exception",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-12",
+   "family": "no_exception",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-13",
+   "family": "implicit_exception",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-14",
+   "family": "implicit_exception",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-15",
+   "family": "implicit_exception",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-16",
+   "family": "implicit_exception",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-17",
+   "family": "workday_unit",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-18",
+   "family": "workday_unit",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "pay-19",
+   "family": "workday_unit",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  },
+  {
+   "id": "pay-20",
+   "family": "workday_unit",
+   "status": "failed",
+   "exit_reason": "DSH_FINDINGS_INVALID",
+   "model_calls": 4,
+   "coverage_warned": false,
+   "business_status": null
+  },
+  {
+   "id": "long-01",
+   "family": "long_contract",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "model_calls": 3,
+   "coverage_warned": false,
+   "business_status": "partial"
+  }
+ ],
+ "model_calls_total": 77
+}
