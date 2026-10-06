@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0082",
+      "title": "DSH付款核对计划投影、提交历史与延迟清理（A1/C/D）",
+      "status": "in_review",
+      "risk": "medium",
+      "scope": ["平台计划dsh-plan@1与状态投影", "提交历史与摘要", "pending目录有界延迟清理"],
+      "non_goals": ["证据续跑A2", "调用身份与重放防护B", "人工复原入口"],
+      "acceptance": ["计划在首次模型请求前持久化且模型无法改写", "S3被后续拒绝时回到blocked且不发布", "partial不阻塞发布", "延迟清理有界且不越权删除"],
+      "depends_on": ["HA-0081"],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0082/acceptance.md"]
+    },
+    {
       "id": "HA-0081",
       "title": "DSH平台上下文组装器与按轮进展判定",
       "status": "completed",

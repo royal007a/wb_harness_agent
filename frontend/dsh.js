@@ -37,6 +37,18 @@ async function refresh(current) {
     for (const text of [`Token 已用 ${detail.budget?.spent ?? 0}`, `预留 ${detail.budget?.reserved ?? 0}`, `模型调用 ${detail.budget?.calls ?? 0}`, `截止 ${run.effective_limits.timeout_seconds}s`]) {
       const span = document.createElement('span'); span.className = 'metric'; span.textContent = text; $('metrics').append(span);
     }
+    $('plan').hidden = !detail.plan;
+    if (detail.plan) {
+      const stateName = {done: '完成', partial: '部分', pending: '未开始', blocked: '受阻', ready: '可发布', not_applicable: '不适用'};
+      $('plan-steps').replaceChildren();
+      for (const step of detail.plan.steps) {
+        const li = document.createElement('li');
+        const extra = [step.missing_ids.length ? `缺 ${step.missing_ids.join('、')}` : '', step.error_codes.length ? step.error_codes.join('、') : ''].filter(Boolean).join('；');
+        li.textContent = `${step.step_id} ${step.title}：${stateName[step.status] || step.status}${extra ? '（' + extra + '）' : ''}`;
+        li.className = 'plan-' + step.status; $('plan-steps').append(li);
+      }
+      $('plan-note').textContent = detail.plan.note;
+    }
     $('events').replaceChildren();
     for (const event of page.items.filter(e => e.event_type !== 'dsh.observation')) {
       const li = document.createElement('li'); li.textContent = `${event.sequence} · ${event.event_type}  ${JSON.stringify(event.data)}`; $('events').append(li);

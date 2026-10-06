@@ -114,6 +114,8 @@ def state_message(state):
     if state.get('submission'):
         lines.append(f"结构化提交：第{state['submission']['number']}次，"
                      + ('已通过' if state['submission']['accepted'] else '未通过'))
+    if state.get('plan'):
+        lines.append('平台计划进度（由平台判定，你不能修改）：' + state['plan'])
     if state.get('stubbed'):
         lines.append('为控制上下文，平台省略了较早工具结果的正文：' + '、'.join(state['stubbed'])
                      + '；需要时请用 read_clause 重新读取。')

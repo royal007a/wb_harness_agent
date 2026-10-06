@@ -120,7 +120,8 @@
         "read_clause_ids",
         "verification",
         "human_review_required",
-        "submission_number"
+        "submission_number",
+        "submissions"
       ],
       "properties": {
         "schema_version": {
@@ -405,6 +406,48 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 16
+        },
+        "submissions": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "number",
+              "accepted",
+              "error_codes",
+              "content_sha256",
+              "superseded_by"
+            ],
+            "properties": {
+              "number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "accepted": {
+                "type": "boolean"
+              },
+              "error_codes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z_]{3,64}$"
+                }
+              },
+              "content_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "superseded_by": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              }
+            }
+          }
         }
       }
     }

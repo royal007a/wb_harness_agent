@@ -17,6 +17,7 @@ from .adaptive_retrieval import build_parent_child_chunks
 from .analysis import Problem, digest
 from .business_budget import BusinessTokenLedger, budgeted_model_call
 from .dsh_context import assemble as assemble_context
+from .dsh_plan import failed_step as plan_failed_step, project as project_plan, summary as plan_summary
 from .dsh_findings import candidates as finding_candidates, render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
 from .service import ROOT, DENY, TERMINAL, validate
@@ -50,6 +51,10 @@ class DshRuntime:
         self.send_real = send_real
         self.credentials = KeyringCredentialResolver()
         self.release = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+        # DSH-CLEANUP-01: bounded delayed retries for registered workspaces left pending at startup.
+        self.cleanup_retry_seconds = float(os.getenv('HARNESS_DSH_CLEANUP_RETRY_SECONDS', '10'))
+        self.cleanup_retry_limit = 6
+        self._cleanup_timer = None
 
     def status(self):
         available = (ROOT / 'dsh-adapter/node_modules/@deepseek-ai/dsh/lib/bin.js').is_file()
@@ -131,7 +136,18 @@ class DshRuntime:
                 raise Problem('NOT_FOUND', 'DSH Run 不存在。', 404)
             task = self.store.get('tasks', run['task_id'])
             row = self.store.db.execute('SELECT 1 FROM business_budget_roots WHERE id=?', (ident,)).fetchone()
-            return {'run': run, 'task': task, 'artifacts': self.store.artifact_list(ident),
+            plan = None
+            for item in self.store.events(ident):
+                if item['event_type'] == 'dsh.plan.created':
+                    plan = copy.deepcopy(item['data'])
+                elif item['event_type'] == 'dsh.plan.step' and plan:
+                    updates = {st['step_id']: st for st in item['data']['steps']}
+                    for st in plan['steps']:
+                        st.update(updates.get(st['step_id'], {}))
+                elif item['event_type'] == 'run.succeeded' and plan and item['data'].get('plan_status'):
+                    for st in plan['steps']:
+                        st['status'] = item['data']['plan_status'].get(st['step_id'], st['status'])
+            return {'run': run, 'task': task, 'artifacts': self.store.artifact_list(ident), 'plan': plan,
                     'budget': self.ledger.snapshot(ident) if row else None,
                     'mode': task['context']['variables']['mode']}
 
@@ -145,6 +161,7 @@ class DshRuntime:
             return run
 
     def execute(self, ident):
+        plan_box = {'plan': None}
         try:
             with self.store.transaction() as db:
                 run = self.detail(ident)['run']
@@ -169,7 +186,9 @@ class DshRuntime:
                         'turn': None}
             review = {'rejections': 0, 'coverage_warned': False, 'accepted': None, 'submissions': 0}
             context = {'stubbed': set(), 'last': None}
-            exception_candidates = finding_candidates(clauses)['exception'] if template == 'payment_terms' else []
+            all_candidates = finding_candidates(clauses) if template == 'payment_terms' else {'payment': [], 'exception': []}
+            exception_candidates = all_candidates['exception']
+            review.setdefault('history', [])
             deadline = time.monotonic() + task['limits']['timeout_seconds']
             def check():
                 self.service.check(ident)
@@ -182,6 +201,19 @@ class DshRuntime:
             def emit(value):
                 validate_dsh('observation', value)
                 event('dsh.observation', value)
+            def refresh_plan(published=False):
+                if template != 'payment_terms':
+                    return
+                previous = plan_box['plan']
+                plan_box['plan'] = project_plan(all_candidates, seen_clauses,
+                    {'submissions': review['submissions'], 'accepted': review['accepted'] is not None,
+                     'last_codes': review.get('last_codes')}, published)
+                if previous is None:
+                    event('dsh.plan.created', plan_box['plan'])
+                elif [(a['status'], a['missing_ids'], a['error_codes']) for a in previous['steps']] != \
+                        [(b['status'], b['missing_ids'], b['error_codes']) for b in plan_box['plan']['steps']]:
+                    event('dsh.plan.step', {'steps': [{k: st[k] for k in ('step_id', 'status', 'missing_ids', 'error_codes')}
+                                                      for st in plan_box['plan']['steps']]})
             def close_turn():
                 turn, progress['turn'] = progress['turn'], None
                 if turn is None:
@@ -205,7 +237,8 @@ class DshRuntime:
                          'read': sorted(seen_clauses, key=lambda k: int(k.split('-')[1])),
                          'unread_exception_candidates': [k for k in exception_candidates if k not in seen_clauses],
                          'submission': ({'number': review['submissions'], 'accepted': review['accepted'] is not None}
-                                        if review['submissions'] else None)}
+                                        if review['submissions'] else None),
+                         'plan': plan_summary(plan_box['plan']) if plan_box['plan'] else None}
                 payload, assembly = assemble_context(payload, state)
                 context['stubbed'] = set(assembly['invisible_clause_ids'])  # only blocks with no full copy sent
                 event('dsh.context.assembled', dict(assembly, call_number=counts['model_calls'] + 1))
@@ -301,6 +334,7 @@ class DshRuntime:
                     'new_evidence': len(new), 'repeated_action': repeated,
                     'no_progress_turns': progress['no_progress'], 'repeat_turns': progress['repeats'],
                     **({'total_matches': page['total'], 'truncated': page['truncated']} if page else {})})
+                refresh_plan()
                 value = {'matches': [{'clause_id': key, 'text': clauses[key]} for key in selected]}
                 if page:
                     value.update(page)
@@ -320,11 +354,18 @@ class DshRuntime:
                 # replacement withdraws any earlier acceptance.
                 review['accepted'] = None
                 checked = verify_findings(args, clauses, seen_clauses)
+                content_sha = digest(dumps(args).encode())
+                for item in review['history']:  # a new submission supersedes every earlier one
+                    item['superseded_by'] = item.get('superseded_by') or number
                 if checked['errors']:
                     review['rejections'] += 1
                     codes = sorted({e['code'] for e in checked['errors']})
-                    event('dsh.findings.checked', {'accepted': False, 'error_codes': codes,
-                        'rejections': review['rejections']})
+                    review['last_codes'] = codes
+                    review['history'].append({'number': number, 'accepted': False, 'error_codes': codes,
+                                              'content_sha256': content_sha, 'superseded_by': None})
+                    event('dsh.findings.checked', {'accepted': False, 'error_codes': codes, 'submission_number': number,
+                        'content_sha256': content_sha, 'rejections': review['rejections']})
+                    refresh_plan()
                     if review['rejections'] > MAX_FINDINGS_REJECTIONS:
                         raise Problem('DSH_FINDINGS_INVALID', '结构化结果多次未通过平台校验。', 409)
                     return {'text': dumps({'accepted': False, 'submission_number': number, 'errors': checked['errors'],
@@ -332,12 +373,20 @@ class DshRuntime:
                 gap = next((g for g in checked['platform_gaps'] if g['code'] == 'EXCEPTION_CANDIDATES_UNREAD'), None)
                 if gap and not review['coverage_warned']:
                     review['coverage_warned'] = True
+                    review['last_codes'] = ['COVERAGE_GAP']
+                    review['history'].append({'number': number, 'accepted': False, 'error_codes': ['COVERAGE_GAP'],
+                                              'content_sha256': content_sha, 'superseded_by': None})
                     event('dsh.findings.checked', {'accepted': False, 'error_codes': ['COVERAGE_GAP'],
-                        'rejections': review['rejections']})
+                        'submission_number': number, 'content_sha256': content_sha, 'rejections': review['rejections']})
+                    refresh_plan()
                     return {'text': dumps({'accepted': False, 'submission_number': number, 'coverage_gap': gap,
                         'hint': '平台发现未读的付款例外候选证据块。请读取后重新提交；确实无法读取时可再次提交，将记为部分结果。'})}
                 review['accepted'] = dict(checked, submission_number=number, read_at_submission=sorted(seen_clauses))
-                event('dsh.findings.checked', {'accepted': True, 'submission_number': number,
+                review['last_codes'] = []
+                review['history'].append({'number': number, 'accepted': True, 'error_codes': [],
+                                          'content_sha256': content_sha, 'superseded_by': None})
+                refresh_plan()
+                event('dsh.findings.checked', {'accepted': True, 'submission_number': number, 'content_sha256': content_sha,
                     'business_status': checked['business_status'],
                     'platform_gap_count': len(checked['platform_gaps']), 'model_gap_count': len(checked['model_gaps'])})
                 return {'text': dumps({'accepted': True, 'submission_number': number, 'business_status': checked['business_status'],
@@ -348,6 +397,7 @@ class DshRuntime:
                          '调用 submit_findings 提交四个槽位（缺证据用 unknown，不要猜）；平台只发布最后一次通过校验的结构化结果，不发布你的自由文本答复。\n'
                          if template == 'payment_terms' else '')
                       + task['objective'])
+            refresh_plan()  # dsh.plan.created is persisted before the first model request
             result = self.adapter.run(prompt,
                 Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs')), MODEL,
                 model_call, tool_call, emit, check,
@@ -373,6 +423,7 @@ class DshRuntime:
                               'model_gaps': accepted['model_gaps'], 'platform_gaps': accepted['platform_gaps'],
                               'candidates': accepted['candidates'], 'read_clause_ids': accepted['read_at_submission'],
                               'verification': 'quotes_literal_values_units_parties_checked_semantics_not_verified',
+                              'submissions': [dict(item) for item in review['history']],
                               'human_review_required': True}
                     validate_dsh('findings', record)
                     # The analysis text is rendered from the verified record; the model's
@@ -381,8 +432,11 @@ class DshRuntime:
                         db, current, 'dsh-analysis.txt', render_findings(record), 'text/plain')
                     findings_artifact = self.service.pi_contract_review._publish(
                         db, current, 'dsh-findings.json', dumps(record), 'application/json')
+                    final_plan = project_plan(all_candidates, seen_clauses,
+                        {'submissions': review['submissions'], 'accepted': True, 'last_codes': []}, published=True)
                     business = {'business_status': accepted['business_status'],
                                 'submission_number': accepted['submission_number'],
+                                'plan_status': {st['step_id']: st['status'] for st in final_plan['steps']},
                                 'findings_artifact_id': findings_artifact['id'], 'model_final_text_published': False}
                 else:
                     artifact = self.service.pi_contract_review._publish(db, current, 'dsh-analysis.txt', result['text'], 'text/plain')
@@ -396,11 +450,38 @@ class DshRuntime:
                 run = self.store.get('runs', ident)
                 if run['status'] not in TERMINAL:
                     run['status'], run['exit_reason'] = 'failed', getattr(exc, 'code', 'DSH_RUNTIME_FAILED')
-                    self.store.event(db, run, 'run.failed', {'error_code': run['exit_reason']})
+                    failure = {'error_code': run['exit_reason']}
+                    if plan_box['plan']:
+                        failure['failed_step'] = plan_failed_step(plan_box['plan'])
+                    self.store.event(db, run, 'run.failed', failure)
                     db.execute("UPDATE business_budget_roots SET status='failed' WHERE id=? AND status='active'", (ident,))
 
+    def _run_root(self):
+        return Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs'))
+
+    def _retry_cleanup(self, attempt):
+        # Same ownership rules as startup: registered entries only, lease released and
+        # process group gone; never kills a recovered PID, never widens the scope.
+        result = cleanup_workspaces(self._run_root(), wait_seconds=0)
+        status = dict(self.cleanup_status or {})
+        status['cleaned'] = status.get('cleaned', 0) + result['cleaned']
+        status['retained'] = result['retained']  # retained entries stay registered; report current count
+        status['pending'] = result['pending']
+        status['retries'] = attempt
+        self.cleanup_status = status
+        if result['pending'] and attempt < self.cleanup_retry_limit:
+            self._schedule_cleanup(attempt + 1)
+
+    def _schedule_cleanup(self, attempt):
+        import threading
+        self._cleanup_timer = threading.Timer(self.cleanup_retry_seconds, self._retry_cleanup, args=(attempt,))
+        self._cleanup_timer.daemon = True
+        self._cleanup_timer.start()
+
     def recover(self):
-        self.cleanup_status = cleanup_workspaces(Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs')))
+        self.cleanup_status = dict(cleanup_workspaces(self._run_root()), retries=0)
+        if self.cleanup_status['pending']:
+            self._schedule_cleanup(1)
         # No automatic resume/model replay after restart.
         for run in self.store.listing('runs'):
             if run['selected_engine'] != ENGINE or run['status'] in TERMINAL:

@@ -328,7 +328,7 @@ def test_sigkill_then_recover_removes_registered_document_residue(tmp_path, monk
             rt.recover()
             assert not list(root.glob('run-*'))
             assert not list(root.rglob('*.jsonl'))
-            assert rt.cleanup_status == {'cleaned': 1, 'pending': 0, 'retained': 0}
+            assert rt.cleanup_status == {'cleaned': 1, 'pending': 0, 'retained': 0, 'retries': 0}  # HA-0082 adds retries
             runs = client.get('/api/local/dsh/runs').json()['items']
             assert runs[0]['exit_reason'] == 'DSH_SERVER_RESTARTED'
             assert rt.detail(runs[0]['id'])['budget']['status'] == 'stopped_on_restart'
