@@ -25,6 +25,7 @@
 - 第十一批生成评审一篇15页全文阅读完成，累计三十四篇374页。区分版本批准、证据字符串与真实事实，核对了正文和grounded代码的差异，见 `docs/research/JIKESUMMARY_REVIEW_VERSIONS_2026_10_07.md`。
 - 第十二批阶梯压缩与细节回读两篇29页全文阅读完成，累计三十六篇403页。核对配对、字符阈值、异步索引水位和摘要的权限边界，见 `docs/research/JIKESUMMARY_COMPACTION_RECALL_2026_10_07.md`。
 - 第十三批部署容量一篇14页全文阅读完成，累计三十七篇417页。区分用户人数和实际负载、队列和传输、示例数据库规则和平台契约，见 `docs/research/JIKESUMMARY_DEPLOY_CAPACITY_2026_10_07.md`。
+- 第十四批交互契约与并发两篇17页全文阅读完成，累计三十九篇434页。核对逻辑调用身份、重放载体、锁生命周期与租约的迟到写入边界，见 `docs/research/JIKESUMMARY_CROSSING_CONCURRENCY_2026_10_07.md`。
 - 本研究任务不修改运行时、不部署、不调用真实 Provider；HA-0085/0086 是分开的实现任务，不能混算研究验收。
 
 ## 非目标
