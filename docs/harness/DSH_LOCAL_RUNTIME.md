@@ -56,6 +56,7 @@ Keychain 只存不透明引用，plist没有密钥。其他 Pi/Claude/native/外
 - POST `/api/local/dsh/runs`：严格 request Schema + 1–128字符 Idempotency-Key，201历史创建收据。
 - GET `/api/local/dsh/runs`、`/{run_id}`：列表/详情；模型正文不混入事件。
 - GET `/api/local/dsh/runs/{run_id}/events?after=...`：继承500条分页、int64游标上限。
+- GET `/api/local/dsh/runs/{run_id}/trace`（HA-0114 候选）：按轮次的只读元数据投影，不含正文、不写库。
 - POST `/api/local/dsh/runs/{run_id}/cancel`：空JSON对象；只取消当前Run，不覆盖终态。
 - 产物使用既有 `/api/v1/artifacts/{id}/content`，正文以 text/plain 输出；前端只用 textContent。
 

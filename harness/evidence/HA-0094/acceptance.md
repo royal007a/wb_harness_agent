@@ -13,4 +13,4 @@
 - 反例：两个源文件恢复为基线 50f6f41 时 3 failed；单点突变 M1（反馈也存根）1 failed，M2（不传错误码）1 failed。
 - DSH 相关 7 个测试文件 138 passed。
 
-边界：没有改变估算方法或预算；没有引入摘要模型。完整 verify 由 mymaccodex 统一安排。
+边界：准确范围是“不含证据块的工具结果不被存根”，不是所有平台反馈都不被存根。同时含 matches 和 NO_NEW_EVIDENCE notice 的结果仍可能被整体存根，notice 随之消失（mymaccodex 复审 Low，已复现）。反馈本身超过窗口时仍按 DSH_CONTEXT_OVER_BUDGET 拒绝发送，输入不被修改。没有改变估算方法或预算，没有引入摘要模型。复审：codex Approved（3dd3ca2，限代码与离线行为）。完整 verify 由 mymaccodex 统一安排。

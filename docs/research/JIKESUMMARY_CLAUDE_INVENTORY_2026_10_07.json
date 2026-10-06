@@ -1,0 +1,403 @@
+{
+ "groups": {
+  "security_hooks": {
+   "count": 11,
+   "files": [
+    {
+     "path": "安全护栏/12 - 09｜安全基石（上）：用权限控制与沙箱为AI戴上“安全镣铐”.pdf",
+     "sha256": "e2c206dbec13f17f7785e333370371aec0605338b0ab92fe679368346f798ecc"
+    },
+    {
+     "path": "安全护栏/12 - 11｜RBAC 挡不住 Agent：如何设计一个企业级 Agent 权限系统.pdf",
+     "sha256": "bea6ff1cc3819269ae7e3dd48f5fc414386250c53036498f5dff100c2c18aa89"
+    },
+    {
+     "path": "安全护栏/12 - 11｜不出事故的 Agent：三层安全护栏设计防注入，防越权，防失控.pdf",
+     "sha256": "445a4ce89bfc5383ef1cbff6380733a1f25b3b8645383d7c9cd0aceb47a66d16"
+    },
+    {
+     "path": "安全护栏/13 - 10｜安全基石（下）：Checkpointing，获得让AI“时光倒流”的超能力.pdf",
+     "sha256": "6f1d6d71041be0ffefd3986a0648de784b7a3db31f5174b5090c297b76e12db2"
+    },
+    {
+     "path": "安全护栏/13 - 12｜人审批后事故反而更大：正确设计 HITL 审批系统.pdf",
+     "sha256": "683420dd419c566e31ff2806bb3c464ffad65b72a88d4cfc17ea60c68052a994"
+    },
+    {
+     "path": "安全护栏/14 - 13｜Prompt 防不住注入：从加防线到零信任体系.pdf",
+     "sha256": "bea17def60e76543fc71a89990251aef539171d44485ee71f307f70b1c244e18"
+    },
+    {
+     "path": "安全护栏/17 - 16｜防御纵深：利用 Middleware 实现高危命令拦截与飞书人工审批.pdf",
+     "sha256": "14182f677ee608402987aed14e5e4952d3c43f8dcdb6664d7f99656cbb05844d"
+    },
+    {
+     "path": "安全护栏/20 - 18｜进阶：拦截管道构建合同敏感信息的多层安全护栏.pdf",
+     "sha256": "2cf47cce3d66f68457337cf509da7e4a1b8fd8f6caa429994dd84998abc66fa8"
+    },
+    {
+     "path": "安全护栏/28 - 25｜护栏三明治：高风险行动的前中后防线.pdf",
+     "sha256": "a47673a039e1dbefaf6dca6ae0cd88e1f742e56c1055add7137ea732f0445c97"
+    },
+    {
+     "path": "hooks/12 - 10｜扩展：Hooks 机制的实战应用.pdf",
+     "sha256": "d2e12527be2d004c005e1d4a65c959ec99fa06595c81909447d139b50772fcc9"
+    },
+    {
+     "path": "hooks/14 - 11｜事件驱动：详解Hooks机制，让AI在关键节点自动触发.pdf",
+     "sha256": "59d2f1b362588e371a9fad4e4cd9eb483309058be313b4a7a9c727f478707f22"
+    }
+   ]
+  },
+  "observability_testing": {
+   "count": 14,
+   "files": [
+    {
+     "path": "可观测性/14 - 13｜系统集成：Agent 能力与现有系统无缝对接.pdf",
+     "sha256": "df8aa4a02e9e3ea790dd8a2c45d1a9e59df781b95b1f43237d0e1c68bbfa31f3"
+    },
+    {
+     "path": "可观测性/16 - 15｜Agent 的成本总是悄悄飙升：创建网格化天眼账本.pdf",
+     "sha256": "15a0934009b99350da040f7e63cf420bed79bc2279a992fb7d364a199aec587c"
+    },
+    {
+     "path": "可观测性/17 - 16｜传统监控对 Agent 几乎无效： 搭建 Agent 全链路监控体系.pdf",
+     "sha256": "1bb8549482aa0d12d2d34488905394e4a3c7ae6c69a4561272cfd6cb7a2e502d"
+    },
+    {
+     "path": "可观测性/19 - 18｜成本与状态追踪：在 Harness 层拦截并记录 Token 消耗与执行耗时.pdf",
+     "sha256": "4587eb13f3b0c0c1bd75a0f68111f67b458d6c66bee386ca4171f6660970ca6c"
+    },
+    {
+     "path": "可观测性/20 - 19｜洞察黑盒：为 Agent 引入 Tracing 机制复盘失败决策路径.pdf",
+     "sha256": "182128471e580d7c4f18d689165ec5bf75501f6f4542a340b481869468970ef3"
+    },
+    {
+     "path": "可观测性/32 - 29｜可观测性与排错：生产级系统的最后拼图.pdf",
+     "sha256": "df57c0e3efb01c5c6b6808dc811f2546dc676d4277b9d1bf398d0755896250fa"
+    },
+    {
+     "path": "测试质量/13 - 12｜测试策略：单元、集成、E2E 三层测试体系保证质量.pdf",
+     "sha256": "f15a94a99d0ba55ef83c86e09427646fcb25b0fe226b085c04c0256ee408b78d"
+    },
+    {
+     "path": "测试质量/16 - 14｜摸清现有测试：能跑通吗？覆盖度怎样？.pdf",
+     "sha256": "5086d6d998c1f8814d955315a913d5a6d90a4d4b66d71bcea2d25eab3101cebe"
+    },
+    {
+     "path": "测试质量/17 - 15｜补出一套兜底测试：让 AI 用 Characterization Test 锁住行为.pdf",
+     "sha256": "dbeb5c9c5f0d2383d328fca523ec20e21806d4001049d36c75c331fecaaa65e5"
+    },
+    {
+     "path": "测试质量/19 - 18｜日志全绿，事故照发：构筑 Agent 测试护栏.pdf",
+     "sha256": "06bd0db66b941718dea590d92e93534b31eca24e93136dbbbe6ef707c736a652"
+    },
+    {
+     "path": "测试质量/21 - 20｜科学度量：如何构建 Benchmark 自动化评估脚本，科学量化 Harness 引擎性能？.pdf",
+     "sha256": "69c7c16282fbd3a0c7b8d0ba8055490cb97bd27ab1f6c4f73ca3912738264155"
+    },
+    {
+     "path": "测试质量/22 - 19｜编码与测试：AI驱动的TDD与框架能力的协同作战.pdf",
+     "sha256": "055dd94b6ba9d021a6c5283e730f2b447288fd9df5a8505cb0ea5eae8c1e8d9c"
+    },
+    {
+     "path": "测试质量/30 - 27｜AI 写代码，保证质量不靠运气，靠体系.pdf",
+     "sha256": "d18f6a10a9553f4194593461bbe293d32432dd3975e69de05f07342a54f2f282"
+    },
+    {
+     "path": "测试质量/30 - 27｜生成评审：让每个版本独立接受审查.pdf",
+     "sha256": "96265dd9537509e2d3425bba0af6d5782804d223c01ef46f1ec5ac4fa0822c96"
+    }
+   ]
+  },
+  "context_part2": {
+   "count": 15,
+   "files": [
+    {
+     "path": "上下文工程/12 - 11｜会话管理：Session 物理隔离与 Working Memory 的底层实现.pdf",
+     "sha256": "4e6849633d3ccd9eda087ec4c11c44639d7535b7ee9df7943247e7bc445c18b0"
+    },
+    {
+     "path": "上下文工程/13 - 10｜多模态融合：日志、SQL 和 PDF 一起进 Agent.pdf",
+     "sha256": "9bb96059ad97bf23e71211b1c5a5a3486f7831f990a624e87684b23cf9a08a16"
+    },
+    {
+     "path": "上下文工程/13 - 11｜指令文件腐化：AGENTS.md 越来越长，Agent 反而变笨了.pdf",
+     "sha256": "917c2410118943bbeb1544b893c4bd9d7236b0f6591488b4ddd025b91764a111"
+    },
+    {
+     "path": "上下文工程/13 - 12｜上下文窗口：怎么设计一个动态编排的 Context 策略？.pdf",
+     "sha256": "92fd611678453f17f752f6d410a784f9a3fc16106e8ead51fa9ccc97fa703566"
+    },
+    {
+     "path": "上下文工程/13 - 12｜突破内存：基于阶梯降级的 Context Compaction 策略.pdf",
+     "sha256": "5c0d7f00bba0a793d7aea41f855c99f7758ea0c0d9063b0ff84e9c2d49ee316c"
+    },
+    {
+     "path": "上下文工程/14 - 11｜记忆模块导论：从草稿纸到长期记忆，建立 Agent 的经验沉淀秩序.pdf",
+     "sha256": "899bf9f79a4ce274b35f4fc5ce944735f3d8dbd99f4987998bea9ccb29672a05"
+    },
+    {
+     "path": "上下文工程/14 - 13｜摘要／压缩之后，你怎么把细节找回来？.pdf",
+     "sha256": "92fce1092791c00fc8a208a7697b3050e6eb549eb53e38806d14e9aed0516fe5"
+    },
+    {
+     "path": "上下文工程/14 - 13｜记忆沉淀：状态外部化，基于文件系统的持久化记忆与待办管理.pdf",
+     "sha256": "edccd83ad64a81c4d724ba2693bbff5a1d377879c0cb69db475fdf2b519ed196"
+    },
+    {
+     "path": "上下文工程/15 - 12｜分层保留：给 Agent 的记忆建一套货架.pdf",
+     "sha256": "769f3f86b49d71985b63f3c2dd6df7de68f2e09287e49e4179447370ddfab9f5"
+    },
+    {
+     "path": "上下文工程/15 - 14｜为 AI 股票分析工具装上 Agent（四）：记忆管理.pdf",
+     "sha256": "28e24ae5f3f4f68da1d8cd520638f98601f1d0fbc3b08a3a83d05dcde517d8a4"
+    },
+    {
+     "path": "上下文工程/16 - 13｜检索增强：Agent 的知识库和证据链.pdf",
+     "sha256": "d1507f71e55679ac31eb58a14d80f55f5d9165c6ca75898b11c2b5525457f81b"
+    },
+    {
+     "path": "上下文工程/17 - 16｜对话／任务特别长长长……怎么办？.pdf",
+     "sha256": "33b23498c2c902eb3074bd4f7ac218e29b1d8fe92aaf50b2670f55d8424dc179"
+    },
+    {
+     "path": "上下文工程/18 - 15｜失败日记：让 Agent 把摔过的跤变成本事.pdf",
+     "sha256": "8aac939120858f8d852f0cad7b8aefbe89bed5214671ba81a6e517bf1a92a1b8"
+    },
+    {
+     "path": "上下文工程/18 - 17｜如何设计一个面试中富有竞争力的上下文管理机制？.pdf",
+     "sha256": "ecc2f50f9b3549b7519bfb5b83381efaec06fa2add6a4b5233a4ba15011f4348"
+    },
+    {
+     "path": "上下文工程/19 - 17｜进阶：长上下文与 Skill 调用构建大合同审查流水线.pdf",
+     "sha256": "6f23f72aa57f69f09c11dc445408dc96efa0c57b14c1e5c24811b67748dd01a0"
+    }
+   ]
+  },
+  "context_6": {
+   "count": 6,
+   "files": [
+    {
+     "path": "上下文工程/06 - 05｜为什么窗口越大，Agent 越容易忽略最重要的指令？.pdf",
+     "sha256": "e832ea64a27b5c907d184ce476a33b5b29c779fd7c4e2b386f73a2c24c84c36f"
+    },
+    {
+     "path": "上下文工程/08 - 07｜当 Agent 的记忆开始“精神错乱”，敢遗忘才是解药.pdf",
+     "sha256": "99080b619ef02645ee95f8c6b59654afac2fd3ac118995d313993faabd25e393"
+    },
+    {
+     "path": "上下文工程/10 - 07｜上下文分诊：如何科学分流处置不同信息.pdf",
+     "sha256": "9681a5d280aabe24a6a0506d681f86b739f9b1430d8fc1b27cff08070d61410d"
+    },
+    {
+     "path": "上下文工程/11 - 08｜语义压缩：让 200K 装下 1M 的日志.pdf",
+     "sha256": "d8fe8806b21974a0f147a087df5657f7cb6bc6ec60e20ca1314ba69c2219ba89"
+    },
+    {
+     "path": "上下文工程/11 - 09｜信息散落：知识来源不唯一且更新不及时.pdf",
+     "sha256": "b5fd034a4d62d6039f8acb4598c9eab98c574fe35955d6cf30606bd95d79c0a3"
+    },
+    {
+     "path": "上下文工程/12 - 09｜渐进发现：信息的觅食循环.pdf",
+     "sha256": "e845f500a390e9e9de5aa0c6c45dbba83b009cea27835667ab7bde0d35e0730b"
+    }
+   ]
+  },
+  "tools_6": {
+   "count": 6,
+   "files": [
+    {
+     "path": "tools/03 - 02｜别把执行权交给概率：六大契约重新定义工具设计.pdf",
+     "sha256": "6561cce4cf976e9a0e70141e5c5a339e4d2856bd8d7cd215f7b41ea7907b312c"
+    },
+    {
+     "path": "tools/04 - 03｜注意力稀释：当 113 个工具让模型降智时，工程师该怎么做？.pdf",
+     "sha256": "eb035392080c8d7dcc49dde3f548e7b4c74e552fb837fcf86c177c18f465905e"
+    },
+    {
+     "path": "tools/08 - 07｜容错艺术：实现支持多级模糊匹配的稳健 Edit 工具.pdf",
+     "sha256": "3645ed4cda86910c9d31a449a40fcacf3c4f2e23e2dca596b34fbf553ace2d84"
+    },
+    {
+     "path": "tools/09 - 08｜并发提效：如何让 Agent 在单轮中并行调用多个互相独立的工具？.pdf",
+     "sha256": "5be00242f01e89b9447a8f26b9c43242b8689b4093f7d5a48ccd17fc696f966f"
+    },
+    {
+     "path": "tools/10 - 09｜TAO 机制：为什么你的 Agent 总是“选错工具”？.pdf",
+     "sha256": "74812cc7f4ccc4d23318cde1c198c188edca738f7ec2935ecd93f790056730c3"
+    },
+    {
+     "path": "tools/10 - 09｜工具管理：让 Agent 高效、安全地使用工具.pdf",
+     "sha256": "efb7e18b62e3e7e142fda209e1d046c8443de1cf93378ae5df6cc608c293b896"
+    }
+   ]
+  },
+  "workflow_7": {
+   "count": 7,
+   "files": [
+    {
+     "path": "workflows/06 - 05｜Agent 的 Plan 机制：好 Plan 必备的 5 要素（G4C）.pdf",
+     "sha256": "3fb77ce87ee6d64eedbb7a61f4443006db130b73e19f128f3f191de8e6941213"
+    },
+    {
+     "path": "workflows/07 - 06｜Replan（上）：计划赶不上变化？Agent 需要“随机应变”.pdf",
+     "sha256": "3c48d7b357f8ee5e32cdf652a36c92270589db05abcaa42bebedcfecacfd2fe8"
+    },
+    {
+     "path": "workflows/08 - 07｜Replan（下）：失败点不等于根因点，回溯找对“病根”再下刀.pdf",
+     "sha256": "f4521060ac7230d900cf7f8b14d717823895686d7a661a4f0bb282b63cb7ef8d"
+    },
+    {
+     "path": "workflows/09 - 08｜蒙眼狂奔的 ReAct：为什么执行前看不到计划的 Agent 最危险？.pdf",
+     "sha256": "5a841d2c48e838ed5a08f485b2b9600a7d8b248012cbc36d3ca8b59307dae703"
+    },
+    {
+     "path": "workflows/18 - 17｜Agent Plan 可靠性工程：缩短链路长度比提升单步精度更划算.pdf",
+     "sha256": "aa082ef774fe6b6ed59c3a257747f63a2c12254676cf1b449430e93d978cdb7e"
+    },
+    {
+     "path": "workflows/26 - 23｜规划执行：用全局计划约束局部恢复.pdf",
+     "sha256": "506023b9ed71ff80ecfb4b4a59ebdb173b61c0ea5bbee7d35e716d5a2a777cd1"
+    },
+    {
+     "path": "workflows/27 - 24｜提示链：用段间契约阻断错误传播.pdf",
+     "sha256": "c50d2d4a88bf8f489f43074d3970b060c04d317e59e6ce5beebfc4e8ac73b74c"
+    }
+   ]
+  },
+  "rag_multiagent_6": {
+   "count": 6,
+   "files": [
+    {
+     "path": "知识库RAG/19 - 18｜别只答 RAG：教你设计 Agent 的信息检索机制.pdf",
+     "sha256": "3e91d8fbe7115034fdfa0168f83cca4ab2988cbd5597a96ffd513d54ad699955"
+    },
+    {
+     "path": "知识库RAG/20 - 19｜Chunk 的召回精度和粒度，你怎么平衡？.pdf",
+     "sha256": "8fc9edea51abbbc897a08f192b5c82641adebd27a1f9a3d156aced89970b0d5c"
+    },
+    {
+     "path": "知识库RAG/21 - 20｜怎么系统性提高 Agent 检索召回的准确率？.pdf",
+     "sha256": "731fa794e75933eaa1121f62729e36081b6bc9932ad0e947aefff8b02a10c28c"
+    },
+    {
+     "path": "subagents/10 - 09｜Agent 之间的信息传递：从互相投毒到契约交互.pdf",
+     "sha256": "ec22e43c9df24bcff8b96f2c87bbca983ceb6a39b021c744481a97decbb59f74"
+    },
+    {
+     "path": "subagents/11 - 10｜多个 Agent 并发操作同一个世界：隔离优于共享.pdf",
+     "sha256": "609e5d2f91a46a2402377d4760a536a8f15442104f3da00790bebb5ce3ec576c"
+    },
+    {
+     "path": "subagents/37 - 33｜扇出聚合：让多路证据保留差异再汇成结论.pdf",
+     "sha256": "c64c15e7e6948570bc349da1f6920333bb2eba76d6cbd5d49722b651dea24edb"
+    }
+   ]
+  },
+  "architecture_6": {
+   "count": 6,
+   "files": [
+    {
+     "path": "架构设计/03 - 01｜操控循环：驾驭工程的核心框架.pdf",
+     "sha256": "275e344d55712502bceeb06d6476f5d9dcdf5b612eacf7dd4366e5ce684a0644"
+    },
+    {
+     "path": "架构设计/04 - 02｜四个子系统：构成框架与内置 Harness 拆解.pdf",
+     "sha256": "dee4fe547e3032c6708a0687d39fa269dc7fd6404dcbda30560e7322581c68c5"
+    },
+    {
+     "path": "架构设计/08 - 热点加餐｜Loop Engineering：如何把 Agent 的循环工程化.pdf",
+     "sha256": "c03068c912d29d1cc9ca993f34e36605a1b61f1e3737d875bc1e1e0ba746e916"
+    },
+    {
+     "path": "架构设计/17 - 15｜起点：基于 pimono 打造生产级合同审查 Agent Runtime.pdf",
+     "sha256": "627c75c3247bda261d23b4287a790b1fd23d1235e43fcaa1fe5a323438408875"
+    },
+    {
+     "path": "架构设计/24 - 21｜行动模块导论：把任务安全地做好.pdf",
+     "sha256": "66efb70a2c46b266c2cf1cc1a115f933210677c8fe9237b58a211bbf940ce97f"
+    },
+    {
+     "path": "架构设计/29 - 26｜反思模块导论：让 Agent 站到自己的结果之外.pdf",
+     "sha256": "a8c921fa6b2be2694a2b4e54f6ddbd1d73295ce94d87671ed7af4068b281bace"
+    }
+   ]
+  }
+ },
+ "unique": {
+  "e2c206dbec13f17f7785e333370371aec0605338b0ab92fe679368346f798ecc": "安全护栏/12 - 09｜安全基石（上）：用权限控制与沙箱为AI戴上“安全镣铐”.pdf",
+  "bea6ff1cc3819269ae7e3dd48f5fc414386250c53036498f5dff100c2c18aa89": "安全护栏/12 - 11｜RBAC 挡不住 Agent：如何设计一个企业级 Agent 权限系统.pdf",
+  "445a4ce89bfc5383ef1cbff6380733a1f25b3b8645383d7c9cd0aceb47a66d16": "安全护栏/12 - 11｜不出事故的 Agent：三层安全护栏设计防注入，防越权，防失控.pdf",
+  "6f1d6d71041be0ffefd3986a0648de784b7a3db31f5174b5090c297b76e12db2": "安全护栏/13 - 10｜安全基石（下）：Checkpointing，获得让AI“时光倒流”的超能力.pdf",
+  "683420dd419c566e31ff2806bb3c464ffad65b72a88d4cfc17ea60c68052a994": "安全护栏/13 - 12｜人审批后事故反而更大：正确设计 HITL 审批系统.pdf",
+  "bea17def60e76543fc71a89990251aef539171d44485ee71f307f70b1c244e18": "安全护栏/14 - 13｜Prompt 防不住注入：从加防线到零信任体系.pdf",
+  "14182f677ee608402987aed14e5e4952d3c43f8dcdb6664d7f99656cbb05844d": "安全护栏/17 - 16｜防御纵深：利用 Middleware 实现高危命令拦截与飞书人工审批.pdf",
+  "2cf47cce3d66f68457337cf509da7e4a1b8fd8f6caa429994dd84998abc66fa8": "安全护栏/20 - 18｜进阶：拦截管道构建合同敏感信息的多层安全护栏.pdf",
+  "a47673a039e1dbefaf6dca6ae0cd88e1f742e56c1055add7137ea732f0445c97": "安全护栏/28 - 25｜护栏三明治：高风险行动的前中后防线.pdf",
+  "d2e12527be2d004c005e1d4a65c959ec99fa06595c81909447d139b50772fcc9": "hooks/12 - 10｜扩展：Hooks 机制的实战应用.pdf",
+  "59d2f1b362588e371a9fad4e4cd9eb483309058be313b4a7a9c727f478707f22": "hooks/14 - 11｜事件驱动：详解Hooks机制，让AI在关键节点自动触发.pdf",
+  "df8aa4a02e9e3ea790dd8a2c45d1a9e59df781b95b1f43237d0e1c68bbfa31f3": "可观测性/14 - 13｜系统集成：Agent 能力与现有系统无缝对接.pdf",
+  "15a0934009b99350da040f7e63cf420bed79bc2279a992fb7d364a199aec587c": "可观测性/16 - 15｜Agent 的成本总是悄悄飙升：创建网格化天眼账本.pdf",
+  "1bb8549482aa0d12d2d34488905394e4a3c7ae6c69a4561272cfd6cb7a2e502d": "可观测性/17 - 16｜传统监控对 Agent 几乎无效： 搭建 Agent 全链路监控体系.pdf",
+  "4587eb13f3b0c0c1bd75a0f68111f67b458d6c66bee386ca4171f6660970ca6c": "可观测性/19 - 18｜成本与状态追踪：在 Harness 层拦截并记录 Token 消耗与执行耗时.pdf",
+  "182128471e580d7c4f18d689165ec5bf75501f6f4542a340b481869468970ef3": "可观测性/20 - 19｜洞察黑盒：为 Agent 引入 Tracing 机制复盘失败决策路径.pdf",
+  "df57c0e3efb01c5c6b6808dc811f2546dc676d4277b9d1bf398d0755896250fa": "可观测性/32 - 29｜可观测性与排错：生产级系统的最后拼图.pdf",
+  "f15a94a99d0ba55ef83c86e09427646fcb25b0fe226b085c04c0256ee408b78d": "测试质量/13 - 12｜测试策略：单元、集成、E2E 三层测试体系保证质量.pdf",
+  "5086d6d998c1f8814d955315a913d5a6d90a4d4b66d71bcea2d25eab3101cebe": "测试质量/16 - 14｜摸清现有测试：能跑通吗？覆盖度怎样？.pdf",
+  "dbeb5c9c5f0d2383d328fca523ec20e21806d4001049d36c75c331fecaaa65e5": "测试质量/17 - 15｜补出一套兜底测试：让 AI 用 Characterization Test 锁住行为.pdf",
+  "06bd0db66b941718dea590d92e93534b31eca24e93136dbbbe6ef707c736a652": "测试质量/19 - 18｜日志全绿，事故照发：构筑 Agent 测试护栏.pdf",
+  "69c7c16282fbd3a0c7b8d0ba8055490cb97bd27ab1f6c4f73ca3912738264155": "测试质量/21 - 20｜科学度量：如何构建 Benchmark 自动化评估脚本，科学量化 Harness 引擎性能？.pdf",
+  "055dd94b6ba9d021a6c5283e730f2b447288fd9df5a8505cb0ea5eae8c1e8d9c": "测试质量/22 - 19｜编码与测试：AI驱动的TDD与框架能力的协同作战.pdf",
+  "d18f6a10a9553f4194593461bbe293d32432dd3975e69de05f07342a54f2f282": "测试质量/30 - 27｜AI 写代码，保证质量不靠运气，靠体系.pdf",
+  "96265dd9537509e2d3425bba0af6d5782804d223c01ef46f1ec5ac4fa0822c96": "测试质量/30 - 27｜生成评审：让每个版本独立接受审查.pdf",
+  "4e6849633d3ccd9eda087ec4c11c44639d7535b7ee9df7943247e7bc445c18b0": "上下文工程/12 - 11｜会话管理：Session 物理隔离与 Working Memory 的底层实现.pdf",
+  "9bb96059ad97bf23e71211b1c5a5a3486f7831f990a624e87684b23cf9a08a16": "上下文工程/13 - 10｜多模态融合：日志、SQL 和 PDF 一起进 Agent.pdf",
+  "917c2410118943bbeb1544b893c4bd9d7236b0f6591488b4ddd025b91764a111": "上下文工程/13 - 11｜指令文件腐化：AGENTS.md 越来越长，Agent 反而变笨了.pdf",
+  "92fd611678453f17f752f6d410a784f9a3fc16106e8ead51fa9ccc97fa703566": "上下文工程/13 - 12｜上下文窗口：怎么设计一个动态编排的 Context 策略？.pdf",
+  "5c0d7f00bba0a793d7aea41f855c99f7758ea0c0d9063b0ff84e9c2d49ee316c": "上下文工程/13 - 12｜突破内存：基于阶梯降级的 Context Compaction 策略.pdf",
+  "899bf9f79a4ce274b35f4fc5ce944735f3d8dbd99f4987998bea9ccb29672a05": "上下文工程/14 - 11｜记忆模块导论：从草稿纸到长期记忆，建立 Agent 的经验沉淀秩序.pdf",
+  "92fce1092791c00fc8a208a7697b3050e6eb549eb53e38806d14e9aed0516fe5": "上下文工程/14 - 13｜摘要／压缩之后，你怎么把细节找回来？.pdf",
+  "edccd83ad64a81c4d724ba2693bbff5a1d377879c0cb69db475fdf2b519ed196": "上下文工程/14 - 13｜记忆沉淀：状态外部化，基于文件系统的持久化记忆与待办管理.pdf",
+  "769f3f86b49d71985b63f3c2dd6df7de68f2e09287e49e4179447370ddfab9f5": "上下文工程/15 - 12｜分层保留：给 Agent 的记忆建一套货架.pdf",
+  "28e24ae5f3f4f68da1d8cd520638f98601f1d0fbc3b08a3a83d05dcde517d8a4": "上下文工程/15 - 14｜为 AI 股票分析工具装上 Agent（四）：记忆管理.pdf",
+  "d1507f71e55679ac31eb58a14d80f55f5d9165c6ca75898b11c2b5525457f81b": "上下文工程/16 - 13｜检索增强：Agent 的知识库和证据链.pdf",
+  "33b23498c2c902eb3074bd4f7ac218e29b1d8fe92aaf50b2670f55d8424dc179": "上下文工程/17 - 16｜对话／任务特别长长长……怎么办？.pdf",
+  "8aac939120858f8d852f0cad7b8aefbe89bed5214671ba81a6e517bf1a92a1b8": "上下文工程/18 - 15｜失败日记：让 Agent 把摔过的跤变成本事.pdf",
+  "ecc2f50f9b3549b7519bfb5b83381efaec06fa2add6a4b5233a4ba15011f4348": "上下文工程/18 - 17｜如何设计一个面试中富有竞争力的上下文管理机制？.pdf",
+  "6f23f72aa57f69f09c11dc445408dc96efa0c57b14c1e5c24811b67748dd01a0": "上下文工程/19 - 17｜进阶：长上下文与 Skill 调用构建大合同审查流水线.pdf",
+  "e832ea64a27b5c907d184ce476a33b5b29c779fd7c4e2b386f73a2c24c84c36f": "上下文工程/06 - 05｜为什么窗口越大，Agent 越容易忽略最重要的指令？.pdf",
+  "99080b619ef02645ee95f8c6b59654afac2fd3ac118995d313993faabd25e393": "上下文工程/08 - 07｜当 Agent 的记忆开始“精神错乱”，敢遗忘才是解药.pdf",
+  "9681a5d280aabe24a6a0506d681f86b739f9b1430d8fc1b27cff08070d61410d": "上下文工程/10 - 07｜上下文分诊：如何科学分流处置不同信息.pdf",
+  "d8fe8806b21974a0f147a087df5657f7cb6bc6ec60e20ca1314ba69c2219ba89": "上下文工程/11 - 08｜语义压缩：让 200K 装下 1M 的日志.pdf",
+  "b5fd034a4d62d6039f8acb4598c9eab98c574fe35955d6cf30606bd95d79c0a3": "上下文工程/11 - 09｜信息散落：知识来源不唯一且更新不及时.pdf",
+  "e845f500a390e9e9de5aa0c6c45dbba83b009cea27835667ab7bde0d35e0730b": "上下文工程/12 - 09｜渐进发现：信息的觅食循环.pdf",
+  "6561cce4cf976e9a0e70141e5c5a339e4d2856bd8d7cd215f7b41ea7907b312c": "tools/03 - 02｜别把执行权交给概率：六大契约重新定义工具设计.pdf",
+  "eb035392080c8d7dcc49dde3f548e7b4c74e552fb837fcf86c177c18f465905e": "tools/04 - 03｜注意力稀释：当 113 个工具让模型降智时，工程师该怎么做？.pdf",
+  "3645ed4cda86910c9d31a449a40fcacf3c4f2e23e2dca596b34fbf553ace2d84": "tools/08 - 07｜容错艺术：实现支持多级模糊匹配的稳健 Edit 工具.pdf",
+  "5be00242f01e89b9447a8f26b9c43242b8689b4093f7d5a48ccd17fc696f966f": "tools/09 - 08｜并发提效：如何让 Agent 在单轮中并行调用多个互相独立的工具？.pdf",
+  "74812cc7f4ccc4d23318cde1c198c188edca738f7ec2935ecd93f790056730c3": "tools/10 - 09｜TAO 机制：为什么你的 Agent 总是“选错工具”？.pdf",
+  "efb7e18b62e3e7e142fda209e1d046c8443de1cf93378ae5df6cc608c293b896": "tools/10 - 09｜工具管理：让 Agent 高效、安全地使用工具.pdf",
+  "3fb77ce87ee6d64eedbb7a61f4443006db130b73e19f128f3f191de8e6941213": "workflows/06 - 05｜Agent 的 Plan 机制：好 Plan 必备的 5 要素（G4C）.pdf",
+  "3c48d7b357f8ee5e32cdf652a36c92270589db05abcaa42bebedcfecacfd2fe8": "workflows/07 - 06｜Replan（上）：计划赶不上变化？Agent 需要“随机应变”.pdf",
+  "f4521060ac7230d900cf7f8b14d717823895686d7a661a4f0bb282b63cb7ef8d": "workflows/08 - 07｜Replan（下）：失败点不等于根因点，回溯找对“病根”再下刀.pdf",
+  "5a841d2c48e838ed5a08f485b2b9600a7d8b248012cbc36d3ca8b59307dae703": "workflows/09 - 08｜蒙眼狂奔的 ReAct：为什么执行前看不到计划的 Agent 最危险？.pdf",
+  "aa082ef774fe6b6ed59c3a257747f63a2c12254676cf1b449430e93d978cdb7e": "workflows/18 - 17｜Agent Plan 可靠性工程：缩短链路长度比提升单步精度更划算.pdf",
+  "506023b9ed71ff80ecfb4b4a59ebdb173b61c0ea5bbee7d35e716d5a2a777cd1": "workflows/26 - 23｜规划执行：用全局计划约束局部恢复.pdf",
+  "c50d2d4a88bf8f489f43074d3970b060c04d317e59e6ce5beebfc4e8ac73b74c": "workflows/27 - 24｜提示链：用段间契约阻断错误传播.pdf",
+  "3e91d8fbe7115034fdfa0168f83cca4ab2988cbd5597a96ffd513d54ad699955": "知识库RAG/19 - 18｜别只答 RAG：教你设计 Agent 的信息检索机制.pdf",
+  "8fc9edea51abbbc897a08f192b5c82641adebd27a1f9a3d156aced89970b0d5c": "知识库RAG/20 - 19｜Chunk 的召回精度和粒度，你怎么平衡？.pdf",
+  "731fa794e75933eaa1121f62729e36081b6bc9932ad0e947aefff8b02a10c28c": "知识库RAG/21 - 20｜怎么系统性提高 Agent 检索召回的准确率？.pdf",
+  "ec22e43c9df24bcff8b96f2c87bbca983ceb6a39b021c744481a97decbb59f74": "subagents/10 - 09｜Agent 之间的信息传递：从互相投毒到契约交互.pdf",
+  "609e5d2f91a46a2402377d4760a536a8f15442104f3da00790bebb5ce3ec576c": "subagents/11 - 10｜多个 Agent 并发操作同一个世界：隔离优于共享.pdf",
+  "c64c15e7e6948570bc349da1f6920333bb2eba76d6cbd5d49722b651dea24edb": "subagents/37 - 33｜扇出聚合：让多路证据保留差异再汇成结论.pdf",
+  "275e344d55712502bceeb06d6476f5d9dcdf5b612eacf7dd4366e5ce684a0644": "架构设计/03 - 01｜操控循环：驾驭工程的核心框架.pdf",
+  "dee4fe547e3032c6708a0687d39fa269dc7fd6404dcbda30560e7322581c68c5": "架构设计/04 - 02｜四个子系统：构成框架与内置 Harness 拆解.pdf",
+  "c03068c912d29d1cc9ca993f34e36605a1b61f1e3737d875bc1e1e0ba746e916": "架构设计/08 - 热点加餐｜Loop Engineering：如何把 Agent 的循环工程化.pdf",
+  "627c75c3247bda261d23b4287a790b1fd23d1235e43fcaa1fe5a323438408875": "架构设计/17 - 15｜起点：基于 pimono 打造生产级合同审查 Agent Runtime.pdf",
+  "66efb70a2c46b266c2cf1cc1a115f933210677c8fe9237b58a211bbf940ce97f": "架构设计/24 - 21｜行动模块导论：把任务安全地做好.pdf",
+  "a8c921fa6b2be2694a2b4e54f6ddbd1d73295ce94d87671ed7af4068b281bace": "架构设计/29 - 26｜反思模块导论：让 Agent 站到自己的结果之外.pdf"
+ },
+ "total_assigned": 71,
+ "unique_count": 71
+}

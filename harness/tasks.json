@@ -3,6 +3,282 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0093",
+      "title": "凭据样式检测统一（含 password）",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0093/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "代码复审中",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0093/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0094",
+      "title": "不含证据块的平台反馈不被上下文存根",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0094/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "离线 Approved；待全量门禁与部署",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0094/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0095",
+      "title": "failure_point 归因提示",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0095/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "离线 Approved；待全量门禁与部署",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0095/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0096",
+      "title": "引文来源命中固定注入规则时提示复核",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0096/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "离线 Approved（限现有正则、只提示）；待全量门禁与部署",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0096/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0097",
+      "title": "模型/工具 latency_ms 与 free 输出影子扫描（含 HA-0098）",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0097/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "代码复审中",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0097/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0099",
+      "title": "编造编号软错误",
+      "status": "backlog",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0099/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "收敛期候选，不合并",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0099/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0110",
+      "title": "检索归一",
+      "status": "backlog",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0110/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "收敛期候选，不合并",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0110/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0111",
+      "title": "主体与数值绑定提示",
+      "status": "backlog",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0111/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "收敛期候选，不合并",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0111/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0112",
+      "title": "工具契约漂移测试",
+      "status": "backlog",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0112/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "收敛期候选，不合并",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0112/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0113",
+      "title": "版本摘要",
+      "status": "backlog",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0113/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "收敛期候选，不合并",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0113/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0114",
+      "title": "只读 trace 投影",
+      "status": "backlog",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0114/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "收敛期候选，不合并",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0114/acceptance.md"
+      ]
+    },
+    {
+      "id": "HA-0115",
+      "title": "两类未读缺口同时上报",
+      "status": "backlog",
+      "risk": "medium",
+      "scope": [
+        "见 specs/testing/DSH_CLAUDE_HARDENING.md"
+      ],
+      "non_goals": [
+        "合并、部署、真实 Provider 验收由 mymaccodex 另行安排"
+      ],
+      "acceptance": [
+        "harness/evidence/HA-0115/acceptance.md"
+      ],
+      "depends_on": [],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": "收敛期候选，不合并",
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0115/acceptance.md"
+      ]
+    },
+    {
       "id": "HA-0092",
       "title": "DSH清理故障不覆盖主错误且释放资源",
       "status": "waiting_approval",

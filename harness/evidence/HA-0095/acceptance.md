@@ -6,4 +6,4 @@
 
 验证（定向）：tests/test_dsh_failure_point.py 3 passed（纯函数顺序；真实 SDK + 合成 Provider：只读 clause-1 后反复错误提交 → failed_step=S1、failure_point=S3；只搜索不提交 → S1/S3）。HA-0082 计划测试与探针共 26 passed。突变：去掉错误码映射 2 failed；去掉 blocked 优先 1 failed。
 
-边界：不是根因分析；未知错误码只退回最早未完成步骤。前端暂未展示 failure_point。
+边界：failure_point 是“归因提示”，不是根因。例如 Provider 超时发生时，若之前的 S3 处于 blocked，它仍会被选为 failure_point（mymaccodex 复审指出）。未知错误码退回最早未完成步骤。不改变执行或发布权。前端暂未展示。复审：codex Approved（d2a787f，限代码与离线行为）。
