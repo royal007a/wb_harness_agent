@@ -17,9 +17,16 @@
 - 独立真实 loopback HTTP 探针：合成 Python 子进程对模型、工具各投递两次，平台实际执行各一次。这一条不是官方 SDK，也不是真实 Provider。
 - 定向内存突变：harness/dsh_crossing_mutations.py，7/7 被捕获，XML failures > 0、errors=0。每个突变只跑对应的定向用例，不是全库 mutation score；不修改源文件。
 - DSH 全部测试文件 + test_workbench.py：262 passed，见 targeted.xml/log。
-- 初次全量 3 failed / 1725 passed / 22 skipped：两个旧压缩测试的 6500 字符窗口被更长的平台票据挤满，先安全失败，未到其进展断言；仅测试窗口分别调为 7600/7100，生产 64000 不变。第三条是新 HTTP 探针继承 macOS 系统代理，已在探针显式禁用代理。修复后这 36 项定向通过。最终全量结果待下文更新。
+- 初次全量 3 failed / 1725 passed / 22 skipped：两个旧压缩测试的 6500 字符窗口被更长的平台票据挤满，先安全失败，未到其进展断言；仅测试窗口分别调为 7600/7100，生产 64000 不变。第三条是新 HTTP 探针继承 macOS 系统代理，已在探针显式禁用代理。修复后这 36 项定向通过。
+- 最终独立运行 verify.sh exit 0：1729 passed / 22 skipped；后续评测、准入检查、Node 语法检查和 git diff --check 都通过，见 verify.log。未设置真实 Provider 凭据，未执行真实调用。
 - 旧对抗探针按新信封升级，仍验证业务拒绝原因；不保留不带票据的兼容旁路。没有声称新文件原样放回旧版能得到行为反例（旧版没有收据模块）。
+
+## 独立复审
+
+mymacclaude 对 7ad0793 给出 Approved，隔离 worktree 复跑 crossing + HA-0082 计划与探针，43 passed；没有重跑真实 Provider 或部署。
+
+两个非阻塞边界已登记 DSH-CROSSING-01/02：SDK 在本地拒绝非法参数、从未投递工具时，下一轮报 PREDECESSOR_PENDING 并安全失败；预签发而未使用的下一模型票据在 Run 终态后被标为 failed，这不是实际发出的模型调用失败，不增加预算调用次数。后续再细分 unused/retired 及事件顺序，本轮不修改已批准的运行代码。
 
 ## 尚待完成
 
-最终全量、独立复审、8876 固定版本部署及新版本浏览器/小额真实 Provider 冒烟。8765/132 不在本轮范围内。没有语义正确性、跨进程回放或生产多租户验收。
+8876 固定版本部署及新版本浏览器/小额真实 Provider 冒烟。必须验证 Ark 接受平台改写后的 tool_call_id，才能声明真实调用通过。8765/132 不在本轮范围内。没有语义正确性、跨进程回放或生产多租户验收。
