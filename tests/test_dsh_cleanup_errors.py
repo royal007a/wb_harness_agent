@@ -36,7 +36,8 @@ def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monke
     assert not list(root.glob('run-*'))  # lease was released, not just subprocess reaped
 
 
-def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch):
+@pytest.mark.parametrize('outer_error', [False, True])
+def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
     children = child_bridge(monkeypatch,
         'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
     original = os.killpg
@@ -46,10 +47,18 @@ def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch):
         return original(pgid, sig)
     monkeypatch.setattr(os, 'killpg', denied)
     root = tmp_path.resolve() / 'owned'
-    with pytest.raises(Problem) as caught:
-        run_adapter(root)
-    assert caught.value.code == 'DSH_CLEANUP_FAILED'
-    assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+    def verify_failure():
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == 'DSH_CLEANUP_FAILED'
+        assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+    if outer_error:
+        try:
+            raise ValueError('unrelated caller exception')
+        except ValueError:
+            verify_failure()
+    else:
+        verify_failure()
     assert children[0].stdout.closed
     assert not list(root.glob('run-*'))
 

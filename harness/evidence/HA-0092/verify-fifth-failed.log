@@ -1,0 +1,917 @@
+{"route_methods": 155, "features": 23, "mode": "checked"}
+......................................Timeout (0:01:30)!
+Thread 0x00000001718fb000 [AnyIO worker thread] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 369 in wait
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/queue.py", line 199 in get
+  File "/USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001708ef000 [Thread-18 (run)] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/selectors.py", line 548 in select
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py", line 128 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py", line 205 in run
+  File "/USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/uvicorn/server.py", line 75 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x000000016f8e3000 [asyncio-waitpid-0] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/unix_events.py", line 951 in _do_waitpid
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001fa61dd80 (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/selectors.py", line 548 in select
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "/USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 56 in greenlet_main
+
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer call
+ui = (<Page url='http://127.0.0.1:54109/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10f6697f0>, {'id':...bae344f8266b4e4f', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54109')
+
+    def test_early_stream_eof_never_commits_preview_as_answer(ui):
+        page, runtime, agent, base = ui
+        created = session(runtime, agent, 'truncated transport')
+        page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
+            status=200, content_type='text/event-stream',
+            body='data: ' + json.dumps({'type': 'delta', 'content': 'uncommitted'}) + '\n\n'))
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+        page.locator('#chat-input').fill('truncated')
+>       page.locator('#send').click()
+
+tests/test_agent_runtime_ui.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:17876: in click
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_locator.py:165: in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x10e79f8c0>
+cb = <function Channel.send.<locals>.<lambda> at 0x10f725850>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("#send")
+E               - locator resolved to <button disabled id="send" type="submit" class="primary">发送 ↗</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               24 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+F................................. [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+........................................................................ [ 23%]
+...................
+IMMEDIATE_FAILURE tests/test_dsh_startup.py::test_untrusted_error_envelope_does_not_forward_fields[body4] call
+self = <adapters.dsh.DshAdapter object at 0x10e741950>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_untrusted_error_envelope_4/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+emit = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+check = <function <lambda> at 0x10c3ae770>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+>                               raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+E                               backend.analysis.Problem: DSH 未正常完成。
+
+adapters/dsh.py:140: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_untrusted_error_envelope_4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f88ab30>
+body = {'type': 'error'}
+
+    @pytest.mark.parametrize('body', [
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'message': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'stack': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'SYNTH_PRIVATE'}, {'type': 'error', 'code': []},
+        {'type': 'error'}, [],
+    ])
+    def test_untrusted_error_envelope_does_not_forward_fields(tmp_path, monkeypatch, body):
+        encoded = json.dumps(body)
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({encoded!r}, flush=True)')
+        with pytest.raises(Problem) as caught:
+>           run_adapter(tmp_path.resolve() / 'owned')
+
+tests/test_dsh_startup.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <adapters.dsh.DshAdapter object at 0x10e741950>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_untrusted_error_envelope_4/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+emit = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+check = <function <lambda> at 0x10c3ae770>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+                            raise Problem(code, message, status)
+                        elif value.get('type') == 'observation':
+                            emit(value)
+                        elif value.get('type') == 'result' and result is None:
+                            result = value
+                        else:
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+            process.wait(timeout=5)
+            check()
+            if errors:
+                raise errors[0]
+            if process.returncode or buffer or result is None:
+                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+            return result
+        finally:
+            if process is not None:
+                # Own process group, never a PID obtained from untrusted input.
+                try:
+>                   os.killpg(process.pid, signal.SIGTERM)
+E                   PermissionError: [Errno 1] Operation not permitted
+
+adapters/dsh.py:160: PermissionError
+F.....
+IMMEDIATE_FAILURE tests/test_dsh_startup.py::test_startup_failure_has_no_model_spend_or_artifacts[DSH_INITIALIZATION_FAILED] call
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_startup_failure_has_no_mo1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f8881a0>
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_TIMEOUT', 'DSH_INITIALIZATION_FAILED'])
+    def test_startup_failure_has_no_model_spend_or_artifacts(tmp_path, monkeypatch, code):
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(tmp_path.resolve() / 'owned'))
+        monkeypatch.delenv('HARNESS_DSH_REAL_ENABLED', raising=False)
+        # Construct app before replacing Popen: release lookup legitimately uses git.
+        with TestClient(create_app(tmp_path / 'test.db', run_worker=False), base_url='http://localhost') as client:
+            rt = client.app.state.service.dsh
+            ident = rt.create(dict(objective='付款核对', document='甲方30天付款。',
+                                  public_data_confirmed=True, mode='integration_probe'),
+                              'startup-fail')['initial_run']['id']
+            body = json.dumps({'type': 'error', 'code': code})
+            children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+            rt.execute(ident)
+            result = rt.detail(ident)
+            assert result['run']['status'] == 'failed'
+>           assert result['run']['exit_reason'] == code
+E           AssertionError: assert 'DSH_RUNTIME_FAILED' == 'DSH_INITIALIZATION_FAILED'
+E             
+E             - DSH_INITIALIZATION_FAILED
+E             + DSH_RUNTIME_FAILED
+
+tests/test_dsh_startup.py:159: AssertionError
+F.............................................. [ 27%]
+...................................sssss................................ [ 31%]
+........................................................................ [ 35%]
+........................................................................ [ 39%]
+........................................................................ [ 43%]
+.....................................................................s.s [ 47%]
+.ss..................................................................... [ 51%]
+..............................ss........................................ [ 55%]
+........................................................................ [ 59%]
+........................................................................ [ 62%]
+........................................................................ [ 66%]
+........................................................sssssssssss..... [ 70%]
+........................................................................ [ 74%]
+........................................................................ [ 78%]
+........................................................................ [ 82%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+........................................................................ [ 94%]
+........................................................................ [ 98%]
+.............................                                            [100%]
+=================================== FAILURES ===================================
+____________ test_early_stream_eof_never_commits_preview_as_answer _____________
+
+ui = (<Page url='http://127.0.0.1:54109/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10f6697f0>, {'id':...bae344f8266b4e4f', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54109')
+
+    def test_early_stream_eof_never_commits_preview_as_answer(ui):
+        page, runtime, agent, base = ui
+        created = session(runtime, agent, 'truncated transport')
+        page.route('**/sessions/' + created['id'] + '/messages', lambda route: route.fulfill(
+            status=200, content_type='text/event-stream',
+            body='data: ' + json.dumps({'type': 'delta', 'content': 'uncommitted'}) + '\n\n'))
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+        page.locator('#chat-input').fill('truncated')
+>       page.locator('#send').click()
+
+tests/test_agent_runtime_ui.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:17876: in click
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_locator.py:165: in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x10e79f8c0>
+cb = <function Channel.send.<locals>.<lambda> at 0x10f725850>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("#send")
+E               - locator resolved to <button disabled id="send" type="submit" class="primary">发送 ↗</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               24 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+----------------------------- Captured stdout call -----------------------------
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.649 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1576806.726 /agent-runtime
+ASGI_HEADERS 1576808.183 /agent-runtime 200
+ASGI_FINISH 1576808.183 /agent-runtime elapsed 1.457
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.262 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.516 request GET <loopback>/static/agent-runtime.css
+ASGI_BEGIN 1576808.676 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.607 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN UI_NETWORK 1576808.696 /static/agent-runtime.js
+tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answerASGI_BEGIN 3.609 request GET <loopback>/static/paths.js
+ UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.626 finished <loopback>/agent-runtime
+1576808.7 /static/paths.js
+ASGI_HEADERS 1576808.798 /static/agent-runtime.css 200
+ASGI_HEADERS 1576808.805 /static/agent-runtime.js 200
+ASGI_HEADERS 1576808.806 /static/paths.js 200
+ASGI_FINISH 1576808.81 /static/agent-runtime.css elapsed 0.133
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.724 response ASGI_FINISH 1576808.812 /static/agent-runtime.js elapsed 0.115
+200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1576808.814 /static/paths.js elapsed 0.114
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.732 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.83 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.83 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.847 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 3.847 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 6.876 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 6.892 load 
+ASGI_BEGIN 1576812.086 /api/local/agent-runtime/providers
+ASGI_BEGIN 1576812.121 /api/local/agent-runtime/models
+ASGI_BEGIN 1576812.123 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 7.153 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1576812.886 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 9.224 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 9.262 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 9.345 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1576814.455 /api/local/agent-runtime/models 200
+ASGI_HEADERS 1576814.455 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1576814.456 /api/local/agent-runtime/models elapsed 2.334
+ASGI_FINISH 1576814.456 /api/local/agent-runtime/agents elapsed 2.333
+ASGI_HEADERS 1576814.456 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1576814.456 /api/local/agent-runtime/providers elapsed 2.37
+ASGI_HEADERS 1576814.457 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1576814.457 /api/local/agent-runtime/sessions elapsed 1.571
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.071 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.072 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.097 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.203 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.276 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.276 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.289 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.29 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 10.291 request GET <loopback>/api/local/agent-runtime/providers/rtp_791dbc904c8c4fd195a8b1f2b76b0160/readiness
+ASGI_BEGIN 1576818.201 /api/local/agent-runtime/providers/rtp_791dbc904c8c4fd195a8b1f2b76b0160/readiness
+ASGI_HEADERS 1576819.178 /api/local/agent-runtime/providers/rtp_791dbc904c8c4fd195a8b1f2b76b0160/readiness 200
+ASGI_FINISH 1576819.178 /api/local/agent-runtime/providers/rtp_791dbc904c8c4fd195a8b1f2b76b0160/readiness elapsed 0.977
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.572 response 200 <loopback>/api/local/agent-runtime/providers/rtp_791dbc904c8c4fd195a8b1f2b76b0160/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.572 finished <loopback>/api/local/agent-runtime/providers/rtp_791dbc904c8c4fd195a8b1f2b76b0160/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 33.962 request GET <loopback>/api/local/agent-runtime/sessions/rts_951c06bac2ff4e849d485605a5ba4607
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 34.049 failed <loopback>/api/local/agent-runtime/sessions/rts_951c06bac2ff4e849d485605a5ba4607 net::ERR_ABORTED
+ASGI_BEGIN 1576839.165 /api/local/agent-runtime/sessions/rts_951c06bac2ff4e849d485605a5ba4607
+ASGI_HEADERS 1576840.058 /api/local/agent-runtime/sessions/rts_951c06bac2ff4e849d485605a5ba4607 200
+ASGI_FINISH 1576840.061 /api/local/agent-runtime/sessions/rts_951c06bac2ff4e849d485605a5ba4607 elapsed 0.896
+--------------------------- Captured stdout teardown ---------------------------
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 113.144 close 
+_________ test_untrusted_error_envelope_does_not_forward_fields[body4] _________
+
+self = <adapters.dsh.DshAdapter object at 0x10e741950>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_untrusted_error_envelope_4/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+emit = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+check = <function <lambda> at 0x10c3ae770>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+>                               raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+E                               backend.analysis.Problem: DSH 未正常完成。
+
+adapters/dsh.py:140: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_untrusted_error_envelope_4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f88ab30>
+body = {'type': 'error'}
+
+    @pytest.mark.parametrize('body', [
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'message': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'stack': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'SYNTH_PRIVATE'}, {'type': 'error', 'code': []},
+        {'type': 'error'}, [],
+    ])
+    def test_untrusted_error_envelope_does_not_forward_fields(tmp_path, monkeypatch, body):
+        encoded = json.dumps(body)
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({encoded!r}, flush=True)')
+        with pytest.raises(Problem) as caught:
+>           run_adapter(tmp_path.resolve() / 'owned')
+
+tests/test_dsh_startup.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <adapters.dsh.DshAdapter object at 0x10e741950>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_untrusted_error_envelope_4/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+emit = <function run_adapter.<locals>.forbidden at 0x10f1728d0>
+check = <function <lambda> at 0x10c3ae770>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+                            raise Problem(code, message, status)
+                        elif value.get('type') == 'observation':
+                            emit(value)
+                        elif value.get('type') == 'result' and result is None:
+                            result = value
+                        else:
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+            process.wait(timeout=5)
+            check()
+            if errors:
+                raise errors[0]
+            if process.returncode or buffer or result is None:
+                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+            return result
+        finally:
+            if process is not None:
+                # Own process group, never a PID obtained from untrusted input.
+                try:
+>                   os.killpg(process.pid, signal.SIGTERM)
+E                   PermissionError: [Errno 1] Operation not permitted
+
+adapters/dsh.py:160: PermissionError
+_ test_startup_failure_has_no_model_spend_or_artifacts[DSH_INITIALIZATION_FAILED] _
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-104/test_startup_failure_has_no_mo1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f8881a0>
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_TIMEOUT', 'DSH_INITIALIZATION_FAILED'])
+    def test_startup_failure_has_no_model_spend_or_artifacts(tmp_path, monkeypatch, code):
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(tmp_path.resolve() / 'owned'))
+        monkeypatch.delenv('HARNESS_DSH_REAL_ENABLED', raising=False)
+        # Construct app before replacing Popen: release lookup legitimately uses git.
+        with TestClient(create_app(tmp_path / 'test.db', run_worker=False), base_url='http://localhost') as client:
+            rt = client.app.state.service.dsh
+            ident = rt.create(dict(objective='付款核对', document='甲方30天付款。',
+                                  public_data_confirmed=True, mode='integration_probe'),
+                              'startup-fail')['initial_run']['id']
+            body = json.dumps({'type': 'error', 'code': code})
+            children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+            rt.execute(ident)
+            result = rt.detail(ident)
+            assert result['run']['status'] == 'failed'
+>           assert result['run']['exit_reason'] == code
+E           AssertionError: assert 'DSH_RUNTIME_FAILED' == 'DSH_INITIALIZATION_FAILED'
+E             
+E             - DSH_INITIALIZATION_FAILED
+E             + DSH_RUNTIME_FAILED
+
+tests/test_dsh_startup.py:159: AssertionError
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer
+FAILED tests/test_dsh_startup.py::test_untrusted_error_envelope_does_not_forward_fields[body4]
+FAILED tests/test_dsh_startup.py::test_startup_failure_has_no_model_spend_or_artifacts[DSH_INITIALIZATION_FAILED]
+3 failed, 1804 passed, 22 skipped, 1 warning in 3229.81s (0:53:49)

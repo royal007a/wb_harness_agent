@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="14" time="4.296" timestamp="2026-10-07T05:29:31.697880+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED]" time="0.339"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no0/owned/run-gzlf8elq')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no0/owned/run-gzlf8elq')] = list(&lt;map object at 0x10d06e6c0&gt;)&#10; +    where &lt;map object at 0x10d06e6c0&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no0/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cf1be10&gt;
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+        assert children[0].stdout.closed
+&gt;       assert not list(root.glob('run-*'))  # lease was released, not just subprocess reaped
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no0/owned/run-gzlf8elq')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no0/owned/run-gzlf8elq')] = list(&lt;map object at 0x10d06e6c0&gt;)
+E        +    where &lt;map object at 0x10d06e6c0&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no0/owned').glob
+
+tests/test_dsh_cleanup_errors.py:36: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT]" time="0.108"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no1/owned/run-lfjkw7gz')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no1/owned/run-lfjkw7gz')] = list(&lt;map object at 0x10d04bd80&gt;)&#10; +    where &lt;map object at 0x10d04bd80&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no1/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d064050&gt;
+code = 'DSH_INITIALIZATION_TIMEOUT'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+        assert children[0].stdout.closed
+&gt;       assert not list(root.glob('run-*'))  # lease was released, not just subprocess reaped
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no1/owned/run-lfjkw7gz')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no1/owned/run-lfjkw7gz')] = list(&lt;map object at 0x10d04bd80&gt;)
+E        +    where &lt;map object at 0x10d04bd80&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no1/owned').glob
+
+tests/test_dsh_cleanup_errors.py:36: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED]" time="0.111"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no2/owned/run-oussbcfq')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no2/owned/run-oussbcfq')] = list(&lt;map object at 0x10d06de40&gt;)&#10; +    where &lt;map object at 0x10d06de40&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no2/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cfcd5b0&gt;
+code = 'DSH_RUNTIME_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+        assert children[0].stdout.closed
+&gt;       assert not list(root.glob('run-*'))  # lease was released, not just subprocess reaped
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no2/owned/run-oussbcfq')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no2/owned/run-oussbcfq')] = list(&lt;map object at 0x10d06de40&gt;)
+E        +    where &lt;map object at 0x10d06de40&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no2/owned').glob
+
+tests/test_dsh_cleanup_errors.py:36: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED]" time="0.105"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no3/owned/run-u3v2n937')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no3/owned/run-u3v2n937')] = list(&lt;map object at 0x10d0e7a40&gt;)&#10; +    where &lt;map object at 0x10d0e7a40&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no3/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no3')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d069040&gt;
+code = 'DSH_CANCELLED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+        assert children[0].stdout.closed
+&gt;       assert not list(root.glob('run-*'))  # lease was released, not just subprocess reaped
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no3/owned/run-u3v2n937')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no3/owned/run-u3v2n937')] = list(&lt;map object at 0x10d0e7a40&gt;)
+E        +    where &lt;map object at 0x10d0e7a40&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_signal_permission_does_no3/owned').glob
+
+tests/test_dsh_cleanup_errors.py:36: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_success_with_cleanup_fault_is_not_success[False]" time="0.104"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul0/owned/run-gyzw_z00')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul0/owned/run-gyzw_z00')] = list(&lt;map object at 0x10d0c4280&gt;)&#10; +    where &lt;map object at 0x10d0c4280&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul0/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d069ae0&gt;
+outer_error = False
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+                verify_failure()
+        else:
+            verify_failure()
+        assert children[0].stdout.closed
+&gt;       assert not list(root.glob('run-*'))
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul0/owned/run-gyzw_z00')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul0/owned/run-gyzw_z00')] = list(&lt;map object at 0x10d0c4280&gt;)
+E        +    where &lt;map object at 0x10d0c4280&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul0/owned').glob
+
+tests/test_dsh_cleanup_errors.py:63: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_success_with_cleanup_fault_is_not_success[True]" time="0.106"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul1/owned/run-qlwj9bmg')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul1/owned/run-qlwj9bmg')] = list(&lt;map object at 0x10d09dbc0&gt;)&#10; +    where &lt;map object at 0x10d09dbc0&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul1/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d003250&gt;
+outer_error = True
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+                verify_failure()
+        else:
+            verify_failure()
+        assert children[0].stdout.closed
+&gt;       assert not list(root.glob('run-*'))
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul1/owned/run-qlwj9bmg')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul1/owned/run-qlwj9bmg')] = list(&lt;map object at 0x10d09dbc0&gt;)
+E        +    where &lt;map object at 0x10d09dbc0&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_success_with_cleanup_faul1/owned').glob
+
+tests/test_dsh_cleanup_errors.py:63: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[shutdown]" time="0.314"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe0/owned/run-dstqcb8r')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe0/owned/run-dstqcb8r')] = list(&lt;map object at 0x10d040b40&gt;)&#10; +    where &lt;map object at 0x10d040b40&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe0/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d002b50&gt;
+phase = 'shutdown'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == 'DSH_INITIALIZATION_FAILED'
+        assert calls
+&gt;       assert not list(root.glob('run-*'))
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe0/owned/run-dstqcb8r')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe0/owned/run-dstqcb8r')] = list(&lt;map object at 0x10d040b40&gt;)
+E        +    where &lt;map object at 0x10d040b40&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe0/owned').glob
+
+tests/test_dsh_cleanup_errors.py:110: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[server_close]" time="0.111"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe1/owned/run-kdb4uq1_')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe1/owned/run-kdb4uq1_')] = list(&lt;map object at 0x10d09e880&gt;)&#10; +    where &lt;map object at 0x10d09e880&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe1/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d0258b0&gt;
+phase = 'server_close'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == 'DSH_INITIALIZATION_FAILED'
+        assert calls
+&gt;       assert not list(root.glob('run-*'))
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe1/owned/run-kdb4uq1_')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe1/owned/run-kdb4uq1_')] = list(&lt;map object at 0x10d09e880&gt;)
+E        +    where &lt;map object at 0x10d09e880&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe1/owned').glob
+
+tests/test_dsh_cleanup_errors.py:110: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[join]" time="0.113"><failure message="AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe2/owned/run-se_17wxq')]&#10; +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe2/owned/run-se_17wxq')] = list(&lt;map object at 0x10d06e0c0&gt;)&#10; +    where &lt;map object at 0x10d06e0c0&gt; = glob('run-*')&#10; +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe2/owned').glob">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d024aa0&gt;
+phase = 'join'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == 'DSH_INITIALIZATION_FAILED'
+        assert calls
+&gt;       assert not list(root.glob('run-*'))
+E       AssertionError: assert not [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe2/owned/run-se_17wxq')]
+E        +  where [PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe2/owned/run-se_17wxq')] = list(&lt;map object at 0x10d06e0c0&gt;)
+E        +    where &lt;map object at 0x10d06e0c0&gt; = glob('run-*')
+E        +      where glob = PosixPath('/TMP/pytest-of-weberzhao/pytest-118/test_later_resources_close_whe2/owned').glob
+
+tests/test_dsh_cleanup_errors.py:110: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_os]" time="0.002" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_timeout]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdin]" time="0.001" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdout]" time="0.001" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[kill]" time="0.001" /></testsuite></testsuites>

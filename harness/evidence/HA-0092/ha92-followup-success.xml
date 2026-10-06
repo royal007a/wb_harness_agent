@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="14" time="7.131" timestamp="2026-10-07T05:29:21.860615+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED]" time="0.894" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT]" time="0.108" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED]" time="0.106" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED]" time="0.105" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_success_with_cleanup_fault_is_not_success[False]" time="0.109"><failure message="Failed: DID NOT RAISE Problem">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-117/test_success_with_cleanup_faul0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108b19590&gt;
+outer_error = False
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+                verify_failure()
+        else:
+&gt;           verify_failure()
+
+tests/test_dsh_cleanup_errors.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def verify_failure():
+&gt;       with pytest.raises(Problem) as caught:
+             ^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Problem
+
+tests/test_dsh_cleanup_errors.py:51: Failed</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_success_with_cleanup_fault_is_not_success[True]" time="0.120"><failure message="Failed: DID NOT RAISE Problem">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-117/test_success_with_cleanup_faul1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108ab3050&gt;
+outer_error = True
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+&gt;               raise ValueError('unrelated caller exception')
+E               ValueError: unrelated caller exception
+
+tests/test_dsh_cleanup_errors.py:57: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-117/test_success_with_cleanup_faul1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108ab3050&gt;
+outer_error = True
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+&gt;               verify_failure()
+
+tests/test_dsh_cleanup_errors.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def verify_failure():
+&gt;       with pytest.raises(Problem) as caught:
+             ^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Problem
+
+tests/test_dsh_cleanup_errors.py:51: Failed</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[shutdown]" time="0.187" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[server_close]" time="0.114" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[join]" time="0.116" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_os]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_timeout]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdin]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdout]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[kill]" time="0.000" /></testsuite></testsuites>

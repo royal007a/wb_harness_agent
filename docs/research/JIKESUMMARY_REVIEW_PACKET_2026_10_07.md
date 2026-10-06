@@ -1,6 +1,6 @@
 # DSH课程优化复审入口
 
-本轮包含三项运行行为修复、一项评分器修复和两项测试加固。未部署，不能把定向通过或课程阅读当作发布验收。研究索引见[JIKESUMMARY_INDEX](JIKESUMMARY_INDEX_2026_10_07.md)，源码基线5939e5d，当前运行代码4b8ec1e，第五轮完整测试固定a5ec114。
+本轮包含四项运行行为修复、一项评分器修复和两项测试加固。未部署，不能把定向通过或课程阅读当作发布验收。研究索引见[JIKESUMMARY_INDEX](JIKESUMMARY_INDEX_2026_10_07.md)，源码基线5939e5d；第五轮完整测试固定a5ec114，之后HA92增加适配器清理修复。
 
 ## 固定切片与最小复跑
 
@@ -14,6 +14,7 @@
 | HA88 | 85745bb | tests/test_dsh_payment_scoring.py | 30与300、自然日与工作日；失败无产物不算无误报；ID必须唯一且与labels完整一致 |
 | HA89 | 4b8ec1e | tests/test_dsh_runtime.py -k timeout_while_provider_waits | 先到达合成Provider再触发期限；协程取消、调用unknown与资源清理 |
 | HA91 | a5ec114 | tests/test_dsh_runtime.py -k 'cancel_while_provider_waits or sigkill_then_recover' | 明确挂起代替0.8秒返回；设置等待与取消期限分开；finally回收测试线程；kill后恢复断言不放宽 |
+| HA92 | e64b03d及后续显式operation_failed修订（以交审SHA为准） | tests/test_dsh_cleanup_errors.py tests/test_dsh_startup.py | 清理故障不覆盖主异常；正常返回不得藏在外层except后冒充成功；拒绝升级信号，其他资源仍释放；活目录保留 |
 
 每项对应`harness/evidence/HA-编号/acceptance.md`，含SHA、失败基线、突变方法和边界。HA85在HA86之前的SDK失败原样保留；后来的联合114项才包含最终11条HA85测试，不倒填最初结果。
 
@@ -21,7 +22,7 @@ HA88后续实际官方SDK重跑见`harness/evidence/HA-0088/sdk-evaluation-follo
 
 ## 发布门禁与资源约束
 
-四轮完整运行均未通过，失败与中断日志保留在HA85/HA89。第四轮3失败/1804通过/22跳过，取消和崩溃测试未抵达注入阶段，intent子进程5秒超时；其后3项独立复跑通过，不拼接成全量成功。第五轮正在冻结a5ec114运行，无-x、不跳过UI、未调整intent期限；诊断插件只透传记录时序。
+五轮完整运行均未通过，失败与中断日志保留在HA85/HA89/HA92。第四轮3失败/1804通过/22跳过，取消和崩溃测试未抵达注入阶段，intent子进程5秒超时；其后3项独立复跑通过，不拼接成全量成功。第五轮a5ec114为3失败/1804通过/22跳过：UI详情GET中止、两个startup错误分类失败；无-x、不跳过UI、未调整intent期限，诊断插件只透传记录时序。UI原用例隔离通过也不算已修复根因。HA92定向通过不能替代下一轮完整验证。
 
 8876只读核对：release ad957fb888789eccc1150d0ea0df643cce8047c9，label和监听PID64681，无进行中DSH Run。此观察不是未来重启许可的身份快照；真正停服前必须重新核对。8765、132、生产库和Keychain未操作。
 

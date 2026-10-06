@@ -1,0 +1,117 @@
+....FF........                                                           [100%]
+=================================== FAILURES ===================================
+____________ test_success_with_cleanup_fault_is_not_success[False] _____________
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-117/test_success_with_cleanup_faul0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108b19590>
+outer_error = False
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+                verify_failure()
+        else:
+>           verify_failure()
+
+tests/test_dsh_cleanup_errors.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def verify_failure():
+>       with pytest.raises(Problem) as caught:
+             ^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Problem
+
+tests/test_dsh_cleanup_errors.py:51: Failed
+_____________ test_success_with_cleanup_fault_is_not_success[True] _____________
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-117/test_success_with_cleanup_faul1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108ab3050>
+outer_error = True
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+>               raise ValueError('unrelated caller exception')
+E               ValueError: unrelated caller exception
+
+tests/test_dsh_cleanup_errors.py:57: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-117/test_success_with_cleanup_faul1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108ab3050>
+outer_error = True
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+>               verify_failure()
+
+tests/test_dsh_cleanup_errors.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def verify_failure():
+>       with pytest.raises(Problem) as caught:
+             ^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Problem
+
+tests/test_dsh_cleanup_errors.py:51: Failed
+=============================== warnings summary ===============================
+../../../USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_cleanup_errors.py::test_success_with_cleanup_fault_is_not_success[False]
+FAILED tests/test_dsh_cleanup_errors.py::test_success_with_cleanup_fault_is_not_success[True]
+2 failed, 12 passed, 1 deselected, 1 warning in 6.95s

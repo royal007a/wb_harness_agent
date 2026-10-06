@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="14" time="4.384" timestamp="2026-10-07T05:29:16.202815+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED]" time="0.254"><failure message="AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'&#10;  &#10;  - DSH_INITIALIZATION_FAILED&#10;  + DSH_CLEANUP_FAILED">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-116/test_signal_permission_does_no0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c54be10&gt;
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert caught.value.code == code
+E       AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'
+E         
+E         - DSH_INITIALIZATION_FAILED
+E         + DSH_CLEANUP_FAILED
+
+tests/test_dsh_cleanup_errors.py:32: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT]" time="0.115"><failure message="AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_TIMEOUT'&#10;  &#10;  - DSH_INITIALIZATION_TIMEOUT&#10;  + DSH_CLEANUP_FAILED">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-116/test_signal_permission_does_no1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c698050&gt;
+code = 'DSH_INITIALIZATION_TIMEOUT'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert caught.value.code == code
+E       AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_TIMEOUT'
+E         
+E         - DSH_INITIALIZATION_TIMEOUT
+E         + DSH_CLEANUP_FAILED
+
+tests/test_dsh_cleanup_errors.py:32: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED]" time="0.109"><failure message="AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_RUNTIME_FAILED'&#10;  &#10;  - DSH_RUNTIME_FAILED&#10;  + DSH_CLEANUP_FAILED">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-116/test_signal_permission_does_no2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c5fd5b0&gt;
+code = 'DSH_RUNTIME_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert caught.value.code == code
+E       AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_RUNTIME_FAILED'
+E         
+E         - DSH_RUNTIME_FAILED
+E         + DSH_CLEANUP_FAILED
+
+tests/test_dsh_cleanup_errors.py:32: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED]" time="0.110"><failure message="AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_CANCELLED'&#10;  &#10;  - DSH_CANCELLED&#10;  + DSH_CLEANUP_FAILED">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-116/test_signal_permission_does_no3')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c69d260&gt;
+code = 'DSH_CANCELLED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert caught.value.code == code
+E       AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_CANCELLED'
+E         
+E         - DSH_CANCELLED
+E         + DSH_CLEANUP_FAILED
+
+tests/test_dsh_cleanup_errors.py:32: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_success_with_cleanup_fault_is_not_success[False]" time="0.114" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_success_with_cleanup_fault_is_not_success[True]" time="0.109" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[shutdown]" time="0.116"><failure message="AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'&#10;  &#10;  - DSH_INITIALIZATION_FAILED&#10;  + DSH_CLEANUP_FAILED">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-116/test_later_resources_close_whe0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c704c50&gt;
+phase = 'shutdown'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert caught.value.code == 'DSH_INITIALIZATION_FAILED'
+E       AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'
+E         
+E         - DSH_INITIALIZATION_FAILED
+E         + DSH_CLEANUP_FAILED
+
+tests/test_dsh_cleanup_errors.py:108: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[server_close]" time="0.112"><failure message="AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'&#10;  &#10;  - DSH_INITIALIZATION_FAILED&#10;  + DSH_CLEANUP_FAILED">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-116/test_later_resources_close_whe1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c65bf20&gt;
+phase = 'server_close'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert caught.value.code == 'DSH_INITIALIZATION_FAILED'
+E       AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'
+E         
+E         - DSH_INITIALIZATION_FAILED
+E         + DSH_CLEANUP_FAILED
+
+tests/test_dsh_cleanup_errors.py:108: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[join]" time="0.113"><failure message="AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'&#10;  &#10;  - DSH_INITIALIZATION_FAILED&#10;  + DSH_CLEANUP_FAILED">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-116/test_later_resources_close_whe2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c65a3f0&gt;
+phase = 'join'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert caught.value.code == 'DSH_INITIALIZATION_FAILED'
+E       AssertionError: assert 'DSH_CLEANUP_FAILED' == 'DSH_INITIALIZATION_FAILED'
+E         
+E         - DSH_INITIALIZATION_FAILED
+E         + DSH_CLEANUP_FAILED
+
+tests/test_dsh_cleanup_errors.py:108: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_os]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_timeout]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdin]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdout]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[kill]" time="0.000" /></testsuite></testsuites>

@@ -10,7 +10,6 @@ import selectors
 import shutil
 import signal
 import subprocess
-import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -137,6 +136,7 @@ class DshAdapter:
                'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
         process = None
         result = None
+        operation_failed = False
         try:
             check()
             process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
@@ -195,8 +195,10 @@ class DshAdapter:
             if process.returncode or buffer or result is None:
                 raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
             return result
+        except BaseException:
+            operation_failed = True
+            raise
         finally:
-            primary_error = sys.exception()
             cleanup_failed = False
             if process is not None:
                 cleanup_failed = _stop_owned_process(process)
@@ -207,5 +209,5 @@ class DshAdapter:
                     close()
                 except OSError:
                     cleanup_failed = True
-            if cleanup_failed and primary_error is None:
+            if cleanup_failed and not operation_failed:
                 raise Problem('DSH_CLEANUP_FAILED', 'DSH 资源清理未确认完成。', 502)

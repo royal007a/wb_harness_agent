@@ -6,8 +6,8 @@ from pathlib import Path
 def pytest_sessionstart(session):
     from adapters import dsh
     changes = {
-        'primary': ('if cleanup_failed and primary_error is None:', 'if cleanup_failed:'),
-        'success': ('if cleanup_failed and primary_error is None:', 'if False:'),
+        'primary': ('if cleanup_failed and not operation_failed:', 'if cleanup_failed:'),
+        'success': ('if cleanup_failed and not operation_failed:', 'if False:'),
         'lease': ('lambda: thread.join(timeout=2), owned.close)', 'lambda: thread.join(timeout=2))'),
         'escalate': ('if signal_denied:\n            return', 'if False:\n            return'),
         'pipe': ('for pipe in (process.stdin, process.stdout):', 'for pipe in (process.stdin,):'),

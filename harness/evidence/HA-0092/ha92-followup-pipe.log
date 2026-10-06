@@ -1,0 +1,388 @@
+FFFFFF...FFFFF                                                           [100%]
+=================================== FAILURES ===================================
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED] _
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-120/test_signal_permission_does_no0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108377e10>
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+>       assert children[0].stdout.closed
+E       AssertionError: assert False
+E        +  where False = <_io.BufferedReader name=16>.closed
+E        +    where <_io.BufferedReader name=16> = <Popen: returncode: 0 args: ['/USER/code/ai/harnessagent/.venv/bi...>.stdout
+
+tests/test_dsh_cleanup_errors.py:35: AssertionError
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT] _
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-120/test_signal_permission_does_no1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1084c0050>
+code = 'DSH_INITIALIZATION_TIMEOUT'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+>       assert children[0].stdout.closed
+E       AssertionError: assert False
+E        +  where False = <_io.BufferedReader name=17>.closed
+E        +    where <_io.BufferedReader name=17> = <Popen: returncode: 0 args: ['/USER/code/ai/harnessagent/.venv/bi...>.stdout
+
+tests/test_dsh_cleanup_errors.py:35: AssertionError
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED] _
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-120/test_signal_permission_does_no2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1084295b0>
+code = 'DSH_RUNTIME_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+>       assert children[0].stdout.closed
+E       AssertionError: assert False
+E        +  where False = <_io.BufferedReader name=18>.closed
+E        +    where <_io.BufferedReader name=18> = <Popen: returncode: 0 args: ['/USER/code/ai/harnessagent/.venv/bi...>.stdout
+
+tests/test_dsh_cleanup_errors.py:35: AssertionError
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED] __
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-120/test_signal_permission_does_no3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1084c9040>
+code = 'DSH_CANCELLED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+        assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        assert children[0].returncode is not None
+>       assert children[0].stdout.closed
+E       AssertionError: assert False
+E        +  where False = <_io.BufferedReader name=19>.closed
+E        +    where <_io.BufferedReader name=19> = <Popen: returncode: 0 args: ['/USER/code/ai/harnessagent/.venv/bi...>.stdout
+
+tests/test_dsh_cleanup_errors.py:35: AssertionError
+____________ test_success_with_cleanup_fault_is_not_success[False] _____________
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-120/test_success_with_cleanup_faul0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1084c9ae0>
+outer_error = False
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+                verify_failure()
+        else:
+            verify_failure()
+>       assert children[0].stdout.closed
+E       AssertionError: assert False
+E        +  where False = <_io.BufferedReader name=20>.closed
+E        +    where <_io.BufferedReader name=20> = <Popen: returncode: 0 args: ['/USER/code/ai/harnessagent/.venv/bi...>.stdout
+
+tests/test_dsh_cleanup_errors.py:62: AssertionError
+_____________ test_success_with_cleanup_fault_is_not_success[True] _____________
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-120/test_success_with_cleanup_faul1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108463250>
+outer_error = True
+
+    @pytest.mark.parametrize('outer_error', [False, True])
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch, outer_error):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        def verify_failure():
+            with pytest.raises(Problem) as caught:
+                run_adapter(root)
+            assert caught.value.code == 'DSH_CLEANUP_FAILED'
+            assert 'SYNTH_CLEANUP_PRIVATE' not in str(caught.value)
+        if outer_error:
+            try:
+                raise ValueError('unrelated caller exception')
+            except ValueError:
+                verify_failure()
+        else:
+            verify_failure()
+>       assert children[0].stdout.closed
+E       AssertionError: assert False
+E        +  where False = <_io.BufferedReader name=16>.closed
+E        +    where <_io.BufferedReader name=16> = <Popen: returncode: 0 args: ['/USER/code/ai/harnessagent/.venv/bi...>.stdout
+
+tests/test_dsh_cleanup_errors.py:62: AssertionError
+____________ test_process_cleanup_faults_do_not_skip_pipes[wait_os] ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1084a2a50>
+fault = 'wait_os'
+
+    @pytest.mark.parametrize('fault', ['wait_os', 'wait_timeout', 'stdin', 'stdout', 'kill'])
+    def test_process_cleanup_faults_do_not_skip_pipes(monkeypatch, fault):
+        calls = []
+        def close(name):
+            calls.append(name)
+            if name == fault:
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+        def wait(timeout):
+            calls.append('wait')
+            if fault == 'wait_os':
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+            if fault == 'wait_timeout':
+                raise subprocess.TimeoutExpired('synthetic', timeout)
+        def killpg(pgid, sig):
+            calls.append(sig)
+            assert pgid == 987654321  # only a mock, never passed to the operating system
+            if fault == 'kill' and sig == signal.SIGKILL:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(os, 'killpg', killpg)
+        process = SimpleNamespace(pid=987654321, wait=wait,
+            stdin=SimpleNamespace(close=lambda: close('stdin')),
+            stdout=SimpleNamespace(close=lambda: close('stdout')))
+        assert dsh._stop_owned_process(process) is True
+>       assert calls[-2:] == ['stdin', 'stdout']
+E       AssertionError: assert [<Signals.SIG...: 9>, 'stdin'] == ['stdin', 'stdout']
+E         
+E         At index 0 diff: <Signals.SIGKILL: 9> != 'stdin'
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:136: AssertionError
+_________ test_process_cleanup_faults_do_not_skip_pipes[wait_timeout] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1084a26d0>
+fault = 'wait_timeout'
+
+    @pytest.mark.parametrize('fault', ['wait_os', 'wait_timeout', 'stdin', 'stdout', 'kill'])
+    def test_process_cleanup_faults_do_not_skip_pipes(monkeypatch, fault):
+        calls = []
+        def close(name):
+            calls.append(name)
+            if name == fault:
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+        def wait(timeout):
+            calls.append('wait')
+            if fault == 'wait_os':
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+            if fault == 'wait_timeout':
+                raise subprocess.TimeoutExpired('synthetic', timeout)
+        def killpg(pgid, sig):
+            calls.append(sig)
+            assert pgid == 987654321  # only a mock, never passed to the operating system
+            if fault == 'kill' and sig == signal.SIGKILL:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(os, 'killpg', killpg)
+        process = SimpleNamespace(pid=987654321, wait=wait,
+            stdin=SimpleNamespace(close=lambda: close('stdin')),
+            stdout=SimpleNamespace(close=lambda: close('stdout')))
+        assert dsh._stop_owned_process(process) is True
+>       assert calls[-2:] == ['stdin', 'stdout']
+E       AssertionError: assert [<Signals.SIG...: 9>, 'stdin'] == ['stdin', 'stdout']
+E         
+E         At index 0 diff: <Signals.SIGKILL: 9> != 'stdin'
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:136: AssertionError
+_____________ test_process_cleanup_faults_do_not_skip_pipes[stdin] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10843fe10>
+fault = 'stdin'
+
+    @pytest.mark.parametrize('fault', ['wait_os', 'wait_timeout', 'stdin', 'stdout', 'kill'])
+    def test_process_cleanup_faults_do_not_skip_pipes(monkeypatch, fault):
+        calls = []
+        def close(name):
+            calls.append(name)
+            if name == fault:
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+        def wait(timeout):
+            calls.append('wait')
+            if fault == 'wait_os':
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+            if fault == 'wait_timeout':
+                raise subprocess.TimeoutExpired('synthetic', timeout)
+        def killpg(pgid, sig):
+            calls.append(sig)
+            assert pgid == 987654321  # only a mock, never passed to the operating system
+            if fault == 'kill' and sig == signal.SIGKILL:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(os, 'killpg', killpg)
+        process = SimpleNamespace(pid=987654321, wait=wait,
+            stdin=SimpleNamespace(close=lambda: close('stdin')),
+            stdout=SimpleNamespace(close=lambda: close('stdout')))
+        assert dsh._stop_owned_process(process) is True
+>       assert calls[-2:] == ['stdin', 'stdout']
+E       AssertionError: assert [<Signals.SIG...: 9>, 'stdin'] == ['stdin', 'stdout']
+E         
+E         At index 0 diff: <Signals.SIGKILL: 9> != 'stdin'
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:136: AssertionError
+____________ test_process_cleanup_faults_do_not_skip_pipes[stdout] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10847fb90>
+fault = 'stdout'
+
+    @pytest.mark.parametrize('fault', ['wait_os', 'wait_timeout', 'stdin', 'stdout', 'kill'])
+    def test_process_cleanup_faults_do_not_skip_pipes(monkeypatch, fault):
+        calls = []
+        def close(name):
+            calls.append(name)
+            if name == fault:
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+        def wait(timeout):
+            calls.append('wait')
+            if fault == 'wait_os':
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+            if fault == 'wait_timeout':
+                raise subprocess.TimeoutExpired('synthetic', timeout)
+        def killpg(pgid, sig):
+            calls.append(sig)
+            assert pgid == 987654321  # only a mock, never passed to the operating system
+            if fault == 'kill' and sig == signal.SIGKILL:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(os, 'killpg', killpg)
+        process = SimpleNamespace(pid=987654321, wait=wait,
+            stdin=SimpleNamespace(close=lambda: close('stdin')),
+            stdout=SimpleNamespace(close=lambda: close('stdout')))
+>       assert dsh._stop_owned_process(process) is True
+E       assert False is True
+E        +  where False = <function _stop_owned_process at 0x1066f03b0>(namespace(pid=987654321, wait=<function test_process_cleanup_faults_do_not_skip_pipes.<locals>.wait at 0x10849a560>, s...0>), stdout=namespace(close=<function test_process_cleanup_faults_do_not_skip_pipes.<locals>.<lambda> at 0x108525590>)))
+E        +    where <function _stop_owned_process at 0x1066f03b0> = dsh._stop_owned_process
+
+tests/test_dsh_cleanup_errors.py:135: AssertionError
+_____________ test_process_cleanup_faults_do_not_skip_pipes[kill] ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10847fd10>
+fault = 'kill'
+
+    @pytest.mark.parametrize('fault', ['wait_os', 'wait_timeout', 'stdin', 'stdout', 'kill'])
+    def test_process_cleanup_faults_do_not_skip_pipes(monkeypatch, fault):
+        calls = []
+        def close(name):
+            calls.append(name)
+            if name == fault:
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+        def wait(timeout):
+            calls.append('wait')
+            if fault == 'wait_os':
+                raise OSError('SYNTH_CLEANUP_PRIVATE')
+            if fault == 'wait_timeout':
+                raise subprocess.TimeoutExpired('synthetic', timeout)
+        def killpg(pgid, sig):
+            calls.append(sig)
+            assert pgid == 987654321  # only a mock, never passed to the operating system
+            if fault == 'kill' and sig == signal.SIGKILL:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(os, 'killpg', killpg)
+        process = SimpleNamespace(pid=987654321, wait=wait,
+            stdin=SimpleNamespace(close=lambda: close('stdin')),
+            stdout=SimpleNamespace(close=lambda: close('stdout')))
+        assert dsh._stop_owned_process(process) is True
+>       assert calls[-2:] == ['stdin', 'stdout']
+E       AssertionError: assert [<Signals.SIG...: 9>, 'stdin'] == ['stdin', 'stdout']
+E         
+E         At index 0 diff: <Signals.SIGKILL: 9> != 'stdin'
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:136: AssertionError
+=============================== warnings summary ===============================
+../../../USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED]
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT]
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED]
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED]
+FAILED tests/test_dsh_cleanup_errors.py::test_success_with_cleanup_fault_is_not_success[False]
+FAILED tests/test_dsh_cleanup_errors.py::test_success_with_cleanup_fault_is_not_success[True]
+FAILED tests/test_dsh_cleanup_errors.py::test_process_cleanup_faults_do_not_skip_pipes[wait_os]
+FAILED tests/test_dsh_cleanup_errors.py::test_process_cleanup_faults_do_not_skip_pipes[wait_timeout]
+FAILED tests/test_dsh_cleanup_errors.py::test_process_cleanup_faults_do_not_skip_pipes[stdin]
+FAILED tests/test_dsh_cleanup_errors.py::test_process_cleanup_faults_do_not_skip_pipes[stdout]
+FAILED tests/test_dsh_cleanup_errors.py::test_process_cleanup_faults_do_not_skip_pipes[kill]
+11 failed, 3 passed, 1 deselected, 1 warning in 9.57s
