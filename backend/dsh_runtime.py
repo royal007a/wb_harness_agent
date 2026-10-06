@@ -9,6 +9,7 @@ import re
 import subprocess
 import threading
 import time
+import unicodedata
 import httpx
 from jsonschema import Draft202012Validator
 
@@ -37,6 +38,11 @@ MAX_FINDINGS_REJECTIONS = 2
 # Bounded; anything else (paths, malformed IDs, policy) still fails the Run.
 MAX_SOFT_TOOL_ERRORS = 2
 CLAUSE_ID = re.compile(r'clause-[1-9][0-9]{0,5}')
+
+
+def search_key(text):
+    """HA-0110: literal search tolerant of width/case/whitespace (NFKC, casefold, no spaces)."""
+    return re.sub(r'\s+', '', unicodedata.normalize('NFKC', text)).casefold()
 # Progress is judged per model turn (HA-0081, after real doubao issued 5 parallel
 # searches in one turn): a turn makes progress if any of its actions brought new
 # evidence. Stop before the next model request when
@@ -208,6 +214,7 @@ class DshRuntime:
             chunks = build_parent_child_chunks(document, max_child_chars=1500, parent_max_chars=3000)
             clauses = {f'clause-{i+1}': chunk['text'] for i, chunk in enumerate(chunks['children'])}
             counts = {'model_calls': 0, 'tool_calls': 0}
+            search_index = {key: search_key(text) for key, text in clauses.items()}
             seen_clauses = set()
             template = settings.get('template', 'free')
             allowed = set(task['requested_permissions']['allow_tools'])
@@ -356,8 +363,10 @@ class DshRuntime:
                             type(args.get('offset', 0)) is not int or not 0 <= args.get('offset', 0) <= 1000):
                         raise Problem('DSH_TOOL_INPUT', '工具参数无效。', 422)
                     soft_error = None
-                    query, offset = args['query'].casefold(), args.get('offset', 0)
-                    matches = [key for key, text in clauses.items() if query in text.casefold()]
+                    query, offset = search_key(args['query']), args.get('offset', 0)
+                    if not query:  # whitespace-only would otherwise match every block
+                        raise Problem('DSH_TOOL_INPUT', '工具参数无效。', 422)
+                    matches = [key for key, text in search_index.items() if query in text]
                     selected = matches[offset:offset + SEARCH_PAGE]
                     more = offset + SEARCH_PAGE < len(matches)
                     page = {'total': len(matches), 'offset': offset,
@@ -447,7 +456,7 @@ class DshRuntime:
                 return {'text': dumps({'accepted': True, 'submission_number': number, 'business_status': checked['business_status'],
                     'platform_gaps': checked['platform_gaps']})}
             prompt = (f'平台文档已登记为 {len(clauses)} 个证据块，ID 范围 clause-1 到 clause-{len(clauses)}。'
-                      'ID 是平台证据块编号，不等于合同原文条号。search_document 是字面子串检索，不支持正则。\n'
+                      'ID 是平台证据块编号，不等于合同原文条号。search_document 是字面子串检索（忽略空白、大小写和全半角差异），不支持正则。\n'
                       + ('这是付款条件核对：请检索并读取付款期限、触发条件、例外和冲突相关证据块，'
                          '调用 submit_findings 提交四个槽位（缺证据用 unknown，不要猜）；平台只发布最后一次通过校验的结构化结果，不发布你的自由文本答复。\n'
                          if template == 'payment_terms' else '')
