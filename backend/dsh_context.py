@@ -7,7 +7,9 @@ the DeepSeek Harness lecture ("model-visible means logged": what reaches the mod
 must be reconstructible, so every assembly is reported).
 
 What it does, in order, without any extra model call:
-1. Validates tool_call / tool_result pairing (an orphan is a protocol error).
+1. Validates tool_call / tool_result pairing strictly: unique ids per assistant
+   message, and its results must follow immediately, one per id, before any other
+   message.
 2. Appends one trusted platform-state system message (task template, read
    blocks, open gaps). It is built only from platform state, never document text.
 3. If the estimate exceeds the budget, replaces the *content* of the oldest tool
@@ -18,8 +20,14 @@ What it does, in order, without any extra model call:
    truncating (fail closed; the course's compaction-by-summary needs an extra
    model call, which this slice deliberately does not add).
 
-Token counts are a conservative *character estimate*, not a tokenizer: every
-character counts as one token (CJK is close to 1, ASCII is over-counted).
+Size is a *character heuristic*, not a token count: characters of content, tool
+calls/ids plus a small per-message overhead. No doubao tokenizer is bound here, so
+``estimate_after <= budget`` is NOT a guarantee about real input tokens; spending is
+governed separately by the business token ledger, which settles real usage.
+
+Audit scope: each assembly emits hashes, counts and stubbed block IDs only. That is
+a summary audit; full request reconstruction (texts/arguments) is not implemented
+and must not be achieved by writing contract text into ordinary events.
 """
 from __future__ import annotations
 
@@ -30,7 +38,8 @@ from .analysis import Problem
 
 CONTEXT_WINDOW = 64000          # matches platform-plugin.mjs resolveModel()
 INPUT_SHARE = 0.7               # course L17: act when the context passes 70% of the window
-ESTIMATOR = 'chars_as_tokens_upper_bound@1'
+ESTIMATOR = 'chars_heuristic@2'  # not a tokenizer, not an upper bound
+MESSAGE_OVERHEAD = 8              # role/framing allowance per message (heuristic)
 
 
 def estimate(value):
@@ -39,23 +48,40 @@ def estimate(value):
     return len(json.dumps(value, ensure_ascii=False, separators=(',', ':')))
 
 
+def _message_size(message):
+    return (MESSAGE_OVERHEAD + estimate(message.get('content') or '') + estimate(message.get('tool_calls', []))
+            + estimate(message.get('tool_call_id') or ''))
+
+
 def _digest(value):
     return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
 def _pairing(messages):
-    """Return index of the assistant message owning each tool result; raise on orphans."""
-    open_calls, owner = {}, {}
+    """Strict sequence check; return {tool_result_index: owning_assistant_index}.
+
+    An assistant message with tool_calls must have unique ids and be followed
+    immediately by exactly one tool result per id (any order) before any other
+    message. Everything else is DSH_CONTEXT_PAIRING.
+    """
+    owner, pending, opener = {}, set(), None
     for index, message in enumerate(messages):
-        if message['role'] == 'assistant':
-            for call in message.get('tool_calls', []):
-                open_calls[call['id']] = index
-        elif message['role'] == 'tool':
+        role = message['role']
+        if role == 'tool':
             ident = message.get('tool_call_id')
-            if ident not in open_calls:
-                raise Problem('DSH_CONTEXT_PAIRING', '工具结果没有对应的工具调用。', 502)
-            owner[index] = open_calls.pop(ident)
-    if open_calls:
+            if ident not in pending:
+                raise Problem('DSH_CONTEXT_PAIRING', '工具结果没有紧随其对应的工具调用。', 502)
+            pending.discard(ident)
+            owner[index] = opener
+            continue
+        if pending:
+            raise Problem('DSH_CONTEXT_PAIRING', '工具调用的结果之间插入了其他消息或结果缺失。', 502)
+        if role == 'assistant' and message.get('tool_calls'):
+            ids = [call['id'] for call in message['tool_calls']]
+            if len(ids) != len(set(ids)):
+                raise Problem('DSH_CONTEXT_PAIRING', '同一轮工具调用 ID 重复。', 502)
+            pending, opener = set(ids), index
+    if pending:
         raise Problem('DSH_CONTEXT_PAIRING', '存在没有结果的工具调用。', 502)
     return owner
 
@@ -106,8 +132,7 @@ def assemble(payload, state, *, context_window=CONTEXT_WINDOW, share=INPUT_SHARE
     stubbed, stubbed_ids = [], []
 
     def total(extra_state):
-        return tools_cost + sum(estimate(m.get('content') or '') + estimate(m.get('tool_calls', []))
-                                for m in messages) + estimate(state_message(extra_state)['content'])
+        return tools_cost + sum(_message_size(m) for m in messages) + _message_size(state_message(extra_state))
 
     current = dict(state, stubbed=[])
     before = total(current)
@@ -130,12 +155,19 @@ def assemble(payload, state, *, context_window=CONTEXT_WINDOW, share=INPUT_SHARE
     after = total(current)
     if after > budget:
         raise Problem('DSH_CONTEXT_OVER_BUDGET', '上下文在省略可回读的工具结果后仍超过预算，拒绝发送。', 409)
+    # A block is invisible only if no full (unstubbed) copy remains in what is sent;
+    # the runtime grants the re-read exemption only for invisible blocks.
+    visible = {k for i in owner if messages[i]['content'] == payload['messages'][i]['content']
+               for k in _clause_ids(messages[i]['content'])}
+    invisible = sorted(set(current['stubbed']) - visible, key=lambda k: int(k.split('-')[1]) if k.split('-')[-1].isdigit() else 0)
+    current = dict(current, stubbed=invisible)
     final = messages + [state_message(current)]
     sent = dict(payload, messages=final)
     _pairing(final)  # invariant: still paired after assembly
     report = {'estimator': ESTIMATOR, 'budget': budget, 'context_window': context_window,
               'estimate_before': before, 'estimate_after': after, 'tools_estimate': tools_cost,
               'messages': len(final), 'tool_results': len(owner), 'protected_tool_results': len(protected),
-              'stubbed_tool_results': len(stubbed), 'stubbed_clause_ids': current['stubbed'],
+              'stubbed_tool_results': len(stubbed), 'stubbed_clause_ids': sorted(set(stubbed_ids)),
+              'invisible_clause_ids': invisible,
               'state_sha256': _digest(final[-1]['content']), 'messages_sha256': _digest(final)}
     return sent, report

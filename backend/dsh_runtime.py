@@ -207,7 +207,7 @@ class DshRuntime:
                          'submission': ({'number': review['submissions'], 'accepted': review['accepted'] is not None}
                                         if review['submissions'] else None)}
                 payload, assembly = assemble_context(payload, state)
-                context['stubbed'] = set(assembly['stubbed_clause_ids'])
+                context['stubbed'] = set(assembly['invisible_clause_ids'])  # only blocks with no full copy sent
                 event('dsh.context.assembled', dict(assembly, call_number=counts['model_calls'] + 1))
                 counts['model_calls'] += 1
                 async def send(value, limit):

@@ -20,3 +20,16 @@
 873a5f7 部署到 8876 后，真实长合同两次失败：一次单轮工具调用超过 8 个（`DSH_PROVIDER_INVALID`，已发送但用量无法结算，账本按设计冻结预留），一次超过单 Run 16 次工具上限（`DSH_TOOL_LIMIT`）。修正：单次响应工具调用上限 16，单 Run 工具执行上限 32（模型调用仍 ≤8）；`test_sdk_exact_tool_call_cap` 改为 32/33 边界。
 
 长合同连跑 3 次（`real_long_rep1..3.json`）：3/3 succeeded，期限 35 天与 clause-13 例外每次正确；工具调用 10/20/9 次（20 次那次在旧上限下必然失败）；最大上下文估算 25985/41925/24517，均未超过 44800，未触发省略；Token 64603/92983/51308。全量 `verify.sh` 重跑 exit 0：1682 passed / 22 skipped。
+
+## 复审修订（343a3b3 → 本提交）
+
+mymaccodex 对 343a3b3 给出 2 Medium + 2 Low，附 3 个独立反例，原样收为 `tests/test_dsh_ha0081_review_probes.py`，现全部通过。
+
+| 问题 | 修订 | 回归/突变 |
+|---|---|---|
+| M 被省略的旧副本持续制造“新进展” | 组装器区分“某历史副本被省略”（`stubbed_clause_ids`）与“当前没有任何完整副本被发送”（`invisible_clause_ids`）；运行时重读豁免只用后者 | `test_full_current_copy_prevents_false_new_progress`；突变 D1（改回用 stubbed）被捕获 |
+| M 字符估算被称作 Token 上界 | 降格为 `chars_heuristic@2`（含 ID 与每消息 8 的封装余量），ADR/文档明确不是 Token 计数、不是硬保证，花费由业务账本按真实 usage 结算 | 文档修订 |
+| L 配对校验非严格 | 严格序列：同轮 ID 唯一；结果须紧随、每 ID 一条、不得被其他消息隔开 | 两条反例通过；突变 D2/D3 被捕获 |
+| L “可重建”表述 | 明确只有摘要审计，完整请求重建未实现，不把正文写进事件 | ADR-0081 第 6 条与边界 |
+
+DSH 六个测试文件 161 passed；全量 `verify.sh` exit 0：1685 passed / 22 skipped。未发真实请求（本修订不改变发送内容的结构，只改进展判定与校验）。
