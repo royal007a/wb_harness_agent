@@ -44,3 +44,9 @@ TMPDIR=/private/tmp .venv/bin/python harness/evidence/HA-0090/evaluate_chinese_v
 已在规格先增加同一付款文档内的保守候选，再改candidates。新增6项修前4失败/2通过，见coverage-before.xml；修后包含前述四文件及新文件共89 passed，见coverage-related.xml。SDK路径证明首次提交得到COVERAGE_GAP，读第二块、重新提交后才通过。没有付款词、没有例外词和无关争议的保守误报都分别测试；不宣称语义判断。
 
 原两套21例JSON属于da56602初版，不能作为返工后评测；返工评测另存。当前测试文件仅因HA编号调整了docstring，旧SHA是当时被测文件，不冒充当前SHA。完整门禁与独立复审仍未完成。
+
+48d32c7返工后两套评测已另存payment-eval-revised-{arabic,chinese}.json，各21例，均发生相同退化：正确值发布10/11、字面例外4/5，其余指标不变。long-01从成功改为DSH_FINDINGS_INVALID，6次调用（原3次）；不是跳过样本。该脚本的进程exit 0仅说明报告生成，不是指标验收通过。
+
+定位：新保守候选增加clause-14“争议解决”，没有付款词；原脚本在覆盖提示后把该块最后一行1299字作为结论/引文，超过现有300字限制，故被拒。说明候选扩大引入额外核对成本，并暴露脚本无法处理该分支；未改变金标，也未截短脚本答案来制造同评测绿灯。此返工尚未验收，需复审决定候选/软缺口策略并重新验证，不部署。
+
+48d32c7测试SHA：test_chinese_clause_boundaries.py=f1271b26f479c9eb44e99cdc36a4812a1d8da2ab7854ec6cfa608c8837575017；test_chinese_clause_coverage.py=54883dcf39d5b0d488a4d8bebbc26c90e7e939a64702308bb43afc8e1bc8c431。
