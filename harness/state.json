@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_crossing_receipts_verified",
+  "phase": "dsh_course_source_review",
   "implementation_started": true,
-  "active_task_id": null,
-  "active_plan": null,
+  "active_task_id": "HA-0084",
+  "active_plan": "exec-plans/active/HA-0084-course-reading.md",
   "last_checkpoint": "HA-0083 7ad0793 获独立 Approved；8876 运行 ad957fb；真实豆包完成3轮工具往返（4次模型/8次工具，11508 Token）。",
   "last_updated_at": "2026-10-06T12:05:00Z",
-  "next_action": "B已交付；A2证据续跑仍未实施，DSH-CROSSING-01/02保留为非阻塞审计改进。",
+  "next_action": "分批阅读jikesummary并逐项交审；首批五篇已读，其余待读。运行时优化另开原子任务，不将研究记录当部署验收。",
   "release": "0.1.0-local"
 }

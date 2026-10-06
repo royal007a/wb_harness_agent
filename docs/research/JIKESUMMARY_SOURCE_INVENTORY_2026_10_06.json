@@ -1,0 +1,1152 @@
+{
+  "schema_version": "course-source-inventory@1",
+  "source_root_label": "Downloads/jikesummary",
+  "not_evidence": "Inventory is not proof of reading, implementation, or acceptance.",
+  "files": 183,
+  "unique_sha256": 177,
+  "pages_including_duplicates": 2101,
+  "topics": {
+    "CLAUDE.md规范": 6,
+    "hooks": 2,
+    "mcp": 4,
+    "skills设计": 11,
+    "spec": 5,
+    "subagents": 14,
+    "tools": 14,
+    "workflows": 11,
+    "上下文工程": 31,
+    "云原生Agent": 23,
+    "前端交互": 6,
+    "可观测性": 6,
+    "安全护栏": 9,
+    "架构设计": 23,
+    "测试质量": 8,
+    "知识库RAG": 10
+  },
+  "duplicate_groups": [
+    [
+      "CLAUDE.md规范/09 - 06｜Claude Code 实战必备：CLAUDE.md、Skills 与工程规范.pdf",
+      "上下文工程/09 - 06｜Claude Code 实战必备：CLAUDE.md、Skills 与工程规范.pdf"
+    ],
+    [
+      "CLAUDE.md规范/09 - 06｜上下文的艺术（上）：详解CLAUDE.md与AGENTS.md.pdf",
+      "上下文工程/09 - 06｜上下文的艺术（上）：详解CLAUDE.md与AGENTS.md.pdf"
+    ],
+    [
+      "CLAUDE.md规范/10 - 07｜上下文的艺术（下）：用 constitution.md 为AI注入项目“宪法”.pdf",
+      "上下文工程/10 - 07｜上下文的艺术（下）：用 constitution.md 为AI注入项目“宪法”.pdf"
+    ],
+    [
+      "CLAUDE.md规范/11 - 10｜提示词组装：告别面条代码，动态加载 AGENTS.md 与外挂 Skills.pdf",
+      "上下文工程/11 - 10｜提示词组装：告别面条代码，动态加载 AGENTS.md 与外挂 Skills.pdf"
+    ],
+    [
+      "CLAUDE.md规范/12 - 10｜老项目的 CLAUDE.md 怎么写？从五份资产到一份项目常识.pdf",
+      "上下文工程/12 - 10｜老项目的 CLAUDE.md 怎么写？从五份资产到一份项目常识.pdf"
+    ],
+    [
+      "CLAUDE.md规范/13 - 11｜指令文件腐化：AGENTS.md 越来越长，Agent 反而变笨了.pdf",
+      "上下文工程/13 - 11｜指令文件腐化：AGENTS.md 越来越长，Agent 反而变笨了.pdf"
+    ]
+  ],
+  "sources": [
+    {
+      "path": "CLAUDE.md规范/09 - 06｜Claude Code 实战必备：CLAUDE.md、Skills 与工程规范.pdf",
+      "sha256": "f14e8422390ba47b04a2f23f836e5186d496004b804018c07cc62cf3f56e556e",
+      "pages": 7,
+      "bytes": 1091676
+    },
+    {
+      "path": "CLAUDE.md规范/09 - 06｜上下文的艺术（上）：详解CLAUDE.md与AGENTS.md.pdf",
+      "sha256": "2b58a4d1fdac5046e0323564c34ed3bf77a95415f8be3e8d119485d239c4ccab",
+      "pages": 22,
+      "bytes": 3235568
+    },
+    {
+      "path": "CLAUDE.md规范/10 - 07｜上下文的艺术（下）：用 constitution.md 为AI注入项目“宪法”.pdf",
+      "sha256": "18a0dde66163f022e1ab71c7a4ed52da01155462a846032292849c2229d3cf32",
+      "pages": 8,
+      "bytes": 1985397
+    },
+    {
+      "path": "CLAUDE.md规范/11 - 10｜提示词组装：告别面条代码，动态加载 AGENTS.md 与外挂 Skills.pdf",
+      "sha256": "85a6ddf3252bf5107ca6c60c93917549a56a999b1217f2c4ab8bda41260405ab",
+      "pages": 16,
+      "bytes": 4612824
+    },
+    {
+      "path": "CLAUDE.md规范/12 - 10｜老项目的 CLAUDE.md 怎么写？从五份资产到一份项目常识.pdf",
+      "sha256": "104ea4b14ce0be3c08422c4b97b8623927e61efa9bfe62896d4e2437f9b6ba9e",
+      "pages": 9,
+      "bytes": 1559394
+    },
+    {
+      "path": "CLAUDE.md规范/13 - 11｜指令文件腐化：AGENTS.md 越来越长，Agent 反而变笨了.pdf",
+      "sha256": "917c2410118943bbeb1544b893c4bd9d7236b0f6591488b4ddd025b91764a111",
+      "pages": 5,
+      "bytes": 2416271
+    },
+    {
+      "path": "hooks/12 - 10｜扩展：Hooks 机制的实战应用.pdf",
+      "sha256": "d2e12527be2d004c005e1d4a65c959ec99fa06595c81909447d139b50772fcc9",
+      "pages": 9,
+      "bytes": 1916114
+    },
+    {
+      "path": "hooks/14 - 11｜事件驱动：详解Hooks机制，让AI在关键节点自动触发.pdf",
+      "sha256": "59d2f1b362588e371a9fad4e4cd9eb483309058be313b4a7a9c727f478707f22",
+      "pages": 13,
+      "bytes": 6722807
+    },
+    {
+      "path": "mcp/08 - 07｜@Tool 遇上 MCP：标准化工具接口设计.pdf",
+      "sha256": "de0be4f17eab1a77a60d7615f1ed2e8eb23c69c8de8fd27aace0b2e2d81bf8fa",
+      "pages": 10,
+      "bytes": 2007629
+    },
+    {
+      "path": "mcp/15 - 12｜终极扩展：深入MCP服务器，将AI连接到任何内外部系统.pdf",
+      "sha256": "ab3a4a5bacc28bf5ef694fa6fc9f0b8f24260874548442c7c58df262f111e481",
+      "pages": 18,
+      "bytes": 5430050
+    },
+    {
+      "path": "mcp/27 - 24｜MCP 工具接入（上）：搞懂协议，把 Client 跑通.pdf",
+      "sha256": "d74711e77d8b899491ec1ac850ad9d96f4eeac0548e6b388f2ca530565205476",
+      "pages": 12,
+      "bytes": 1570383
+    },
+    {
+      "path": "mcp/28 - 25｜MCP 工具接入（下）：自建 MCP Server，让 Agent 能做真正的事.pdf",
+      "sha256": "ff6c15e7d6c17e0055632cc821aef5fdb3b08c49d4772966c5b447c2535fe92a",
+      "pages": 11,
+      "bytes": 1934314
+    },
+    {
+      "path": "skills设计/02 - 前沿技术速递｜告别“方言”：全面解析 Agent Skills 行业标准与高阶编写心法.pdf",
+      "sha256": "9bd5fcf69567213ab9a2fcc92d6e0ef4d69ddeea5b853167a4aad08e4457b7a7",
+      "pages": 8,
+      "bytes": 1601331
+    },
+    {
+      "path": "skills设计/06 - 04｜封装技能：把操控循环装进 SKILL.pdf",
+      "sha256": "c3054f8f7fa8f4c102d5250138c62bed7f01e5f0929f748ca2f72a1b3703cc11",
+      "pages": 7,
+      "bytes": 1709650
+    },
+    {
+      "path": "skills设计/09 - 07 | 应用：构建替代工作流的 Skills 完成金融研报的生成.pdf",
+      "sha256": "17874c66e6c6cd03edfbd4a00654f72c7a0185bafea2775eb85da5799a212997",
+      "pages": 7,
+      "bytes": 1366564
+    },
+    {
+      "path": "skills设计/09 - 07｜安装画图工具：给 Claude Code 装上画图 Skill.pdf",
+      "sha256": "cfec9d0a243970651ee56e8519e8a3e3059ca012a52665a14b66fb32c364d9e3",
+      "pages": 12,
+      "bytes": 2770378
+    },
+    {
+      "path": "skills设计/13 - 11｜老项目的 Skill 怎么挖？把重复流程变成可复用的技能.pdf",
+      "sha256": "5ba1e8541c908ad38816f23e95eb4c3963c81926bb6674c7e54cfc83c2f10ec6",
+      "pages": 12,
+      "bytes": 1959159
+    },
+    {
+      "path": "skills设计/16 - 13｜智能涌现的基石：精通Agent Skills，为AI植入专家能力.pdf",
+      "sha256": "de2d9f2ee6ce0def787634508c4cdd589dd9133732439549f630610f5109ed05",
+      "pages": 14,
+      "bytes": 3153613
+    },
+    {
+      "path": "skills设计/17 - 14｜把经验变成 Skill：让 Claude Code 自动按流程走.pdf",
+      "sha256": "679422cc2f79d0f69710418f26514f02c8914437d9626e361210ed3109721ce7",
+      "pages": 18,
+      "bytes": 1873493
+    },
+    {
+      "path": "skills设计/20 - 19｜吸引 Ta：用 Skills 工作流创作用户喜爱的内容.pdf",
+      "sha256": "890208b4c90b9628579f457dce5fbe10745a8618eafda9ab9a468d1a39162877",
+      "pages": 12,
+      "bytes": 2801252
+    },
+    {
+      "path": "skills设计/29 - 27｜让代码长出来：用提示词驱动写 Skill 套件.pdf",
+      "sha256": "e8f9f20c90e4c7b47c00976943dfb32f3c24772d2b999550f6eb49ac51479f5b",
+      "pages": 12,
+      "bytes": 2094929
+    },
+    {
+      "path": "skills设计/31 - 28｜技能包：从成功轨迹到可验证能力.pdf",
+      "sha256": "ccb920586efcdbc52d6740078d25689b2d737154644eeb2246eee84c08bf9cf4",
+      "pages": 14,
+      "bytes": 4278214
+    },
+    {
+      "path": "skills设计/31 - 28｜把稳定研究流程写成 Codex Skill.pdf",
+      "sha256": "11602346294e1910ef5125f838a7ea7b4acd2947dfd1f0cbbb71c020a703f296",
+      "pages": 13,
+      "bytes": 3360843
+    },
+    {
+      "path": "spec/04 - 02｜规范驱动开发（SDD）：让 AI 永远在轨道上.pdf",
+      "sha256": "b5c8f606dfdd98eef93e8f9b0a6c9242bb13984008f8dd3e638ab0025c059848",
+      "pages": 11,
+      "bytes": 1825513
+    },
+    {
+      "path": "spec/05 - 02｜核心引擎：AI原生开发第一性原理——规范驱动开发.pdf",
+      "sha256": "567ddaa110636cd0c6e536441b37a0493013d15dfb2c072fdcee8a71d16457d7",
+      "pages": 11,
+      "bytes": 1825773
+    },
+    {
+      "path": "spec/20 - 17｜需求与设计：在框架中演练，从模糊想法到清晰的spec.md.pdf",
+      "sha256": "dde067f0153f406fe232eafdf325a14c626148d80b0d6a83e1dfde271ba43340",
+      "pages": 15,
+      "bytes": 2999842
+    },
+    {
+      "path": "spec/21 - 18｜计划与任务：将规范“编译”为plan.md与tasks.md.pdf",
+      "sha256": "4aade7ceb919ac3865ee003b3888bf8f66a35ff9c7c5ec5cd22c9432f3696810",
+      "pages": 12,
+      "bytes": 1510639
+    },
+    {
+      "path": "spec/34 - 31｜进阶：SDD、Spec-Kit、Spec Coding 与老项目改造.pdf",
+      "sha256": "cc31577eb722f4126b3efc6e10309c6545461b8a8d2d1fe773e02e3d2759e2f6",
+      "pages": 12,
+      "bytes": 1562978
+    },
+    {
+      "path": "subagents/01 - 前沿技术速递｜Agent Teams：打造你的第一支“虚拟研发团队”.pdf",
+      "sha256": "aecdc6044c5e2cdfdfbaadb450e32ac98e492a0be8f44f7d51f22cbc6c46016b",
+      "pages": 16,
+      "bytes": 4762667
+    },
+    {
+      "path": "subagents/06 - 04｜扩展：通过多 Agent 协同机制提升分析深度.pdf",
+      "sha256": "0c61199eea6e2521e25e33bf857521b90f97592fec0213e01093e47e7a5bf758",
+      "pages": 8,
+      "bytes": 2495102
+    },
+    {
+      "path": "subagents/10 - 08｜起点：多代理编排设计支持复杂投研场景.pdf",
+      "sha256": "6ab8f2e44f566b5fb027a3f898cb190af9f233022d1abdc2ddf69a1a2944a140",
+      "pages": 10,
+      "bytes": 1548976
+    },
+    {
+      "path": "subagents/10 - 09｜Agent 之间的信息传递：从互相投毒到契约交互.pdf",
+      "sha256": "ec22e43c9df24bcff8b96f2c87bbca983ceb6a39b021c744481a97decbb59f74",
+      "pages": 10,
+      "bytes": 4791380
+    },
+    {
+      "path": "subagents/11 - 10｜多 Agent 协同：从流水线到分布式团队.pdf",
+      "sha256": "8bf176e511d5de4acfa91ada01256de50aab6a239cb97150b4264a30f245ad32",
+      "pages": 8,
+      "bytes": 5987253
+    },
+    {
+      "path": "subagents/11 - 10｜多个 Agent 并发操作同一个世界：隔离优于共享.pdf",
+      "sha256": "609e5d2f91a46a2402377d4760a536a8f15442104f3da00790bebb5ce3ec576c",
+      "pages": 7,
+      "bytes": 2274135
+    },
+    {
+      "path": "subagents/17 - 14｜智能分身：精通Subagent，为复杂任务创建专家AI.pdf",
+      "sha256": "46960b9f20d8d5285f0903570d174c95515b701363fd30808661ea7140071e32",
+      "pages": 17,
+      "bytes": 5977312
+    },
+    {
+      "path": "subagents/18 - 17｜任务委派：引入 Subagent 隔离复杂探索任务的上下文瓶颈.pdf",
+      "sha256": "de50cd721de035f775ac1eadc967d28c2b69320e7d6a805184ed5f18ce23217d",
+      "pages": 13,
+      "bytes": 2014874
+    },
+    {
+      "path": "subagents/22 - 19｜并行探索：一题多解，择优录取.pdf",
+      "sha256": "1555ab6721523c3a833bd1c166322abf96f2b23b4d7c08c2bcc205da68485d53",
+      "pages": 18,
+      "bytes": 4055177
+    },
+    {
+      "path": "subagents/35 - 31｜协作模块导论：人一多，就需要把边界说清楚.pdf",
+      "sha256": "aa7573307ce54ab5b948a7a1dd9bd68a6ecb3bcd55f07571d6e29ea968fe151c",
+      "pages": 11,
+      "bytes": 3677266
+    },
+    {
+      "path": "subagents/36 - 32｜层级委派：把大目标拆成可验收的责任.pdf",
+      "sha256": "b7c7fd819a74041cf2f1d0b4b132660e33ffd3f77ad2ac666691e0e1e00b67a7",
+      "pages": 9,
+      "bytes": 3231683
+    },
+    {
+      "path": "subagents/37 - 33｜扇出聚合：让多路证据保留差异再汇成结论.pdf",
+      "sha256": "c64c15e7e6948570bc349da1f6920333bb2eba76d6cbd5d49722b651dea24edb",
+      "pages": 14,
+      "bytes": 5220112
+    },
+    {
+      "path": "subagents/38 - 34｜对抗评审：让独立异议真正约束结果.pdf",
+      "sha256": "b67af065c8fe630fd9d352143e153b723f729b486ea6392a57e304cb95a61bd3",
+      "pages": 10,
+      "bytes": 3756598
+    },
+    {
+      "path": "subagents/39 - 35｜交接链：让状态、责任与证据一起抵达下一棒.pdf",
+      "sha256": "90f17df38dd09556e87594f14f934bce38fee17bac73ffa53afb03718229e765",
+      "pages": 11,
+      "bytes": 4323201
+    },
+    {
+      "path": "tools/02 - 01｜Agent的前辈：Function Calling.pdf",
+      "sha256": "7b55a14496a4796df6fdb48fb7cd49da7f1334d7341da806bb9734df7b5d0d76",
+      "pages": 12,
+      "bytes": 2231445
+    },
+    {
+      "path": "tools/03 - 02｜别把执行权交给概率：六大契约重新定义工具设计.pdf",
+      "sha256": "6561cce4cf976e9a0e70141e5c5a339e4d2856bd8d7cd215f7b41ea7907b312c",
+      "pages": 8,
+      "bytes": 3001129
+    },
+    {
+      "path": "tools/04 - 03｜注意力稀释：当 113 个工具让模型降智时，工程师该怎么做？.pdf",
+      "sha256": "eb035392080c8d7dcc49dde3f548e7b4c74e552fb837fcf86c177c18f465905e",
+      "pages": 11,
+      "bytes": 7006767
+    },
+    {
+      "path": "tools/05 - 03｜核心：用 Smolagents 结合自定义工具完成数据分析报告生成.pdf",
+      "sha256": "4ab256e71f18ca0222a743d5e920e6e2055d05f429e0a8d3bd254c8a9c22913c",
+      "pages": 11,
+      "bytes": 1546678
+    },
+    {
+      "path": "tools/06 - 05｜动作延伸：构建强扩展性的 Tool Registry 与分发机制.pdf",
+      "sha256": "afdb918e66ecdac1e7b7f9477bdc0d23bfd05100b9388a6f0156921cd70e7b21",
+      "pages": 11,
+      "bytes": 2935208
+    },
+    {
+      "path": "tools/07 - 06｜大道至简：解密 OpenClaw 最简工具集法则与 YOLO 执行哲学.pdf",
+      "sha256": "65a07ed7a4ea305b677c09866b5e9dadcb00b422340e7cff0b793e9db31068e3",
+      "pages": 12,
+      "bytes": 2031325
+    },
+    {
+      "path": "tools/08 - 06｜核心：快速构建 Agent Loop 并接入研报所需的工具集.pdf",
+      "sha256": "861f1156235688c29ee0abb8894f44252ab6b688a71f8236ab5d823c47682aab",
+      "pages": 8,
+      "bytes": 8101877
+    },
+    {
+      "path": "tools/08 - 07｜容错艺术：实现支持多级模糊匹配的稳健 Edit 工具.pdf",
+      "sha256": "3645ed4cda86910c9d31a449a40fcacf3c4f2e23e2dca596b34fbf553ace2d84",
+      "pages": 15,
+      "bytes": 2560814
+    },
+    {
+      "path": "tools/09 - 08｜并发提效：如何让 Agent 在单轮中并行调用多个互相独立的工具？.pdf",
+      "sha256": "5be00242f01e89b9447a8f26b9c43242b8689b4093f7d5a48ccd17fc696f966f",
+      "pages": 13,
+      "bytes": 4558299
+    },
+    {
+      "path": "tools/10 - 09｜TAO 机制：为什么你的 Agent 总是“选错工具”？.pdf",
+      "sha256": "74812cc7f4ccc4d23318cde1c198c188edca738f7ec2935ecd93f790056730c3",
+      "pages": 15,
+      "bytes": 10690429
+    },
+    {
+      "path": "tools/10 - 09｜工具管理：让 Agent 高效、安全地使用工具.pdf",
+      "sha256": "efb7e18b62e3e7e142fda209e1d046c8443de1cf93378ae5df6cc608c293b896",
+      "pages": 9,
+      "bytes": 3286193
+    },
+    {
+      "path": "tools/14 - 13｜为 AI 股票分析工具装上 Agent（三）：工具建设.pdf",
+      "sha256": "0b48a589d67169cd43dedf6a876acd17056cf4bd6e5acaf6fadd492f727692cc",
+      "pages": 11,
+      "bytes": 2477511
+    },
+    {
+      "path": "tools/18 - 16｜基础：统一工具接口与结构化输出实现合同文档解析与分类.pdf",
+      "sha256": "ccce36e7331439af8186a3bde107bac10a022b6b06caed1f467fd71cc2c59a0f",
+      "pages": 10,
+      "bytes": 5586960
+    },
+    {
+      "path": "tools/25 - 22｜工具调度：从候选选择到执行准入.pdf",
+      "sha256": "6967f2c774db3d7a5adf243c14cca43301ff005c9304f163cb63c4e13817f656",
+      "pages": 23,
+      "bytes": 4342220
+    },
+    {
+      "path": "workflows/06 - 05｜Agent 的 Plan 机制：好 Plan 必备的 5 要素（G4C）.pdf",
+      "sha256": "3fb77ce87ee6d64eedbb7a61f4443006db130b73e19f128f3f191de8e6941213",
+      "pages": 15,
+      "bytes": 2146885
+    },
+    {
+      "path": "workflows/07 - 06｜GOAP vs ReAct：为什么复杂业务需要目标导向规划？.pdf",
+      "sha256": "8c46940830ebe0090a01b5b9692f4d1130e1b656a83dd35aa6f767e866455376",
+      "pages": 10,
+      "bytes": 2584772
+    },
+    {
+      "path": "workflows/07 - 06｜Replan（上）：计划赶不上变化？Agent 需要“随机应变”.pdf",
+      "sha256": "3c48d7b357f8ee5e32cdf652a36c92270589db05abcaa42bebedcfecacfd2fe8",
+      "pages": 13,
+      "bytes": 7272732
+    },
+    {
+      "path": "workflows/08 - 07｜Replan（下）：失败点不等于根因点，回溯找对“病根”再下刀.pdf",
+      "sha256": "f4521060ac7230d900cf7f8b14d717823895686d7a661a4f0bb282b63cb7ef8d",
+      "pages": 13,
+      "bytes": 5331371
+    },
+    {
+      "path": "workflows/09 - 08｜蒙眼狂奔的 ReAct：为什么执行前看不到计划的 Agent 最危险？.pdf",
+      "sha256": "5a841d2c48e838ed5a08f485b2b9600a7d8b248012cbc36d3ca8b59307dae703",
+      "pages": 11,
+      "bytes": 6319960
+    },
+    {
+      "path": "workflows/10 - 09｜其他规划策略：Utility AI 和 Supervisor.pdf",
+      "sha256": "da480559785e8d94f7c079e80ba399b9ac53e1b83e126627c360c59af23acec8",
+      "pages": 9,
+      "bytes": 1533308
+    },
+    {
+      "path": "workflows/18 - 17｜Agent Plan 可靠性工程：缩短链路长度比提升单步精度更划算.pdf",
+      "sha256": "aa082ef774fe6b6ed59c3a257747f63a2c12254676cf1b449430e93d978cdb7e",
+      "pages": 7,
+      "bytes": 1967700
+    },
+    {
+      "path": "workflows/25 - 22｜工作流编排（上）：搞懂工作流，把它存起来.pdf",
+      "sha256": "9e4d7ad2ceff00e323c7a23d18c087dd916241982a41cde6fd09fb7373177527",
+      "pages": 8,
+      "bytes": 1141589
+    },
+    {
+      "path": "workflows/26 - 23｜工作流编排（下）：实现执行引擎，让工作流跑起来.pdf",
+      "sha256": "26380548915042b66fca371c27f8b32e21cf569c9f58926061df5cbc790637f5",
+      "pages": 15,
+      "bytes": 2561663
+    },
+    {
+      "path": "workflows/26 - 23｜规划执行：用全局计划约束局部恢复.pdf",
+      "sha256": "506023b9ed71ff80ecfb4b4a59ebdb173b61c0ea5bbee7d35e716d5a2a777cd1",
+      "pages": 12,
+      "bytes": 2983973
+    },
+    {
+      "path": "workflows/27 - 24｜提示链：用段间契约阻断错误传播.pdf",
+      "sha256": "c50d2d4a88bf8f489f43074d3970b060c04d317e59e6ce5beebfc4e8ac73b74c",
+      "pages": 12,
+      "bytes": 2847546
+    },
+    {
+      "path": "上下文工程/06 - 05｜为什么窗口越大，Agent 越容易忽略最重要的指令？.pdf",
+      "sha256": "e832ea64a27b5c907d184ce476a33b5b29c779fd7c4e2b386f73a2c24c84c36f",
+      "pages": 11,
+      "bytes": 4904956
+    },
+    {
+      "path": "上下文工程/08 - 05｜核心交互模型：所有Agent的通用语言——上下文注入与Shell执行.pdf",
+      "sha256": "0fc412252bff678e7ee306577331a6d9f48513ccff76059afdab8ef597ce2946",
+      "pages": 24,
+      "bytes": 8547566
+    },
+    {
+      "path": "上下文工程/08 - 07｜当 Agent 的记忆开始“精神错乱”，敢遗忘才是解药.pdf",
+      "sha256": "99080b619ef02645ee95f8c6b59654afac2fd3ac118995d313993faabd25e393",
+      "pages": 7,
+      "bytes": 3631223
+    },
+    {
+      "path": "上下文工程/08 - 07｜记忆管理（一）：拆解、构建 Agent 的潜意识.pdf",
+      "sha256": "4787e81dbbca01a3bd243315be0c9b368e84ba0f47719b7bfb305ad3e53f1b07",
+      "pages": 12,
+      "bytes": 3333349
+    },
+    {
+      "path": "上下文工程/09 - 06｜Claude Code 实战必备：CLAUDE.md、Skills 与工程规范.pdf",
+      "sha256": "f14e8422390ba47b04a2f23f836e5186d496004b804018c07cc62cf3f56e556e",
+      "pages": 7,
+      "bytes": 1091676
+    },
+    {
+      "path": "上下文工程/09 - 06｜上下文的艺术（上）：详解CLAUDE.md与AGENTS.md.pdf",
+      "sha256": "2b58a4d1fdac5046e0323564c34ed3bf77a95415f8be3e8d119485d239c4ccab",
+      "pages": 22,
+      "bytes": 3235568
+    },
+    {
+      "path": "上下文工程/09 - 08｜记忆管理（二）：事实性记忆的压缩术与盘活术.pdf",
+      "sha256": "050c7974f0c7c75e7faf08ccb09ca1d34a9f5f18c5e01ef3f972553f4e671520",
+      "pages": 10,
+      "bytes": 6156245
+    },
+    {
+      "path": "上下文工程/10 - 07｜上下文分诊：如何科学分流处置不同信息.pdf",
+      "sha256": "9681a5d280aabe24a6a0506d681f86b739f9b1430d8fc1b27cff08070d61410d",
+      "pages": 17,
+      "bytes": 7484713
+    },
+    {
+      "path": "上下文工程/10 - 07｜上下文的艺术（下）：用 constitution.md 为AI注入项目“宪法”.pdf",
+      "sha256": "18a0dde66163f022e1ab71c7a4ed52da01155462a846032292849c2229d3cf32",
+      "pages": 8,
+      "bytes": 1985397
+    },
+    {
+      "path": "上下文工程/11 - 08｜语义压缩：让 200K 装下 1M 的日志.pdf",
+      "sha256": "d8fe8806b21974a0f147a087df5657f7cb6bc6ec60e20ca1314ba69c2219ba89",
+      "pages": 13,
+      "bytes": 4642767
+    },
+    {
+      "path": "上下文工程/11 - 09｜信息散落：知识来源不唯一且更新不及时.pdf",
+      "sha256": "b5fd034a4d62d6039f8acb4598c9eab98c574fe35955d6cf30606bd95d79c0a3",
+      "pages": 5,
+      "bytes": 2104686
+    },
+    {
+      "path": "上下文工程/11 - 09｜进阶：会话 Session 与 Fork 分叉管理探索不同投资逻辑.pdf",
+      "sha256": "128eccf63cd5deed5accd0df0bdcd04774c02c62ed20f01c7f51e5141a7bc936",
+      "pages": 7,
+      "bytes": 4765119
+    },
+    {
+      "path": "上下文工程/11 - 10｜提示词组装：告别面条代码，动态加载 AGENTS.md 与外挂 Skills.pdf",
+      "sha256": "85a6ddf3252bf5107ca6c60c93917549a56a999b1217f2c4ab8bda41260405ab",
+      "pages": 16,
+      "bytes": 4612824
+    },
+    {
+      "path": "上下文工程/12 - 09｜渐进发现：信息的觅食循环.pdf",
+      "sha256": "e845f500a390e9e9de5aa0c6c45dbba83b009cea27835667ab7bde0d35e0730b",
+      "pages": 16,
+      "bytes": 9232021
+    },
+    {
+      "path": "上下文工程/12 - 10｜老项目的 CLAUDE.md 怎么写？从五份资产到一份项目常识.pdf",
+      "sha256": "104ea4b14ce0be3c08422c4b97b8623927e61efa9bfe62896d4e2437f9b6ba9e",
+      "pages": 9,
+      "bytes": 1559394
+    },
+    {
+      "path": "上下文工程/12 - 11｜Context Window = f(Context) Is All You Need！.pdf",
+      "sha256": "6b0d913dd69d238b7ed1d3471a4fb94340b168e1478d25121d9b04832f4c3a5d",
+      "pages": 12,
+      "bytes": 4246580
+    },
+    {
+      "path": "上下文工程/12 - 11｜会话管理：Session 物理隔离与 Working Memory 的底层实现.pdf",
+      "sha256": "4e6849633d3ccd9eda087ec4c11c44639d7535b7ee9df7943247e7bc445c18b0",
+      "pages": 13,
+      "bytes": 3012955
+    },
+    {
+      "path": "上下文工程/13 - 10｜多模态融合：日志、SQL 和 PDF 一起进 Agent.pdf",
+      "sha256": "9bb96059ad97bf23e71211b1c5a5a3486f7831f990a624e87684b23cf9a08a16",
+      "pages": 19,
+      "bytes": 10380380
+    },
+    {
+      "path": "上下文工程/13 - 11｜指令文件腐化：AGENTS.md 越来越长，Agent 反而变笨了.pdf",
+      "sha256": "917c2410118943bbeb1544b893c4bd9d7236b0f6591488b4ddd025b91764a111",
+      "pages": 5,
+      "bytes": 2416271
+    },
+    {
+      "path": "上下文工程/13 - 12｜上下文窗口：怎么设计一个动态编排的 Context 策略？.pdf",
+      "sha256": "92fd611678453f17f752f6d410a784f9a3fc16106e8ead51fa9ccc97fa703566",
+      "pages": 13,
+      "bytes": 6280892
+    },
+    {
+      "path": "上下文工程/13 - 12｜突破内存：基于阶梯降级的 Context Compaction 策略.pdf",
+      "sha256": "5c0d7f00bba0a793d7aea41f855c99f7758ea0c0d9063b0ff84e9c2d49ee316c",
+      "pages": 13,
+      "bytes": 2251540
+    },
+    {
+      "path": "上下文工程/14 - 11｜记忆模块导论：从草稿纸到长期记忆，建立 Agent 的经验沉淀秩序.pdf",
+      "sha256": "899bf9f79a4ce274b35f4fc5ce944735f3d8dbd99f4987998bea9ccb29672a05",
+      "pages": 13,
+      "bytes": 9810018
+    },
+    {
+      "path": "上下文工程/14 - 13｜摘要／压缩之后，你怎么把细节找回来？.pdf",
+      "sha256": "92fce1092791c00fc8a208a7697b3050e6eb549eb53e38806d14e9aed0516fe5",
+      "pages": 16,
+      "bytes": 10249495
+    },
+    {
+      "path": "上下文工程/14 - 13｜记忆沉淀：状态外部化，基于文件系统的持久化记忆与待办管理.pdf",
+      "sha256": "edccd83ad64a81c4d724ba2693bbff5a1d377879c0cb69db475fdf2b519ed196",
+      "pages": 19,
+      "bytes": 4455661
+    },
+    {
+      "path": "上下文工程/15 - 12｜分层保留：给 Agent 的记忆建一套货架.pdf",
+      "sha256": "769f3f86b49d71985b63f3c2dd6df7de68f2e09287e49e4179447370ddfab9f5",
+      "pages": 18,
+      "bytes": 10020250
+    },
+    {
+      "path": "上下文工程/15 - 14｜为 AI 股票分析工具装上 Agent（四）：记忆管理.pdf",
+      "sha256": "28e24ae5f3f4f68da1d8cd520638f98601f1d0fbc3b08a3a83d05dcde517d8a4",
+      "pages": 12,
+      "bytes": 2548850
+    },
+    {
+      "path": "上下文工程/16 - 13｜检索增强：Agent 的知识库和证据链.pdf",
+      "sha256": "d1507f71e55679ac31eb58a14d80f55f5d9165c6ca75898b11c2b5525457f81b",
+      "pages": 18,
+      "bytes": 11462064
+    },
+    {
+      "path": "上下文工程/17 - 16｜对话／任务特别长长长……怎么办？.pdf",
+      "sha256": "33b23498c2c902eb3074bd4f7ac218e29b1d8fe92aaf50b2670f55d8424dc179",
+      "pages": 8,
+      "bytes": 1013495
+    },
+    {
+      "path": "上下文工程/18 - 15｜失败日记：让 Agent 把摔过的跤变成本事.pdf",
+      "sha256": "8aac939120858f8d852f0cad7b8aefbe89bed5214671ba81a6e517bf1a92a1b8",
+      "pages": 18,
+      "bytes": 7049860
+    },
+    {
+      "path": "上下文工程/18 - 17｜如何设计一个面试中富有竞争力的上下文管理机制？.pdf",
+      "sha256": "ecc2f50f9b3549b7519bfb5b83381efaec06fa2add6a4b5233a4ba15011f4348",
+      "pages": 7,
+      "bytes": 5326414
+    },
+    {
+      "path": "上下文工程/19 - 17｜进阶：长上下文与 Skill 调用构建大合同审查流水线.pdf",
+      "sha256": "6f23f72aa57f69f09c11dc445408dc96efa0c57b14c1e5c24811b67748dd01a0",
+      "pages": 7,
+      "bytes": 3954619
+    },
+    {
+      "path": "云原生Agent/05 - 04｜实践篇：用Go语言实现一个简单Agent.pdf",
+      "sha256": "41793f56591b1d26adcccbb4a85fe51d32194af1fe981986252fe08807d4d834",
+      "pages": 9,
+      "bytes": 1016751
+    },
+    {
+      "path": "云原生Agent/06 - 05｜设计：用自然语言调用Agent操控K8s.pdf",
+      "sha256": "0cebb856595648b728ee0578bdb52e3ece5b89bf584fbb57aac357e430d74357",
+      "pages": 9,
+      "bytes": 1393018
+    },
+    {
+      "path": "云原生Agent/07 - 06｜client-go进阶玩法之RestMapper.pdf",
+      "sha256": "721305196f74988ec54469dc423a44994726fbe6555e89f2574baa1813a95997",
+      "pages": 10,
+      "bytes": 688490
+    },
+    {
+      "path": "云原生Agent/08 - 07｜client-go进阶玩法之Informer机制.pdf",
+      "sha256": "0c84d9d8ea8c485ab7d2bd76cc90b659388e6370532f2424ef8e6c895f6910c9",
+      "pages": 12,
+      "bytes": 1090696
+    },
+    {
+      "path": "云原生Agent/09 - 08｜Gin+client-go：构建API工具.pdf",
+      "sha256": "08a2661d9441d1074348a3c9ac48c0c0363cbf7e0cf053cadabba4e4f4a8989b",
+      "pages": 12,
+      "bytes": 1033390
+    },
+    {
+      "path": "云原生Agent/10 - 09｜多集群资源管理Karmada.pdf",
+      "sha256": "f513d08963b034a31be5b87fafa84b3baaa3f486bb1abcf280012995f35036ed",
+      "pages": 9,
+      "bytes": 1432452
+    },
+    {
+      "path": "云原生Agent/11 - 10｜实践：用Go语言实现用自然语言操控K8s.pdf",
+      "sha256": "ce5b646f148199ae3d67364f38fbea6b311697222c54d2c30b44f752e44ee9a0",
+      "pages": 13,
+      "bytes": 1788276
+    },
+    {
+      "path": "云原生Agent/12 - 11｜实践：如何让 Agent 联网以及利用 kubectl 排查问题？.pdf",
+      "sha256": "bcde413ba30793c8c969fee903d92e5a71c8e498d16e6c8e884e28a7f34da805",
+      "pages": 12,
+      "bytes": 1349010
+    },
+    {
+      "path": "云原生Agent/13 - 12｜实践：如何让 Agent 利用日志和事件排查问题？.pdf",
+      "sha256": "78e0978d186754992b0b3e689b053bdaa5eac2993d8813a0f25d3267d4eb0336",
+      "pages": 10,
+      "bytes": 1409394
+    },
+    {
+      "path": "云原生Agent/14 - 13｜1分钟构建一个地图助手应用：GPTs详解.pdf",
+      "sha256": "16a0e57cac2c2585e68b807025770a6816bb878db0e55b7e27fc42fcd733c7df",
+      "pages": 10,
+      "bytes": 1112197
+    },
+    {
+      "path": "云原生Agent/15 - 14｜国产之光：开源项目Dify详解.pdf",
+      "sha256": "bcee8d328c944af4d242e392260578d129e3b58da56a306be92b4c09b7ce294f",
+      "pages": 15,
+      "bytes": 2188965
+    },
+    {
+      "path": "云原生Agent/16 - 15｜原理：可定制 API Agent 原理详解.pdf",
+      "sha256": "1175ae8cedcdd9945b8511ffd08e307beac3ce20a7f648bd7ecace4af0ef766a",
+      "pages": 8,
+      "bytes": 871810
+    },
+    {
+      "path": "云原生Agent/17 - 16｜实践：用Go语言手写可定制API Agent（上）.pdf",
+      "sha256": "d21b3b279e5ad6af7f52cf0640589534459f024167d080b037187d0377b89cf2",
+      "pages": 12,
+      "bytes": 1136363
+    },
+    {
+      "path": "云原生Agent/18 - 17｜实践：用Go语言手写可定制API Agent（下）.pdf",
+      "sha256": "5b18fec281db288c2a06872591c55b0029dd0211c8def23a438c95dcc27f643c",
+      "pages": 11,
+      "bytes": 966620
+    },
+    {
+      "path": "云原生Agent/19 - 18｜开源项目：云原生API网关Higress.pdf",
+      "sha256": "7c18a2e517580604d1a59b326707ab21102a13f96b9fab4c18959bd256bdfad1",
+      "pages": 7,
+      "bytes": 903398
+    },
+    {
+      "path": "云原生Agent/20 - 19｜轻量级网关插件Wasm初体验.pdf",
+      "sha256": "4ba7f6e174108f6cdfc0127391aef14df130f28592075537470beedb923d71a9",
+      "pages": 6,
+      "bytes": 2013954
+    },
+    {
+      "path": "云原生Agent/21 - 20｜Wasm 编程基础（上）.pdf",
+      "sha256": "e3d841d8e6b0076e712e629f4f2c848f4fa201099d1f193e6612f0055c09dc90",
+      "pages": 8,
+      "bytes": 688725
+    },
+    {
+      "path": "云原生Agent/22 - 21｜Wasm 编程基础（下）.pdf",
+      "sha256": "79408facbb89b1ae37a26fd9b715eb61c00d146d90068959caf09d8cbb1a564f",
+      "pages": 15,
+      "bytes": 2590195
+    },
+    {
+      "path": "云原生Agent/23 - 22｜实践：用Wasm实现AI Proxy.pdf",
+      "sha256": "ff61f326b51fd9265cd0f3ef246fae1cb9255e623e235b0946d2105a938fe339",
+      "pages": 10,
+      "bytes": 1008447
+    },
+    {
+      "path": "云原生Agent/24 - 23｜实践：用Wasm实现API Agent.pdf",
+      "sha256": "f9420b1fc3fa89c12365c66cb9a9ac01b882bb8b1cecfd1a782a66386ea7f182",
+      "pages": 9,
+      "bytes": 1579800
+    },
+    {
+      "path": "云原生Agent/25 - 24｜实践：通过Wasm API Agent操控与运维K8s.pdf",
+      "sha256": "be632edf597622276a5eb7ad4655aab4f64219864aded7c660dcee8ba25eee04",
+      "pages": 13,
+      "bytes": 1186021
+    },
+    {
+      "path": "云原生Agent/26 - 25｜体验：使用LobeChat体验AI网关.pdf",
+      "sha256": "203561d3fbfb494544f94ff728ab925254cf9ba0464ec24789e0f300821c03ad",
+      "pages": 8,
+      "bytes": 1873976
+    },
+    {
+      "path": "云原生Agent/27 - 26｜展望：云原生网关如何进化为AI网关？.pdf",
+      "sha256": "cbcdf55a69530ab1e8fb1c7a32f2441378bdfddb95e2fa162b8d57d6ea5fb89e",
+      "pages": 6,
+      "bytes": 1345085
+    },
+    {
+      "path": "前端交互/14 - 11｜基础组件（下）：前端 UI 设计与前端基础组件.pdf",
+      "sha256": "a5e15ed339ed35dd0e0855bf2e6c504c9d6d6b9dd362654f6e3248befe759445",
+      "pages": 9,
+      "bytes": 1700204
+    },
+    {
+      "path": "前端交互/19 - 16｜对话引擎（上）：理解对话链路与流式技术选型.pdf",
+      "sha256": "97c844045504bc7ba585f271b146b0bb61a340001cefa2ffc7e1eb435bc5bc13",
+      "pages": 9,
+      "bytes": 1406702
+    },
+    {
+      "path": "前端交互/20 - 17｜对话引擎（下）：让智能客服真正开口说话.pdf",
+      "sha256": "308566bfae967862555938f7eebc353270561585723e1eedee1bd09febd71625",
+      "pages": 7,
+      "bytes": 1356386
+    },
+    {
+      "path": "前端交互/21 - 18｜复杂前端交互：让 Claude Code 帮你搞定流式聊天界面.pdf",
+      "sha256": "3eb32927bb04323cd034ba1c84e7a85f6199d4b44c28584c615bfb18cbcff5fc",
+      "pages": 9,
+      "bytes": 2088782
+    },
+    {
+      "path": "前端交互/21 - 19｜扩展：ChatPanel 助力 Agent 丝滑接入聊天对话 Web 页面.pdf",
+      "sha256": "a31b35f08a5aa6b8cf40fab7a825d663c663611f70c6a76035534ad3763c2ada",
+      "pages": 7,
+      "bytes": 2315839
+    },
+    {
+      "path": "前端交互/22 - 20｜TUI：Pimono TUI 自绘引擎与内置组件库实战.pdf",
+      "sha256": "52cdeeff25f43894c8c5f90e7dc05b975152d0560e6a4059ef0b4c0a48bf6ecd",
+      "pages": 7,
+      "bytes": 2028468
+    },
+    {
+      "path": "可观测性/14 - 13｜系统集成：Agent 能力与现有系统无缝对接.pdf",
+      "sha256": "df8aa4a02e9e3ea790dd8a2c45d1a9e59df781b95b1f43237d0e1c68bbfa31f3",
+      "pages": 11,
+      "bytes": 2108961
+    },
+    {
+      "path": "可观测性/16 - 15｜Agent 的成本总是悄悄飙升：创建网格化天眼账本.pdf",
+      "sha256": "15a0934009b99350da040f7e63cf420bed79bc2279a992fb7d364a199aec587c",
+      "pages": 7,
+      "bytes": 1117063
+    },
+    {
+      "path": "可观测性/17 - 16｜传统监控对 Agent 几乎无效： 搭建 Agent 全链路监控体系.pdf",
+      "sha256": "1bb8549482aa0d12d2d34488905394e4a3c7ae6c69a4561272cfd6cb7a2e502d",
+      "pages": 8,
+      "bytes": 2328614
+    },
+    {
+      "path": "可观测性/19 - 18｜成本与状态追踪：在 Harness 层拦截并记录 Token 消耗与执行耗时.pdf",
+      "sha256": "4587eb13f3b0c0c1bd75a0f68111f67b458d6c66bee386ca4171f6660970ca6c",
+      "pages": 11,
+      "bytes": 1738171
+    },
+    {
+      "path": "可观测性/20 - 19｜洞察黑盒：为 Agent 引入 Tracing 机制复盘失败决策路径.pdf",
+      "sha256": "182128471e580d7c4f18d689165ec5bf75501f6f4542a340b481869468970ef3",
+      "pages": 14,
+      "bytes": 2383821
+    },
+    {
+      "path": "可观测性/32 - 29｜可观测性与排错：生产级系统的最后拼图.pdf",
+      "sha256": "df57c0e3efb01c5c6b6808dc811f2546dc676d4277b9d1bf398d0755896250fa",
+      "pages": 12,
+      "bytes": 2096099
+    },
+    {
+      "path": "安全护栏/12 - 09｜安全基石（上）：用权限控制与沙箱为AI戴上“安全镣铐”.pdf",
+      "sha256": "e2c206dbec13f17f7785e333370371aec0605338b0ab92fe679368346f798ecc",
+      "pages": 16,
+      "bytes": 3475336
+    },
+    {
+      "path": "安全护栏/12 - 11｜RBAC 挡不住 Agent：如何设计一个企业级 Agent 权限系统.pdf",
+      "sha256": "bea6ff1cc3819269ae7e3dd48f5fc414386250c53036498f5dff100c2c18aa89",
+      "pages": 7,
+      "bytes": 2631825
+    },
+    {
+      "path": "安全护栏/12 - 11｜不出事故的 Agent：三层安全护栏设计防注入，防越权，防失控.pdf",
+      "sha256": "445a4ce89bfc5383ef1cbff6380733a1f25b3b8645383d7c9cd0aceb47a66d16",
+      "pages": 7,
+      "bytes": 1971679
+    },
+    {
+      "path": "安全护栏/13 - 10｜安全基石（下）：Checkpointing，获得让AI“时光倒流”的超能力.pdf",
+      "sha256": "6f1d6d71041be0ffefd3986a0648de784b7a3db31f5174b5090c297b76e12db2",
+      "pages": 9,
+      "bytes": 1899824
+    },
+    {
+      "path": "安全护栏/13 - 12｜人审批后事故反而更大：正确设计 HITL 审批系统.pdf",
+      "sha256": "683420dd419c566e31ff2806bb3c464ffad65b72a88d4cfc17ea60c68052a994",
+      "pages": 6,
+      "bytes": 4348035
+    },
+    {
+      "path": "安全护栏/14 - 13｜Prompt 防不住注入：从加防线到零信任体系.pdf",
+      "sha256": "bea17def60e76543fc71a89990251aef539171d44485ee71f307f70b1c244e18",
+      "pages": 6,
+      "bytes": 1102306
+    },
+    {
+      "path": "安全护栏/17 - 16｜防御纵深：利用 Middleware 实现高危命令拦截与飞书人工审批.pdf",
+      "sha256": "14182f677ee608402987aed14e5e4952d3c43f8dcdb6664d7f99656cbb05844d",
+      "pages": 14,
+      "bytes": 1965836
+    },
+    {
+      "path": "安全护栏/20 - 18｜进阶：拦截管道构建合同敏感信息的多层安全护栏.pdf",
+      "sha256": "2cf47cce3d66f68457337cf509da7e4a1b8fd8f6caa429994dd84998abc66fa8",
+      "pages": 9,
+      "bytes": 2028642
+    },
+    {
+      "path": "安全护栏/28 - 25｜护栏三明治：高风险行动的前中后防线.pdf",
+      "sha256": "a47673a039e1dbefaf6dca6ae0cd88e1f742e56c1055add7137ea732f0445c97",
+      "pages": 15,
+      "bytes": 3262953
+    },
+    {
+      "path": "架构设计/01 - 开篇词｜框架正在坍塌：像写操作系统一样，复刻 OpenClaw 的底层 Harness.pdf",
+      "sha256": "8c93f84c5eeebbc0f359ca46b30b7386c48a1a2a9d05ac2c27bf2e0819e6a43f",
+      "pages": 8,
+      "bytes": 2606947
+    },
+    {
+      "path": "架构设计/02 - 01｜架构演进：从 Framework 到 Harness，Agent 到底需要怎样的底层支撑？.pdf",
+      "sha256": "6419b2c43d24cb36e5fe86468e5f01bbd23606bd81b367cf332576fd87c6101b",
+      "pages": 9,
+      "bytes": 2270215
+    },
+    {
+      "path": "架构设计/02 - 01｜范式之变：GoF 的崩塌和分布式的血脉进化.pdf",
+      "sha256": "264457ff42e9417e521fd01b8cf558f163014280087d7447dec0c1f89cdef947",
+      "pages": 21,
+      "bytes": 21989579
+    },
+    {
+      "path": "架构设计/03 - 01｜操控循环：驾驭工程的核心框架.pdf",
+      "sha256": "275e344d55712502bceeb06d6476f5d9dcdf5b612eacf7dd4366e5ce684a0644",
+      "pages": 7,
+      "bytes": 1454473
+    },
+    {
+      "path": "架构设计/03 - 02｜双轴框架（上）：理解认知功能与执行拓扑.pdf",
+      "sha256": "f104c27651de1d0b983fe4c687cafedafd6fdd7e3e3e26470d78d5b4f1d09f22",
+      "pages": 14,
+      "bytes": 8731718
+    },
+    {
+      "path": "架构设计/03 - 02｜核心心脏：手写 Agent 的 Main Loop.pdf",
+      "sha256": "6c813119bbbe89ce78ac7e2219044cd26733d9a9b8a418fd11726d9c427cf954",
+      "pages": 14,
+      "bytes": 1704715
+    },
+    {
+      "path": "架构设计/04 - 02｜四个子系统：构成框架与内置 Harness 拆解.pdf",
+      "sha256": "dee4fe547e3032c6708a0687d39fa269dc7fd6404dcbda30560e7322581c68c5",
+      "pages": 8,
+      "bytes": 2001876
+    },
+    {
+      "path": "架构设计/04 - 03｜双轴框架（下）：理解与使用 Agent 设计坐标系.pdf",
+      "sha256": "2e7f1ce57aff2a3c90c6994de3437d5450962ade2c5360304a5dcf7d187d8326",
+      "pages": 13,
+      "bytes": 4703418
+    },
+    {
+      "path": "架构设计/04 - 03｜慢思考与自省：在 ReAct 循环中剥离独立的 Thinking 阶段.pdf",
+      "sha256": "56947c01244868be546a9e1e0e2efa909fc79e3e9fbb0c57893d2def0d5be6d6",
+      "pages": 12,
+      "bytes": 2164534
+    },
+    {
+      "path": "架构设计/05 - 03｜一个例子：从零搭建背单词 Harness.pdf",
+      "sha256": "c673230dc2da4649d7b6b509792ec99a6b91c90f374f98d1533e45e673c1954e",
+      "pages": 7,
+      "bytes": 1470220
+    },
+    {
+      "path": "架构设计/05 - 04｜大脑接入：抽象 Provider 接口，适配 Claude 与 OpenAI 兼容大模型.pdf",
+      "sha256": "443b535e6529921ee1aca22f9285bda72cb785eccbd872267a55672ebccc96b7",
+      "pages": 14,
+      "bytes": 1786263
+    },
+    {
+      "path": "架构设计/07 - 04｜架构设计（上）：应用架构与代码组织.pdf",
+      "sha256": "05c69c69858e6d3a798148b361a17b4bcf24dd1b7fef91ae2ee2f2e0373acf35",
+      "pages": 9,
+      "bytes": 1450371
+    },
+    {
+      "path": "架构设计/08 - 05｜架构设计（下）：部署架构、性能预判与数据设计.pdf",
+      "sha256": "030a15b3258e99e88bb7fea9e70921ab74ee760bcee1ac01f9c1cd1914cce4e5",
+      "pages": 14,
+      "bytes": 3291862
+    },
+    {
+      "path": "架构设计/08 - 06｜知识固化：从头构造一个 Harness.pdf",
+      "sha256": "49a27da4093b51b596eb592b2e14d3faf04b55841513c7494dfbb93d6d12dd08",
+      "pages": 9,
+      "bytes": 1275669
+    },
+    {
+      "path": "架构设计/08 - 热点加餐｜Loop Engineering：如何把 Agent 的循环工程化.pdf",
+      "sha256": "c03068c912d29d1cc9ca993f34e36605a1b61f1e3737d875bc1e1e0ba746e916",
+      "pages": 20,
+      "bytes": 12888277
+    },
+    {
+      "path": "架构设计/09 - 06｜感知模块导论：如何优雅设计 Agent 感知层？.pdf",
+      "sha256": "436d81bff23b8d5f4868581ac065862cceacffa62f120c720b3c347a2d6e89d2",
+      "pages": 12,
+      "bytes": 8149982
+    },
+    {
+      "path": "架构设计/17 - 15｜起点：基于 pimono 打造生产级合同审查 Agent Runtime.pdf",
+      "sha256": "627c75c3247bda261d23b4287a790b1fd23d1235e43fcaa1fe5a323438408875",
+      "pages": 10,
+      "bytes": 1519855
+    },
+    {
+      "path": "架构设计/19 - 16｜推理模块导论 ：让 Agent 想得清楚，也想得起来.pdf",
+      "sha256": "552aac290ac036074b4716fcf371eb132a3a786e27179800e034d1162394ebf5",
+      "pages": 10,
+      "bytes": 4314973
+    },
+    {
+      "path": "架构设计/19 - 16｜顶层设计：构建你的AI原生开发“驾驶舱”.pdf",
+      "sha256": "87894569341e41a5e0f5e4a92dc7d3d90f487d6370982d98a17deea56beb8939",
+      "pages": 13,
+      "bytes": 2006037
+    },
+    {
+      "path": "架构设计/23 - DeepSeek Harness：插件化 Agent 框架与生态入门.pdf",
+      "sha256": "1d6345747c78a1bc9e5ad904b50a9da9d1512fad0b406887ab2dc06be956924c",
+      "pages": 15,
+      "bytes": 3312173
+    },
+    {
+      "path": "架构设计/24 - 21｜行动模块导论：把任务安全地做好.pdf",
+      "sha256": "66efb70a2c46b266c2cf1cc1a115f933210677c8fe9237b58a211bbf940ce97f",
+      "pages": 16,
+      "bytes": 7755717
+    },
+    {
+      "path": "架构设计/29 - 26｜反思模块导论：让 Agent 站到自己的结果之外.pdf",
+      "sha256": "a8c921fa6b2be2694a2b4e54f6ddbd1d73295ce94d87671ed7af4068b281bace",
+      "pages": 20,
+      "bytes": 7585210
+    },
+    {
+      "path": "架构设计/33 - DeepSeek Harness (dsh) 全插件化架构的组合、执行与记录.pdf",
+      "sha256": "467d6bfacf570893cf2ed3257711c0335fbaa37085713d3dad9a77e706ffd6ab",
+      "pages": 11,
+      "bytes": 3053985
+    },
+    {
+      "path": "测试质量/13 - 12｜测试策略：单元、集成、E2E 三层测试体系保证质量.pdf",
+      "sha256": "f15a94a99d0ba55ef83c86e09427646fcb25b0fe226b085c04c0256ee408b78d",
+      "pages": 8,
+      "bytes": 1111487
+    },
+    {
+      "path": "测试质量/16 - 14｜摸清现有测试：能跑通吗？覆盖度怎样？.pdf",
+      "sha256": "5086d6d998c1f8814d955315a913d5a6d90a4d4b66d71bcea2d25eab3101cebe",
+      "pages": 7,
+      "bytes": 1785494
+    },
+    {
+      "path": "测试质量/17 - 15｜补出一套兜底测试：让 AI 用 Characterization Test 锁住行为.pdf",
+      "sha256": "dbeb5c9c5f0d2383d328fca523ec20e21806d4001049d36c75c331fecaaa65e5",
+      "pages": 9,
+      "bytes": 1866211
+    },
+    {
+      "path": "测试质量/19 - 18｜日志全绿，事故照发：构筑 Agent 测试护栏.pdf",
+      "sha256": "06bd0db66b941718dea590d92e93534b31eca24e93136dbbbe6ef707c736a652",
+      "pages": 8,
+      "bytes": 2863970
+    },
+    {
+      "path": "测试质量/21 - 20｜科学度量：如何构建 Benchmark 自动化评估脚本，科学量化 Harness 引擎性能？.pdf",
+      "sha256": "69c7c16282fbd3a0c7b8d0ba8055490cb97bd27ab1f6c4f73ca3912738264155",
+      "pages": 12,
+      "bytes": 1699984
+    },
+    {
+      "path": "测试质量/22 - 19｜编码与测试：AI驱动的TDD与框架能力的协同作战.pdf",
+      "sha256": "055dd94b6ba9d021a6c5283e730f2b447288fd9df5a8505cb0ea5eae8c1e8d9c",
+      "pages": 18,
+      "bytes": 1896231
+    },
+    {
+      "path": "测试质量/30 - 27｜AI 写代码，保证质量不靠运气，靠体系.pdf",
+      "sha256": "d18f6a10a9553f4194593461bbe293d32432dd3975e69de05f07342a54f2f282",
+      "pages": 12,
+      "bytes": 1356822
+    },
+    {
+      "path": "测试质量/30 - 27｜生成评审：让每个版本独立接受审查.pdf",
+      "sha256": "96265dd9537509e2d3425bba0af6d5782804d223c01ef46f1ec5ac4fa0822c96",
+      "pages": 15,
+      "bytes": 3618339
+    },
+    {
+      "path": "知识库RAG/09 - 08｜Embabel 与 RAG 集成：让 Agent 真正“读懂”你的私有知识.pdf",
+      "sha256": "1d7981ffd30aafa26b770673117313c3f5f0d80160012f10d767e5f545127895",
+      "pages": 9,
+      "bytes": 2520480
+    },
+    {
+      "path": "知识库RAG/15 - 13｜基础：LLM-Wiki 快速理解与入门.pdf",
+      "sha256": "f78263514a2117c08390ab9e6e35a90f93549160a865771e5750b7c47b1ad5d9",
+      "pages": 6,
+      "bytes": 1135816
+    },
+    {
+      "path": "知识库RAG/16 - 14｜应用：基于 Deepagents 与 LLM-Wiki 方法论沉淀构建知识库.pdf",
+      "sha256": "a2beb75f5b37599437f06e5c3734d94bcdd6fc0c43d4fd1232aa0251c58173fd",
+      "pages": 8,
+      "bytes": 3658601
+    },
+    {
+      "path": "知识库RAG/19 - 18｜别只答 RAG：教你设计 Agent 的信息检索机制.pdf",
+      "sha256": "3e91d8fbe7115034fdfa0168f83cca4ab2988cbd5597a96ffd513d54ad699955",
+      "pages": 15,
+      "bytes": 4021301
+    },
+    {
+      "path": "知识库RAG/20 - 19｜Chunk 的召回精度和粒度，你怎么平衡？.pdf",
+      "sha256": "8fc9edea51abbbc897a08f192b5c82641adebd27a1f9a3d156aced89970b0d5c",
+      "pages": 17,
+      "bytes": 4316297
+    },
+    {
+      "path": "知识库RAG/21 - 20｜怎么系统性提高 Agent 检索召回的准确率？.pdf",
+      "sha256": "731fa794e75933eaa1121f62729e36081b6bc9932ad0e947aefff8b02a10c28c",
+      "pages": 13,
+      "bytes": 2005719
+    },
+    {
+      "path": "知识库RAG/22 - 21｜Agent 检索性能优化：最小充分检索、动态预算与缓存.pdf",
+      "sha256": "aaacfe368ebbf26d127aeba945b8ab184411be6ad559f9b0e00da056886d8850",
+      "pages": 10,
+      "bytes": 1767718
+    },
+    {
+      "path": "知识库RAG/23 - 20｜RAG 知识库（上）：用 Claude Code 快速搞懂 RAG 和向量数据库.pdf",
+      "sha256": "e023f4cdffbb44f3cefe90f7c201a1f1fdadf759f36b005648e581329d96b16e",
+      "pages": 7,
+      "bytes": 1142959
+    },
+    {
+      "path": "知识库RAG/23 - 22｜如何设计一个有竞争力的检索（RAG）面试方案？.pdf",
+      "sha256": "a3456fec92fd676e5a48fecfbe2bd1cc528de2e7b003440acac7a00fda1bb1e8",
+      "pages": 8,
+      "bytes": 3301052
+    },
+    {
+      "path": "知识库RAG/24 - 21｜RAG 知识库（下）：给客服一本手册，对话功能集成 RAG.pdf",
+      "sha256": "942660ebcc3e591c1249c57adaedde43e5b69062c74cf3336a409265902acb4c",
+      "pages": 18,
+      "bytes": 2530381
+    }
+  ]
+}
