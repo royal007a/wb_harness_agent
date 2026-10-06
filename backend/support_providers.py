@@ -227,7 +227,7 @@ class SupportProviders:
         try:
             result = await self.request(ident, '/chat/completions', {
                 'model': doc['model'], 'messages': [{'role': 'user', 'content': 'Connectivity check. Reply OK only.'}],
-                'max_tokens': 32, 'stream': False})
+                'max_completion_tokens': 32, 'thinking': {'type': 'disabled'}, 'stream': False})
             choices = result.get('choices')
             usage = result.get('usage', {})
             if (not isinstance(choices, list) or len(choices) != 1 or not isinstance(choices[0], dict)

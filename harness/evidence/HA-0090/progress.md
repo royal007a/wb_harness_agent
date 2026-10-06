@@ -68,3 +68,12 @@
 - 132依赖预装使用独立环境；其默认PyPI镜像缺cryptography50，改官方PyPI后继续，未改旧运行环境。
 - 仍未作为部署、真实Provider、生产多租户验收；正在做双部署。
 - `sh harness/verify.sh` 独立运行 exit 0：1602 passed / 23 skipped；其后评测、接口清单和静态检查也通过（verify.log）。这是本分支基线和依赖条件下的数量，不与 DSH 分支1686直接比较。
+
+## 真实调用发现与修复
+
+- Ark 在 finish choice 和其后空 choices 帧重复相同 usage，旧解析器安全拒绝。
+  精确兼容后，同值只结算一次；冲突、提前、三次和重复空帧反例均拒绝（ark-stream.xml）。
+- 首次真实工作流触发 usage breach：预留输出2048，报告输出2291（含推理），没有发布。
+  不能提高预算掩盖发送参数问题：改用总输出 max_completion_tokens，并显式关闭 thinking。
+  [官方参数说明](https://docs.volcengine.com/docs/LakeAIService/DeepThinkingDoubao-15-thinking-pro?lang=zh)
+  区分回答上限与含推理的总输出上限；本平台仍以实际usage校验，不把参数当供应商必然守约证明。

@@ -96,7 +96,8 @@ def test_probe_real_transport_boundary_redaction_daily_cap(providers):
         assert request.headers['authorization'] == 'Bearer synthetic-secret-HA80'
         assert request.headers['accept-encoding'] == 'identity'
         body = json.loads(request.content)
-        assert body['max_tokens'] == 32 and body['stream'] is False
+        assert body['max_completion_tokens'] == 32 and body['stream'] is False
+        assert 'max_tokens' not in body and body['thinking'] == {'type': 'disabled'}
         return response()
     providers.transport = httpx.MockTransport(handle)
     result = asyncio.run(providers.probe(doc['id']))

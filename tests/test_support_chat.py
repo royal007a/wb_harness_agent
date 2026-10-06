@@ -88,6 +88,9 @@ def test_multi_turn_stream_persistence_idempotency(chat):
     replay = chat.begin(s['id'], {'content': '如何退款？'}, 'key1')
     assert asyncio.run(collect(chat, replay['id']))[0]['replayed'] is True
     assert len(calls) == 1 and bodies[0].closed == 1
+    payload=json.loads(calls[0].content)
+    assert 'max_tokens' not in payload and payload['max_completion_tokens']==2048
+    assert payload['thinking']=={'type':'disabled'}
     two = chat.begin(s['id'], {'content': '订单号是123'}, 'key2')
     assert asyncio.run(collect(chat, two['id']))[-1]['type'] == 'done'
     assert [m['role'] for m in json.loads(calls[-1].content)['messages']] == ['system', 'user', 'assistant', 'user']

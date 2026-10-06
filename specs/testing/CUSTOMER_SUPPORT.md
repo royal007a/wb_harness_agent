@@ -41,6 +41,8 @@ Session：`GET/POST /sessions`、`GET/DELETE /sessions/{id}`。创建时快照 A
 每次真实请求先走 HA-0075 预留与结算；上下文有界，缺 usage 冻结而非当0。
 Ark 可在终止 choice 和紧随的空 choices 帧重复相同 usage；只允许这个精确组合、
 内容逐值一致且只结算一次。冲突、提前或多次 usage 仍拒绝；不保留 reasoning_content。
+Ark 请求显式关闭 thinking，并用 max_completion_tokens 限制回答与思考的总输出；
+不能用只限制回答的 max_tokens 冒充账本的总输出上限。账本仍校验实报 usage，超限失败。
 重启将 queued/running 标为 failed/SUPPORT_RESTARTED；完整历史仍可读取。
 
 ## 知识库 API v1（第三原子切片）
