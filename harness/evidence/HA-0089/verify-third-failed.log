@@ -1,0 +1,140 @@
+{"route_methods": 155, "features": 23, "mode": "checked"}
+.....................................Timeout (0:01:30)!
+Thread 0x000000016e68b000 [Thread-17 (run)] (most recent call first):
+  File "<python3.14>/lib/python3.14/selectors.py", line 548 in select
+  File "<python3.14>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python3.14>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python3.14>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<python3.14>/lib/python3.14/asyncio/runners.py", line 128 in run
+  File "<python3.14>/lib/python3.14/asyncio/runners.py", line 205 in run
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/uvicorn/server.py", line 75 in run
+  File "<python3.14>/lib/python3.14/threading.py", line 1024 in run
+  File "<python3.14>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python3.14>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x000000016d67f000 [asyncio-waitpid-0] (most recent call first):
+  File "<python3.14>/lib/python3.14/asyncio/unix_events.py", line 951 in _do_waitpid
+  File "<python3.14>/lib/python3.14/threading.py", line 1024 in run
+  File "<python3.14>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python3.14>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001fa61dd80 (most recent call first):
+  File "<python3.14>/lib/python3.14/selectors.py", line 548 in select
+  File "<python3.14>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python3.14>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python3.14>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 56 in greenlet_main
+
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost call
+ui = (<Page url='http://127.0.0.1:51657/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x111e26b30>, {'id':...ae0f2a8d3d5195bc', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:51657')
+
+    def test_exchange_without_visible_user_message_is_not_lost(ui):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'orphan history', 'missing from view')
+        runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        detail = runtime.session_detail(created['id'])
+        detail['messages'] = []
+        page.route('**/sessions/' + created['id'], lambda route: route.fulfill(json=detail))
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x11072f380>
+cb = <function Channel.send.<locals>.<lambda> at 0x111afa400>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:51657/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+F
+=================================== FAILURES ===================================
+____________ test_exchange_without_visible_user_message_is_not_lost ____________
+
+ui = (<Page url='http://127.0.0.1:51657/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x111e26b30>, {'id':...ae0f2a8d3d5195bc', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:51657')
+
+    def test_exchange_without_visible_user_message_is_not_lost(ui):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'orphan history', 'missing from view')
+        runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        detail = runtime.session_detail(created['id'])
+        detail['messages'] = []
+        page.route('**/sessions/' + created['id'], lambda route: route.fulfill(json=detail))
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x11072f380>
+cb = <function Channel.send.<locals>.<lambda> at 0x111afa400>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:51657/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  <local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 37 passed, 1 warning in 600.96s (0:10:00)
