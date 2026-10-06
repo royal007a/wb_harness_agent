@@ -1,0 +1,1407 @@
+ASGI_BEGIN 1586468.338 /agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.019 request GET <loopback>/agent-runtime
+ASGI_HEADERS 1586468.341 /agent-runtime 200
+ASGI_FINISH 1586468.341 /agent-runtime elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.021 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.024 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.025 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586468.346 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.025 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.025 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586468.347 /static/paths.js
+ASGI_BEGIN 1586468.347 /static/agent-runtime.js
+ASGI_HEADERS 1586468.351 /static/agent-runtime.css 200
+ASGI_HEADERS 1586468.352 /static/paths.js 200
+ASGI_HEADERS 1586468.352 /static/agent-runtime.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.031 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586468.352 /static/agent-runtime.css elapsed 0.007
+ASGI_FINISH 1586468.353 /static/paths.js elapsed 0.006
+ASGI_FINISH 1586468.353 /static/agent-runtime.js elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.032 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.033 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.033 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.033 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.034 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586468.378 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.058 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586468.379 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.058 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586468.379 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.058 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.059 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586468.38 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.06 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.06 load 
+ASGI_HEADERS 1586468.382 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586468.382 /api/local/agent-runtime/providers elapsed 0.004
+ASGI_HEADERS 1586468.382 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586468.383 /api/local/agent-runtime/agents elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.062 response 200 <loopback>/api/local/agent-runtime/providers
+ASGI_HEADERS 1586468.383 /api/local/agent-runtime/models 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.063 finished <loopback>/api/local/agent-runtime/providers
+ASGI_FINISH 1586468.384 /api/local/agent-runtime/models elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.063 response 200 <loopback>/api/local/agent-runtime/agents
+ASGI_HEADERS 1586468.385 /api/local/agent-runtime/sessions 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.064 finished <loopback>/api/local/agent-runtime/agents
+ASGI_FINISH 1586468.385 /api/local/agent-runtime/sessions elapsed 0.005
+ASGI_BEGIN 1586468.386 /api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+ASGI_HEADERS 1586468.389 /api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness 200
+ASGI_FINISH 1586468.389 /api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.07 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.07 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.07 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.07 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.071 request GET <loopback>/api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.071 response 200 <loopback>/api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.071 finished <loopback>/api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+ASGI_BEGIN 1586468.445 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+ASGI_HEADERS 1586468.446 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d 200
+ASGI_FINISH 1586468.446 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.16 request GET <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.167 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.167 finished <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+ASGI_BEGIN 1586468.555 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.235 request POST <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d/messages
+ASGI_HEADERS 1586468.56 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d/messages 200
+ASGI_FINISH 1586468.56 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d/messages elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.242 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d/messages
+ASGI_BEGIN 1586468.564 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.244 request GET <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+ASGI_HEADERS 1586468.566 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d 200
+ASGI_FINISH 1586468.566 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.245 failed <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.246 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.246 finished <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+ASGI_BEGIN 1586468.612 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.295 request GET <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+ASGI_HEADERS 1586468.617 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d 200
+ASGI_FINISH 1586468.617 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.302 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.303 finished <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.311 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586468.632 /agent-runtime
+ASGI_HEADERS 1586468.634 /agent-runtime 200
+ASGI_FINISH 1586468.635 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.315 response 200 <loopback>/agent-runtime
+ASGI_BEGIN 1586468.64 /static/agent-runtime.css
+ASGI_BEGIN 1586468.64 /static/agent-runtime.js
+ASGI_BEGIN 1586468.641 /static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.322 request GET <loopback>/static/agent-runtime.css
+ASGI_HEADERS 1586468.643 /static/agent-runtime.css 200
+ASGI_HEADERS 1586468.643 /static/agent-runtime.js 200
+ASGI_HEADERS 1586468.643 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.323 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.323 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.323 finished <loopback>/agent-runtime
+ASGI_FINISH 1586468.644 /static/agent-runtime.js elapsed 0.004
+ASGI_FINISH 1586468.644 /static/agent-runtime.css elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.323 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586468.645 /static/paths.js elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.324 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.325 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.325 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.325 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.325 finished <loopback>/static/paths.js
+ASGI_BEGIN 1586468.649 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586468.651 /api/local/agent-runtime/models
+ASGI_BEGIN 1586468.651 /api/local/agent-runtime/agents
+ASGI_BEGIN 1586468.652 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.333 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.335 request GET <loopback>/api/local/agent-runtime/models
+ASGI_HEADERS 1586468.656 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.336 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_HEADERS 1586468.657 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586468.657 /api/local/agent-runtime/providers elapsed 0.008
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.337 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_FINISH 1586468.658 /api/local/agent-runtime/agents elapsed 0.007
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.338 domcontentloaded 
+ASGI_HEADERS 1586468.659 /api/local/agent-runtime/models 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.338 load 
+ASGI_HEADERS 1586468.66 /api/local/agent-runtime/sessions 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.34 response 200 <loopback>/api/local/agent-runtime/providers
+ASGI_FINISH 1586468.662 /api/local/agent-runtime/models elapsed 0.011
+ASGI_FINISH 1586468.662 /api/local/agent-runtime/sessions elapsed 0.01
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.342 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.343 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.343 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.344 response 200 <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586468.665 /api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.345 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.346 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.346 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.347 request GET <loopback>/api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+ASGI_HEADERS 1586468.668 /api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness 200
+ASGI_FINISH 1586468.668 /api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.358 response 200 <loopback>/api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.358 finished <loopback>/api/local/agent-runtime/providers/rtp_1eb395e91d6c466cb87c3a221b814ca5/readiness
+ASGI_BEGIN 1586468.704 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.386 request GET <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+ASGI_HEADERS 1586468.709 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d 200
+ASGI_FINISH 1586468.71 /api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.404 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.404 finished <loopback>/api/local/agent-runtime/sessions/rts_b411333c24fa41708dcb177af183773d
+UI_WORK {"after": {"Documents": 6, "Frames": 7, "JSHeapUsedSize": 4082668, "LayoutDuration": 0.006956, "RecalcStyleDuration": 0.003564, "ScriptDuration": 0.001956, "TaskDuration": 0.060242, "Timestamp": 1586468.810157}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 0.000188, "Timestamp": 1586468.324428}, "elapsed": 0.4812367497943342, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.502 close 
+ASGI_BEGIN 1586469.271 /agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.027 request GET <loopback>/agent-runtime
+ASGI_HEADERS 1586469.273 /agent-runtime 200
+ASGI_FINISH 1586469.273 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.03 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.036 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.037 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.037 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.037 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586469.283 /static/agent-runtime.css
+ASGI_BEGIN 1586469.283 /static/paths.js
+ASGI_BEGIN 1586469.284 /static/agent-runtime.js
+ASGI_HEADERS 1586469.286 /static/agent-runtime.css 200
+ASGI_HEADERS 1586469.287 /static/paths.js 200
+ASGI_HEADERS 1586469.287 /static/agent-runtime.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.044 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586469.288 /static/agent-runtime.css elapsed 0.006
+ASGI_FINISH 1586469.288 /static/paths.js elapsed 0.005
+ASGI_FINISH 1586469.289 /static/agent-runtime.js elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.045 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.045 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.045 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.046 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.046 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586469.313 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.069 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586469.314 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.07 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586469.315 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.07 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586469.315 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.071 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.072 domcontentloaded 
+ASGI_HEADERS 1586469.317 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.073 load 
+ASGI_FINISH 1586469.317 /api/local/agent-runtime/providers elapsed 0.005
+ASGI_HEADERS 1586469.318 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586469.318 /api/local/agent-runtime/models elapsed 0.004
+ASGI_HEADERS 1586469.319 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586469.32 /api/local/agent-runtime/agents elapsed 0.005
+ASGI_HEADERS 1586469.32 /api/local/agent-runtime/sessions 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.076 response 200 <loopback>/api/local/agent-runtime/providers
+ASGI_FINISH 1586469.32 /api/local/agent-runtime/sessions elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.076 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.077 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.077 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.077 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.077 response 200 <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586469.322 /api/local/agent-runtime/providers/rtp_e15f7eb0e84949d790a79f278b5d2a88/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.078 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.078 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.079 request GET <loopback>/api/local/agent-runtime/providers/rtp_e15f7eb0e84949d790a79f278b5d2a88/readiness
+ASGI_HEADERS 1586469.324 /api/local/agent-runtime/providers/rtp_e15f7eb0e84949d790a79f278b5d2a88/readiness 200
+ASGI_FINISH 1586469.324 /api/local/agent-runtime/providers/rtp_e15f7eb0e84949d790a79f278b5d2a88/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.086 response 200 <loopback>/api/local/agent-runtime/providers/rtp_e15f7eb0e84949d790a79f278b5d2a88/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.087 finished <loopback>/api/local/agent-runtime/providers/rtp_e15f7eb0e84949d790a79f278b5d2a88/readiness
+ASGI_BEGIN 1586469.377 /api/local/agent-runtime/sessions/rts_37055302ddce48eaa96b239e292421ac
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.133 request GET <loopback>/api/local/agent-runtime/sessions/rts_37055302ddce48eaa96b239e292421ac
+ASGI_HEADERS 1586469.378 /api/local/agent-runtime/sessions/rts_37055302ddce48eaa96b239e292421ac 200
+ASGI_FINISH 1586469.379 /api/local/agent-runtime/sessions/rts_37055302ddce48eaa96b239e292421ac elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.167 response 200 <loopback>/api/local/agent-runtime/sessions/rts_37055302ddce48eaa96b239e292421ac
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.167 finished <loopback>/api/local/agent-runtime/sessions/rts_37055302ddce48eaa96b239e292421ac
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2396016, "LayoutDuration": 0.012826, "RecalcStyleDuration": 0.006459, "ScriptDuration": 0.002103, "TaskDuration": 0.077387, "Timestamp": 1586469.469601}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 2.9e-05, "Timestamp": 1586469.257345}, "elapsed": 0.21401166706345975, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\\u6392\\u961f\\u4e2d]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 0.23 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.005 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586469.809 /agent-runtime
+ASGI_HEADERS 1586469.81 /agent-runtime 200
+ASGI_FINISH 1586469.81 /agent-runtime elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.007 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.011 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.012 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586469.816 /static/agent-runtime.css
+ASGI_BEGIN 1586469.817 /static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.013 request GET <loopback>/static/paths.js
+ASGI_BEGIN 1586469.817 /static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.013 finished <loopback>/agent-runtime
+ASGI_HEADERS 1586469.819 /static/agent-runtime.css 200
+ASGI_HEADERS 1586469.819 /static/agent-runtime.js 200
+ASGI_HEADERS 1586469.819 /static/paths.js 200
+ASGI_FINISH 1586469.82 /static/agent-runtime.css elapsed 0.004
+ASGI_FINISH 1586469.82 /static/paths.js elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.017 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586469.821 /static/agent-runtime.js elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.018 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.018 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.018 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.043 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.043 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586469.848 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.044 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.045 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586469.849 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.045 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586469.85 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.046 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.046 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.047 load 
+ASGI_BEGIN 1586469.851 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1586469.852 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586469.853 /api/local/agent-runtime/providers elapsed 0.005
+ASGI_HEADERS 1586469.853 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586469.854 /api/local/agent-runtime/models elapsed 0.005
+ASGI_HEADERS 1586469.854 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1586469.854 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586469.855 /api/local/agent-runtime/agents elapsed 0.005
+ASGI_FINISH 1586469.855 /api/local/agent-runtime/sessions elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.054 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.054 finished <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586469.858 /api/local/agent-runtime/providers/rtp_c90d156c5e0b4a2e820fdcf402565d58/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.055 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.056 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.057 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.057 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.058 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.058 finished <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586469.862 /api/local/agent-runtime/providers/rtp_c90d156c5e0b4a2e820fdcf402565d58/readiness 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.058 request GET <loopback>/api/local/agent-runtime/providers/rtp_c90d156c5e0b4a2e820fdcf402565d58/readiness
+ASGI_FINISH 1586469.863 /api/local/agent-runtime/providers/rtp_c90d156c5e0b4a2e820fdcf402565d58/readiness elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.072 response 200 <loopback>/api/local/agent-runtime/providers/rtp_c90d156c5e0b4a2e820fdcf402565d58/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.072 finished <loopback>/api/local/agent-runtime/providers/rtp_c90d156c5e0b4a2e820fdcf402565d58/readiness
+ASGI_BEGIN 1586469.901 /api/local/agent-runtime/sessions/rts_56310910e8fa4b5188b7c91c0f709d8e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.099 request GET <loopback>/api/local/agent-runtime/sessions/rts_56310910e8fa4b5188b7c91c0f709d8e
+ASGI_HEADERS 1586469.904 /api/local/agent-runtime/sessions/rts_56310910e8fa4b5188b7c91c0f709d8e 200
+ASGI_FINISH 1586469.905 /api/local/agent-runtime/sessions/rts_56310910e8fa4b5188b7c91c0f709d8e elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.132 response 200 <loopback>/api/local/agent-runtime/sessions/rts_56310910e8fa4b5188b7c91c0f709d8e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.133 finished <loopback>/api/local/agent-runtime/sessions/rts_56310910e8fa4b5188b7c91c0f709d8e
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2397612, "LayoutDuration": 0.016076, "RecalcStyleDuration": 0.008518, "ScriptDuration": 0.002345, "TaskDuration": 0.083945, "Timestamp": 1586469.99617}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 4e-06, "Timestamp": 1586469.805516}, "elapsed": 0.19361991598270833, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\\u751f\\u6210\\u4e2d]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.198 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.006 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586470.423 /agent-runtime
+ASGI_HEADERS 1586470.426 /agent-runtime 200
+ASGI_FINISH 1586470.426 /agent-runtime elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.012 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.015 request GET <loopback>/static/agent-runtime.css
+ASGI_BEGIN 1586470.431 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.015 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.016 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.016 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586470.432 /static/paths.js
+ASGI_BEGIN 1586470.432 /static/agent-runtime.js
+ASGI_HEADERS 1586470.433 /static/agent-runtime.css 200
+ASGI_HEADERS 1586470.433 /static/paths.js 200
+ASGI_HEADERS 1586470.433 /static/agent-runtime.js 200
+ASGI_FINISH 1586470.434 /static/agent-runtime.css elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.018 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.019 finished <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586470.435 /static/paths.js elapsed 0.003
+ASGI_FINISH 1586470.435 /static/agent-runtime.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.02 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.02 finished <loopback>/static/paths.js
+ASGI_BEGIN 1586470.464 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.049 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.049 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586470.466 /api/local/agent-runtime/models
+ASGI_BEGIN 1586470.466 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.05 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.051 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.051 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586470.468 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.052 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.054 domcontentloaded 
+ASGI_HEADERS 1586470.47 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.054 load 
+ASGI_FINISH 1586470.47 /api/local/agent-runtime/providers elapsed 0.007
+ASGI_HEADERS 1586470.471 /api/local/agent-runtime/models 200
+ASGI_HEADERS 1586470.472 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1586470.473 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586470.473 /api/local/agent-runtime/models elapsed 0.007
+ASGI_FINISH 1586470.473 /api/local/agent-runtime/agents elapsed 0.008
+ASGI_FINISH 1586470.473 /api/local/agent-runtime/sessions elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.058 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.058 finished <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586470.476 /api/local/agent-runtime/providers/rtp_aab0f674193d4a6590485584e0dd0c86/readiness
+ASGI_HEADERS 1586470.479 /api/local/agent-runtime/providers/rtp_aab0f674193d4a6590485584e0dd0c86/readiness 200
+ASGI_FINISH 1586470.48 /api/local/agent-runtime/providers/rtp_aab0f674193d4a6590485584e0dd0c86/readiness elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.064 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.065 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.065 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.065 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.066 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.066 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.066 request GET <loopback>/api/local/agent-runtime/providers/rtp_aab0f674193d4a6590485584e0dd0c86/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.067 response 200 <loopback>/api/local/agent-runtime/providers/rtp_aab0f674193d4a6590485584e0dd0c86/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.067 finished <loopback>/api/local/agent-runtime/providers/rtp_aab0f674193d4a6590485584e0dd0c86/readiness
+ASGI_BEGIN 1586470.539 /api/local/agent-runtime/sessions/rts_aba8c795b8b7493bb8e8c115da4a1eed
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.124 request GET <loopback>/api/local/agent-runtime/sessions/rts_aba8c795b8b7493bb8e8c115da4a1eed
+ASGI_HEADERS 1586470.54 /api/local/agent-runtime/sessions/rts_aba8c795b8b7493bb8e8c115da4a1eed 200
+ASGI_FINISH 1586470.541 /api/local/agent-runtime/sessions/rts_aba8c795b8b7493bb8e8c115da4a1eed elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.16 response 200 <loopback>/api/local/agent-runtime/sessions/rts_aba8c795b8b7493bb8e8c115da4a1eed
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.16 finished <loopback>/api/local/agent-runtime/sessions/rts_aba8c795b8b7493bb8e8c115da4a1eed
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2397612, "LayoutDuration": 0.017133, "RecalcStyleDuration": 0.00625, "ScriptDuration": 0.003296, "TaskDuration": 0.091312, "Timestamp": 1586470.62945}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 4e-06, "Timestamp": 1586470.41772}, "elapsed": 0.21274291700683534, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\\u5df2\\u53d6\\u6d88]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 0.216 close 
+ASGI_BEGIN 1586470.971 /api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0/messages
+ASGI_HEADERS 1586470.973 /api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0/messages 200
+ASGI_FINISH 1586470.974 /api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0/messages elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.019 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586470.978 /agent-runtime
+ASGI_HEADERS 1586470.978 /agent-runtime 200
+ASGI_FINISH 1586470.978 /agent-runtime elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.021 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.024 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.025 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586470.983 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.025 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.025 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586470.983 /static/paths.js
+ASGI_BEGIN 1586470.984 /static/agent-runtime.js
+ASGI_HEADERS 1586470.985 /static/agent-runtime.css 200
+ASGI_HEADERS 1586470.985 /static/agent-runtime.js 200
+ASGI_HEADERS 1586470.986 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.029 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586470.987 /static/agent-runtime.css elapsed 0.004
+ASGI_FINISH 1586470.987 /static/paths.js elapsed 0.004
+ASGI_FINISH 1586470.987 /static/agent-runtime.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.03 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.03 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.031 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.035 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.035 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586471.028 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586471.03 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.072 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586471.031 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.073 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586471.032 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.075 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.075 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586471.033 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.076 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.076 load 
+ASGI_FINISH 1586471.034 /api/local/agent-runtime/providers elapsed 0.006
+ASGI_HEADERS 1586471.034 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586471.035 /api/local/agent-runtime/models elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.078 response 200 <loopback>/api/local/agent-runtime/providers
+ASGI_HEADERS 1586471.036 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1586471.036 /api/local/agent-runtime/sessions 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.078 finished <loopback>/api/local/agent-runtime/providers
+ASGI_FINISH 1586471.036 /api/local/agent-runtime/agents elapsed 0.005
+ASGI_FINISH 1586471.036 /api/local/agent-runtime/sessions elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.078 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.079 finished <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586471.038 /api/local/agent-runtime/providers/rtp_fd7eaeee75f04373867e5a78b833c757/readiness
+ASGI_HEADERS 1586471.039 /api/local/agent-runtime/providers/rtp_fd7eaeee75f04373867e5a78b833c757/readiness 200
+ASGI_FINISH 1586471.04 /api/local/agent-runtime/providers/rtp_fd7eaeee75f04373867e5a78b833c757/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.083 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.084 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.084 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.084 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.084 request GET <loopback>/api/local/agent-runtime/providers/rtp_fd7eaeee75f04373867e5a78b833c757/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.085 response 200 <loopback>/api/local/agent-runtime/providers/rtp_fd7eaeee75f04373867e5a78b833c757/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.085 finished <loopback>/api/local/agent-runtime/providers/rtp_fd7eaeee75f04373867e5a78b833c757/readiness
+ASGI_BEGIN 1586471.093 /api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.136 request GET <loopback>/api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0
+ASGI_HEADERS 1586471.095 /api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0 200
+ASGI_FINISH 1586471.096 /api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0 elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.157 response 200 <loopback>/api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.158 finished <loopback>/api/local/agent-runtime/sessions/rts_65161d39cea740a69b5071ce821fbcc0
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2340792, "LayoutDuration": 0.015473, "RecalcStyleDuration": 0.007452, "ScriptDuration": 0.004657, "TaskDuration": 0.086806, "Timestamp": 1586471.122823}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 8e-06, "Timestamp": 1586470.959858}, "elapsed": 0.16384354187175632, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 0.167 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.009 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586471.456 /agent-runtime
+ASGI_HEADERS 1586471.458 /agent-runtime 200
+ASGI_FINISH 1586471.458 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.012 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.016 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.016 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.016 request GET <loopback>/static/paths.js
+ASGI_BEGIN 1586471.464 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.017 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586471.465 /static/paths.js
+ASGI_BEGIN 1586471.465 /static/agent-runtime.js
+ASGI_HEADERS 1586471.467 /static/agent-runtime.css 200
+ASGI_HEADERS 1586471.468 /static/agent-runtime.js 200
+ASGI_HEADERS 1586471.468 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.022 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586471.469 /static/agent-runtime.css elapsed 0.006
+ASGI_FINISH 1586471.47 /static/paths.js elapsed 0.005
+ASGI_FINISH 1586471.47 /static/agent-runtime.js elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.023 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.024 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.024 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.025 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.026 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586471.504 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586471.506 /api/local/agent-runtime/models
+ASGI_BEGIN 1586471.507 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.06 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.062 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586471.511 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.064 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_HEADERS 1586471.512 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586471.514 /api/local/agent-runtime/providers elapsed 0.01
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.068 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.068 domcontentloaded 
+ASGI_HEADERS 1586471.515 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586471.516 /api/local/agent-runtime/models elapsed 0.009
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.069 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.069 response 200 <loopback>/api/local/agent-runtime/providers
+ASGI_HEADERS 1586471.516 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586471.517 /api/local/agent-runtime/agents elapsed 0.01
+ASGI_HEADERS 1586471.517 /api/local/agent-runtime/sessions 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.07 finished <loopback>/api/local/agent-runtime/providers
+ASGI_FINISH 1586471.517 /api/local/agent-runtime/sessions elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.07 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.071 finished <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586471.519 /api/local/agent-runtime/providers/rtp_ec0310253e2d4b3b82ef10e456833c22/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.072 response 200 <loopback>/api/local/agent-runtime/agents
+ASGI_HEADERS 1586471.521 /api/local/agent-runtime/providers/rtp_ec0310253e2d4b3b82ef10e456833c22/readiness 200
+ASGI_FINISH 1586471.521 /api/local/agent-runtime/providers/rtp_ec0310253e2d4b3b82ef10e456833c22/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.077 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.077 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.077 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.078 request GET <loopback>/api/local/agent-runtime/providers/rtp_ec0310253e2d4b3b82ef10e456833c22/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.078 response 200 <loopback>/api/local/agent-runtime/providers/rtp_ec0310253e2d4b3b82ef10e456833c22/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.079 finished <loopback>/api/local/agent-runtime/providers/rtp_ec0310253e2d4b3b82ef10e456833c22/readiness
+ASGI_BEGIN 1586471.57 /api/local/agent-runtime/sessions/rts_ef5276048bb44799a3f07d9e130edf13
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.123 request GET <loopback>/api/local/agent-runtime/sessions/rts_ef5276048bb44799a3f07d9e130edf13
+ASGI_HEADERS 1586471.571 /api/local/agent-runtime/sessions/rts_ef5276048bb44799a3f07d9e130edf13 200
+ASGI_FINISH 1586471.571 /api/local/agent-runtime/sessions/rts_ef5276048bb44799a3f07d9e130edf13 elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.154 response 200 <loopback>/api/local/agent-runtime/sessions/rts_ef5276048bb44799a3f07d9e130edf13
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.155 finished <loopback>/api/local/agent-runtime/sessions/rts_ef5276048bb44799a3f07d9e130edf13
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2492024, "LayoutDuration": 0.016202, "RecalcStyleDuration": 0.010362, "ScriptDuration": 0.002273, "TaskDuration": 0.084233, "Timestamp": 1586471.607354}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 1.7e-05, "Timestamp": 1586471.451265}, "elapsed": 0.15679862489923835, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 0.163 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.018 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586471.952 /agent-runtime
+ASGI_HEADERS 1586471.954 /agent-runtime 200
+ASGI_FINISH 1586471.955 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.025 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.029 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.03 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586471.96 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.03 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.031 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586471.961 /static/paths.js
+ASGI_BEGIN 1586471.961 /static/agent-runtime.js
+ASGI_HEADERS 1586471.963 /static/agent-runtime.css 200
+ASGI_HEADERS 1586471.963 /static/paths.js 200
+ASGI_HEADERS 1586471.964 /static/agent-runtime.js 200
+ASGI_FINISH 1586471.964 /static/agent-runtime.css elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.034 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586471.965 /static/paths.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.035 finished <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586471.965 /static/agent-runtime.js elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.035 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.036 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.06 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.061 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.061 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.063 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.064 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.066 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.067 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.067 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586471.998 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586471.999 /api/local/agent-runtime/models
+ASGI_BEGIN 1586471.999 /api/local/agent-runtime/agents
+ASGI_BEGIN 1586472.0 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1586472.004 /api/local/agent-runtime/providers 200
+ASGI_HEADERS 1586472.004 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586472.005 /api/local/agent-runtime/providers elapsed 0.007
+ASGI_FINISH 1586472.005 /api/local/agent-runtime/agents elapsed 0.005
+ASGI_HEADERS 1586472.005 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586472.005 /api/local/agent-runtime/models elapsed 0.006
+ASGI_HEADERS 1586472.006 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586472.006 /api/local/agent-runtime/sessions elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.083 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.084 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.085 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.086 response 200 <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586472.017 /api/local/agent-runtime/providers/rtp_47ca4c7cee114b1b95c22c78786d5c59/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.087 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.089 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.09 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.09 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.09 request GET <loopback>/api/local/agent-runtime/providers/rtp_47ca4c7cee114b1b95c22c78786d5c59/readiness
+ASGI_HEADERS 1586472.021 /api/local/agent-runtime/providers/rtp_47ca4c7cee114b1b95c22c78786d5c59/readiness 200
+ASGI_FINISH 1586472.021 /api/local/agent-runtime/providers/rtp_47ca4c7cee114b1b95c22c78786d5c59/readiness elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.092 response 200 <loopback>/api/local/agent-runtime/providers/rtp_47ca4c7cee114b1b95c22c78786d5c59/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.092 finished <loopback>/api/local/agent-runtime/providers/rtp_47ca4c7cee114b1b95c22c78786d5c59/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.142 request GET <loopback>/api/local/agent-runtime/sessions/rts_3a405229daee4f3f9128d63c71e38e2e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.188 request GET <loopback>/api/local/agent-runtime/sessions/rts_a0afb71bf94e486c9f6170f18c9e7c48
+ASGI_BEGIN 1586472.119 /api/local/agent-runtime/sessions/rts_a0afb71bf94e486c9f6170f18c9e7c48
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.192 failed <loopback>/api/local/agent-runtime/sessions/rts_3a405229daee4f3f9128d63c71e38e2e net::ERR_ABORTED
+ASGI_HEADERS 1586472.122 /api/local/agent-runtime/sessions/rts_a0afb71bf94e486c9f6170f18c9e7c48 200
+ASGI_FINISH 1586472.123 /api/local/agent-runtime/sessions/rts_a0afb71bf94e486c9f6170f18c9e7c48 elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.196 response 200 <loopback>/api/local/agent-runtime/sessions/rts_a0afb71bf94e486c9f6170f18c9e7c48
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.197 finished <loopback>/api/local/agent-runtime/sessions/rts_a0afb71bf94e486c9f6170f18c9e7c48
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 3019740, "LayoutDuration": 0.016283, "RecalcStyleDuration": 0.006409, "ScriptDuration": 0.003159, "TaskDuration": 0.098548, "Timestamp": 1586472.157822}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 1.7e-05, "Timestamp": 1586471.934678}, "elapsed": 0.2242079998832196, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 0.232 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.01 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586472.971 /agent-runtime
+ASGI_HEADERS 1586472.973 /agent-runtime 200
+ASGI_FINISH 1586472.973 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.016 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.019 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.02 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586472.979 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.02 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.021 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586472.98 /static/paths.js
+ASGI_BEGIN 1586472.98 /static/agent-runtime.js
+ASGI_HEADERS 1586472.982 /static/agent-runtime.css 200
+ASGI_HEADERS 1586472.982 /static/agent-runtime.js 200
+ASGI_HEADERS 1586472.983 /static/paths.js 200
+ASGI_FINISH 1586472.983 /static/agent-runtime.css elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.024 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586472.983 /static/agent-runtime.js elapsed 0.003
+ASGI_FINISH 1586472.984 /static/paths.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.029 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.03 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.03 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.03 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.03 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.059 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.059 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.06 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586473.02 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586473.021 /api/local/agent-runtime/models
+ASGI_BEGIN 1586473.022 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.062 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.063 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586473.024 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.065 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586473.027 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586473.028 /api/local/agent-runtime/providers elapsed 0.007
+ASGI_HEADERS 1586473.028 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586473.028 /api/local/agent-runtime/models elapsed 0.007
+ASGI_HEADERS 1586473.029 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586473.03 /api/local/agent-runtime/agents elapsed 0.008
+ASGI_HEADERS 1586473.03 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586473.031 /api/local/agent-runtime/sessions elapsed 0.007
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.076 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.077 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.078 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.078 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.079 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.079 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.079 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.079 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.08 request GET <loopback>/api/local/agent-runtime/providers/rtp_1d147255f4f3439c9eee3851c92b0b1f/readiness
+ASGI_BEGIN 1586473.04 /api/local/agent-runtime/providers/rtp_1d147255f4f3439c9eee3851c92b0b1f/readiness
+ASGI_HEADERS 1586473.041 /api/local/agent-runtime/providers/rtp_1d147255f4f3439c9eee3851c92b0b1f/readiness 200
+ASGI_FINISH 1586473.041 /api/local/agent-runtime/providers/rtp_1d147255f4f3439c9eee3851c92b0b1f/readiness elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.082 response 200 <loopback>/api/local/agent-runtime/providers/rtp_1d147255f4f3439c9eee3851c92b0b1f/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.082 finished <loopback>/api/local/agent-runtime/providers/rtp_1d147255f4f3439c9eee3851c92b0b1f/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.126 request GET <loopback>/api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29
+ASGI_BEGIN 1586473.085 /api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29
+ASGI_HEADERS 1586473.086 /api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29 200
+ASGI_FINISH 1586473.087 /api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29 elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.155 response 200 <loopback>/api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.155 finished <loopback>/api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.159 request POST <loopback>/api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.179 request GET <loopback>/api/local/agent-runtime/sessions/rts_bff3b6350c3a46039bc77e95505d7c64
+ASGI_BEGIN 1586473.139 /api/local/agent-runtime/sessions/rts_bff3b6350c3a46039bc77e95505d7c64
+ASGI_HEADERS 1586473.14 /api/local/agent-runtime/sessions/rts_bff3b6350c3a46039bc77e95505d7c64 200
+ASGI_FINISH 1586473.14 /api/local/agent-runtime/sessions/rts_bff3b6350c3a46039bc77e95505d7c64 elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.21 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bff3b6350c3a46039bc77e95505d7c64
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.21 finished <loopback>/api/local/agent-runtime/sessions/rts_bff3b6350c3a46039bc77e95505d7c64
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.237 response 200 <loopback>/api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.238 finished <loopback>/api/local/agent-runtime/sessions/rts_5c14cb3a3c534551b130574d45d52d29/messages
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2573848, "LayoutDuration": 0.01588, "RecalcStyleDuration": 0.007629, "ScriptDuration": 0.003785, "TaskDuration": 0.109939, "Timestamp": 1586473.199797}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 6e-06, "Timestamp": 1586472.962489}, "elapsed": 0.23878062493167818, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 0.243 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.011 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586473.673 /agent-runtime
+ASGI_HEADERS 1586473.674 /agent-runtime 200
+ASGI_FINISH 1586473.674 /agent-runtime elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.014 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.02 request GET <loopback>/static/agent-runtime.css
+ASGI_BEGIN 1586473.682 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.029 finished <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.03 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586473.691 /static/paths.js
+ASGI_BEGIN 1586473.693 /static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.032 request GET <loopback>/static/paths.js
+ASGI_HEADERS 1586473.695 /static/paths.js 200
+ASGI_HEADERS 1586473.696 /static/agent-runtime.js 200
+ASGI_HEADERS 1586473.697 /static/agent-runtime.css 200
+ASGI_FINISH 1586473.697 /static/paths.js elapsed 0.006
+ASGI_FINISH 1586473.698 /static/agent-runtime.js elapsed 0.005
+ASGI_FINISH 1586473.698 /static/agent-runtime.css elapsed 0.017
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.037 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.038 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.038 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.038 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.038 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.038 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.085 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.086 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.087 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586473.75 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586473.754 /api/local/agent-runtime/models
+ASGI_BEGIN 1586473.754 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.093 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586473.756 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.097 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.099 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586473.76 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586473.761 /api/local/agent-runtime/providers elapsed 0.011
+ASGI_HEADERS 1586473.762 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586473.763 /api/local/agent-runtime/agents elapsed 0.009
+ASGI_HEADERS 1586473.763 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586473.764 /api/local/agent-runtime/models elapsed 0.01
+ASGI_HEADERS 1586473.765 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586473.765 /api/local/agent-runtime/sessions elapsed 0.009
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.114 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.115 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.116 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.116 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.116 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.117 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.117 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.117 finished <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586473.779 /api/local/agent-runtime/providers/rtp_a16264e0ff194789a5b56a971bff9aae/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.119 request GET <loopback>/api/local/agent-runtime/providers/rtp_a16264e0ff194789a5b56a971bff9aae/readiness
+ASGI_HEADERS 1586473.781 /api/local/agent-runtime/providers/rtp_a16264e0ff194789a5b56a971bff9aae/readiness 200
+ASGI_FINISH 1586473.781 /api/local/agent-runtime/providers/rtp_a16264e0ff194789a5b56a971bff9aae/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.122 response 200 <loopback>/api/local/agent-runtime/providers/rtp_a16264e0ff194789a5b56a971bff9aae/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.123 finished <loopback>/api/local/agent-runtime/providers/rtp_a16264e0ff194789a5b56a971bff9aae/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.182 request GET <loopback>/api/local/agent-runtime/sessions/rts_0c39d73f759c4272be40abc1606a2348
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.229 response 200 <loopback>/api/local/agent-runtime/sessions/rts_0c39d73f759c4272be40abc1606a2348
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.229 finished <loopback>/api/local/agent-runtime/sessions/rts_0c39d73f759c4272be40abc1606a2348
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2276212, "LayoutDuration": 0.025003, "RecalcStyleDuration": 0.011596, "ScriptDuration": 0.002783, "TaskDuration": 0.110345, "Timestamp": 1586473.898643}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 3.7e-05, "Timestamp": 1586473.663342}, "elapsed": 0.23680462501943111, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.242 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.009 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586474.23 /agent-runtime
+ASGI_HEADERS 1586474.232 /agent-runtime 200
+ASGI_FINISH 1586474.232 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.015 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.023 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.023 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586474.243 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.024 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.025 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586474.245 /static/paths.js
+ASGI_BEGIN 1586474.246 /static/agent-runtime.js
+ASGI_HEADERS 1586474.248 /static/agent-runtime.js 200
+ASGI_HEADERS 1586474.249 /static/paths.js 200
+ASGI_HEADERS 1586474.25 /static/agent-runtime.css 200
+ASGI_FINISH 1586474.25 /static/agent-runtime.js elapsed 0.005
+ASGI_FINISH 1586474.251 /static/paths.js elapsed 0.006
+ASGI_FINISH 1586474.251 /static/agent-runtime.css elapsed 0.008
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.033 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.033 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.033 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.034 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.034 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.034 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.091 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.091 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.092 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586474.312 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586474.314 /api/local/agent-runtime/models
+ASGI_BEGIN 1586474.315 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.097 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.102 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586474.322 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.105 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586474.325 /api/local/agent-runtime/providers 200
+ASGI_HEADERS 1586474.326 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586474.326 /api/local/agent-runtime/providers elapsed 0.014
+ASGI_FINISH 1586474.326 /api/local/agent-runtime/agents elapsed 0.011
+ASGI_HEADERS 1586474.326 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586474.326 /api/local/agent-runtime/models elapsed 0.012
+ASGI_HEADERS 1586474.327 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586474.329 /api/local/agent-runtime/sessions elapsed 0.007
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.116 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.117 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.117 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.118 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.119 finished <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586474.338 /api/local/agent-runtime/providers/rtp_49ef2036cdff4173baf6bf4c78350218/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.119 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.12 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.12 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.12 request GET <loopback>/api/local/agent-runtime/providers/rtp_49ef2036cdff4173baf6bf4c78350218/readiness
+ASGI_HEADERS 1586474.34 /api/local/agent-runtime/providers/rtp_49ef2036cdff4173baf6bf4c78350218/readiness 200
+ASGI_FINISH 1586474.34 /api/local/agent-runtime/providers/rtp_49ef2036cdff4173baf6bf4c78350218/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.124 response 200 <loopback>/api/local/agent-runtime/providers/rtp_49ef2036cdff4173baf6bf4c78350218/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.125 finished <loopback>/api/local/agent-runtime/providers/rtp_49ef2036cdff4173baf6bf4c78350218/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.18 request GET <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+ASGI_BEGIN 1586474.4 /api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+ASGI_HEADERS 1586474.402 /api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0 200
+ASGI_FINISH 1586474.402 /api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0 elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.209 response 200 <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.21 finished <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.245 request POST <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.264 response 200 <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.267 finished <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.269 request GET <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+ASGI_BEGIN 1586474.489 /api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+ASGI_HEADERS 1586474.494 /api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0 200
+ASGI_FINISH 1586474.495 /api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0 elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.279 response 200 <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.279 finished <loopback>/api/local/agent-runtime/sessions/rts_940a49b7e1094a42a84740a6b331f2b0
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2534744, "LayoutDuration": 0.04639, "RecalcStyleDuration": 0.011792, "ScriptDuration": 0.003846, "TaskDuration": 0.146203, "Timestamp": 1586474.510554}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 5e-06, "Timestamp": 1586474.221661}, "elapsed": 0.2948077090550214, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 0.302 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.016 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586475.109 /agent-runtime
+ASGI_HEADERS 1586475.121 /agent-runtime 200
+ASGI_FINISH 1586475.121 /agent-runtime elapsed 0.013
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.032 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.128 request GET <loopback>/static/agent-runtime.css
+ASGI_BEGIN 1586475.22 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.129 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586475.221 /static/paths.js
+ASGI_BEGIN 1586475.221 /static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.13 request GET <loopback>/static/paths.js
+ASGI_HEADERS 1586475.223 /static/agent-runtime.css 200
+ASGI_HEADERS 1586475.223 /static/paths.js 200
+ASGI_HEADERS 1586475.223 /static/agent-runtime.js 200
+ASGI_FINISH 1586475.224 /static/agent-runtime.css elapsed 0.004
+ASGI_FINISH 1586475.224 /static/paths.js elapsed 0.003
+ASGI_FINISH 1586475.224 /static/agent-runtime.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.156 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.156 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.156 finished <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.156 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.156 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.188 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.189 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.309 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.309 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.309 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586475.401 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.309 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.31 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586475.402 /api/local/agent-runtime/models
+ASGI_BEGIN 1586475.402 /api/local/agent-runtime/agents
+ASGI_BEGIN 1586475.403 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1586475.404 /api/local/agent-runtime/providers 200
+ASGI_HEADERS 1586475.404 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586475.404 /api/local/agent-runtime/providers elapsed 0.003
+ASGI_FINISH 1586475.404 /api/local/agent-runtime/models elapsed 0.001
+ASGI_HEADERS 1586475.404 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586475.404 /api/local/agent-runtime/agents elapsed 0.002
+ASGI_HEADERS 1586475.404 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586475.404 /api/local/agent-runtime/sessions elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.32 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.326 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.326 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.327 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.328 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.328 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.328 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.328 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.329 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.329 request GET <loopback>/api/local/agent-runtime/providers/rtp_7a524aa727654ad594662ba71a15fafe/readiness
+ASGI_BEGIN 1586475.421 /api/local/agent-runtime/providers/rtp_7a524aa727654ad594662ba71a15fafe/readiness
+ASGI_HEADERS 1586475.425 /api/local/agent-runtime/providers/rtp_7a524aa727654ad594662ba71a15fafe/readiness 200
+ASGI_FINISH 1586475.425 /api/local/agent-runtime/providers/rtp_7a524aa727654ad594662ba71a15fafe/readiness elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.338 response 200 <loopback>/api/local/agent-runtime/providers/rtp_7a524aa727654ad594662ba71a15fafe/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.339 finished <loopback>/api/local/agent-runtime/providers/rtp_7a524aa727654ad594662ba71a15fafe/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.385 request GET <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+ASGI_BEGIN 1586475.478 /api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+ASGI_HEADERS 1586475.481 /api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f 200
+ASGI_FINISH 1586475.482 /api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.42 response 200 <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.42 finished <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.451 request POST <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.473 request GET <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+ASGI_BEGIN 1586475.565 /api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+ASGI_HEADERS 1586475.567 /api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f 200
+ASGI_FINISH 1586475.568 /api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.48 failed <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.48 response 200 <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.48 finished <loopback>/api/local/agent-runtime/sessions/rts_058611569e614e7d99f6ffbc9826424f
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2617060, "LayoutDuration": 0.080956, "RecalcStyleDuration": 0.003356, "ScriptDuration": 0.038577, "TaskDuration": 0.375364, "Timestamp": 1586475.608778}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 5e-06, "Timestamp": 1586475.09383}, "elapsed": 0.5204197918064892, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 0.526 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.013 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586476.001 /agent-runtime
+ASGI_HEADERS 1586476.003 /agent-runtime 200
+ASGI_FINISH 1586476.003 /agent-runtime elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.018 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.025 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.025 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.026 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.026 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586476.013 /static/agent-runtime.css
+ASGI_BEGIN 1586476.013 /static/paths.js
+ASGI_BEGIN 1586476.014 /static/agent-runtime.js
+ASGI_HEADERS 1586476.015 /static/agent-runtime.css 200
+ASGI_HEADERS 1586476.016 /static/paths.js 200
+ASGI_HEADERS 1586476.016 /static/agent-runtime.js 200
+ASGI_FINISH 1586476.017 /static/agent-runtime.css elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.03 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586476.017 /static/paths.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.03 finished <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586476.017 /static/agent-runtime.js elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.031 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.031 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.032 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.032 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586476.041 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586476.042 /api/local/agent-runtime/models
+ASGI_BEGIN 1586476.042 /api/local/agent-runtime/agents
+ASGI_BEGIN 1586476.043 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.057 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.058 request GET <loopback>/api/local/agent-runtime/models
+ASGI_HEADERS 1586476.046 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586476.046 /api/local/agent-runtime/providers elapsed 0.005
+ASGI_HEADERS 1586476.047 /api/local/agent-runtime/models 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.06 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.061 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_FINISH 1586476.047 /api/local/agent-runtime/models elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.061 domcontentloaded 
+ASGI_HEADERS 1586476.048 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1586476.048 /api/local/agent-runtime/sessions 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.061 load 
+ASGI_FINISH 1586476.048 /api/local/agent-runtime/agents elapsed 0.006
+ASGI_FINISH 1586476.048 /api/local/agent-runtime/sessions elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.062 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.063 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.064 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.064 finished <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586476.051 /api/local/agent-runtime/providers/rtp_5fd80cf513384d158242d7688d4afea7/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.064 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.066 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.066 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.066 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.067 request GET <loopback>/api/local/agent-runtime/providers/rtp_5fd80cf513384d158242d7688d4afea7/readiness
+ASGI_HEADERS 1586476.054 /api/local/agent-runtime/providers/rtp_5fd80cf513384d158242d7688d4afea7/readiness 200
+ASGI_FINISH 1586476.054 /api/local/agent-runtime/providers/rtp_5fd80cf513384d158242d7688d4afea7/readiness elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.068 response 200 <loopback>/api/local/agent-runtime/providers/rtp_5fd80cf513384d158242d7688d4afea7/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.068 finished <loopback>/api/local/agent-runtime/providers/rtp_5fd80cf513384d158242d7688d4afea7/readiness
+ASGI_BEGIN 1586476.117 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.131 request GET <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+ASGI_HEADERS 1586476.119 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6 200
+ASGI_FINISH 1586476.119 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6 elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.165 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.166 finished <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+ASGI_BEGIN 1586476.158 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.174 request POST <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6/messages
+ASGI_HEADERS 1586476.164 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6/messages 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.181 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6/messages
+ASGI_FINISH 1586476.178 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6/messages elapsed 0.02
+ASGI_BEGIN 1586476.179 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.193 request GET <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.193 failed <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6/messages net::ERR_ABORTED
+ASGI_HEADERS 1586476.18 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6 200
+ASGI_FINISH 1586476.18 /api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6 elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.194 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.194 finished <loopback>/api/local/agent-runtime/sessions/rts_bedd22eed7d744caad4c5490722ad6c6
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2713436, "LayoutDuration": 0.014859, "RecalcStyleDuration": 0.006898, "ScriptDuration": 0.002873, "TaskDuration": 0.102934, "Timestamp": 1586476.200816}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 1.7e-05, "Timestamp": 1586475.991433}, "elapsed": 0.21214979095384479, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.22 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.035 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586476.801 /agent-runtime
+ASGI_HEADERS 1586476.803 /agent-runtime 200
+ASGI_FINISH 1586476.803 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.041 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.046 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.046 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.046 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.048 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586476.815 /static/agent-runtime.css
+ASGI_BEGIN 1586476.817 /static/paths.js
+ASGI_BEGIN 1586476.817 /static/agent-runtime.js
+ASGI_HEADERS 1586476.819 /static/paths.js 200
+ASGI_HEADERS 1586476.819 /static/agent-runtime.js 200
+ASGI_HEADERS 1586476.819 /static/agent-runtime.css 200
+ASGI_FINISH 1586476.82 /static/paths.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.055 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586476.821 /static/agent-runtime.js elapsed 0.004
+ASGI_FINISH 1586476.822 /static/agent-runtime.css elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.059 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.062 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.065 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.065 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.067 finished <loopback>/static/agent-runtime.css
+ASGI_BEGIN 1586476.902 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586476.904 /api/local/agent-runtime/models
+ASGI_BEGIN 1586476.905 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.14 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586476.906 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.141 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.142 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.143 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586476.91 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.145 domcontentloaded 
+ASGI_FINISH 1586476.911 /api/local/agent-runtime/providers elapsed 0.008
+ASGI_HEADERS 1586476.911 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586476.911 /api/local/agent-runtime/models elapsed 0.006
+ASGI_HEADERS 1586476.911 /api/local/agent-runtime/agents 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.145 load 
+ASGI_FINISH 1586476.911 /api/local/agent-runtime/agents elapsed 0.007
+ASGI_HEADERS 1586476.912 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586476.912 /api/local/agent-runtime/sessions elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.148 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.149 response 200 <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586476.915 /api/local/agent-runtime/providers/rtp_e2b9c54fd9b6403aa8a9fad640f8f1a4/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.15 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.15 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.15 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.15 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.151 finished <loopback>/api/local/agent-runtime/agents
+ASGI_HEADERS 1586476.917 /api/local/agent-runtime/providers/rtp_e2b9c54fd9b6403aa8a9fad640f8f1a4/readiness 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.151 finished <loopback>/api/local/agent-runtime/sessions
+ASGI_FINISH 1586476.917 /api/local/agent-runtime/providers/rtp_e2b9c54fd9b6403aa8a9fad640f8f1a4/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.151 request GET <loopback>/api/local/agent-runtime/providers/rtp_e2b9c54fd9b6403aa8a9fad640f8f1a4/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.153 response 200 <loopback>/api/local/agent-runtime/providers/rtp_e2b9c54fd9b6403aa8a9fad640f8f1a4/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.153 finished <loopback>/api/local/agent-runtime/providers/rtp_e2b9c54fd9b6403aa8a9fad640f8f1a4/readiness
+ASGI_BEGIN 1586476.992 /api/local/agent-runtime/sessions/rts_6e06bcbaeb804b03b1695bf55fb7888d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.228 request GET <loopback>/api/local/agent-runtime/sessions/rts_6e06bcbaeb804b03b1695bf55fb7888d
+ASGI_HEADERS 1586477.007 /api/local/agent-runtime/sessions/rts_6e06bcbaeb804b03b1695bf55fb7888d 200
+ASGI_FINISH 1586477.007 /api/local/agent-runtime/sessions/rts_6e06bcbaeb804b03b1695bf55fb7888d elapsed 0.015
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.253 response 200 <loopback>/api/local/agent-runtime/sessions/rts_6e06bcbaeb804b03b1695bf55fb7888d
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.254 finished <loopback>/api/local/agent-runtime/sessions/rts_6e06bcbaeb804b03b1695bf55fb7888d
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2939180, "LayoutDuration": 0.02952, "RecalcStyleDuration": 0.031918, "ScriptDuration": 0.004936, "TaskDuration": 0.279453, "Timestamp": 1586477.139876}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 1.3e-05, "Timestamp": 1586476.784997}, "elapsed": 0.35503958305343986, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 0.376 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.021 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586477.843 /agent-runtime
+ASGI_HEADERS 1586477.851 /agent-runtime 200
+ASGI_FINISH 1586477.852 /agent-runtime elapsed 0.008
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.033 response 200 <loopback>/agent-runtime
+ASGI_BEGIN 1586477.859 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.039 request GET <loopback>/static/agent-runtime.css
+ASGI_BEGIN 1586477.86 /static/paths.js
+ASGI_BEGIN 1586477.86 /static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.04 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.043 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.044 finished <loopback>/agent-runtime
+ASGI_HEADERS 1586477.866 /static/agent-runtime.css 200
+ASGI_HEADERS 1586477.867 /static/paths.js 200
+ASGI_HEADERS 1586477.867 /static/agent-runtime.js 200
+ASGI_FINISH 1586477.868 /static/agent-runtime.css elapsed 0.009
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.047 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586477.868 /static/paths.js elapsed 0.008
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.048 finished <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586477.869 /static/agent-runtime.js elapsed 0.008
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.048 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.049 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.049 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.049 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586477.91 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.089 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586477.912 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.091 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586477.912 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.092 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586477.913 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1586477.917 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.096 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586477.92 /api/local/agent-runtime/models 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.099 domcontentloaded 
+ASGI_FINISH 1586477.92 /api/local/agent-runtime/providers elapsed 0.01
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.099 load 
+ASGI_FINISH 1586477.921 /api/local/agent-runtime/models elapsed 0.009
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.1 response 200 <loopback>/api/local/agent-runtime/providers
+ASGI_HEADERS 1586477.921 /api/local/agent-runtime/agents 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.101 response 200 <loopback>/api/local/agent-runtime/models
+ASGI_HEADERS 1586477.922 /api/local/agent-runtime/sessions 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.101 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.101 finished <loopback>/api/local/agent-runtime/models
+ASGI_FINISH 1586477.922 /api/local/agent-runtime/agents elapsed 0.01
+ASGI_FINISH 1586477.922 /api/local/agent-runtime/sessions elapsed 0.009
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.103 response 200 <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586477.924 /api/local/agent-runtime/providers/rtp_f13bb8de597d47d184d4f1eb7e9a9e5f/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.103 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.104 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.104 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.104 request GET <loopback>/api/local/agent-runtime/providers/rtp_f13bb8de597d47d184d4f1eb7e9a9e5f/readiness
+ASGI_HEADERS 1586477.925 /api/local/agent-runtime/providers/rtp_f13bb8de597d47d184d4f1eb7e9a9e5f/readiness 200
+ASGI_FINISH 1586477.925 /api/local/agent-runtime/providers/rtp_f13bb8de597d47d184d4f1eb7e9a9e5f/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.111 response 200 <loopback>/api/local/agent-runtime/providers/rtp_f13bb8de597d47d184d4f1eb7e9a9e5f/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.111 finished <loopback>/api/local/agent-runtime/providers/rtp_f13bb8de597d47d184d4f1eb7e9a9e5f/readiness
+ASGI_BEGIN 1586477.991 /api/local/agent-runtime/sessions/rts_bc7da8c551bb45d891b52096e83b8673
+ASGI_HEADERS 1586477.994 /api/local/agent-runtime/sessions/rts_bc7da8c551bb45d891b52096e83b8673 200
+ASGI_FINISH 1586477.994 /api/local/agent-runtime/sessions/rts_bc7da8c551bb45d891b52096e83b8673 elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.174 request GET <loopback>/api/local/agent-runtime/sessions/rts_bc7da8c551bb45d891b52096e83b8673
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.207 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bc7da8c551bb45d891b52096e83b8673
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.207 finished <loopback>/api/local/agent-runtime/sessions/rts_bc7da8c551bb45d891b52096e83b8673
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 3020336, "LayoutDuration": 0.027271, "RecalcStyleDuration": 0.011347, "ScriptDuration": 0.006694, "TaskDuration": 0.112968, "Timestamp": 1586478.104747}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 6e-06, "Timestamp": 1586477.823692}, "elapsed": 0.2816932920832187, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\\u4e0e Runtime Agent 1791044226328 \\u7684\\u4f1a\\u8bdd]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 0.286 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.005 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586478.462 /agent-runtime
+ASGI_HEADERS 1586478.464 /agent-runtime 200
+ASGI_FINISH 1586478.465 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.01 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.017 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.017 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.017 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.018 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586478.474 /static/agent-runtime.css
+ASGI_BEGIN 1586478.475 /static/paths.js
+ASGI_BEGIN 1586478.476 /static/agent-runtime.js
+ASGI_HEADERS 1586478.478 /static/paths.js 200
+ASGI_HEADERS 1586478.478 /static/agent-runtime.css 200
+ASGI_HEADERS 1586478.478 /static/agent-runtime.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.023 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586478.48 /static/agent-runtime.js elapsed 0.004
+ASGI_FINISH 1586478.48 /static/agent-runtime.css elapsed 0.006
+ASGI_FINISH 1586478.48 /static/paths.js elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.025 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.026 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.026 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.026 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.026 finished <loopback>/static/paths.js
+ASGI_BEGIN 1586478.509 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586478.51 /api/local/agent-runtime/models
+ASGI_BEGIN 1586478.51 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.055 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586478.512 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.056 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.057 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.057 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586478.513 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.058 domcontentloaded 
+ASGI_FINISH 1586478.514 /api/local/agent-runtime/providers elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.059 load 
+ASGI_HEADERS 1586478.515 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1586478.515 /api/local/agent-runtime/models 200
+ASGI_HEADERS 1586478.515 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586478.516 /api/local/agent-runtime/agents elapsed 0.005
+ASGI_FINISH 1586478.516 /api/local/agent-runtime/models elapsed 0.006
+ASGI_FINISH 1586478.516 /api/local/agent-runtime/sessions elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.06 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.061 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.061 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.062 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.062 response 200 <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586478.518 /api/local/agent-runtime/providers/rtp_701b7f50296a4f6e87e678261f00829e/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.063 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.064 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.064 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.065 request GET <loopback>/api/local/agent-runtime/providers/rtp_701b7f50296a4f6e87e678261f00829e/readiness
+ASGI_HEADERS 1586478.522 /api/local/agent-runtime/providers/rtp_701b7f50296a4f6e87e678261f00829e/readiness 200
+ASGI_FINISH 1586478.522 /api/local/agent-runtime/providers/rtp_701b7f50296a4f6e87e678261f00829e/readiness elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.072 response 200 <loopback>/api/local/agent-runtime/providers/rtp_701b7f50296a4f6e87e678261f00829e/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.072 finished <loopback>/api/local/agent-runtime/providers/rtp_701b7f50296a4f6e87e678261f00829e/readiness
+ASGI_BEGIN 1586478.554 /api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.099 request GET <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+ASGI_HEADERS 1586478.556 /api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3 200
+ASGI_FINISH 1586478.556 /api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3 elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.12 response 200 <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.121 finished <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+ASGI_BEGIN 1586478.582 /api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.126 request POST <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3/messages
+ASGI_HEADERS 1586478.589 /api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3/messages 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.138 response 200 <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.189 request GET <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.21 failed <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3/messages net::ERR_ABORTED
+ASGI_FINISH 1586478.666 /api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3/messages elapsed 0.084
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.21 response 200 <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.211 finished <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.826 request GET <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.852 response 200 <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 0.852 finished <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 1.012 request GET <loopback>/api/local/agent-runtime/sessions/rts_136a08604e3c4281be32554e5b06b7d3
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2376540, "LayoutDuration": 0.018841, "RecalcStyleDuration": 0.00806, "ScriptDuration": 0.006874, "TaskDuration": 0.110714, "Timestamp": 1586479.471614}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 6e-06, "Timestamp": 1586478.45763}, "elapsed": 1.0152911669574678, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 1.022 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.018 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586479.865 /agent-runtime
+ASGI_HEADERS 1586479.873 /agent-runtime 200
+ASGI_FINISH 1586479.873 /agent-runtime elapsed 0.008
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.036 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.046 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.047 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586479.889 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.047 request GET <loopback>/static/paths.js
+ASGI_BEGIN 1586479.89 /static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.048 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586479.891 /static/agent-runtime.js
+ASGI_HEADERS 1586479.895 /static/agent-runtime.css 200
+ASGI_HEADERS 1586479.896 /static/agent-runtime.js 200
+ASGI_HEADERS 1586479.897 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.057 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586479.9 /static/agent-runtime.css elapsed 0.011
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.061 finished <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586479.903 /static/paths.js elapsed 0.013
+ASGI_FINISH 1586479.903 /static/agent-runtime.js elapsed 0.013
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.065 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.066 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.066 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.066 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586479.984 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.143 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.144 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586479.988 /api/local/agent-runtime/models
+ASGI_BEGIN 1586479.988 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.147 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586479.991 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.15 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.151 domcontentloaded 
+ASGI_HEADERS 1586479.994 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.151 load 
+ASGI_FINISH 1586479.994 /api/local/agent-runtime/providers elapsed 0.01
+ASGI_HEADERS 1586479.995 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586479.996 /api/local/agent-runtime/models elapsed 0.008
+ASGI_HEADERS 1586479.996 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586479.997 /api/local/agent-runtime/agents elapsed 0.009
+ASGI_HEADERS 1586479.999 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586480.001 /api/local/agent-runtime/sessions elapsed 0.01
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.159 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.159 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.161 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.174 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.174 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.181 finished <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586480.026 /api/local/agent-runtime/providers/rtp_da0dcc6577154c588f631a893e743d81/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.184 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.185 finished <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586480.031 /api/local/agent-runtime/providers/rtp_da0dcc6577154c588f631a893e743d81/readiness 200
+ASGI_FINISH 1586480.034 /api/local/agent-runtime/providers/rtp_da0dcc6577154c588f631a893e743d81/readiness elapsed 0.008
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.194 request GET <loopback>/api/local/agent-runtime/providers/rtp_da0dcc6577154c588f631a893e743d81/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.214 response 200 <loopback>/api/local/agent-runtime/providers/rtp_da0dcc6577154c588f631a893e743d81/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.214 finished <loopback>/api/local/agent-runtime/providers/rtp_da0dcc6577154c588f631a893e743d81/readiness
+ASGI_BEGIN 1586480.122 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.292 request GET <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+ASGI_HEADERS 1586480.163 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c 200
+ASGI_FINISH 1586480.164 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c elapsed 0.042
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.339 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.34 finished <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+ASGI_BEGIN 1586480.223 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.383 request POST <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c/messages
+ASGI_HEADERS 1586480.234 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c/messages 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.4 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c/messages
+ASGI_BEGIN 1586480.297 /api/local/agent-runtime/sessions/rts_780991bb84594b13b5c13b2b050a1e9f
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.458 request GET <loopback>/api/local/agent-runtime/sessions/rts_780991bb84594b13b5c13b2b050a1e9f
+ASGI_HEADERS 1586480.304 /api/local/agent-runtime/sessions/rts_780991bb84594b13b5c13b2b050a1e9f 200
+ASGI_FINISH 1586480.304 /api/local/agent-runtime/sessions/rts_780991bb84594b13b5c13b2b050a1e9f elapsed 0.007
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.467 response 200 <loopback>/api/local/agent-runtime/sessions/rts_780991bb84594b13b5c13b2b050a1e9f
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.468 finished <loopback>/api/local/agent-runtime/sessions/rts_780991bb84594b13b5c13b2b050a1e9f
+ASGI_BEGIN 1586480.732 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+ASGI_HEADERS 1586480.736 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c 200
+ASGI_FINISH 1586480.736 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.915 request GET <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.918 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.919 finished <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.971 request GET <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.979 failed <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.982 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.983 finished <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+ASGI_FINISH 1586480.826 /api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c/messages elapsed 0.603
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 1.605 request GET <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 1.61 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 1.61 finished <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 1.807 request GET <loopback>/api/local/agent-runtime/sessions/rts_b355e1f021c746ce9562bc14f864033c
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 3216596, "LayoutDuration": 0.07747, "RecalcStyleDuration": 0.036911, "ScriptDuration": 0.01147, "TaskDuration": 0.289225, "Timestamp": 1586481.655146}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 3.1e-05, "Timestamp": 1586479.848903}, "elapsed": 1.8063510830979794, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 1.816 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.017 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586482.115 /agent-runtime
+ASGI_HEADERS 1586482.118 /agent-runtime 200
+ASGI_FINISH 1586482.118 /agent-runtime elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.023 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.027 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.028 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586482.124 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.028 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.028 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586482.125 /static/paths.js
+ASGI_BEGIN 1586482.126 /static/agent-runtime.js
+ASGI_HEADERS 1586482.127 /static/agent-runtime.css 200
+ASGI_HEADERS 1586482.127 /static/agent-runtime.js 200
+ASGI_HEADERS 1586482.127 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.031 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586482.128 /static/agent-runtime.css elapsed 0.003
+ASGI_FINISH 1586482.128 /static/agent-runtime.js elapsed 0.002
+ASGI_FINISH 1586482.128 /static/paths.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.034 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.034 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.034 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.035 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.035 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.07 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.07 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.071 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586482.168 /api/local/agent-runtime/providers
+ASGI_BEGIN 1586482.169 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.073 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586482.17 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.075 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.076 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586482.173 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1586482.174 /api/local/agent-runtime/providers 200
+ASGI_HEADERS 1586482.174 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586482.175 /api/local/agent-runtime/providers elapsed 0.006
+ASGI_FINISH 1586482.175 /api/local/agent-runtime/models elapsed 0.006
+ASGI_HEADERS 1586482.176 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1586482.176 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586482.176 /api/local/agent-runtime/agents elapsed 0.006
+ASGI_FINISH 1586482.176 /api/local/agent-runtime/sessions elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.085 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.085 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.086 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.086 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.086 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.086 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.086 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.087 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.088 request GET <loopback>/api/local/agent-runtime/providers/rtp_fbc76e6b20ac402e815e476f9522e4a9/readiness
+ASGI_BEGIN 1586482.184 /api/local/agent-runtime/providers/rtp_fbc76e6b20ac402e815e476f9522e4a9/readiness
+ASGI_HEADERS 1586482.185 /api/local/agent-runtime/providers/rtp_fbc76e6b20ac402e815e476f9522e4a9/readiness 200
+ASGI_FINISH 1586482.185 /api/local/agent-runtime/providers/rtp_fbc76e6b20ac402e815e476f9522e4a9/readiness elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.089 response 200 <loopback>/api/local/agent-runtime/providers/rtp_fbc76e6b20ac402e815e476f9522e4a9/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.089 finished <loopback>/api/local/agent-runtime/providers/rtp_fbc76e6b20ac402e815e476f9522e4a9/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.137 request GET <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.177 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.177 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.186 request POST <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.195 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.195 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.195 request GET <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.197 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.197 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.723 request GET <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.727 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 0.727 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 1.399 request GET <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 1.43 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 1.433 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.016 request GET <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.068 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.069 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.715 request GET <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.717 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.717 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.349 request GET <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.352 response 200 <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.352 finished <loopback>/api/local/agent-runtime/sessions/rts_bcbf34ca4a9b48b6bd791de9cdca20b0
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 2438476, "LayoutDuration": 0.030669, "RecalcStyleDuration": 0.013236, "ScriptDuration": 0.005637, "TaskDuration": 0.138156, "Timestamp": 1586486.338861}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 6e-06, "Timestamp": 1586482.10099}, "elapsed": 4.242168457945809, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.258 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.005 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586486.686 /agent-runtime
+ASGI_HEADERS 1586486.687 /agent-runtime 200
+ASGI_FINISH 1586486.687 /agent-runtime elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.008 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.011 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.011 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.011 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.011 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586486.692 /static/agent-runtime.css
+ASGI_BEGIN 1586486.693 /static/paths.js
+ASGI_BEGIN 1586486.693 /static/agent-runtime.js
+ASGI_HEADERS 1586486.694 /static/agent-runtime.css 200
+ASGI_HEADERS 1586486.694 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.014 response 200 <loopback>/static/agent-runtime.css
+ASGI_HEADERS 1586486.695 /static/agent-runtime.js 200
+ASGI_FINISH 1586486.695 /static/agent-runtime.css elapsed 0.003
+ASGI_FINISH 1586486.696 /static/paths.js elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.016 finished <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586486.696 /static/agent-runtime.js elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.016 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.016 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.052 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.053 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586486.735 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.055 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586486.735 /api/local/agent-runtime/models
+ASGI_BEGIN 1586486.736 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.055 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.056 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586486.737 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.057 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.057 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.057 load 
+ASGI_HEADERS 1586486.739 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586486.739 /api/local/agent-runtime/providers elapsed 0.004
+ASGI_HEADERS 1586486.739 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586486.739 /api/local/agent-runtime/models elapsed 0.004
+ASGI_HEADERS 1586486.74 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586486.74 /api/local/agent-runtime/agents elapsed 0.005
+ASGI_HEADERS 1586486.741 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1586486.741 /api/local/agent-runtime/sessions elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.061 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.062 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.062 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.062 finished <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1586486.743 /api/local/agent-runtime/providers/rtp_15630b2d5f104d8f8bb9bbabd3b37c6b/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.063 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.063 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.063 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.063 finished <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1586486.744 /api/local/agent-runtime/providers/rtp_15630b2d5f104d8f8bb9bbabd3b37c6b/readiness 200
+ASGI_FINISH 1586486.745 /api/local/agent-runtime/providers/rtp_15630b2d5f104d8f8bb9bbabd3b37c6b/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.066 request GET <loopback>/api/local/agent-runtime/providers/rtp_15630b2d5f104d8f8bb9bbabd3b37c6b/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.066 response 200 <loopback>/api/local/agent-runtime/providers/rtp_15630b2d5f104d8f8bb9bbabd3b37c6b/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.066 finished <loopback>/api/local/agent-runtime/providers/rtp_15630b2d5f104d8f8bb9bbabd3b37c6b/readiness
+ASGI_BEGIN 1586486.797 /api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.117 request GET <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73
+ASGI_HEADERS 1586486.798 /api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73 200
+ASGI_FINISH 1586486.798 /api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73 elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.152 response 200 <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.152 finished <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.28 request POST <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.301 response 200 <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.301 finished <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.301 request GET <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 5.338 failed <loopback>/api/local/agent-runtime/sessions/rts_40aa29c6142249f38ffae524ce8cff73 net::ERR_ABORTED
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 3065980, "LayoutDuration": 0.02774, "RecalcStyleDuration": 0.009092, "ScriptDuration": 0.011248, "TaskDuration": 0.168066, "Timestamp": 1586492.070288}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 6e-06, "Timestamp": 1586486.682048}, "elapsed": 5.391854624962434, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 5.402 close 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.008 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1586492.454 /agent-runtime
+ASGI_HEADERS 1586492.456 /agent-runtime 200
+ASGI_FINISH 1586492.457 /agent-runtime elapsed 0.003
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.012 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.015 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.015 request GET <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586492.461 /static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.016 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.016 finished <loopback>/agent-runtime
+ASGI_BEGIN 1586492.462 /static/paths.js
+ASGI_BEGIN 1586492.462 /static/agent-runtime.js
+ASGI_HEADERS 1586492.463 /static/agent-runtime.css 200
+ASGI_HEADERS 1586492.463 /static/paths.js 200
+ASGI_HEADERS 1586492.463 /static/agent-runtime.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.019 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586492.464 /static/agent-runtime.css elapsed 0.004
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.019 finished <loopback>/static/agent-runtime.css
+ASGI_FINISH 1586492.467 /static/paths.js elapsed 0.006
+ASGI_FINISH 1586492.467 /static/agent-runtime.js elapsed 0.006
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.023 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.023 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.025 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.025 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1586492.51 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.065 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1586492.512 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.067 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.067 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_BEGIN 1586492.513 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.068 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.068 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.069 load 
+ASGI_BEGIN 1586492.515 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1586492.516 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1586492.516 /api/local/agent-runtime/providers elapsed 0.005
+ASGI_HEADERS 1586492.516 /api/local/agent-runtime/models 200
+ASGI_FINISH 1586492.517 /api/local/agent-runtime/models elapsed 0.005
+ASGI_HEADERS 1586492.517 /api/local/agent-runtime/sessions 200
+ASGI_HEADERS 1586492.517 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1586492.518 /api/local/agent-runtime/sessions elapsed 0.003
+ASGI_FINISH 1586492.518 /api/local/agent-runtime/agents elapsed 0.005
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.073 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.073 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.073 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.073 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.073 response 200 <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1586492.519 /api/local/agent-runtime/providers/rtp_48de8db8a8aa43b9a602d8576e465207/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.074 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.074 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.074 finished <loopback>/api/local/agent-runtime/agents
+ASGI_HEADERS 1586492.521 /api/local/agent-runtime/providers/rtp_48de8db8a8aa43b9a602d8576e465207/readiness 200
+ASGI_FINISH 1586492.521 /api/local/agent-runtime/providers/rtp_48de8db8a8aa43b9a602d8576e465207/readiness elapsed 0.002
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.077 request GET <loopback>/api/local/agent-runtime/providers/rtp_48de8db8a8aa43b9a602d8576e465207/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.077 response 200 <loopback>/api/local/agent-runtime/providers/rtp_48de8db8a8aa43b9a602d8576e465207/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.077 finished <loopback>/api/local/agent-runtime/providers/rtp_48de8db8a8aa43b9a602d8576e465207/readiness
+ASGI_BEGIN 1586492.569 /api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+ASGI_HEADERS 1586492.57 /api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.125 request GET <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+ASGI_FINISH 1586492.57 /api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b elapsed 0.001
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.157 response 200 <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.158 finished <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.243 request POST <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.262 response 200 <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.262 finished <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.262 request GET <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.315 request GET <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.339 failed <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.34 response 200 <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.341 finished <loopback>/api/local/agent-runtime/sessions/rts_014ed07b650740ca84439890e0ffa23b
+UI_WORK {"after": {"Documents": 4, "Frames": 4, "JSHeapUsedSize": 3054152, "LayoutDuration": 0.026403, "RecalcStyleDuration": 0.008298, "ScriptDuration": 0.006238, "TaskDuration": 0.130936, "Timestamp": 1586492.812341}, "before": {"Documents": 2, "Frames": 1, "JSHeapUsedSize": 531956, "LayoutDuration": 0, "RecalcStyleDuration": 0, "ScriptDuration": 0, "TaskDuration": 8e-06, "Timestamp": 1586492.447055}, "elapsed": 0.3662080420181155, "failed": false, "page": {"longTasks": [], "supported": true, "visibility": "visible"}, "test": "tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True]"}
+.UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.369 close 
+
+19 passed in 25.93s
