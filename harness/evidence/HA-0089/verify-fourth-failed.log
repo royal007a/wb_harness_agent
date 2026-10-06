@@ -1,0 +1,334 @@
+{"route_methods": 155, "features": 23, "mode": "checked"}
+.....................................Timeout (0:01:30)!
+Thread 0x0000000172b97000 [AnyIO worker thread] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 369 in wait
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/queue.py", line 199 in get
+  File "<USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000171b8b000 [AnyIO worker thread] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 369 in wait
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/queue.py", line 199 in get
+  File "<USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000170b7f000 [AnyIO worker thread] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 369 in wait
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/queue.py", line 199 in get
+  File "<USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x000000016fb73000 [AnyIO worker thread] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 369 in wait
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/queue.py", line 199 in get
+  File "<USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x000000016eb67000 [Thread-17 (run)] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/selectors.py", line 548 in select
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py", line 128 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py", line 205 in run
+  File "<USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/uvicorn/server.py", line 75 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x000000016db5b000 [asyncio-waitpid-0] (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/unix_events.py", line 951 in _do_waitpid
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024 in run
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001fa61dd80 (most recent call first):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/selectors.py", line 548 in select
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 56 in greenlet_main
+................................... [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+.....................................................
+IMMEDIATE_FAILURE tests/test_dsh_runtime.py::test_cancel_while_provider_waits_never_publishes call
+client = <starlette.testclient.TestClient object at 0x1117f6580>
+
+    def test_cancel_while_provider_waits_never_publishes(client):
+        ident = create(client)
+        runtime = client.app.state.service.dsh
+        started = threading.Event()
+        original = runtime.send_probe
+        async def slow(payload, limit):
+            import asyncio
+            started.set()
+            await asyncio.sleep(.8)
+            return await original(payload, limit)
+        runtime.send_probe = slow
+        worker = threading.Thread(target=runtime.execute, args=(ident,))
+        worker.start()
+>       assert started.wait(10)
+E       assert False
+E        +  where False = wait(10)
+E        +    where wait = <threading.Event at 0x112082510: unset>.wait
+
+tests/test_dsh_runtime.py:86: AssertionError
+F.................. [ 23%]
+.......
+IMMEDIATE_FAILURE tests/test_dsh_runtime.py::test_sigkill_then_recover_removes_registered_document_residue call
+tmp_path = PosixPath('/private/tmp/pytest-of-weberzhao/pytest-99/test_sigkill_then_recover_remo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f52d240>
+
+    def test_sigkill_then_recover_removes_registered_document_residue(tmp_path, monkeypatch):
+        import multiprocessing
+        root = tmp_path / 'owned'
+        db_path = tmp_path / 'crash.db'
+        context = multiprocessing.get_context('spawn')
+        reached = context.Event()
+        worker = context.Process(target=_crash_worker, args=(db_path, str(root), reached))
+        worker.start()
+        try:
+>           assert reached.wait(20)
+E           assert False
+E            +  where False = wait(20)
+E            +    where wait = <Event at 0x1117ff620 unset>.wait
+
+tests/test_dsh_runtime.py:341: AssertionError
+F................................................................ [ 27%]
+...................................sssss................
+IMMEDIATE_FAILURE tests/test_intent.py::test_model_evaluation_baseline_is_redacted_diagnostic_not_model_approval call
+tmp_path = PosixPath('/private/tmp/pytest-of-weberzhao/pytest-99/test_model_evaluation_baseline0')
+
+    def test_model_evaluation_baseline_is_redacted_diagnostic_not_model_approval(tmp_path):
+        output = tmp_path / 'baseline.json'
+>       process = subprocess.run([
+            sys.executable, str(EVALUATOR), '--fixture', str(FIXTURE_V2), '--output', str(output), '--allow-mismatch',
+        ], capture_output=True, text=True, timeout=5)
+
+tests/test_intent.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:557: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1221: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:2154: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['<USER_HOME>/code/ai/harnessagent/.venv/b...>
+endtime = 1574820.209610291, orig_timeout = 5
+stdout_seq = [b'{"case_count": 24, "metrics": {"decision_accuracy": 0.6666666666666666, "intent_accuracy": 0.6666666666666666, "mis...ecision": 0.7777777777777778, "rejection_recall": 0.5384615384615384}, "failure_count": 8, "policy_eligible": null}\n']
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['<USER_HOME>/code/ai/harnessagent/.venv/bin/python', '<USER_HOME>/code/ai/harnessagent-dsh-course/harness/evaluate_intents.py', '--fixture', '<USER_HOME>/code/ai/harnessagent-dsh-course/fixtures/intent-evaluation-v2.json', '--output', '/private/tmp/pytest-of-weberzhao/pytest-99/test_model_evaluation_baseline0/baseline.json', '--allow-mismatch']' timed out after 5 seconds
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1268: TimeoutExpired
+F............... [ 31%]
+........................................................................ [ 35%]
+........................................................................ [ 39%]
+........................................................................ [ 43%]
+.....................................................................s.s [ 47%]
+.ss..................................................................... [ 51%]
+..............................ss........................................ [ 55%]
+........................................................................ [ 59%]
+........................................................................ [ 62%]
+........................................................................ [ 66%]
+........................................................sssssssssss..... [ 70%]
+........................................................................ [ 74%]
+........................................................................ [ 78%]
+........................................................................ [ 82%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+........................................................................ [ 94%]
+........................................................................ [ 98%]
+.............................                                            [100%]
+=================================== FAILURES ===================================
+_______________ test_cancel_while_provider_waits_never_publishes _______________
+
+client = <starlette.testclient.TestClient object at 0x1117f6580>
+
+    def test_cancel_while_provider_waits_never_publishes(client):
+        ident = create(client)
+        runtime = client.app.state.service.dsh
+        started = threading.Event()
+        original = runtime.send_probe
+        async def slow(payload, limit):
+            import asyncio
+            started.set()
+            await asyncio.sleep(.8)
+            return await original(payload, limit)
+        runtime.send_probe = slow
+        worker = threading.Thread(target=runtime.execute, args=(ident,))
+        worker.start()
+>       assert started.wait(10)
+E       assert False
+E        +  where False = wait(10)
+E        +    where wait = <threading.Event at 0x112082510: unset>.wait
+
+tests/test_dsh_runtime.py:86: AssertionError
+________ test_sigkill_then_recover_removes_registered_document_residue _________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-weberzhao/pytest-99/test_sigkill_then_recover_remo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f52d240>
+
+    def test_sigkill_then_recover_removes_registered_document_residue(tmp_path, monkeypatch):
+        import multiprocessing
+        root = tmp_path / 'owned'
+        db_path = tmp_path / 'crash.db'
+        context = multiprocessing.get_context('spawn')
+        reached = context.Event()
+        worker = context.Process(target=_crash_worker, args=(db_path, str(root), reached))
+        worker.start()
+        try:
+>           assert reached.wait(20)
+E           assert False
+E            +  where False = wait(20)
+E            +    where wait = <Event at 0x1117ff620 unset>.wait
+
+tests/test_dsh_runtime.py:341: AssertionError
+___ test_model_evaluation_baseline_is_redacted_diagnostic_not_model_approval ___
+
+tmp_path = PosixPath('/private/tmp/pytest-of-weberzhao/pytest-99/test_model_evaluation_baseline0')
+
+    def test_model_evaluation_baseline_is_redacted_diagnostic_not_model_approval(tmp_path):
+        output = tmp_path / 'baseline.json'
+>       process = subprocess.run([
+            sys.executable, str(EVALUATOR), '--fixture', str(FIXTURE_V2), '--output', str(output), '--allow-mismatch',
+        ], capture_output=True, text=True, timeout=5)
+
+tests/test_intent.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:557: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1221: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:2154: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['<USER_HOME>/code/ai/harnessagent/.venv/b...>
+endtime = 1574820.209610291, orig_timeout = 5
+stdout_seq = [b'{"case_count": 24, "metrics": {"decision_accuracy": 0.6666666666666666, "intent_accuracy": 0.6666666666666666, "mis...ecision": 0.7777777777777778, "rejection_recall": 0.5384615384615384}, "failure_count": 8, "policy_eligible": null}\n']
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['<USER_HOME>/code/ai/harnessagent/.venv/bin/python', '<USER_HOME>/code/ai/harnessagent-dsh-course/harness/evaluate_intents.py', '--fixture', '<USER_HOME>/code/ai/harnessagent-dsh-course/fixtures/intent-evaluation-v2.json', '--output', '/private/tmp/pytest-of-weberzhao/pytest-99/test_model_evaluation_baseline0/baseline.json', '--allow-mismatch']' timed out after 5 seconds
+
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py:1268: TimeoutExpired
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  <USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+tests/test_dsh_runtime.py::test_provider_failure_is_terminal_and_no_retry
+  <USER_HOME>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/_pytest/threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-717 (execute)
+  
+  Traceback (most recent call last):
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/store.py", line 107, in transaction
+      yield self.db
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/dsh_runtime.py", line 227, in event
+      self.store.event(db, run_doc, k, v)
+      ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/store.py", line 261, in event
+      db.execute('UPDATE runs SET doc=? WHERE id=?', (dumps(run), run['id']))
+      ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  sqlite3.ProgrammingError: Cannot operate on a closed database.
+  
+  During handling of the above exception, another exception occurred:
+  
+  Traceback (most recent call last):
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/dsh_runtime.py", line 439, in execute
+      result = self.adapter.run(prompt,
+          Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs')), MODEL,
+          lambda body: crossings.invoke('model', body, model_call),
+          lambda body: crossings.invoke('tool', body, tool_call), emit, check,
+          **({'tools': sorted(allowed)} if allowed != TOOL_NAMES else {}))
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/adapters/dsh.py", line 144, in run
+      emit(value)
+      ~~~~^^^^^^^
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/dsh_runtime.py", line 250, in emit
+      event('dsh.observation', value)
+      ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/dsh_runtime.py", line 223, in event
+      with self.store.transaction() as db:
+           ~~~~~~~~~~~~~~~~~~~~~~^^
+    File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 162, in __exit__
+      self.gen.throw(value)
+      ~~~~~~~~~~~~~~^^^^^^^
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/store.py", line 110, in transaction
+      self.db.execute('ROLLBACK')
+      ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  sqlite3.ProgrammingError: Cannot operate on a closed database.
+  
+  During handling of the above exception, another exception occurred:
+  
+  Traceback (most recent call last):
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/dsh_runtime.py", line 490, in execute
+      with self.store.transaction() as db:
+           ~~~~~~~~~~~~~~~~~~~~~~^^
+    File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 141, in __enter__
+      return next(self.gen)
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/store.py", line 105, in transaction
+      self.db.execute('BEGIN IMMEDIATE')
+      ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  sqlite3.ProgrammingError: Cannot operate on a closed database.
+  
+  During handling of the above exception, another exception occurred:
+  
+  Traceback (most recent call last):
+    File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+      self._context.run(self.run)
+      ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+    File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+      self._target(*self._args, **self._kwargs)
+      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/dsh_runtime.py", line 505, in execute
+      with self.store.transaction() as db:
+           ~~~~~~~~~~~~~~~~~~~~~~^^
+    File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 141, in __enter__
+      return next(self.gen)
+    File "<USER_HOME>/code/ai/harnessagent-dsh-course/backend/store.py", line 105, in transaction
+      self.db.execute('BEGIN IMMEDIATE')
+      ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  sqlite3.ProgrammingError: Cannot operate on a closed database.
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_runtime.py::test_cancel_while_provider_waits_never_publishes
+FAILED tests/test_dsh_runtime.py::test_sigkill_then_recover_removes_registered_document_residue
+FAILED tests/test_intent.py::test_model_evaluation_baseline_is_redacted_diagnostic_not_model_approval
+3 failed, 1804 passed, 22 skipped, 2 warnings in 2997.43s (0:49:57)

@@ -32,6 +32,14 @@
 
 随后运行四个原用例（`-k 'non_answer_exchange_states or exchange_without_visible_user_message'`），只加ASGI透传计时和上述浏览器监听，4 passed / 15 deselected，159.83秒，见ui-asgi-selected-diagnostic.log。ASGI观察器只包装该UI夹具创建的服务器，保持原receive/send内容。一个成功样本里服务端静态body约0.07秒完成，浏览器DOM/load晚于资源完成；但此轮没有同时复现之前的失败，仍不能宣称找到根因。
 
-## 第四轮正在运行
+## 第四轮结果：仍未通过
 
-主worktree固定9f36906（比4b8ec1e只多文档与证据），重新完整运行verify.sh。不使用`-x`，不跳过UI；增加上述两端时序和90秒faulthandler用于诊断，未改断言和测试超时。结果待此进程结束后另记。两次定向诊断的通过项不能抵消失败或代替这次完整运行。
+主worktree固定9f36906（比4b8ec1e只多文档与证据），重新完整运行verify.sh。不使用`-x`，不跳过UI；增加上述两端时序和90秒faulthandler用于诊断，未改断言和测试超时。
+
+结果为3 failed / 1804 passed / 22 skipped / 2 warnings，2997.43秒，exit 1，完整日志见verify-fourth-failed.log。verify的pytest之后步骤因set -e未执行。
+
+- 取消探针：started.wait(10)失败，尚未取消。其断言失败后线程没有可靠回收，后续出现closed database线程警告；HA-0091处理测试清理，不删掉此警告。
+- SIGKILL探针：reached.wait(20)失败，尚未进入第二次Provider调用或发送SIGKILL。
+- intent诊断评测：子进程5秒超时。输出已经包含24例预期诊断指标；不据此将超时视作通过，也不修改其5秒限制。
+
+这轮原UI19项全部通过，只能说明本轮未复现，不能证明根因消除。HA-0091将取消探针改成到达Provider后明确挂起、实际取消另计时；崩溃探针只调整进入故障注入阶段的设置等待，不放宽SIGKILL之后的回收条件。两者与未修改的intent原用例独立运行3 passed（36.07秒），不替代完整门禁。此前失败、后续通过分别保留。

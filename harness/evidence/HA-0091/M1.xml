@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="34.800" timestamp="2026-10-07T04:20:02.305484+08:00" hostname="local-test"><testcase classname="tests.test_dsh_runtime" name="test_cancel_while_provider_waits_never_publishes" time="27.413"><failure message="AssertionError: Provider cancellation did not finish&#10;assert not True&#10; +  where True = is_alive()&#10; +    where is_alive = &lt;Thread(Thread-2 (execute), started 6187249664)&gt;.is_alive">client = &lt;starlette.testclient.TestClient object at 0x10ab61400&gt;
+
+    def test_cancel_while_provider_waits_never_publishes(client):
+        import asyncio
+        import os
+        # Setup is not the cancellation assertion: let the real SDK initialize,
+        # then keep the synthetic Provider pending until cancellation is observed.
+        ident = create(client, timeout_seconds=300)
+        runtime = client.app.state.service.dsh
+        started, cancelled, release = threading.Event(), threading.Event(), threading.Event()
+        calls = []
+        original = runtime.send_probe
+        async def slow(payload, limit):
+            calls.append(1)
+            started.set()
+            try:
+                while not release.is_set():
+                    await asyncio.sleep(.01)
+            except asyncio.CancelledError:
+                cancelled.set()
+                raise
+            return await original(payload, limit)
+        runtime.send_probe = slow
+        worker = threading.Thread(target=runtime.execute, args=(ident,))
+        worker.start()
+        try:
+            assert started.wait(75), runtime.detail(ident)
+            cancellation_started = time.monotonic()
+            runtime.cancel(ident)
+            worker.join(12)
+&gt;           assert not worker.is_alive(), 'Provider cancellation did not finish'
+E           AssertionError: Provider cancellation did not finish
+E           assert not True
+E            +  where True = is_alive()
+E            +    where is_alive = &lt;Thread(Thread-2 (execute), started 6187249664)&gt;.is_alive
+
+tests/test_dsh_runtime.py:101: AssertionError</failure></testcase></testsuite></testsuites>

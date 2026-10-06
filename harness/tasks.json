@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0091",
+      "title": "DSH取消与崩溃探针的阶段同步",
+      "status": "waiting_approval",
+      "risk": "low",
+      "scope": ["真实SDK进入Provider后取消", "崩溃探针等待真实会话落盘", "确定性挂起与协程取消断言", "unknown及测试资源清理"],
+      "non_goals": ["生产期限或权限变化", "跳过失败用例", "真实模型调用"],
+      "acceptance": ["恰好到达一次且取消生效", "预留冻结无产物", "失败也回收测试线程", "反例突变及独立复审", "完整门禁"],
+      "depends_on": ["HA-0089"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0091.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0091/acceptance.md"]
+    },
+    {
       "id": "HA-0089",
       "title": "DSH超时阶段反例加固",
       "status": "waiting_approval",

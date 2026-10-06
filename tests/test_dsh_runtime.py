@@ -71,25 +71,59 @@ def test_budget_blocks_before_first_model_request(client):
 
 
 def test_cancel_while_provider_waits_never_publishes(client):
-    ident = create(client)
+    import asyncio
+    import os
+    # Setup is not the cancellation assertion: let the real SDK initialize,
+    # then keep the synthetic Provider pending until cancellation is observed.
+    ident = create(client, timeout_seconds=300)
     runtime = client.app.state.service.dsh
-    started = threading.Event()
+    started, cancelled, release = threading.Event(), threading.Event(), threading.Event()
+    calls = []
     original = runtime.send_probe
     async def slow(payload, limit):
-        import asyncio
+        calls.append(1)
         started.set()
-        await asyncio.sleep(.8)
+        try:
+            while not release.is_set():
+                await asyncio.sleep(.01)
+        except asyncio.CancelledError:
+            cancelled.set()
+            raise
         return await original(payload, limit)
     runtime.send_probe = slow
     worker = threading.Thread(target=runtime.execute, args=(ident,))
     worker.start()
-    assert started.wait(10)
-    runtime.cancel(ident)
-    worker.join(10)
+    try:
+        assert started.wait(75), runtime.detail(ident)
+        cancellation_started = time.monotonic()
+        runtime.cancel(ident)
+        worker.join(12)
+        assert not worker.is_alive(), 'Provider cancellation did not finish'
+        assert time.monotonic() - cancellation_started < 12
+        assert cancelled.is_set(), 'Provider coroutine did not receive cancellation'
+    finally:
+        # A failed setup/assertion must not leak a worker into subsequent tests.
+        release.set()
+        runtime.cancel(ident)
+        worker.join(15)
     assert not worker.is_alive()
     detail = runtime.detail(ident)
+    assert calls == [1]
     assert detail['run']['status'] == 'cancelled'
     assert not detail['artifacts']
+    assert detail['budget']['calls'] == 1
+    assert detail['budget']['spent'] == 0
+    assert detail['budget']['reserved'] > 0
+    assert detail['budget']['status'] == 'cancelled'
+    assert runtime.store.db.execute(
+        'SELECT status FROM business_budget_calls WHERE root_id=?', (ident,)
+    ).fetchall()[0]['status'] == 'unknown'
+    assert not list(Path(os.environ['HARNESS_DSH_RUN_ROOT']).glob('run-*'))
+    before = runtime.ledger.snapshot(ident)
+    runtime.execute(ident)
+    assert calls == [1]
+    assert runtime.ledger.snapshot(ident) == before
+    assert not runtime.detail(ident)['artifacts']
 
 
 def test_provider_failure_is_terminal_and_no_retry(client):
@@ -317,7 +351,7 @@ def _crash_worker(db_path, run_root, reached):
     os.environ['HARNESS_DSH_LOCAL'] = 'enabled'
     os.environ['HARNESS_DSH_RUN_ROOT'] = run_root
     with TestClient(create_app(db_path, run_worker=False), base_url='http://localhost') as client:
-        ident = create(client, document='SYNTH_RESIDUE_SECRET_99: payment after 30 days.')
+        ident = create(client, document='SYNTH_RESIDUE_SECRET_99: payment after 30 days.', timeout_seconds=300)
         runtime = client.app.state.service.dsh
         original = runtime.send_probe
         async def pause(payload, limit):
@@ -338,7 +372,9 @@ def test_sigkill_then_recover_removes_registered_document_residue(tmp_path, monk
     worker = context.Process(target=_crash_worker, args=(db_path, str(root), reached))
     worker.start()
     try:
-        assert reached.wait(20)
+        # Startup is independently bounded; the crash probe starts only after
+        # real SDK tool feedback has reached the second Provider request.
+        assert reached.wait(75)
         # Prove sensitive text really reached the SDK transcript before the crash.
         deadline = time.monotonic() + 5
         while time.monotonic() < deadline:

@@ -1,0 +1,50 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______________ test_cancel_while_provider_waits_never_publishes _______________
+
+client = <starlette.testclient.TestClient object at 0x10ab61400>
+
+    def test_cancel_while_provider_waits_never_publishes(client):
+        import asyncio
+        import os
+        # Setup is not the cancellation assertion: let the real SDK initialize,
+        # then keep the synthetic Provider pending until cancellation is observed.
+        ident = create(client, timeout_seconds=300)
+        runtime = client.app.state.service.dsh
+        started, cancelled, release = threading.Event(), threading.Event(), threading.Event()
+        calls = []
+        original = runtime.send_probe
+        async def slow(payload, limit):
+            calls.append(1)
+            started.set()
+            try:
+                while not release.is_set():
+                    await asyncio.sleep(.01)
+            except asyncio.CancelledError:
+                cancelled.set()
+                raise
+            return await original(payload, limit)
+        runtime.send_probe = slow
+        worker = threading.Thread(target=runtime.execute, args=(ident,))
+        worker.start()
+        try:
+            assert started.wait(75), runtime.detail(ident)
+            cancellation_started = time.monotonic()
+            runtime.cancel(ident)
+            worker.join(12)
+>           assert not worker.is_alive(), 'Provider cancellation did not finish'
+E           AssertionError: Provider cancellation did not finish
+E           assert not True
+E            +  where True = is_alive()
+E            +    where is_alive = <Thread(Thread-2 (execute), started 6187249664)>.is_alive
+
+tests/test_dsh_runtime.py:101: AssertionError
+=============================== warnings summary ===============================
+../../..USER_HOME/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  USER_HOME/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_runtime.py::test_cancel_while_provider_waits_never_publishes
+1 failed, 1 warning in 34.84s
