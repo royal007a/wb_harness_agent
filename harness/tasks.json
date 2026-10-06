@@ -15,7 +15,7 @@
       "plan": null,
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": ["harness/evidence/HA-0080/acceptance.md", "harness/evidence/HA-0080/real_runs.json", "harness/evidence/HA-0080/verify.log"]
+      "evidence": ["harness/evidence/HA-0080/acceptance.md", "harness/evidence/HA-0080/real_runs.json", "harness/evidence/HA-0080/verify.log", "harness/evidence/HA-0080/deployment.md"]
     },
     {
       "id": "HA-0079",
