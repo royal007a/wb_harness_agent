@@ -240,5 +240,69 @@
     "submissions": 1
    }
   }
+ ],
+ "after_review_fix_6ec6180": [
+  {
+   "case": "pay-03",
+   "run": "run_274e2b1c5abf4ef5a0be1e94e0d10b12",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "calls": 5,
+   "spent": 13736,
+   "reserved": 0,
+   "plan": {
+    "S1": [
+     "done",
+     5
+    ],
+    "S2": [
+     "done",
+     1
+    ],
+    "S3": [
+     "done",
+     0
+    ],
+    "S4": [
+     "done",
+     0
+    ]
+   },
+   "value_ok": true,
+   "exception_ok": true,
+   "business_status": "partial",
+   "submissions": 1
+  },
+  {
+   "case": "long-01",
+   "run": "run_3991532c26424be0b35994432f0591e2",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "calls": 6,
+   "spent": 53357,
+   "reserved": 0,
+   "plan": {
+    "S1": [
+     "done",
+     2
+    ],
+    "S2": [
+     "done",
+     1
+    ],
+    "S3": [
+     "done",
+     0
+    ],
+    "S4": [
+     "done",
+     0
+    ]
+   },
+   "value_ok": true,
+   "exception_ok": true,
+   "business_status": "partial",
+   "submissions": 1
+  }
  ]
 }
