@@ -325,7 +325,8 @@ def test_platform_maximum_key_is_accepted_and_replayed(client):
 @pytest.mark.parametrize('name,args,code', [
     ('bash', {'command': 'whoami'}, 'DSH_TOOL_POLICY'),
     ('read_clause', {'clause_id': '../../private'}, 'DSH_CLAUSE_NOT_FOUND'),
-    ('read_clause', {'clause_id': 'clause-999'}, 'DSH_CLAUSE_NOT_FOUND'),
+    ('read_clause', {'clause_id': 'clause-01'}, 'DSH_CLAUSE_NOT_FOUND'),  # malformed ID stays hard (HA-0099)
+    ('read_clause', {'clause_id': 'Clause-999'}, 'DSH_CLAUSE_NOT_FOUND'),
     ('read_clause', {'clause_id': 'clause-1', 'path': '/private'}, 'DSH_TOOL_INPUT'),
     ('search_document', {'query': ''}, 'DSH_TOOL_INPUT'),
     ('search_document', {'query': 'x' * 201}, 'DSH_TOOL_INPUT'),

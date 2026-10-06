@@ -32,6 +32,11 @@ SEARCH_PAGE = 3
 MAX_MODEL_CALLS = 8
 MAX_TOOL_CALLS = 32  # HA-0081: was 16; long contracts with real doubao exceeded it (model calls stay 8)
 MAX_FINDINGS_REJECTIONS = 2
+# HA-0099: a well-formed but non-existent block ID is a correctable model error, returned
+# as an observation with a hint (jikesummary 工具六大契约: red/yellow errors with hints).
+# Bounded; anything else (paths, malformed IDs, policy) still fails the Run.
+MAX_SOFT_TOOL_ERRORS = 2
+CLAUSE_ID = re.compile(r'clause-[1-9][0-9]{0,5}')
 # Progress is judged per model turn (HA-0081, after real doubao issued 5 parallel
 # searches in one turn): a turn makes progress if any of its actions brought new
 # evidence. Stop before the next model request when
@@ -206,7 +211,7 @@ class DshRuntime:
             seen_clauses = set()
             template = settings.get('template', 'free')
             allowed = set(task['requested_permissions']['allow_tools'])
-            progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0, 'read': set(),
+            progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0, 'read': set(), 'soft_errors': 0,
                         'turn': None}
             review = {'rejections': 0, 'coverage_warned': False, 'accepted': None, 'submissions': 0}
             context = {'stubbed': set(), 'last': None}
@@ -338,14 +343,19 @@ class DshRuntime:
                     if (not isinstance(args, dict) or set(args) != {'clause_id'} or
                             not isinstance(args['clause_id'], str) or not 1 <= len(args['clause_id']) <= 200):
                         raise Problem('DSH_TOOL_INPUT', '工具参数无效。', 422)
+                    soft_error = None
                     if args['clause_id'] not in clauses:
-                        raise Problem('DSH_CLAUSE_NOT_FOUND', '条款不存在。', 404)
-                    selected, page = [args['clause_id']], None
+                        if not CLAUSE_ID.fullmatch(args['clause_id']) or progress['soft_errors'] >= MAX_SOFT_TOOL_ERRORS:
+                            raise Problem('DSH_CLAUSE_NOT_FOUND', '条款不存在。', 404)
+                        progress['soft_errors'] += 1
+                        soft_error = 'CLAUSE_NOT_FOUND'
+                    selected, page = ([] if soft_error else [args['clause_id']]), None
                 else:
                     if (not isinstance(args, dict) or 'query' not in args or set(args) - {'query', 'offset'} or
                             not isinstance(args['query'], str) or not 1 <= len(args['query']) <= 200 or
                             type(args.get('offset', 0)) is not int or not 0 <= args.get('offset', 0) <= 1000):
                         raise Problem('DSH_TOOL_INPUT', '工具参数无效。', 422)
+                    soft_error = None
                     query, offset = args['query'].casefold(), args.get('offset', 0)
                     matches = [key for key, text in clauses.items() if query in text.casefold()]
                     selected = matches[offset:offset + SEARCH_PAGE]
@@ -377,10 +387,15 @@ class DshRuntime:
                     'new_evidence': len(new), 'repeated_action': repeated,
                     'no_progress_turns': progress['no_progress'], 'repeat_turns': progress['repeats'],
                     'latency_ms': int((time.monotonic() - tool_started) * 1000),
+                    **({'error_code': soft_error} if soft_error else {}),
                     **({'total_matches': page['total'], 'truncated': page['truncated']} if page else {})})
                 value = {'matches': [{'clause_id': key, 'text': clauses[key]} for key in selected]}
                 if page:
                     value.update(page)
+                if soft_error:
+                    return {'text': dumps(dict(value, error=soft_error,
+                        hint=f'证据块编号范围是 clause-1 到 clause-{len(clauses)}；请先用 search_document 定位再读取。'
+                             f'该类错误本 Run 最多容忍 {MAX_SOFT_TOOL_ERRORS} 次。'))}
                 # Warn on the action itself when it adds nothing and the run is already one
                 # turn away from the stop rule.
                 warn = not new and (repeated or progress['no_progress'] >= MAX_NO_PROGRESS - 1)
