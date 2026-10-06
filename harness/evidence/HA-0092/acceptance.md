@@ -36,3 +36,9 @@ e64b03d用sys.exception()判定主异常，会误看到调用方except中的无�
 a5ec114：3 failed/1804 passed/22 skipped，3229.81秒，verify-fifth-failed.log。失败是聊天UI早EOF场景的发送前会话选择，以及两个startup错误分类用例。verify.sh因pytest失败退出，后续命令没有执行。
 
 UI诊断：详情GET在浏览器记录request后约0.087秒被标记ERR_ABORTED，ASGI完整处理约0.896秒并返回200；尚未发送消息。不得把这个错误称为模型/SSE业务失败。保持原测试不变，隔离运行1 passed/55.32秒（ui-fifth-isolated），不能据此宣称根因修复。浏览器调度、请求传输与5秒详情期限的精确先后仍未建立。
+
+## 第六轮完整门禁
+
+固定3036543：1 failed / 1821 passed / 22 skipped，2230.42秒，exit 1（verify-sixth-failed.log）。唯一失败是聊天UI取消态会话按钮的30秒点击超时，不是本轮DSH断言失败；这仍不能豁免整体门禁。两个startup错误分类用例本轮通过，不能据此证明上轮全部根因相同。
+
+pytest之后的verify步骤在同一固定源码上单独运行，exit 0（verify-sixth-post-pytest.log）；不拼接成完整verify通过。完整命令和UI诊断边界见[后续验证](../HA-0089/full-verification-followup.md)。未发布，仍待独立复审。

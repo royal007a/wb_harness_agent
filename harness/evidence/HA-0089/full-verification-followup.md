@@ -44,6 +44,16 @@
 
 这轮原UI19项全部通过，只能说明本轮未复现，不能证明根因消除。HA-0091将取消探针改成到达Provider后明确挂起、实际取消另计时；崩溃探针只调整进入故障注入阶段的设置等待，不放宽SIGKILL之后的回收条件。两者与未修改的intent原用例独立运行3 passed（36.07秒），不替代完整门禁。此前失败、后续通过分别保留。
 
-## 第五轮已启动
+## 第五轮结果：仍未通过
 
-冻结a5ec114，待21例SDK合成评测串行完成之后，运行同样完整verify.sh及只读时序插件；不使用-x、不跳过UI或intent。HA91只改变取消/崩溃探针的阶段同步，生产代码仍为4b8ec1e。结果待结束记录，运行期间主测试worktree不改动。
+冻结a5ec114，待21例SDK合成评测串行完成之后，运行同样完整verify.sh及只读时序插件；不使用-x、不跳过UI或intent。HA91只改变取消/崩溃探针的阶段同步，生产代码仍为4b8ec1e。
+
+结果：3 failed / 1804 passed / 22 skipped，3229.81秒，exit 1。一个聊天UI用例在发送前的详情请求中止；两个startup错误分类用例失败，其中一个确定为finally的PermissionError覆盖了原DSH_RUNTIME_FAILED。另一个不能直接判定同因。HA92按确定的异常覆盖反例修复，详见[清理证据](../HA-0092/acceptance.md)。UI原用例隔离1 passed只说明该次通过，根因未定。
+
+## 第六轮结果：唯一失败仍在UI，完整门禁未通过
+
+固定30365436019af48f91efc922d384d5b34282f90c（含HA92）。使用原verify.sh，不加-x、不跳过测试、不修改UI或intent期限；只读插件记录ASGI、浏览器时序和失败后状态。结果：1 failed / 1821 passed / 22 skipped / 1 warning，2230.42秒，exit 1，日志见[verify-sixth-failed.log](../HA-0092/verify-sixth-failed.log)。
+
+失败为`test_non_answer_exchange_states_are_displayed_separately[cancelled-已取消]`：会话按钮已可见、可用、稳定并滚动到位，随后`Locator.click`在performing click action阶段超过30秒。详情ASGI处理0.615秒并完成200；浏览器记录该请求开始44.975秒、响应52.240秒。失败后快照显示已选中、session存在、pending=0、发送按钮可用；这些是故障后的观察，不替代本次点击在期限内完成的断言。尚不能区分浏览器/驱动调度、传输和主机资源因素，不能宣称UI已修复。
+
+verify的pytest之后步骤依旧因set -e未执行。另在同一固定3036543、移除真实Provider环境变量的条件下单独执行`tail -n +6 harness/verify.sh | sh -e`，退出0；原三个定向测试文件分别2、2、6项通过，后续离线评测、准入检查、Node语法和git diff检查均完成，日志见[verify-sixth-post-pytest.log](../HA-0092/verify-sixth-post-pytest.log)。这是后续检查的独立结果，不能将verify.sh整体改记为通过。未部署。

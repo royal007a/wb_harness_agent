@@ -1,0 +1,291 @@
+{"route_methods": 155, "features": 23, "mode": "checked"}
+................................
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] call
+ui = (<Page url='http://127.0.0.1:54068/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10f88e7b0>, {'id':...9647eed27fbe640f', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54068')
+status = 'cancelled', label = '已取消'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+        page.goto(base + '/agent-runtime')
+>       select(page, created['id'])
+
+tests/test_agent_runtime_ui.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_agent_runtime_ui.py:74: in select
+    page.locator(f'button[data-session="{ident}"]').click()
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:17876: in click
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_locator.py:165: in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x10d9c34d0>
+cb = <function Channel.send.<locals>.<lambda> at 0x10f053950>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("button[data-session=\"rts_60f4a06ff1394614a1fd9c77943379df\"]")
+E               - locator resolved to <button class="" type="button" data-session="rts_60f4a06ff1394614a1fd9c77943379df">…</button>
+E             - attempting click action
+E               - waiting for element to be visible, enabled and stable
+E               - element is visible, enabled and stable
+E               - scrolling into view if needed
+E               - done scrolling
+E               - performing click action
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+UI_FAILURE_CAPTURE tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] call
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 2.299 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1580192.947 /agent-runtime
+ASGI_HEADERS 1580193.381 /agent-runtime 200
+ASGI_FINISH 1580193.382 /agent-runtime elapsed 0.435
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 3.359 response 200 <loopback>/agent-runtime
+ASGI_BEGIN 1580195.221 /static/agent-runtime.css
+ASGI_BEGIN 1580195.223 /static/paths.js
+ASGI_BEGIN 1580195.223 /static/agent-runtime.js
+ASGI_HEADERS 1580195.327 /static/agent-runtime.css 200
+ASGI_HEADERS 1580195.327 /static/agent-runtime.js 200
+ASGI_HEADERS 1580195.328 /static/paths.js 200
+ASGI_FINISH 1580195.359 /static/paths.js elapsed 0.136
+ASGI_FINISH 1580195.359 /static/agent-runtime.js elapsed 0.136
+ASGI_FINISH 1580195.359 /static/agent-runtime.css elapsed 0.138
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.339 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.34 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.381 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.549 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.549 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.85 finished <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.07 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.071 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.082 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.082 finished <loopback>/static/paths.js
+ASGI_BEGIN 1580198.744 /api/local/agent-runtime/providers
+ASGI_BEGIN 1580198.871 /api/local/agent-runtime/models
+ASGI_BEGIN 1580198.919 UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.759 request GET <loopback>/api/local/agent-runtime/providers
+/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.76 request GET <loopback>/api/local/agent-runtime/modelsASGI_BEGIN 
+1580199.055 UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.893 request GET <loopback>/api/local/agent-runtime/agents
+/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.894 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.894 domcontentloaded 
+ASGI_HEADERS 1580199.138 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1580199.139 /api/local/agent-runtime/providers elapsed 0.395
+ASGI_HEADERS 1580199.14 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1580199.14 /api/local/agent-runtime/models 200
+ASGI_FINISH 1580199.14 /api/local/agent-runtime/agents elapsed 0.221
+ASGI_FINISH 1580199.141 /api/local/agent-runtime/models elapsed 0.27
+ASGI_HEADERS 1580199.141 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1580199.141 /api/local/agent-runtime/sessions elapsed 0.086
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.149 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.668 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.814 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.819 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.825 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.386 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.433 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.434 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.45 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 35.665 request GET <loopback>/api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+ASGI_BEGIN 1580227.236 /api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+ASGI_HEADERS 1580228.281 /api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness 200
+ASGI_FINISH 1580228.332 /api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness elapsed 1.096
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 38.399 response 200 <loopback>/api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 38.418 finished <loopback>/api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+ASGI_BEGIN 1580234.534 /api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df
+ASGI_HEADERS 1580235.127 /api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 44.975 request GET <loopback>/api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df
+ASGI_FINISH 1580235.149 /api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df elapsed 0.615
+
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 52.24 response 200 <loopback>/api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 52.244 finished <loopback>/api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df
+UI_FAILURE_STATE {"detailAborted": null, "hasSelected": true, "hasSession": true, "hasStream": false, "issueCount": 0, "noticeVisible": false, "pending": 0, "ready": "complete", "sendDisabled": false}
+F....................................... [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+........................................................................ [ 23%]
+........................................................................ [ 27%]
+..................................................sssss................. [ 31%]
+........................................................................ [ 35%]
+........................................................................ [ 39%]
+........................................................................ [ 42%]
+........................................................................ [ 46%]
+............s.s.ss...................................................... [ 50%]
+.............................................ss......................... [ 54%]
+........................................................................ [ 58%]
+........................................................................ [ 62%]
+........................................................................ [ 66%]
+.......................................................................s [ 70%]
+ssssssssss.............................................................. [ 74%]
+........................................................................ [ 78%]
+........................................................................ [ 81%]
+........................................................................ [ 85%]
+........................................................................ [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+............................................                             [100%]
+=================================== FAILURES ===================================
+_ test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] _
+
+ui = (<Page url='http://127.0.0.1:54068/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10f88e7b0>, {'id':...9647eed27fbe640f', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54068')
+status = 'cancelled', label = '已取消'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+        page.goto(base + '/agent-runtime')
+>       select(page, created['id'])
+
+tests/test_agent_runtime_ui.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_agent_runtime_ui.py:74: in select
+    page.locator(f'button[data-session="{ident}"]').click()
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:17876: in click
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_locator.py:165: in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x10d9c34d0>
+cb = <function Channel.send.<locals>.<lambda> at 0x10f053950>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("button[data-session=\"rts_60f4a06ff1394614a1fd9c77943379df\"]")
+E               - locator resolved to <button class="" type="button" data-session="rts_60f4a06ff1394614a1fd9c77943379df">…</button>
+E             - attempting click action
+E               - waiting for element to be visible, enabled and stable
+E               - element is visible, enabled and stable
+E               - scrolling into view if needed
+E               - done scrolling
+E               - performing click action
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+----------------------------- Captured stdout call -----------------------------
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 2.299 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1580192.947 /agent-runtime
+ASGI_HEADERS 1580193.381 /agent-runtime 200
+ASGI_FINISH 1580193.382 /agent-runtime elapsed 0.435
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 3.359 response 200 <loopback>/agent-runtime
+ASGI_BEGIN 1580195.221 /static/agent-runtime.css
+ASGI_BEGIN 1580195.223 /static/paths.js
+ASGI_BEGIN 1580195.223 /static/agent-runtime.js
+ASGI_HEADERS 1580195.327 /static/agent-runtime.css 200
+ASGI_HEADERS 1580195.327 /static/agent-runtime.js 200
+ASGI_HEADERS 1580195.328 /static/paths.js 200
+ASGI_FINISH 1580195.359 /static/paths.js elapsed 0.136
+ASGI_FINISH 1580195.359 /static/agent-runtime.js elapsed 0.136
+ASGI_FINISH 1580195.359 /static/agent-runtime.css elapsed 0.138
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.339 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.34 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.381 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.549 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.549 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.85 finished <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.07 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.071 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.082 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.082 finished <loopback>/static/paths.js
+ASGI_BEGIN 1580198.744 /api/local/agent-runtime/providers
+ASGI_BEGIN 1580198.871 /api/local/agent-runtime/models
+ASGI_BEGIN 1580198.919 UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.759 request GET <loopback>/api/local/agent-runtime/providers
+/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.76 request GET <loopback>/api/local/agent-runtime/modelsASGI_BEGIN 
+1580199.055 UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.893 request GET <loopback>/api/local/agent-runtime/agents
+/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.894 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.894 domcontentloaded 
+ASGI_HEADERS 1580199.138 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1580199.139 /api/local/agent-runtime/providers elapsed 0.395
+ASGI_HEADERS 1580199.14 /api/local/agent-runtime/agents 200
+ASGI_HEADERS 1580199.14 /api/local/agent-runtime/models 200
+ASGI_FINISH 1580199.14 /api/local/agent-runtime/agents elapsed 0.221
+ASGI_FINISH 1580199.141 /api/local/agent-runtime/models elapsed 0.27
+ASGI_HEADERS 1580199.141 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1580199.141 /api/local/agent-runtime/sessions elapsed 0.086
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.149 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.668 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.814 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.819 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 33.825 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.386 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.433 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.434 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 34.45 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 35.665 request GET <loopback>/api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+ASGI_BEGIN 1580227.236 /api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+ASGI_HEADERS 1580228.281 /api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness 200
+ASGI_FINISH 1580228.332 /api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness elapsed 1.096
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 38.399 response 200 <loopback>/api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 38.418 finished <loopback>/api/local/agent-runtime/providers/rtp_b25b3955fb454a45b5eba2bf3412cc9b/readiness
+ASGI_BEGIN 1580234.534 /api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df
+ASGI_HEADERS 1580235.127 /api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 44.975 request GET <loopback>/api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df
+ASGI_FINISH 1580235.149 /api/local/agent-runtime/sessions/rts_60f4a06ff1394614a1fd9c77943379df elapsed 0.615
+--------------------------- Captured stdout teardown ---------------------------
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 52.798 close 
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88]
+1 failed, 1821 passed, 22 skipped, 1 warning in 2230.42s (0:37:10)
