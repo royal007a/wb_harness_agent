@@ -1,0 +1,52 @@
+{
+ "probe": "dsh-real-payment@1",
+ "context_window_override": 16000,
+ "provider": "doubao-seed-2.1-lite via Ark coding/v3",
+ "note": "synthetic public contracts; real model behaviour on 5 cases, not a statistical quality claim",
+ "rows": [
+  {
+   "id": "long-01",
+   "family": "long_contract",
+   "run_id": "run_a8ecf0a257914b24aadb2943df4bf411",
+   "status": "failed",
+   "exit_reason": "DSH_CONTEXT_OVER_BUDGET",
+   "seconds": 6.1,
+   "model_calls": 2,
+   "tokens": 6796,
+   "reserved_after": 0,
+   "tool_events": [
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document"
+   ],
+   "findings_checks": [],
+   "record": null,
+   "context": [
+    {
+     "estimate_before": 4031,
+     "estimate_after": 4031,
+     "budget": 11200,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 9835,
+     "estimate_after": 9835,
+     "budget": 11200,
+     "stubbed_tool_results": 0
+    }
+   ],
+   "score": {
+    "term_value_matches_label": false,
+    "exception_gold": "clause-13",
+    "exception_reported_as_finding": false,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  }
+ ],
+ "tokens_total": 6796,
+ "model_calls_total": 2
+}

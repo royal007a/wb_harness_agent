@@ -38,18 +38,19 @@ def scripted_provider(case):
     state = {'clauses': {}, 'exception': None}
 
     def findings():
-        term_id, term_text = next((k, t) for k, t in state['clauses'].items() if '验收合格后' in t)
-        sentence = re.search(r'验收合格后[^。]*', term_text).group(0)
+        # first read sentence that states a payment period (label-blind)
+        term_id, sentence = next((k, m.group(0)) for k, t in state['clauses'].items()
+                                 for m in [re.search(r'[^。\n]*验收合格[^。]*?[0-9]+(?:个工作日|天)内[^。]*', t)] if m)
         unknown = {'status': 'unknown', 'claim': '', 'quotes': []}
         exception = unknown
         if state['exception']:
             ident = state['exception']
             text = state['clauses'][ident].split('\n')[-1].rstrip('。')
             exception = {'status': 'supported', 'claim': text, 'quotes': [{'clause_id': ident, 'text': text}]}
-        return {'term': {'status': 'supported', 'claim': f'验收合格后{claimed}{unit}内付款',
+        return {'term': {'status': 'supported', 'claim': f'验收合格后{claimed}{unit}内付款',  # value may be misstated by design
                          'quotes': [{'clause_id': term_id, 'text': sentence}]},
                 'trigger': {'status': 'supported', 'claim': '验收合格',
-                            'quotes': [{'clause_id': term_id, 'text': '验收合格后'}]},
+                            'quotes': [{'clause_id': term_id, 'text': '验收合格'}]},
                 'exception': exception, 'conflict': unknown}
 
     async def provider(payload, limit):

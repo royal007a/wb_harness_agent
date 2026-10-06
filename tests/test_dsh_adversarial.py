@@ -239,7 +239,12 @@ def test_platform_second_call_reservation_exact_boundary(client, extra):
     from backend.store import dumps
     request = {'model': MODEL, 'purpose': 'primary', 'messages': [],
                'tools': [{'name': 'read_clause'}, {'name': 'search_document'}]}
-    bound = len(dumps(provider_payload(request)).encode()) + 4096 + 2048
+    # HA-0081: the platform context assembler appends a state message; the second call
+    # is sent after clause-1 was read, so its exact bound includes that state.
+    from backend.dsh_context import assemble
+    sent, _ = assemble(provider_payload(request), {'template': 'free', 'read': ['clause-1'],
+                                                   'unread_exception_candidates': [], 'submission': None})
+    bound = len(dumps(sent).encode()) + 4096 + 2048
     ident = submit(client, token_limit=bound + 20 + extra)
     rt = client.app.state.service.dsh
     sends = []

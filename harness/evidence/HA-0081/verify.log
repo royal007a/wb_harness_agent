@@ -1,0 +1,235 @@
+{"route_methods": 155, "features": 23, "mode": "checked"}
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 16%]
+........................................................................ [ 21%]
+......................................................sssss............. [ 25%]
+........................................................................ [ 29%]
+........................................................................ [ 33%]
+........................................................................ [ 38%]
+........................................................................ [ 42%]
+................s.s.ss.................................................. [ 46%]
+.................................................ss..................... [ 50%]
+........................................................................ [ 54%]
+........................................................................ [ 59%]
+........................................................................ [ 63%]
+........................................................................ [ 67%]
+...sssssssssss.......................................................... [ 71%]
+........................................................................ [ 76%]
+........................................................................ [ 80%]
+........................................................................ [ 84%]
+........................................................................ [ 88%]
+........................................................................ [ 92%]
+........................................................................ [ 97%]
+................................................                         [100%]
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1682 passed, 22 skipped, 1 warning in 233.30s (0:03:53)
+..                                                                       [100%]
+2 passed in 0.10s
+..                                                                       [100%]
+2 passed in 0.20s
+......                                                                   [100%]
+6 passed in 0.06s
+{
+  "evaluation_version": "adaptive-chunk-heldout@1",
+  "metric": "Recall@1",
+  "tuning_fixtures": 2,
+  "heldout_fixtures": 2,
+  "rows": [
+    {
+      "fixed_recall_at_1": 0.0,
+      "adaptive_recall_at_1": 1.0,
+      "adaptive_children": 2,
+      "parent_expansion_complete": 0.5
+    },
+    {
+      "fixed_recall_at_1": 0.5,
+      "adaptive_recall_at_1": 0.5,
+      "adaptive_children": 2,
+      "parent_expansion_complete": 0.0
+    },
+    {
+      "fixed_recall_at_1": 0.0,
+      "adaptive_recall_at_1": 1.0,
+      "adaptive_children": 1,
+      "parent_expansion_complete": 1.0
+    },
+    {
+      "fixed_recall_at_1": 0.0,
+      "adaptive_recall_at_1": 1.0,
+      "adaptive_children": 1,
+      "parent_expansion_complete": 1.0
+    }
+  ],
+  "heldout_fixed_recall_at_1": 0.0,
+  "heldout_adaptive_recall_at_1": 1.0,
+  "heldout_parent_expansion_complete": 1.0,
+  "model_calls": 0,
+  "external_calls": 0,
+  "not_evidence": [
+    "synthetic local fixtures only",
+    "not evidence of semantic/vector or production Agentic RAG"
+  ]
+}
+{
+  "evaluation_version": "memory-context-m2a-synthetic@1",
+  "scope": "synthetic deterministic Fact Capsule, FTS5 catalog, exact detail and lifecycle safety",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "critical_fact_recall_at_12": 1.0,
+    "summary_fidelity": 1.0,
+    "detail_exactness": 1.0,
+    "supersede_safety": 1.0,
+    "cross_bank_leakage": 0.0,
+    "recent_turn_persistence": 0.0,
+    "raw_source_export": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This is not semantic/vector retrieval, RRF/rerank, model-summary, final-answer quality, or production data evaluation.",
+    "The evaluation uses only synthetic source/fact content in a temporary SQLite database."
+  ]
+}
+{
+  "evaluation_version": "memory-graph-m3a-synthetic@1",
+  "scope": "synthetic explicit entity/relation two-hop and lifecycle safety",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "two_hop_evidence_success": 1.0,
+    "edge_provenance_coverage": 1.0,
+    "temporal_filter_safety": 1.0,
+    "cross_bank_leakage": 0.0,
+    "retract_propagation": 1.0,
+    "delete_completeness": 1.0,
+    "raw_source_export": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This is not automatic entity extraction/resolution, natural-language GraphQA, semantic/vector retrieval, ranking, Reflect or final-answer quality.",
+    "The evaluation uses only synthetic source/fact/entity/relation content in a temporary SQLite database."
+  ]
+}
+{
+  "evaluation_version": "memory-entity-catalog-m3b-synthetic@1",
+  "scope": "synthetic exact canonical/alias catalog, ambiguity, temporal/lifecycle and Bank isolation",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "canonical_exact_resolution": 1.0,
+    "alias_exact_resolution": 1.0,
+    "ambiguity_preserved": 1.0,
+    "type_filter_resolution": 1.0,
+    "cross_bank_leakage": 0.0,
+    "lifecycle_temporal_filter": 1.0,
+    "raw_source_export": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This is not semantic/vector matching, automatic Entity Resolution, entity merging, GraphQA, ranking, Reflect or final-answer quality.",
+    "The evaluation uses only synthetic source/fact/entity content in a temporary SQLite database."
+  ]
+}
+{
+  "evaluation_version": "memory-temporal-read-safety-synthetic@1",
+  "scope": "synthetic as-of Source/Fact visibility across M1 Recall and M2-A Context/Detail",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "m1_future_source_hidden": 1.0,
+    "m2_context_future_source_hidden": 1.0,
+    "m2_detail_future_source_hidden": 1.0,
+    "source_visible_at_as_of": 1.0,
+    "raw_source_export": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This is not semantic/vector retrieval, RRF/rerank, automatic summary, Entity Resolution, GraphQA, Reflect or final-answer quality.",
+    "The evaluation uses only synthetic source/fact content in a temporary SQLite database."
+  ]
+}
+semantic retrieval admission: not_admitted; enabled=False
+{
+  "evaluation_version": "recovery-loop-guard-synthetic@1",
+  "scope": "synthetic local Team Task recovery decisions; no model, tool, checkpoint restore or external side effect",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "server_derived_error_contract": 1.0,
+    "four_positions_distinct": 1.0,
+    "try_confirm_zero_execution": 1.0,
+    "reminder_then_hard_stop": 1.0,
+    "handoff_gate_required_for_resolution": 1.0,
+    "automatic_permission_expansion": 0.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not execute a real recovery, model, tool, checkpoint restore, cancellation or external side effect.",
+    "The evaluation uses only synthetic Team Task and Evidence metadata in a temporary SQLite database."
+  ]
+}
+{
+  "evaluation_version": "team-foundation-boundary-synthetic@1",
+  "scope": "synthetic local protocol identity, Workspace/Channel membership, clearance and Team Task authorization",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "channel_visibility_isolated": 1.0,
+    "clearance_enforced": 1.0,
+    "task_role_enforced": 1.0,
+    "legacy_not_auto_authorized": 1.0,
+    "external_execution_calls": 1.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not authenticate an HTTP caller, validate a token/OIDC session, or test a real Agent identity.",
+    "The evaluation uses only synthetic metadata in a temporary SQLite database and invokes no model, tool, network or message delivery."
+  ]
+}
+{
+  "evaluation_version": "team-attention-freshness-synthetic@1",
+  "scope": "synthetic metadata-only Team Attention Inbox, work mark, single identity lease and Task freshness boundary",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "metadata_only_priority_and_order": 1.0,
+    "single_identity_attention_lease": 1.0,
+    "stale_completion_blocked": 1.0,
+    "work_mark_clears_only_after_fresh_completion": 1.0,
+    "task_handoff_freshness_enforced": 1.0,
+    "external_execution_calls": 1.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not deliver a message, authenticate a caller, dispatch an Agent, invoke a model, tool or provider.",
+    "The evaluation uses only synthetic metadata in a temporary SQLite database."
+  ]
+}
+{
+  "evaluation_version": "team-session-continuity-evaluation@1",
+  "scope": "synthetic Team Session continuity, bounded metadata-only snapshot and one-time same-scope Handoff",
+  "model_calls": 0,
+  "external_calls": 0,
+  "results": {
+    "bounded_metadata_only_snapshot": 1.0,
+    "one_active_session_per_identity_channel": 1.0,
+    "handoff_does_not_mutate_source_task_state": 1.0,
+    "successor_refreshes_current_snapshot": 1.0,
+    "handoff_is_one_time_and_owner_bound": 1.0,
+    "external_execution_calls": 1.0
+  },
+  "passed": true,
+  "not_evidence": [
+    "This does not store message content, authenticate a caller, resume a Provider/Runtime session, or dispatch an Agent.",
+    "The evaluation uses only synthetic metadata in a temporary SQLite database."
+  ]
+}
+claude research admission: not_admitted; enabled=False
+EXIT=0

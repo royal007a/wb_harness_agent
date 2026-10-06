@@ -16,7 +16,8 @@ from .agent_runtime import KeyringCredentialResolver, reject_sensitive
 from .adaptive_retrieval import build_parent_child_chunks
 from .analysis import Problem, digest
 from .business_budget import BusinessTokenLedger, budgeted_model_call
-from .dsh_findings import render_text as render_findings, verify as verify_findings
+from .dsh_context import assemble as assemble_context
+from .dsh_findings import candidates as finding_candidates, render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
 from .service import ROOT, DENY, TERMINAL, validate
 from .store import dumps, uid, now
@@ -24,8 +25,11 @@ from .store import dumps, uid, now
 ENGINE = 'engine_dsh_document'
 SEARCH_PAGE = 3
 MAX_FINDINGS_REJECTIONS = 2
-MAX_REPEATED_NO_PROGRESS = 2  # identical action twice in a row without new evidence
-MAX_NO_PROGRESS = 4  # any consecutive actions without new evidence
+# Progress is judged per model turn (HA-0081, after real doubao issued 5 parallel
+# searches in one turn): a turn makes progress if any of its actions brought new
+# evidence. Stop before the next model request when
+MAX_REPEATED_NO_PROGRESS = 2  # two consecutive turns consisting only of repeated actions, or
+MAX_NO_PROGRESS = 3           # three consecutive turns without any new evidence.
 SCHEMA = json.loads((ROOT / 'specs/v1/dsh-runtime.schema.json').read_text())
 
 
@@ -159,8 +163,11 @@ class DshRuntime:
             seen_clauses = set()
             template = settings.get('template', 'free')
             allowed = set(task['requested_permissions']['allow_tools'])
-            progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0, 'read': set()}
+            progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0, 'read': set(),
+                        'turn': None}
             review = {'rejections': 0, 'coverage_warned': False, 'accepted': None, 'submissions': 0}
+            context = {'stubbed': set(), 'last': None}
+            exception_candidates = finding_candidates(clauses)['exception'] if template == 'payment_terms' else []
             deadline = time.monotonic() + task['limits']['timeout_seconds']
             def check():
                 self.service.check(ident)
@@ -173,11 +180,33 @@ class DshRuntime:
             def emit(value):
                 validate_dsh('observation', value)
                 event('dsh.observation', value)
+            def close_turn():
+                turn, progress['turn'] = progress['turn'], None
+                if turn is None:
+                    return
+                if turn['new']:
+                    progress['no_progress'], progress['repeats'] = 0, 0
+                else:
+                    progress['no_progress'] += 1
+                    progress['repeats'] = progress['repeats'] + 1 if turn['all_repeated'] else 0
+                if progress['repeats'] >= MAX_REPEATED_NO_PROGRESS or progress['no_progress'] >= MAX_NO_PROGRESS:
+                    event('dsh.progress.stopped', {'no_progress_turns': progress['no_progress'],
+                                                   'repeat_turns': progress['repeats']})
+                    raise Problem('DSH_NO_PROGRESS', '连续多轮没有带来新证据，提前停止。', 409)
             def model_call(request):
                 check()
+                close_turn()  # judged before spending another model request
                 if counts['model_calls'] >= 8:
                     raise Problem('DSH_MODEL_CALL_LIMIT', '达到 8 次模型调用上限。', 409)
                 payload = provider_payload(request, allowed)
+                state = {'template': template,
+                         'read': sorted(seen_clauses, key=lambda k: int(k.split('-')[1])),
+                         'unread_exception_candidates': [k for k in exception_candidates if k not in seen_clauses],
+                         'submission': ({'number': review['submissions'], 'accepted': review['accepted'] is not None}
+                                        if review['submissions'] else None)}
+                payload, assembly = assemble_context(payload, state)
+                context['stubbed'] = set(assembly['stubbed_clause_ids'])
+                event('dsh.context.assembled', dict(assembly, call_number=counts['model_calls'] + 1))
                 counts['model_calls'] += 1
                 async def send(value, limit):
                     check()
@@ -252,33 +281,34 @@ class DshRuntime:
                 # New evidence: a search returning a block the model never received, or the
                 # first explicit read of a block (reading a search hit in full is legitimate).
                 if body['name'] == 'read_clause':
-                    new = [key for key in selected if key not in progress['read']]
+                    # Re-reading a block whose text the assembler stubbed out is legitimate.
+                    new = [key for key in selected if key not in progress['read'] or key in context['stubbed']]
                     progress['read'].update(selected)
+                    context['stubbed'] -= set(selected)
                 else:
                     new = [key for key in selected if key not in seen_clauses]
                 repeated = fingerprint in progress['fingerprints']
                 progress['fingerprints'].add(fingerprint)
-                if new:
-                    progress['no_progress'], progress['repeats'] = 0, 0
-                else:
-                    progress['no_progress'] += 1
-                    progress['repeats'] = progress['repeats'] + 1 if repeated else 0
+                turn = progress['turn'] = progress['turn'] or {'actions': 0, 'new': 0, 'all_repeated': True}
+                turn['actions'] += 1
+                turn['new'] += len(new)
+                turn['all_repeated'] = turn['all_repeated'] and repeated
                 seen_clauses.update(selected)
                 event('dsh.tool.completed', {'tool': body['name'], 'call_number': counts['tool_calls'],
                     'clause_ids': selected, 'arguments_sha256': digest(dumps(args).encode()),
-                    'new_evidence': len(new), 'no_progress_streak': progress['no_progress'],
-                    'repeat_streak': progress['repeats'],
+                    'new_evidence': len(new), 'repeated_action': repeated,
+                    'no_progress_turns': progress['no_progress'], 'repeat_turns': progress['repeats'],
                     **({'total_matches': page['total'], 'truncated': page['truncated']} if page else {})})
-                if progress['repeats'] >= MAX_REPEATED_NO_PROGRESS or progress['no_progress'] >= MAX_NO_PROGRESS:
-                    raise Problem('DSH_NO_PROGRESS', '连续动作没有带来新证据，提前停止。', 409)
                 value = {'matches': [{'clause_id': key, 'text': clauses[key]} for key in selected]}
                 if page:
                     value.update(page)
-                warn = progress['repeats'] or progress['no_progress'] == MAX_NO_PROGRESS - 1
+                # Warn on the action itself when it adds nothing and the run is already one
+                # turn away from the stop rule.
+                warn = not new and (repeated or progress['no_progress'] >= MAX_NO_PROGRESS - 1)
                 if warn:
                     progress['notices'] += 1
                     value['notice'] = ('NO_NEW_EVIDENCE：本次没有带来新的证据块。换一个不同的查询或读取未读证据块；'
-                                       '若已无可读证据，请据已有证据作答并说明缺口。再次无进展将停止。')
+                                       '若已无可读证据，请据已有证据作答并说明缺口。继续无进展将停止。')
                 return {'text': dumps(value) if page or warn else dumps(value['matches'])}
             def submit_findings(args):
                 counts['tool_calls'] += 1

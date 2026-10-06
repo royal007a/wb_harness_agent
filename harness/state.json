@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_payment_findings_completed",
+  "phase": "dsh_context_assembler_completed",
   "implementation_started": true,
-  "active_task_id": "HA-0079",
-  "active_plan": "exec-plans/completed/HA-0079-dsh-payment-findings.md",
-  "last_checkpoint": "HA-0079复审修订：平台渲染正文、conflicting共用检查、完整数值解析、合成Provider付款流程、最后一次提交必须通过、例外逐项落位；定向142通过；verify exit0 1666 passed/22 skipped；未部署、未调用真实模型。",
-  "last_updated_at": "2026-10-06T06:10:00Z",
-  "next_action": "HA-0079 ff72a21 代码与离线验证已获 mymaccodex Approved；合并、部署（独立端口）与真实 Provider 小额验证需用户另行决定。报告 C（上下文组装器）未开始。",
+  "active_task_id": "HA-0081",
+  "active_plan": null,
+  "last_checkpoint": "HA-0081 上下文组装器+按轮进展；verify exit0 1682 passed/22 skipped；真实豆包 7 份短合同+1 份长合同全部成功，压测（窗口1/4）安全失败；待部署8876与mymaccodex复审。",
+  "last_updated_at": "2026-10-06T08:30:00Z",
+  "next_action": "部署到8876并交mymaccodex复审。",
   "release": "0.1.0-local"
 }

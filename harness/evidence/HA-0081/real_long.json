@@ -1,0 +1,137 @@
+{
+ "probe": "dsh-real-payment@1",
+ "provider": "doubao-seed-2.1-lite via Ark coding/v3",
+ "note": "synthetic public contracts; real model behaviour on 5 cases, not a statistical quality claim",
+ "rows": [
+  {
+   "id": "long-01",
+   "family": "long_contract",
+   "run_id": "run_ffa2da0e2f61418f858261e17353f01d",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 28.6,
+   "model_calls": 4,
+   "tokens": 26979,
+   "reserved_after": 0,
+   "tool_events": [
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document"
+   ],
+   "findings_checks": [
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 3,
+     "platform_gap_count": 0,
+     "submission_number": 1
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [
+      "clause-13"
+     ],
+     "payment": [
+      "clause-13",
+      "clause-3"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "exception": {
+      "claim": "付款例外：如交付物存在经第三方检测确认的质量缺陷，甲方可暂停支付对应部分的合同款，直至缺陷整改完毕",
+      "quotes": [
+       {
+        "clause_id": "clause-13",
+        "text": "如交付物存在经第三方检测确认的质量缺陷，甲方可暂停支付对应部分的合同款，直至缺陷整改完毕。"
+       }
+      ],
+      "status": "supported"
+     },
+     "term": {
+      "claim": "付款期限为验收合格且收到乙方开具的合规发票后35天内",
+      "quotes": [
+       {
+        "clause_id": "clause-3",
+        "text": "甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款触发条件为两项同时满足：交付物验收合格，且甲方收到乙方开具的合规发票",
+      "quotes": [
+       {
+        "clause_id": "clause-3",
+        "text": "甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "全文检索'冲突'无匹配证据块，未发现任何条款自称冲突",
+     "除 clause-3 外，检索'天内'/'发票'仅命中该块，未发现其他约定付款期限的条款，无法确认是否存在条款间期限矛盾",
+     "clause-13 为例外暂停支付安排，与 clause-3 的35天期限未见直接矛盾，但文档中无专门的条款冲突解决规则可供佐证"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-13",
+     "clause-2",
+     "clause-3"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 1,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "context": [
+    {
+     "estimate_before": 4031,
+     "estimate_after": 4031,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 10227,
+     "estimate_after": 10227,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 17635,
+     "estimate_after": 17635,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 18795,
+     "estimate_after": 18795,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    }
+   ],
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": "clause-13",
+    "exception_reported_as_finding": true,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  }
+ ],
+ "tokens_total": 26979,
+ "model_calls_total": 4
+}

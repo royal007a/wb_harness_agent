@@ -27,6 +27,8 @@ def main():
     parser.add_argument('--cases', required=True)
     parser.add_argument('--out', required=True)
     parser.add_argument('--timeout', type=int, default=240)
+    parser.add_argument('--context-window', type=int, default=None,
+                        help='probe-only override to force context stubbing; production uses 64000')
     args = parser.parse_args()
     if not os.getenv('HARNESS_DSH_CREDENTIAL_REF'):
         raise SystemExit('HARNESS_DSH_CREDENTIAL_REF is required (a Keychain reference, not a key)')
@@ -34,6 +36,11 @@ def main():
     cases = [c for c in json.loads((EVAL / 'cases.json').read_text())['cases'] if c['id'] in wanted]
     from fastapi.testclient import TestClient
     from backend.app import create_app
+    if args.context_window:
+        import functools
+        import backend.dsh_runtime as runtime
+        from backend.dsh_context import assemble
+        runtime.assemble_context = functools.partial(assemble, context_window=args.context_window)
     rows = []
     with tempfile.TemporaryDirectory() as tmp:
         base = Path(tmp).resolve()
@@ -64,7 +71,10 @@ def main():
                              'model_calls': detail['budget']['calls'], 'tokens': detail['budget']['spent'],
                              'reserved_after': detail['budget']['reserved'],
                              'tool_events': [e['data']['tool'] for e in events if e['event_type'] == 'dsh.tool.completed'],
-                             'findings_checks': checks, 'record': record})
+                             'findings_checks': checks, 'record': record,
+                             'context': [{k: e['data'][k] for k in ('estimate_before', 'estimate_after', 'budget',
+                                                                    'stubbed_tool_results')}
+                                         for e in events if e['event_type'] == 'dsh.context.assembled']})
                 print(json.dumps({k: rows[-1][k] for k in ('id', 'status', 'exit_reason', 'model_calls', 'tokens', 'seconds')},
                                  ensure_ascii=False), flush=True)
     labels = {l['id']: l for l in json.loads((EVAL / 'labels.json').read_text())['labels']}
@@ -81,7 +91,7 @@ def main():
             'exception_reported_as_gap': bool(gold) and any(gold in g['clause_ids'] for g in record.get('platform_gaps', [])),
             'false_exception_finding': (not gold) and exception.get('status') == 'supported',
         }
-    report = {'probe': 'dsh-real-payment@1', 'provider': 'doubao-seed-2.1-lite via Ark coding/v3',
+    report = {'probe': 'dsh-real-payment@1', 'context_window_override': args.context_window, 'provider': 'doubao-seed-2.1-lite via Ark coding/v3',
               'note': 'synthetic public contracts; real model behaviour on 5 cases, not a statistical quality claim',
               'rows': rows, 'tokens_total': sum(r['tokens'] for r in rows),
               'model_calls_total': sum(r['model_calls'] for r in rows)}

@@ -256,7 +256,9 @@ def test_old_probe2_inverted_repeated_read_stops_early(client):
     assert len(calls) == detail['budget']['calls'] == 3  # was 8 at the hard cap
     assert detail['artifacts'] == []
     tools = [e['data'] for e in rt.store.events(ident) if e['event_type'] == 'dsh.tool.completed']
-    assert [t['repeat_streak'] for t in tools] == [0, 1, 2]
+    assert [t['repeated_action'] for t in tools] == [False, True, True]
+    stopped = [e['data'] for e in rt.store.events(ident) if e['event_type'] == 'dsh.progress.stopped']
+    assert stopped == [{'no_progress_turns': 2, 'repeat_turns': 2}]  # judged before a 4th request
 
 
 def test_legitimate_search_then_reads_are_not_stopped(client):
@@ -386,3 +388,15 @@ def test_rereading_already_read_clauses_still_stops(client):
         return reply(calls=[('read_clause', {'clause_id': f'clause-{1 + (n % 2)}'})])  # alternate 2,1,2,1
     _, detail, calls = run_script(client, ident, script)
     assert detail['run']['exit_reason'] == 'DSH_NO_PROGRESS' and len(calls) < 8
+
+
+def test_real_pattern_parallel_searches_in_one_turn_are_one_progressing_turn(client):
+    """doubao issued 5 different searches in its first turn; most returned nothing new."""
+    ident = submit(client, template='free', document=DOC)
+    def script(n, results):
+        if n == 1:
+            return reply(calls=[('search_document', {'query': q}) for q in ('付款', '支付', '例外', '暂停', '争议')])
+        return reply('付款 30 天，见 clause-1。')
+    _, detail, calls = run_script(client, ident, script)
+    assert detail['run']['status'] == 'succeeded', detail['run']
+    assert len(calls) == 2

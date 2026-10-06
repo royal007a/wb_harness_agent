@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0081",
+      "title": "DSH平台上下文组装器与按轮进展判定",
+      "status": "completed",
+      "risk": "medium",
+      "scope": ["发送前配对校验、可信状态、70%预算与可回读省略", "按模型轮的进展判定", "真实豆包短/长合同回归与压测"],
+      "non_goals": ["模型摘要式压缩", "改上游DSH Loop", "真实tokenizer"],
+      "acceptance": ["组装不破坏配对、最新一轮不省略、超预算拒发", "事件只含元数据", "真实运行与压测结果如实记录"],
+      "depends_on": ["HA-0080"],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0081/acceptance.md", "harness/evidence/HA-0081/real_runs.json", "harness/evidence/HA-0081/real_long.json", "harness/evidence/HA-0081/real_long_forced_stub.json", "harness/evidence/HA-0081/eval.json", "harness/evidence/HA-0081/verify.log"]
+    },
+    {
       "id": "HA-0080",
       "title": "真实豆包合成付款合同验证与平台规则修正",
       "status": "completed",

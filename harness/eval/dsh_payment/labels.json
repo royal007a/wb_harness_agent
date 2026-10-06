@@ -181,6 +181,15 @@
    "exception_clause": null,
    "exception_implicit": false,
    "value_misstated_by_script": true
+  },
+  {
+   "id": "long-01",
+   "family": "long_contract",
+   "true_value": 35,
+   "unit": "天",
+   "exception_clause": "clause-13",
+   "exception_implicit": false,
+   "value_misstated_by_script": false
   }
  ]
 }
