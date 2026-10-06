@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_cleanup_errors",
+  "phase": "chinese_clause_boundaries",
   "implementation_started": true,
-  "active_task_id": "HA-0092",
-  "active_plan": "exec-plans/active/HA-0092.md",
+  "active_task_id": "HA-0093",
+  "active_plan": "exec-plans/active/HA-0093.md",
   "last_checkpoint": "HA-0083 7ad0793 获独立 Approved；8876 运行 ad957fb；真实豆包完成3轮工具往返（4次模型/8次工具，11508 Token）。",
-  "last_updated_at": "2026-10-06T21:31:00Z",
-  "next_action": "第五轮3失败1804通过22跳过，失败日志保留。HA92清理修订31项通过，5突变被捕获；修订显式operation_failed避免外层except污染。待独立复审和第六轮完整验证；不部署，8876未变。",
+  "last_updated_at": "2026-10-06T22:48:00Z",
+  "next_action": "HA85-89/91/92代码离线均获Approved，完整门禁仍有UI超时失败。推进复审新发现的HA93中文条号与偏移，先独立反例和评测再交审；不部署，8876未变。",
   "release": "0.1.0-local"
 }

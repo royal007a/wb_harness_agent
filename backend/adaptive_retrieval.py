@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from typing import Iterable
 
 ALLOWED_ROUTES = frozenset({"keyword", "temporal", "graph"})
-HEADING = re.compile(r"^(?P<mark>(?:#{1,6}\s+|第[一二三四五六七八九十百零]+章|第\d+条|[一二三四五六七八九十]+、|\d+[.)、]\s*))(?P<title>.*)$")
+# heading-policy@2: structural markers, not validation of legal article numbers.
+HEADING = re.compile(r"^(?P<mark>(?:#{1,6}\s+|第[一二三四五六七八九十百零]+章|第(?:\d+|[一二三四五六七八九十百千万零〇两]+)条|[一二三四五六七八九十]+、|\d+[.)、]\s*))(?P<title>.*)$")
 SENTENCE = re.compile(r"(?<=[。！？!?；;])\s*")
 
 def _sha(value: str) -> str:
@@ -101,7 +102,8 @@ def build_parent_child_chunks(text: str, max_child_chars: int = 1800, parent_max
             if section and level <= (levels[-1] if levels else level): flush()
             while levels and level <= levels[-1]: path.pop(); levels.pop()
             path.append(match.group("title").strip() or stripped); levels.append(level)
-        if not section: section_start = offset + len(line) - len(line.lstrip())
+        # section still contains the original indentation; flush strips it once.
+        if not section: section_start = offset
         section.append(line); offset += len(line)
     flush()
     result = {"schema_version": "adaptive-chunk@1", "source_text": text, "source_sha256": _sha(text), "parents": parents, "children": [item.as_dict() for item in children], "parent_max_chars": parent_max_chars, "max_child_chars": max_child_chars}
