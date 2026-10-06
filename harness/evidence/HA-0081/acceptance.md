@@ -33,3 +33,7 @@ mymaccodex 对 343a3b3 给出 2 Medium + 2 Low，附 3 个独立反例，原样�
 | L “可重建”表述 | 明确只有摘要审计，完整请求重建未实现，不把正文写进事件 | ADR-0081 第 6 条与边界 |
 
 DSH 六个测试文件 161 passed；全量 `verify.sh` exit 0：1685 passed / 22 skipped。未发真实请求（本修订不改变发送内容的结构，只改进展判定与校验）。
+
+## 复审结论
+
+73e7e25 获 mymaccodex Approved（限代码与离线验证）。其非阻塞建议已采纳：`estimate_after` 改为按实际发送的最终状态重算（`test_estimate_after_matches_what_is_sent`）。

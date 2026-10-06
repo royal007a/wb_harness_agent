@@ -156,3 +156,10 @@ def test_rereading_stubbed_blocks_counts_as_progress(client, monkeypatch):
                for c in e['data']['stubbed_clause_ids']}
     assert {'clause-1', 'clause-2', 'clause-3'} <= stubbed
     assert detail['run']['status'] == 'succeeded', (detail['run']['exit_reason'], len(calls))
+
+
+def test_estimate_after_matches_what_is_sent():
+    from backend.dsh_context import _message_size, estimate as est
+    big = '付款条款内容。' * 400
+    sent, report = assemble(payload(turn(1, big), turn(2, big), turn(3, big)), STATE, context_window=8000)
+    assert report['estimate_after'] == est(sent['tools']) + sum(_message_size(m) for m in sent['messages'])

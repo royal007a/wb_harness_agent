@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_context_assembler_completed",
+  "phase": "dsh_context_assembler_approved",
   "implementation_started": true,
   "active_task_id": "HA-0081",
   "active_plan": null,
-  "last_checkpoint": "HA-0081 部署 8876 @27aee9f；部署后真实长合同与隐含例外合同各 1 次成功；verify exit0 1682 passed/22 skipped。",
-  "last_updated_at": "2026-10-06T09:10:00Z",
-  "next_action": "交 mymaccodex 复审 HA-0081。",
+  "last_checkpoint": "HA-0081 73e7e25 获 mymaccodex Approved（代码+离线）；追加 estimate_after 按实际发送重算。8876 由 mymacclaude 维护。",
+  "last_updated_at": "2026-10-06T10:20:00Z",
+  "next_action": "无待办；HA-0090 为 mymaccodex 智能客服。",
   "release": "0.1.0-local"
 }

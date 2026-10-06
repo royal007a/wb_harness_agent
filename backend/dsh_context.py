@@ -162,6 +162,7 @@ def assemble(payload, state, *, context_window=CONTEXT_WINDOW, share=INPUT_SHARE
     invisible = sorted(set(current['stubbed']) - visible, key=lambda k: int(k.split('-')[1]) if k.split('-')[-1].isdigit() else 0)
     current = dict(current, stubbed=invisible)
     final = messages + [state_message(current)]
+    after = total(current)  # recomputed on what is actually sent (exact for audit)
     sent = dict(payload, messages=final)
     _pairing(final)  # invariant: still paired after assembly
     report = {'estimator': ESTIMATOR, 'budget': budget, 'context_window': context_window,
