@@ -42,3 +42,11 @@ UI诊断：详情GET在浏览器记录request后约0.087秒被标记ERR_ABORTED�
 固定3036543：1 failed / 1821 passed / 22 skipped，2230.42秒，exit 1（verify-sixth-failed.log）。唯一失败是聊天UI取消态会话按钮的30秒点击超时，不是本轮DSH断言失败；这仍不能豁免整体门禁。两个startup错误分类用例本轮通过，不能据此证明上轮全部根因相同。
 
 pytest之后的verify步骤在同一固定源码上单独运行，exit 0（verify-sixth-post-pytest.log）；不拼接成完整verify通过。完整命令和UI诊断边界见[后续验证](../HA-0089/full-verification-followup.md)。未发布，仍待独立复审。
+
+## 浏览器内时钟定向观察（不是修复验收）
+
+在同一3036543上，对原`non_answer_exchange_states`三个参数化用例加只读计时探针，3 passed / 16 deselected，60.07秒（ui-clock-diagnostic.log/xml）。原断言、点击期限和请求路径都未改。探针见ui_clock_diag.py；重用前述网络/ASGI透传观察器之外，新增浏览器100ms定时器、会话按钮指针/点击时间、Resource Timing，以及Python线程100ms心跳。不记录页面正文。
+
+三个通过样本中浏览器定时器最大间隔分别约4.386、2.212、3.300秒；Python线程对应最大间隔约0.280、0.259、0.475秒。这显示通过时也有浏览器侧可见的延迟，但不能据此确定是页面长任务、调度还是其他因素；没有采集Long Task/CPU profile，也没有在同一探针下复现30秒点击失败。观察器会带来额外开销，不能把它的通过替代原完整验证，不能认定根因已修。
+
+核心时钟探针可独立复跑：把本证据目录加入PYTHONPATH，运行`.venv/bin/python -m pytest -q -s -p ui_clock_diag tests/test_agent_runtime_ui.py -k non_answer_exchange_states`。日志中的原网络/ASGI诊断来自本轮私有观察器，不把缺少它们的复跑称为逐字节相同环境。
