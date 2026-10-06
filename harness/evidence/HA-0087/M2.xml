@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="21.626" timestamp="2026-10-07T01:43:08.380177+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_plan_history" name="test_internal_reader_uses_actual_cursor_and_accepts_short_pages" time="15.258"><failure message="AssertionError: {&quot;error&quot;:{&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;请求失败，请查看运行事件。&quot;,&quot;retryable&quot;:false,&quot;request_id&quot;:&quot;req_25ea703340d04613913f515335faea7c&quot;}}&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10d74d2b0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d67c050&gt;
+
+    def test_internal_reader_uses_actual_cursor_and_accepts_short_pages(client, monkeypatch):
+        ident = create(client)
+        rt = client.app.state.service.dsh
+        with rt.store.transaction() as db:
+            run = rt.store.get('runs', ident)
+            rt.store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(rt.store, db, run, 3)
+            run['latest_sequence'] = 9000
+            rt.store.event(db, run, 'dsh.plan.step', {'steps': [{'step_id': 'S3', 'status': 'blocked'}]})
+        original, cursors = rt.store.events, []
+        def short_pages(run_id, after=0):
+            cursors.append(after)
+            assert len(cursors) &lt;= 4, 'cursor failed to advance by observed sequence'
+            return original(run_id, after)[:2]
+        monkeypatch.setattr(rt.store, 'events', short_pages)
+&gt;       detail = readonly_detail(client, ident, monkeypatch)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dsh_plan_history.py:117:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = &lt;starlette.testclient.TestClient object at 0x10d74d2b0&gt;
+ident = 'run_fd6ba786053445119e22ba15d71a2951'
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d67c050&gt;
+
+    def readonly_detail(client, ident, monkeypatch):
+        rt = client.app.state.service.dsh
+        def forbidden(*args, **kwargs):
+            pytest.fail('reading history must not execute or resolve credentials')
+        monkeypatch.setattr(rt, 'execute', forbidden)
+        monkeypatch.setattr(rt.adapter, 'run', forbidden)
+        monkeypatch.setattr(rt, 'send_probe', forbidden)
+        monkeypatch.setattr(rt, 'send_real', forbidden)
+        monkeypatch.setattr(rt.credentials, 'resolve', forbidden)
+        before = snapshot(rt.store)
+        response = client.get('/api/local/dsh/runs/' + ident)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"INTERNAL_ERROR","message":"请求失败，请查看运行事件。","retryable":false,"request_id":"req_25ea703340d04613913f515335faea7c"}}
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+tests/test_dsh_plan_history.py:56: AssertionError</failure></testcase></testsuite></testsuites>

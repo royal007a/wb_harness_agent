@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="6.342" timestamp="2026-10-07T01:44:37.526849+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_plan_history" name="test_pages_share_lock_with_run_snapshot" time="3.472"><failure message="AssertionError: page read escaped the detail snapshot lock&#10;assert False&#10; +  where False = &lt;built-in method _is_owned of _thread.RLock object at 0x1098da030&gt;()&#10; +    where &lt;built-in method _is_owned of _thread.RLock object at 0x1098da030&gt; = &lt;unlocked _thread.RLock object owner=0 count=0 at 0x1098da030&gt;._is_owned&#10; +      where &lt;unlocked _thread.RLock object owner=0 count=0 at 0x1098da030&gt; = &lt;backend.store.Store object at 0x10981f770&gt;.lock&#10; +        where &lt;backend.store.Store object at 0x10981f770&gt; = &lt;backend.dsh_runtime.DshRuntime object at 0x10a4838c0&gt;.store">client = &lt;starlette.testclient.TestClient object at 0x10981d2b0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1093afe10&gt;
+
+    def test_pages_share_lock_with_run_snapshot(client, monkeypatch):
+        ident = create(client)
+        rt = client.app.state.service.dsh
+        with rt.store.transaction() as db:
+            run = rt.store.get('runs', ident)
+            rt.store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(rt.store, db, run, 501)
+        go, attempting, committed = threading.Event(), threading.Event(), threading.Event()
+        errors = []
+        def writer():
+            try:
+                assert go.wait(5)
+                attempting.set()
+                with rt.store.transaction() as db:
+                    value = rt.store.get('runs', ident)
+                    rt.store.event(db, value, 'dsh.plan.step', {'steps': [{'step_id': 'S3', 'status': 'blocked'}]})
+                committed.set()
+            except BaseException as exc:
+                errors.append(exc)
+        original = rt.store.events
+        pages = []
+        def observed(run_id, after=0):
+            # An unlocked iterator is insufficient even when the last step looks right.
+            assert rt.store.lock._is_owned(), 'page read escaped the detail snapshot lock'
+            if not pages:
+                go.set()
+                assert attempting.wait(5)
+            assert not committed.is_set()
+            pages.append(after)
+            return original(run_id, after)
+        thread = threading.Thread(target=writer)
+        monkeypatch.setattr(rt.store, 'events', observed)
+        thread.start()
+        try:
+&gt;           result = rt.detail(ident)
+                     ^^^^^^^^^^^^^^^^
+
+tests/test_dsh_plan_history.py:156:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+&lt;ha87-single-mutation&gt;:9: in detail
+    ???
+backend/dsh_runtime.py:148: in _plan_history
+    page = self.store.events(ident, after)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+run_id = 'run_c3abfcd9519146fc880746f1eeb06946', after = 0
+
+    def observed(run_id, after=0):
+        # An unlocked iterator is insufficient even when the last step looks right.
+&gt;       assert rt.store.lock._is_owned(), 'page read escaped the detail snapshot lock'
+E       AssertionError: page read escaped the detail snapshot lock
+E       assert False
+E        +  where False = &lt;built-in method _is_owned of _thread.RLock object at 0x1098da030&gt;()
+E        +    where &lt;built-in method _is_owned of _thread.RLock object at 0x1098da030&gt; = &lt;unlocked _thread.RLock object owner=0 count=0 at 0x1098da030&gt;._is_owned
+E        +      where &lt;unlocked _thread.RLock object owner=0 count=0 at 0x1098da030&gt; = &lt;backend.store.Store object at 0x10981f770&gt;.lock
+E        +        where &lt;backend.store.Store object at 0x10981f770&gt; = &lt;backend.dsh_runtime.DshRuntime object at 0x10a4838c0&gt;.store
+
+tests/test_dsh_plan_history.py:145: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="10" skipped="0" tests="13" time="37.662" timestamp="2026-10-07T01:40:42.363391+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_plan_history" name="test_step_update_on_each_page_boundary[499]" time="14.797" /><testcase classname="tests.test_dsh_plan_history" name="test_step_update_on_each_page_boundary[500]" time="0.955" /><testcase classname="tests.test_dsh_plan_history" name="test_step_update_on_each_page_boundary[501]" time="4.544"><failure message="AssertionError: assert 'pending' == 'done'&#10;  &#10;  - done&#10;  + pending">client = &lt;starlette.testclient.TestClient object at 0x10cd060d0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10bee3530&gt;
+sequence = 501
+
+    @pytest.mark.parametrize('sequence', [499, 500, 501, 999, 1000, 1001])
+    def test_step_update_on_each_page_boundary(client, monkeypatch, sequence):
+        ident = create(client)
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', ident)
+            store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(store, db, run, sequence - 1)
+            store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S1', 'status': 'done', 'evidence_ids': ['clause-1'], 'missing_ids': [], 'error_codes': []},
+                {'step_id': 'S3', 'status': 'blocked', 'error_codes': ['CLAIM_VALUE_NOT_IN_QUOTE']},
+            ]})
+        detail = readonly_detail(client, ident, monkeypatch)
+        steps = {s['step_id']: s for s in detail['plan']['steps']}
+&gt;       assert steps['S1']['status'] == 'done'
+E       AssertionError: assert 'pending' == 'done'
+E
+E         - done
+E         + pending
+
+tests/test_dsh_plan_history.py:75: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_step_update_on_each_page_boundary[999]" time="0.520"><failure message="AssertionError: assert 'pending' == 'done'&#10;  &#10;  - done&#10;  + pending">client = &lt;starlette.testclient.TestClient object at 0x10be72520&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cbe0c00&gt;
+sequence = 999
+
+    @pytest.mark.parametrize('sequence', [499, 500, 501, 999, 1000, 1001])
+    def test_step_update_on_each_page_boundary(client, monkeypatch, sequence):
+        ident = create(client)
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', ident)
+            store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(store, db, run, sequence - 1)
+            store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S1', 'status': 'done', 'evidence_ids': ['clause-1'], 'missing_ids': [], 'error_codes': []},
+                {'step_id': 'S3', 'status': 'blocked', 'error_codes': ['CLAIM_VALUE_NOT_IN_QUOTE']},
+            ]})
+        detail = readonly_detail(client, ident, monkeypatch)
+        steps = {s['step_id']: s for s in detail['plan']['steps']}
+&gt;       assert steps['S1']['status'] == 'done'
+E       AssertionError: assert 'pending' == 'done'
+E
+E         - done
+E         + pending
+
+tests/test_dsh_plan_history.py:75: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_step_update_on_each_page_boundary[1000]" time="0.788"><failure message="AssertionError: assert 'pending' == 'done'&#10;  &#10;  - done&#10;  + pending">client = &lt;starlette.testclient.TestClient object at 0x10be72ea0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x109edc5a0&gt;
+sequence = 1000
+
+    @pytest.mark.parametrize('sequence', [499, 500, 501, 999, 1000, 1001])
+    def test_step_update_on_each_page_boundary(client, monkeypatch, sequence):
+        ident = create(client)
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', ident)
+            store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(store, db, run, sequence - 1)
+            store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S1', 'status': 'done', 'evidence_ids': ['clause-1'], 'missing_ids': [], 'error_codes': []},
+                {'step_id': 'S3', 'status': 'blocked', 'error_codes': ['CLAIM_VALUE_NOT_IN_QUOTE']},
+            ]})
+        detail = readonly_detail(client, ident, monkeypatch)
+        steps = {s['step_id']: s for s in detail['plan']['steps']}
+&gt;       assert steps['S1']['status'] == 'done'
+E       AssertionError: assert 'pending' == 'done'
+E
+E         - done
+E         + pending
+
+tests/test_dsh_plan_history.py:75: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_step_update_on_each_page_boundary[1001]" time="0.671"><failure message="AssertionError: assert 'pending' == 'done'&#10;  &#10;  - done&#10;  + pending">client = &lt;starlette.testclient.TestClient object at 0x10bee32f0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cbd6b50&gt;
+sequence = 1001
+
+    @pytest.mark.parametrize('sequence', [499, 500, 501, 999, 1000, 1001])
+    def test_step_update_on_each_page_boundary(client, monkeypatch, sequence):
+        ident = create(client)
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', ident)
+            store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(store, db, run, sequence - 1)
+            store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S1', 'status': 'done', 'evidence_ids': ['clause-1'], 'missing_ids': [], 'error_codes': []},
+                {'step_id': 'S3', 'status': 'blocked', 'error_codes': ['CLAIM_VALUE_NOT_IN_QUOTE']},
+            ]})
+        detail = readonly_detail(client, ident, monkeypatch)
+        steps = {s['step_id']: s for s in detail['plan']['steps']}
+&gt;       assert steps['S1']['status'] == 'done'
+E       AssertionError: assert 'pending' == 'done'
+E
+E         - done
+E         + pending
+
+tests/test_dsh_plan_history.py:75: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_plan_created_after_first_page_and_sparse_sequences" time="0.238"><failure message="assert None is not None">client = &lt;starlette.testclient.TestClient object at 0x10d54c490&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cbd7b50&gt;
+
+    def test_plan_created_after_first_page_and_sparse_sequences(client, monkeypatch):
+        ident = create(client)
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', ident)
+            filler(store, db, run, 500)
+            # Sparse sequence is a read-path probe, not a production event writer claim.
+            run['latest_sequence'] = 9000
+            store.event(db, run, 'dsh.plan.created', initial_plan())
+            store.event(db, run, 'dsh.plan.step', {'steps': [{'step_id': 'S1', 'status': 'partial',
+                'evidence_ids': ['clause-1'], 'missing_ids': ['clause-2'], 'error_codes': []}]})
+        detail = readonly_detail(client, ident, monkeypatch)
+&gt;       assert detail['plan'] is not None
+E       assert None is not None
+
+tests/test_dsh_plan_history.py:97: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_internal_reader_uses_actual_cursor_and_accepts_short_pages" time="0.138"><failure message="AssertionError: assert 'pending' == 'blocked'&#10;  &#10;  - blocked&#10;  + pending">client = &lt;starlette.testclient.TestClient object at 0x10d7bd9d0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d1e6c60&gt;
+
+    def test_internal_reader_uses_actual_cursor_and_accepts_short_pages(client, monkeypatch):
+        ident = create(client)
+        rt = client.app.state.service.dsh
+        with rt.store.transaction() as db:
+            run = rt.store.get('runs', ident)
+            rt.store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(rt.store, db, run, 3)
+            run['latest_sequence'] = 9000
+            rt.store.event(db, run, 'dsh.plan.step', {'steps': [{'step_id': 'S3', 'status': 'blocked'}]})
+        original, cursors = rt.store.events, []
+        def short_pages(run_id, after=0):
+            cursors.append(after)
+            assert len(cursors) &lt;= 4, 'cursor failed to advance by observed sequence'
+            return original(run_id, after)[:2]
+        monkeypatch.setattr(rt.store, 'events', short_pages)
+        detail = readonly_detail(client, ident, monkeypatch)
+&gt;       assert detail['plan']['steps'][2]['status'] == 'blocked'
+E       AssertionError: assert 'pending' == 'blocked'
+E
+E         - blocked
+E         + pending
+
+tests/test_dsh_plan_history.py:118: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_pages_share_lock_with_run_snapshot" time="0.210"><failure message="assert (True and [0] == [0, 500, 501]&#10; +  where True = is_set()&#10; +    where is_set = &lt;threading.Event at 0x10db03590: set&gt;.is_set&#10;  &#10;  Right contains 2 more items, first extra item: 500&#10;  Use -v to get more diff)">client = &lt;starlette.testclient.TestClient object at 0x10da2ae00&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10d1e7c50&gt;
+
+    def test_pages_share_lock_with_run_snapshot(client, monkeypatch):
+        ident = create(client)
+        rt = client.app.state.service.dsh
+        with rt.store.transaction() as db:
+            run = rt.store.get('runs', ident)
+            rt.store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(rt.store, db, run, 501)
+        go, attempting, committed = threading.Event(), threading.Event(), threading.Event()
+        errors = []
+        def writer():
+            try:
+                assert go.wait(5)
+                attempting.set()
+                with rt.store.transaction() as db:
+                    value = rt.store.get('runs', ident)
+                    rt.store.event(db, value, 'dsh.plan.step', {'steps': [{'step_id': 'S3', 'status': 'blocked'}]})
+                committed.set()
+            except BaseException as exc:
+                errors.append(exc)
+        original = rt.store.events
+        pages = []
+        def observed(run_id, after=0):
+            # An unlocked iterator is insufficient even when the last step looks right.
+            assert rt.store.lock._is_owned(), 'page read escaped the detail snapshot lock'
+            if not pages:
+                go.set()
+                assert attempting.wait(5)
+            assert not committed.is_set()
+            pages.append(after)
+            return original(run_id, after)
+        thread = threading.Thread(target=writer)
+        monkeypatch.setattr(rt.store, 'events', observed)
+        thread.start()
+        try:
+            result = rt.detail(ident)
+        finally:
+            go.set()
+            thread.join(5)
+            monkeypatch.setattr(rt.store, 'events', original)
+        assert not thread.is_alive() and not errors
+&gt;       assert committed.is_set() and pages == [0, 500, 501]
+E       assert (True and [0] == [0, 500, 501]
+E        +  where True = is_set()
+E        +    where is_set = &lt;threading.Event at 0x10db03590: set&gt;.is_set
+E
+E         Right contains 2 more items, first extra item: 500
+E         Use -v to get more diff)
+
+tests/test_dsh_plan_history.py:162: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_rejected_late_submission_overrides_old_pass_and_cancel_preserves_it" time="0.298"><failure message="AssertionError: assert 'done' == 'blocked'&#10;  &#10;  - blocked&#10;  + done">client = &lt;starlette.testclient.TestClient object at 0x10dcf9d00&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10daa74d0&gt;
+
+    def test_rejected_late_submission_overrides_old_pass_and_cancel_preserves_it(client, monkeypatch):
+        ident = create(client)
+        rt = client.app.state.service.dsh
+        with rt.store.transaction() as db:
+            run = rt.store.get('runs', ident)
+            rt.store.event(db, run, 'dsh.plan.created', initial_plan())
+            rt.store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S3', 'status': 'done', 'error_codes': []}, {'step_id': 'S4', 'status': 'ready'}]})
+            filler(rt.store, db, run, 1000)
+            rt.store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S3', 'status': 'blocked', 'error_codes': ['CLAIM_VALUE_NOT_IN_QUOTE']},
+                {'step_id': 'S4', 'status': 'pending'}]})
+        rt.cancel(ident)
+        detail = readonly_detail(client, ident, monkeypatch)
+        assert detail['run']['status'] == 'cancelled' and detail['artifacts'] == []
+&gt;       assert detail['plan']['steps'][2]['status'] == 'blocked'
+E       AssertionError: assert 'done' == 'blocked'
+E
+E         - blocked
+E         + done
+
+tests/test_dsh_plan_history.py:183: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_free_legacy_run_without_plan_stays_null" time="0.232" /><testcase classname="tests.test_dsh_plan_history" name="test_page_read_failure_does_not_return_partial_plan" time="0.140"><failure message="assert 200 == 500&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">client = &lt;starlette.testclient.TestClient object at 0x10e1ef570&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10dfa4d50&gt;
+
+    def test_page_read_failure_does_not_return_partial_plan(client, monkeypatch):
+        ident = create(client)
+        rt = client.app.state.service.dsh
+        with rt.store.transaction() as db:
+            run = rt.store.get('runs', ident)
+            rt.store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(rt.store, db, run, 501)
+        original = rt.store.events
+        def events(run_id, after=0):
+            if after:
+                raise RuntimeError('SYNTH_HISTORY_SECRET')
+            return original(run_id, after)
+        monkeypatch.setattr(rt.store, 'events', events)
+        before = snapshot(rt.store)
+        response = client.get('/api/local/dsh/runs/' + ident)
+&gt;       assert response.status_code == 500
+E       assert 200 == 500
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/test_dsh_plan_history.py:211: AssertionError</failure></testcase><testcase classname="tests.test_dsh_plan_history" name="test_actual_publication_after_600_observations_and_reopen" time="1.589"><failure message="AssertionError: assert ['pending', '...g', 'pending'] == ['done', 'not...done', 'done']&#10;  &#10;  At index 0 diff: 'pending' != 'done'&#10;  Use -v to get more diff">tmp_path = PosixPath('&lt;PYTEST&gt;/pytest-82/test_actual_publication_after_0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10de66c90&gt;
+
+    def test_actual_publication_after_600_observations_and_reopen(tmp_path, monkeypatch):
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(tmp_path.resolve() / 'runs'))
+        monkeypatch.delenv('HARNESS_DSH_REAL_ENABLED', raising=False)
+        with TestClient(create_app(tmp_path / 'test.db', run_worker=False), base_url='http://localhost') as first:
+            ident = create(first)
+            rt = first.app.state.service.dsh
+            monkeypatch.setattr(rt.adapter, 'run', synthetic_bridge)
+            rt.execute(ident)
+            detail = readonly_detail(first, ident, monkeypatch)
+            assert detail['run']['status'] == 'succeeded', detail['run']['exit_reason']
+            assert detail['budget']['calls'] == 3 and detail['run']['latest_sequence'] &gt; 600
+&gt;           assert [s['status'] for s in detail['plan']['steps']] == ['done', 'not_applicable', 'done', 'done']
+E           AssertionError: assert ['pending', '...g', 'pending'] == ['done', 'not...done', 'done']
+E
+E             At index 0 diff: 'pending' != 'done'
+E             Use -v to get more diff
+
+tests/test_dsh_plan_history.py:252: AssertionError</failure></testcase></testsuite></testsuites>

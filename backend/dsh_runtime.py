@@ -137,6 +137,20 @@ class DshRuntime:
         self.store.event(db, run, 'run.queued', {'engine': ENGINE, 'mode': task['context']['variables']['mode']})
         return run
 
+    def _plan_history(self, ident):
+        """Replay every event in bounded pages; caller holds the Store lock.
+
+        The public events API is one page, not a complete projection source.
+        Advance by the actual sequence so sparse histories and short pages work.
+        """
+        after = 0
+        while True:
+            page = self.store.events(ident, after)
+            if not page:
+                return
+            yield from page
+            after = page[-1]['sequence']
+
     def detail(self, ident):
         with self.store.lock:
             run = self.store.get('runs', ident)
@@ -145,7 +159,7 @@ class DshRuntime:
             task = self.store.get('tasks', run['task_id'])
             row = self.store.db.execute('SELECT 1 FROM business_budget_roots WHERE id=?', (ident,)).fetchone()
             plan = None
-            for item in self.store.events(ident):
+            for item in self._plan_history(ident):
                 if item['event_type'] == 'dsh.plan.created':
                     plan = copy.deepcopy(item['data'])
                 elif item['event_type'] == 'dsh.plan.step' and plan:

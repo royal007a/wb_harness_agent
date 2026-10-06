@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="6.686" timestamp="2026-10-07T01:43:34.298647+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_plan_history" name="test_step_update_on_each_page_boundary[501]" time="1.425"><failure message="AssertionError: assert ([] == ['clause-1']&#10;  &#10;  Right contains one more item: 'clause-1'&#10;  Use -v to get more diff)">client = &lt;starlette.testclient.TestClient object at 0x108b55010&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1086ebe10&gt;
+sequence = 501
+
+    @pytest.mark.parametrize('sequence', [499, 500, 501, 999, 1000, 1001])
+    def test_step_update_on_each_page_boundary(client, monkeypatch, sequence):
+        ident = create(client)
+        store = client.app.state.service.store
+        with store.transaction() as db:
+            run = store.get('runs', ident)
+            store.event(db, run, 'dsh.plan.created', initial_plan())
+            filler(store, db, run, sequence - 1)
+            store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S1', 'status': 'done', 'evidence_ids': ['clause-1'], 'missing_ids': [], 'error_codes': []},
+                {'step_id': 'S3', 'status': 'blocked', 'error_codes': ['CLAIM_VALUE_NOT_IN_QUOTE']},
+            ]})
+        detail = readonly_detail(client, ident, monkeypatch)
+        steps = {s['step_id']: s for s in detail['plan']['steps']}
+        assert steps['S1']['status'] == 'done'
+&gt;       assert steps['S1']['evidence_ids'] == ['clause-1'] and steps['S1']['missing_ids'] == []
+E       AssertionError: assert ([] == ['clause-1']
+E
+E         Right contains one more item: 'clause-1'
+E         Use -v to get more diff)
+
+tests/test_dsh_plan_history.py:76: AssertionError</failure></testcase></testsuite></testsuites>

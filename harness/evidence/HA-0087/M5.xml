@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="6.410" timestamp="2026-10-07T01:44:37.526360+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_plan_history" name="test_rejected_late_submission_overrides_old_pass_and_cancel_preserves_it" time="3.617"><failure message="AssertionError: assert 'done' == 'blocked'&#10;  &#10;  - blocked&#10;  + done">client = &lt;starlette.testclient.TestClient object at 0x10d3412b0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ced7e10&gt;
+
+    def test_rejected_late_submission_overrides_old_pass_and_cancel_preserves_it(client, monkeypatch):
+        ident = create(client)
+        rt = client.app.state.service.dsh
+        with rt.store.transaction() as db:
+            run = rt.store.get('runs', ident)
+            rt.store.event(db, run, 'dsh.plan.created', initial_plan())
+            rt.store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S3', 'status': 'done', 'error_codes': []}, {'step_id': 'S4', 'status': 'ready'}]})
+            filler(rt.store, db, run, 1000)
+            rt.store.event(db, run, 'dsh.plan.step', {'steps': [
+                {'step_id': 'S3', 'status': 'blocked', 'error_codes': ['CLAIM_VALUE_NOT_IN_QUOTE']},
+                {'step_id': 'S4', 'status': 'pending'}]})
+        rt.cancel(ident)
+        detail = readonly_detail(client, ident, monkeypatch)
+        assert detail['run']['status'] == 'cancelled' and detail['artifacts'] == []
+&gt;       assert detail['plan']['steps'][2]['status'] == 'blocked'
+E       AssertionError: assert 'done' == 'blocked'
+E
+E         - blocked
+E         + done
+
+tests/test_dsh_plan_history.py:183: AssertionError</failure></testcase></testsuite></testsuites>

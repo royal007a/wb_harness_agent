@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0087",
+      "title": "DSH详情完整计划历史投影",
+      "status": "waiting_approval",
+      "risk": "low",
+      "scope": ["DSH内部全历史分页投影", "页边界与晚创建计划", "持久状态及只读回归"],
+      "non_goals": ["修改Store公共分页", "证据续跑或模型重发", "其他引擎变更", "8765及132部署"],
+      "acceptance": ["500条之后计划不陈旧", "后次拒绝及证据字段准确", "GET零写入零调用", "基线行为失败及突变验证", "独立复审及发布门禁"],
+      "depends_on": ["HA-0082"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0087.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0087/acceptance.md"]
+    },
+    {
       "id": "HA-0086",
       "title": "DSH SDK有界启动与固定阶段错误",
       "status": "waiting_approval",
