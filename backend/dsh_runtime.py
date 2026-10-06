@@ -270,7 +270,8 @@ class DshRuntime:
                 state = {'template': template,
                          'read': sorted(seen_clauses, key=lambda k: int(k.split('-')[1])),
                          'unread_exception_candidates': [k for k in exception_candidates if k not in seen_clauses],
-                         'submission': ({'number': review['submissions'], 'accepted': review['accepted'] is not None}
+                         'submission': ({'number': review['submissions'], 'accepted': review['accepted'] is not None,
+                                         'error_codes': list(review.get('last_codes') or [])}
                                         if review['submissions'] else None),
                          'plan': plan_summary(plan_box['plan']) if plan_box['plan'] else None}
                 payload, assembly = assemble_context(payload, state)

@@ -113,7 +113,9 @@ def state_message(state):
         lines.append('未读的付款例外候选：' + '、'.join(state['unread_exception_candidates']))
     if state.get('submission'):
         lines.append(f"结构化提交：第{state['submission']['number']}次，"
-                     + ('已通过' if state['submission']['accepted'] else '未通过'))
+                     + ('已通过' if state['submission']['accepted'] else '未通过')
+                     + (f"（平台错误码：{'、'.join(state['submission']['error_codes'])}）"
+                        if not state['submission']['accepted'] and state['submission'].get('error_codes') else ''))
     if state.get('plan'):
         lines.append('平台计划进度（由平台判定，你不能修改）：' + state['plan'])
     if state.get('stubbed'):
@@ -144,6 +146,10 @@ def assemble(payload, state, *, context_window=CONTEXT_WINDOW, share=INPUT_SHARE
                 continue
             items = _clause_items(messages[index]['content'])
             ids = [i['clause_id'] for i in items]
+            if not ids:
+                # Platform feedback (e.g. a submit_findings rejection with its error codes)
+                # is not evidence and cannot be recovered with read_clause: never stub it.
+                continue
             original = estimate(messages[index]['content'])
             excerpts = ''.join(f'\n{i["clause_id"]} 开头：{i["text"][:EXCERPT_CHARS]}…' for i in items)
             stub = ('[平台已省略此工具结果正文以控制上下文：' + ('、'.join(ids) if ids else '无证据块')
