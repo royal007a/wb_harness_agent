@@ -77,3 +77,7 @@
   不能提高预算掩盖发送参数问题：改用总输出 max_completion_tokens，并显式关闭 thinking。
   [官方参数说明](https://docs.volcengine.com/docs/LakeAIService/DeepThinkingDoubao-15-thinking-pro?lang=zh)
   区分回答上限与含推理的总输出上限；本平台仍以实际usage校验，不把参数当供应商必然守约证明。
+- 修复后 `local-live-final.json`：真实聊天、BGE索引与RAG、LLM工作流、官方MCP发现、
+  真实模型查询并申请合成退款、人工确认、重复确认不再执行全部通过。
+- 浏览器真实调用后发现多会话列表撑开手机网格，补 min-width:0/minmax(0,1fr)，
+  新增17会话反例通过；部署页面六模块390px无溢出、无JS错误（local-browser）。

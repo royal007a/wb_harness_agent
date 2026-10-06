@@ -4,6 +4,14 @@ HarnessAgent 是一个面向 Agent 应用研发与运行治理的独立项目。
 
 本机地址：**http://127.0.0.1:8765**。进入页面选择示例 CSV，即可跑通一次分析。
 
+智能客服平台（HA-0090）：**http://127.0.0.1:8765/support**；132 代理路径为
+**http://118.196.123.132/harness/support**（沿用 nginx 登录）。新增受信单管理员的
+Provider/数据库加密凭证、后台联网探测、Agent/流式对话、TXT/MD 本地向量知识库、
+JSON 工作流和官方 MCP 工具/人工审批。真实调用只使用公开或合成资料；退款只改演示记录。
+这不自动开启旧 Agent Runtime、Native、Pi、DSH 或 Memory 的门禁。使用与边界见
+[工作台指南](docs/harness/LOCAL_WORKBENCH.md#智能客服平台-ha-0090)。实际部署证据见
+[HA-0090](harness/evidence/HA-0090/progress.md)，不能用旧 health 的静态零调用字段判断客服是否联网。
+
 多专项编排演示：**http://127.0.0.1:8765/research**。最多三家模拟公司 × 三个专项，展示有界并发、父子 Run、失败汇总、取消和整树重跑。此功能运行固定函数与 synthetic 资料，不是实际 Claude 多 Agent 或真实研报。
 
 投研多 Agent 模拟：**http://127.0.0.1:8765/research-agents**。为每家公司固定运行财务、行业、风险三个 Child Agent，冻结第一方 Skill 摘要与 `resource.inspect` 工具权限，记录 Action / Observation / Final 证据并汇总报告。它是零模型、零网络、零真实数据的契约模拟，不是 Claude SDK、实时资讯或投资建议；详见 [投研多 Agent 模拟运行时](docs/harness/RESEARCH_AGENT_RUNTIME.md)。

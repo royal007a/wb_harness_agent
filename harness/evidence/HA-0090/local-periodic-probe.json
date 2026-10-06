@@ -1,0 +1,13 @@
+{
+  "health": {
+    "automatic": true,
+    "checked_at": "2026-10-06T08:26:33.628159Z",
+    "code": null,
+    "input_tokens": 37,
+    "latency_ms": 1150,
+    "output_tokens": 1,
+    "state": "reachable"
+  },
+  "next_probe_at": 1791276093.625241,
+  "interval": 900
+}

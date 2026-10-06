@@ -1,0 +1,14 @@
+{
+  "provider_count": 1,
+  "ciphertext_nonempty": true,
+  "plaintext_in_provider_table": false,
+  "plaintext_in_database_file": false,
+  "master_mode": "0o600",
+  "probe_days": [
+    {
+      "provider_id": "csp_4c115d4a01cb467f96faed6874910032",
+      "day": "2026-10-06",
+      "calls": 1
+    }
+  ]
+}

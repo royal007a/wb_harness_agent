@@ -113,6 +113,15 @@ def test_support_knowledge_agent_stream_and_mobile(tmp_path, monkeypatch):
             pw.expect(page.locator('#workflow-runs')).to_contain_text('succeeded')
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), page.evaluate("[...document.querySelectorAll('body *')].filter(e=>e.scrollWidth>e.clientWidth&&e.clientWidth>0).map(e=>({id:e.id,tag:e.tagName,width:e.clientWidth,scroll:e.scrollWidth}))")
             assert 'UI_SYNTH_KEY' not in page.content()
+            # Many durable sessions must scroll within the sidebar, not widen
+            # the grid's implicit min-content track on a phone.
+            agent_id=app.state.support_chat.listing('agents')[0]['id']
+            for i in range(15):
+                response=page.request.post(base+'/api/local/support/sessions',data={'agent_id':agent_id,'title':'多会话移动端验收'+str(i)})
+                assert response.status==201
+            page.reload()
+            pw.expect(page.locator('#sessions button')).to_have_count(17)
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
             assert not errors
             browser.close()
     finally:
