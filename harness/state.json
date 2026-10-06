@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "chinese_clause_boundaries",
+  "phase": "course_release_verified",
   "implementation_started": true,
-  "active_task_id": "HA-0090",
-  "active_plan": "exec-plans/active/HA-0090.md",
-  "last_checkpoint": "HA-0083 7ad0793 获独立 Approved；8876 运行 ad957fb；真实豆包完成3轮工具往返（4次模型/8次工具，11508 Token）。",
-  "last_updated_at": "2026-10-06T23:21:36Z",
-  "next_action": "HA85-92八个固定切片代码/离线均获Approved；HA90 M1/Low已补规格并登记后续设计。阅读70篇826页计数与来源可追溯性获Approved，b49f43b状态表述CR及M1登记已获只读Approved，不代表全部摘要忠实度通过。完整第六轮仍1失败，未部署，8876保留ad957fb；Claude候选未合并。",
+  "active_task_id": "HA-0084",
+  "active_plan": "exec-plans/active/HA-0084-course-reading.md",
+  "last_checkpoint": "8876发布da43bff，发布回执a3c5647/d6e3716获独立Approved；第七轮1852 passed/22 skipped。新真实Run13545 Token、5次模型/12次工具，合成Run520 Token、3次模型/2次工具；均partial且reserved=0。",
+  "last_updated_at": "2026-10-06T23:54:59Z",
+  "next_action": "HA85-92八个切片已收敛completed。阅读计数/来源及两批实际核对段落Approved，HA84仍待限定范围审查；Claude e46026d文档CR及后续候选另行处理，未合并。逐Run release仅有进程/时间旁证，备份未演练恢复；8765/132未变。",
   "release": "0.1.0-local"
 }

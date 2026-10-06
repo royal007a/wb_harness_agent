@@ -33,3 +33,5 @@ mymacclaude于2026-10-07对9e8ab44给出Approved，仅限该证据及对应快�
 2. adaptive-chunk-heldout只输出指标，没有passed字段和指标通过判定。该脚本正常退出仅证明执行成功，不等于召回指标达到质量门槛；本轮指标与第六轮对应输出一致。其余8份带passed字段的评测均为true，两项准入为not_admitted、enabled=False。这些口径不能统称为9份质量指标全部达标。
 
 原始日志字节和SHA保持不变。本次只读批准不扩展为独占运行、UI历史波动根因已消除、22项跳过已通过、HA93及后续候选通过、真实Provider或部署验收；前六轮失败继续保留。原始证据提交9e8ab44位于review/ui-evidence-20261007，本次仅将其证据及补充口径归档到课程分支，不合并候选运行代码。
+
+补充归档：执行方随后在a3c5647所含的`verify-seventh-process.json`中转录了已观察到的运行器与执行工具退出结果（returncode/exit_code均0）。本分支按原字节收录；它不是verify.sh内生成或签名的回执，不改变原日志无退出码行的事实。
