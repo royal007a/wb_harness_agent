@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_crossing_retirement",
+  "phase": "dsh_startup_deadline",
   "implementation_started": true,
-  "active_task_id": "HA-0085",
-  "active_plan": "exec-plans/active/HA-0085.md",
+  "active_task_id": "HA-0086",
+  "active_plan": "exec-plans/active/HA-0086.md",
   "last_checkpoint": "HA-0083 7ad0793 获独立 Approved；8876 运行 ad957fb；真实豆包完成3轮工具往返（4次模型/8次工具，11508 Token）。",
-  "last_updated_at": "2026-10-06T16:20:00Z",
-  "next_action": "HA-0085代码及行为反例交审；SDK initialize 20秒超时另开原子任务诊断修复，不把重跑绿色当解决；尚未部署。",
+  "last_updated_at": "2026-10-06T17:00:50Z",
+  "next_action": "HA-0085已交审1ae1a6a；HA-0086定向114项通过，交审并等待完整verify；继续第三批课程阅读，尚未部署。",
   "release": "0.1.0-local"
 }

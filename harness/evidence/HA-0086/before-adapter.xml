@@ -1,0 +1,113 @@
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="14.300" timestamp="2026-10-07T00:51:04.258541+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_startup" name="test_fixed_child_error_and_cleanup[DSH_INITIALIZATION_TIMEOUT-504]" time="1.164"><failure message="AssertionError: assert ('DSH_RUNTIME_FAILED', 502) == ('DSH_INITIAL...TIMEOUT', 504)&#10;  &#10;  At index 0 diff: 'DSH_RUNTIME_FAILED' != 'DSH_INITIALIZATION_TIMEOUT'&#10;  Use -v to get more diff">tmp_path = PosixPath('$TEST_TMP/test_fixed_child_error_and_cle0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ae7be10&gt;
+code = 'DSH_INITIALIZATION_TIMEOUT', status = 504
+
+    @pytest.mark.parametrize('code,status', [
+        ('DSH_INITIALIZATION_TIMEOUT', 504), ('DSH_INITIALIZATION_FAILED', 502),
+        ('DSH_RUNTIME_FAILED', 502), ('DSH_CANCELLED', 409),
+    ])
+    def test_fixed_child_error_and_cleanup(tmp_path, monkeypatch, code, status):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert (caught.value.code, caught.value.status) == (code, status)
+E       AssertionError: assert ('DSH_RUNTIME_FAILED', 502) == ('DSH_INITIAL...TIMEOUT', 504)
+E
+E         At index 0 diff: 'DSH_RUNTIME_FAILED' != 'DSH_INITIALIZATION_TIMEOUT'
+E         Use -v to get more diff
+
+tests/test_dsh_startup.py:81: AssertionError</failure></testcase><testcase classname="tests.test_dsh_startup" name="test_fixed_child_error_and_cleanup[DSH_INITIALIZATION_FAILED-502]" time="0.116"><failure message="AssertionError: assert ('DSH_RUNTIME_FAILED', 502) == ('DSH_INITIAL..._FAILED', 502)&#10;  &#10;  At index 0 diff: 'DSH_RUNTIME_FAILED' != 'DSH_INITIALIZATION_FAILED'&#10;  Use -v to get more diff">tmp_path = PosixPath('$TEST_TMP/test_fixed_child_error_and_cle1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10afc0050&gt;
+code = 'DSH_INITIALIZATION_FAILED', status = 502
+
+    @pytest.mark.parametrize('code,status', [
+        ('DSH_INITIALIZATION_TIMEOUT', 504), ('DSH_INITIALIZATION_FAILED', 502),
+        ('DSH_RUNTIME_FAILED', 502), ('DSH_CANCELLED', 409),
+    ])
+    def test_fixed_child_error_and_cleanup(tmp_path, monkeypatch, code, status):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert (caught.value.code, caught.value.status) == (code, status)
+E       AssertionError: assert ('DSH_RUNTIME_FAILED', 502) == ('DSH_INITIAL..._FAILED', 502)
+E
+E         At index 0 diff: 'DSH_RUNTIME_FAILED' != 'DSH_INITIALIZATION_FAILED'
+E         Use -v to get more diff
+
+tests/test_dsh_startup.py:81: AssertionError</failure></testcase><testcase classname="tests.test_dsh_startup" name="test_fixed_child_error_and_cleanup[DSH_RUNTIME_FAILED-502]" time="0.162" /><testcase classname="tests.test_dsh_startup" name="test_fixed_child_error_and_cleanup[DSH_CANCELLED-409]" time="0.142"><failure message="AssertionError: assert ('DSH_RUNTIME_FAILED', 502) == ('DSH_CANCELLED', 409)&#10;  &#10;  At index 0 diff: 'DSH_RUNTIME_FAILED' != 'DSH_CANCELLED'&#10;  Use -v to get more diff">tmp_path = PosixPath('$TEST_TMP/test_fixed_child_error_and_cle3')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10afc9260&gt;
+code = 'DSH_CANCELLED', status = 409
+
+    @pytest.mark.parametrize('code,status', [
+        ('DSH_INITIALIZATION_TIMEOUT', 504), ('DSH_INITIALIZATION_FAILED', 502),
+        ('DSH_RUNTIME_FAILED', 502), ('DSH_CANCELLED', 409),
+    ])
+    def test_fixed_child_error_and_cleanup(tmp_path, monkeypatch, code, status):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+&gt;       assert (caught.value.code, caught.value.status) == (code, status)
+E       AssertionError: assert ('DSH_RUNTIME_FAILED', 502) == ('DSH_CANCELLED', 409)
+E
+E         At index 0 diff: 'DSH_RUNTIME_FAILED' != 'DSH_CANCELLED'
+E         Use -v to get more diff
+
+tests/test_dsh_startup.py:81: AssertionError</failure></testcase><testcase classname="tests.test_dsh_startup" name="test_startup_failure_has_no_model_spend_or_artifacts[DSH_INITIALIZATION_TIMEOUT]" time="5.787"><failure message="AssertionError: assert 'DSH_RUNTIME_FAILED' == 'DSH_INITIALIZATION_TIMEOUT'&#10;  &#10;  - DSH_INITIALIZATION_TIMEOUT&#10;  + DSH_RUNTIME_FAILED">tmp_path = PosixPath('$TEST_TMP/test_startup_failure_has_no_mo0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10afc8e20&gt;
+code = 'DSH_INITIALIZATION_TIMEOUT'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_TIMEOUT', 'DSH_INITIALIZATION_FAILED'])
+    def test_startup_failure_has_no_model_spend_or_artifacts(tmp_path, monkeypatch, code):
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(tmp_path.resolve() / 'owned'))
+        monkeypatch.delenv('HARNESS_DSH_REAL_ENABLED', raising=False)
+        # Construct app before replacing Popen: release lookup legitimately uses git.
+        with TestClient(create_app(tmp_path / 'test.db', run_worker=False), base_url='http://localhost') as client:
+            rt = client.app.state.service.dsh
+            ident = rt.create(dict(objective='付款核对', document='甲方30天付款。',
+                                  public_data_confirmed=True, mode='integration_probe'),
+                              'startup-fail')['initial_run']['id']
+            body = json.dumps({'type': 'error', 'code': code})
+            children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+            rt.execute(ident)
+            result = rt.detail(ident)
+            assert result['run']['status'] == 'failed'
+&gt;           assert result['run']['exit_reason'] == code
+E           AssertionError: assert 'DSH_RUNTIME_FAILED' == 'DSH_INITIALIZATION_TIMEOUT'
+E
+E             - DSH_INITIALIZATION_TIMEOUT
+E             + DSH_RUNTIME_FAILED
+
+tests/test_dsh_startup.py:159: AssertionError</failure></testcase><testcase classname="tests.test_dsh_startup" name="test_startup_failure_has_no_model_spend_or_artifacts[DSH_INITIALIZATION_FAILED]" time="0.459"><failure message="AssertionError: assert 'DSH_RUNTIME_FAILED' == 'DSH_INITIALIZATION_FAILED'&#10;  &#10;  - DSH_INITIALIZATION_FAILED&#10;  + DSH_RUNTIME_FAILED">tmp_path = PosixPath('$TEST_TMP/test_startup_failure_has_no_mo1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ce4e150&gt;
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_TIMEOUT', 'DSH_INITIALIZATION_FAILED'])
+    def test_startup_failure_has_no_model_spend_or_artifacts(tmp_path, monkeypatch, code):
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(tmp_path.resolve() / 'owned'))
+        monkeypatch.delenv('HARNESS_DSH_REAL_ENABLED', raising=False)
+        # Construct app before replacing Popen: release lookup legitimately uses git.
+        with TestClient(create_app(tmp_path / 'test.db', run_worker=False), base_url='http://localhost') as client:
+            rt = client.app.state.service.dsh
+            ident = rt.create(dict(objective='付款核对', document='甲方30天付款。',
+                                  public_data_confirmed=True, mode='integration_probe'),
+                              'startup-fail')['initial_run']['id']
+            body = json.dumps({'type': 'error', 'code': code})
+            children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+            rt.execute(ident)
+            result = rt.detail(ident)
+            assert result['run']['status'] == 'failed'
+&gt;           assert result['run']['exit_reason'] == code
+E           AssertionError: assert 'DSH_RUNTIME_FAILED' == 'DSH_INITIALIZATION_FAILED'
+E
+E             - DSH_INITIALIZATION_FAILED
+E             + DSH_RUNTIME_FAILED
+
+tests/test_dsh_startup.py:159: AssertionError</failure></testcase></testsuite></testsuites>

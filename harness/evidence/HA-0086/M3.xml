@@ -1,0 +1,63 @@
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="4.950" timestamp="2026-10-07T00:53:32.811921+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_startup" name="test_sdk_phase_classification_no_retry_or_error_content" time="0.216"><failure message="AssertionError: node:internal/modules/run_main:123&#10;      triggerUncaughtException(&#10;      ^&#10;  &#10;  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:&#10;  + actual - expected&#10;  &#10;  + 'DSH_INITIALIZATION_TIMEOUT'&#10;  - 'DSH_RUNTIME_FAILED'&#10;         ^&#10;  &#10;      at Object.&lt;anonymous&gt; (file://$USER_HOME/code/ai/harnessagent-dsh-course/dsh-adapter/[eval1]:15:14)&#10;      at expectedException (node:assert:576:17)&#10;      at expectsError (node:assert:701:21)&#10;      at Function.rejects (node:assert:767:3)&#10;      at async file://$USER_HOME/code/ai/harnessagent-dsh-course/dsh-adapter/[eval1]:14:5 {&#10;    generatedMessage: true,&#10;    code: 'ERR_ASSERTION',&#10;    actual: 'DSH_INITIALIZATION_TIMEOUT',&#10;    expected: 'DSH_RUNTIME_FAILED',&#10;    operator: 'strictEqual',&#10;    diff: 'simple'&#10;  }&#10;  &#10;  Node.js v22.23.0&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['node', '--input-type=module', '-e', &quot;\nimport assert from 'node:assert/strict';\nimport { Requ...N_TIMEOUT',\n  expected: 'DSH_RUNTIME_FAILED',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.23.0\n&quot;).returncode">def test_sdk_phase_classification_no_retry_or_error_content():
+        script = r'''
+    import assert from 'node:assert/strict';
+    import { RequestTimeoutError } from '@deepseek-ai/dsh-sdk-client';
+    import { INITIALIZE_TIMEOUT_MS, runWithPhases } from './lifecycle.mjs';
+    assert.equal(INITIALIZE_TIMEOUT_MS, 60000);
+    for (const phase of ['start', 'run']) {
+      for (const error of [new RequestTimeoutError('SYNTH_PRIVATE'), new Error('SYNTH_PRIVATE'),
+          Object.assign(new Error('SYNTH_PRIVATE'), {name: 'RequestTimeoutError'})]) {
+        const calls = [];
+        const harness = {
+          async start() { calls.push('start'); if (phase === 'start') throw error; },
+          async run() { calls.push('run'); throw error; },
+        };
+        await assert.rejects(runWithPhases(harness, 'prompt', {}), e =&gt; {
+          assert.equal(e.code, phase === 'run' ? 'DSH_RUNTIME_FAILED'
+            : error instanceof RequestTimeoutError ? 'DSH_INITIALIZATION_TIMEOUT' : 'DSH_INITIALIZATION_FAILED');
+          assert.ok(!String(e.stack).includes('SYNTH_PRIVATE'));
+          assert.equal(e.cause, undefined);
+          return true;
+        });
+        assert.deepEqual(calls, phase === 'start' ? ['start'] : ['start', 'run']);
+      }
+    }
+    const calls = [], options = {onNotification() {}}, result = {finalResponse: 'ok'};
+    assert.equal(await runWithPhases({async start() {calls.push('start');},
+      async run(prompt, received) {calls.push('run'); assert.equal(prompt, 'p');
+        assert.equal(received, options); return result;}}, 'p', options), result);
+    assert.deepEqual(calls, ['start', 'run']);
+    '''
+        result = subprocess.run(['node', '--input-type=module', '-e', script],
+                                cwd=ROOT / 'dsh-adapter', capture_output=True, text=True, timeout=20)
+&gt;       assert result.returncode == 0, result.stderr
+E       AssertionError: node:internal/modules/run_main:123
+E             triggerUncaughtException(
+E             ^
+E
+E         AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+E         + actual - expected
+E
+E         + 'DSH_INITIALIZATION_TIMEOUT'
+E         - 'DSH_RUNTIME_FAILED'
+E                ^
+E
+E             at Object.&lt;anonymous&gt; (file://$USER_HOME/code/ai/harnessagent-dsh-course/dsh-adapter/[eval1]:15:14)
+E             at expectedException (node:assert:576:17)
+E             at expectsError (node:assert:701:21)
+E             at Function.rejects (node:assert:767:3)
+E             at async file://$USER_HOME/code/ai/harnessagent-dsh-course/dsh-adapter/[eval1]:14:5 {
+E           generatedMessage: true,
+E           code: 'ERR_ASSERTION',
+E           actual: 'DSH_INITIALIZATION_TIMEOUT',
+E           expected: 'DSH_RUNTIME_FAILED',
+E           operator: 'strictEqual',
+E           diff: 'simple'
+E         }
+E
+E         Node.js v22.23.0
+E
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['node', '--input-type=module', '-e', "\nimport assert from 'node:assert/strict';\nimport { Requ...N_TIMEOUT',\n  expected: 'DSH_RUNTIME_FAILED',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.23.0\n").returncode
+
+tests/test_dsh_startup.py:50: AssertionError</failure></testcase></testsuite></testsuites>

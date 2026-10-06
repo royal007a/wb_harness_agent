@@ -26,5 +26,6 @@ node --check frontend/agent-lab.js
 node --check frontend/agent-runtime.js
 node --check frontend/dsh.js
 node --check dsh-adapter/bridge.mjs
+node --check dsh-adapter/lifecycle.mjs
 node --check dsh-adapter/platform-plugin.mjs
 git diff --check

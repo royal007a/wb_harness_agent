@@ -2,6 +2,7 @@ import { DeepSeekHarness } from '@deepseek-ai/dsh-sdk-client';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import readline from 'node:readline';
+import { BridgeFailure, INITIALIZE_TIMEOUT_MS, runWithPhases } from './lifecycle.mjs';
 
 const write = value => process.stdout.write(`${JSON.stringify(value)}\n`);
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -16,13 +17,13 @@ const harness = new DeepSeekHarness({
   profile: 'sdk-minimal', patches: [fileURLToPath(new URL('./controlled.patch.yml', import.meta.url))],
   dshHome: job.home, cwd: job.cwd, processCwd: job.cwd, env,
   provider: 'harness-platform', model: env.HARNESS_DSH_MODEL, maxTokens: job.max_output_tokens,
-  initializeTimeoutMs: 20000, requestTimeoutMs: 20000,
+  initializeTimeoutMs: INITIALIZE_TIMEOUT_MS, requestTimeoutMs: 20000,
   shutdownTimeoutMs: 500, disposeEofGraceMs: 1000, disposeGraceMs: 1000,
 });
 let interrupted = false;
-process.on('SIGTERM', () => { interrupted = true; void harness.close(); });
+process.on('SIGTERM', () => { interrupted = true; void harness.close().catch(() => {}); });
 try {
-  const result = await harness.run(job.prompt, { onNotification(n) {
+  const result = await runWithPhases(harness, job.prompt, { onNotification(n) {
     if (n.method !== 'session.event') return;
     const encoded = JSON.stringify(n.params);
     // No producer-controlled text, event name, ID or error leaves this projection.
@@ -38,6 +39,7 @@ try {
 } catch (error) {
   // Raw SDK errors include stderr/session content; never forward them.
   await harness.close().catch(() => {});
-  write({ type: 'error', code: interrupted ? 'DSH_CANCELLED' : 'DSH_RUNTIME_FAILED' });
+  write({ type: 'error', code: interrupted ? 'DSH_CANCELLED'
+    : error instanceof BridgeFailure ? error.code : 'DSH_RUNTIME_FAILED' });
   process.exitCode = 1;
 }

@@ -1,0 +1,43 @@
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="6" time="9.912" timestamp="2026-10-07T00:54:06.937174+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_startup" name="test_untrusted_error_envelope_does_not_forward_fields[body0]" time="1.048"><failure message="AssertionError: assert 'DSH_INITIALIZATION_TIMEOUT' == 'DSH_RUNTIME_FAILED'&#10;  &#10;  - DSH_RUNTIME_FAILED&#10;  + DSH_INITIALIZATION_TIMEOUT">tmp_path = PosixPath('$TEST_TMP/test_untrusted_error_envelope_0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ce1fbb0&gt;
+body = {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'message': 'SYNTH_PRIVATE'}
+
+    @pytest.mark.parametrize('body', [
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'message': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'stack': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'SYNTH_PRIVATE'}, {'type': 'error', 'code': []},
+        {'type': 'error'}, [],
+    ])
+    def test_untrusted_error_envelope_does_not_forward_fields(tmp_path, monkeypatch, body):
+        encoded = json.dumps(body)
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({encoded!r}, flush=True)')
+        with pytest.raises(Problem) as caught:
+            run_adapter(tmp_path.resolve() / 'owned')
+&gt;       assert caught.value.code == 'DSH_RUNTIME_FAILED'
+E       AssertionError: assert 'DSH_INITIALIZATION_TIMEOUT' == 'DSH_RUNTIME_FAILED'
+E
+E         - DSH_RUNTIME_FAILED
+E         + DSH_INITIALIZATION_TIMEOUT
+
+tests/test_dsh_startup.py:97: AssertionError</failure></testcase><testcase classname="tests.test_dsh_startup" name="test_untrusted_error_envelope_does_not_forward_fields[body1]" time="0.116"><failure message="AssertionError: assert 'DSH_INITIALIZATION_TIMEOUT' == 'DSH_RUNTIME_FAILED'&#10;  &#10;  - DSH_RUNTIME_FAILED&#10;  + DSH_INITIALIZATION_TIMEOUT">tmp_path = PosixPath('$TEST_TMP/test_untrusted_error_envelope_1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cf78180&gt;
+body = {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'stack': 'SYNTH_PRIVATE'}
+
+    @pytest.mark.parametrize('body', [
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'message': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'DSH_INITIALIZATION_TIMEOUT', 'stack': 'SYNTH_PRIVATE'},
+        {'type': 'error', 'code': 'SYNTH_PRIVATE'}, {'type': 'error', 'code': []},
+        {'type': 'error'}, [],
+    ])
+    def test_untrusted_error_envelope_does_not_forward_fields(tmp_path, monkeypatch, body):
+        encoded = json.dumps(body)
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({encoded!r}, flush=True)')
+        with pytest.raises(Problem) as caught:
+            run_adapter(tmp_path.resolve() / 'owned')
+&gt;       assert caught.value.code == 'DSH_RUNTIME_FAILED'
+E       AssertionError: assert 'DSH_INITIALIZATION_TIMEOUT' == 'DSH_RUNTIME_FAILED'
+E
+E         - DSH_RUNTIME_FAILED
+E         + DSH_INITIALIZATION_TIMEOUT
+
+tests/test_dsh_startup.py:97: AssertionError</failure></testcase><testcase classname="tests.test_dsh_startup" name="test_untrusted_error_envelope_does_not_forward_fields[body2]" time="0.149" /><testcase classname="tests.test_dsh_startup" name="test_untrusted_error_envelope_does_not_forward_fields[body3]" time="0.109" /><testcase classname="tests.test_dsh_startup" name="test_untrusted_error_envelope_does_not_forward_fields[body4]" time="0.113" /><testcase classname="tests.test_dsh_startup" name="test_untrusted_error_envelope_does_not_forward_fields[body5]" time="0.133" /></testsuite></testsuites>

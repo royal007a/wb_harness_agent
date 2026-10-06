@@ -18,6 +18,12 @@ from backend.analysis import Problem
 from .dsh_workspace import OwnedWorkspace
 
 ROOT = Path(__file__).resolve().parents[1]
+BRIDGE_ERRORS = {
+    'DSH_INITIALIZATION_TIMEOUT': ('DSH 初始化超时。', 504),
+    'DSH_INITIALIZATION_FAILED': ('DSH 初始化失败。', 502),
+    'DSH_RUNTIME_FAILED': ('DSH 未正常完成。', 502),
+    'DSH_CANCELLED': ('DSH 已中断。', 409),
+}
 
 
 class DshAdapter:
@@ -123,7 +129,18 @@ class DshAdapter:
                         line, _, rest = buffer.partition(b'\n')
                         buffer = bytearray(rest)
                         value = json.loads(line)
-                        if value.get('type') == 'observation':
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+                            raise Problem(code, message, status)
+                        elif value.get('type') == 'observation':
                             emit(value)
                         elif value.get('type') == 'result' and result is None:
                             result = value
