@@ -80,6 +80,38 @@ def test_support_knowledge_agent_stream_and_mobile(tmp_path, monkeypatch):
             assert len(calls) == 1
             page.set_viewport_size({'width': 390, 'height': 844})
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            # Create and bind an actual workflow through the JSON editor, then
+            # execute the branch through the same durable chat endpoint.
+            flow = {'nodes': [{'id': 'start', 'type': 'START', 'config': {}},
+                {'id': 'route', 'type': 'CONDITION', 'config': {'left': '{{start.input}}', 'operator': 'contains', 'right': '退款'}},
+                {'id': 'yes', 'type': 'END', 'config': {'text': '工作流退款分支：请提供订单号。'}},
+                {'id': 'no', 'type': 'END', 'config': {'text': '其他分支'}}],
+                'edges': [{'source': 'start', 'target': 'route', 'condition': None},
+                          {'source': 'route', 'target': 'yes', 'condition': True},
+                          {'source': 'route', 'target': 'no', 'condition': False}]}
+            import json
+            page.get_by_role('button', name='工作流', exact=True).click()
+            page.locator('#workflow-name').fill('分流测试')
+            page.locator('#workflow-json').fill(json.dumps(flow))
+            page.get_by_role('button', name='保存工作流', exact=True).click()
+            pw.expect(page.locator('#workflow-list')).to_contain_text('分流测试')
+            page.get_by_role('button', name='Agent', exact=True).click()
+            page.locator('#agent-list').get_by_role('button', name='编辑').click()
+            page.locator('#agent-workflow').select_option(label='分流测试')
+            page.get_by_role('button', name='保存 Agent', exact=True).click()
+            pw.expect(page.locator('#status')).to_contain_text('Agent 已保存')
+            page.get_by_role('button', name='客服对话', exact=True).click()
+            page.get_by_role('button', name='新建会话', exact=True).click()
+            pw.expect(page.locator('#messages .message')).to_have_count(0)
+            page.locator('#question').fill('退款怎么办？')
+            page.get_by_role('button', name='发送', exact=True).click()
+            pw.expect(page.locator('#send')).to_be_enabled()
+            pw.expect(page.locator('#messages')).to_contain_text('工作流退款分支：请提供订单号。')
+            assert len(calls) == 1  # This graph has no model node.
+            page.get_by_role('button', name='工作流', exact=True).click()
+            page.get_by_role('button', name='执行记录', exact=True).click()
+            pw.expect(page.locator('#workflow-runs')).to_contain_text('succeeded')
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), page.evaluate("[...document.querySelectorAll('body *')].filter(e=>e.scrollWidth>e.clientWidth&&e.clientWidth>0).map(e=>({id:e.id,tag:e.tagName,width:e.clientWidth,scroll:e.scrollWidth}))")
             assert 'UI_SYNTH_KEY' not in page.content()
             assert not errors
             browser.close()

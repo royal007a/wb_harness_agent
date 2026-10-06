@@ -60,3 +60,22 @@ processing 状态，后台生成全部向量后原子提交 ready；失败或重
 正文作为不可信参考数据，不授予工具权限。删除/禁用在检索提交和回答发布前重新检查。
 运行时向量进程有独立时间/输出/并发上限，取消时杀掉并等待退出；模型调用仍用同一账本。
 PDF 导入、扫描OCR和大规模向量数据库不在此原子切片里；整体后续是否支持另记证据。
+
+## 工作流 API v1
+
+`GET/POST /workflows`、`GET/PUT/DELETE /workflows/{id}`，字段 name、description、
+enabled、nodes、edges。JSON 编辑界面，不承诺拖拽画布。节点类型 START、LLM、CONDITION、
+KNOWLEDGE、TOOL、END；每个节点 id/type/config，边 source/target/condition（null或boolean）。
+配置保存前校验节点唯一、唯一START、可达END、边完整、分支true/false完整、无环，至多32节点。
+运行时仍有32步上限；变量仅 `{{节点.output}}` 与 `{{start.input}}`，单次替换、无eval、
+未知变量拒绝，节点只写自己的输出；池和单节点输出有界。
+
+Agent 至多绑定一个工作流，创建会话时冻结工作流定义；停用/删除或版本变化则拒绝执行。
+绑定后消息走工作流，不再并行走普通聊天；未绑定的旧聊天/RAG不变。
+LLM 节点仅用 Agent 已配置 Provider/模型，经过同一 HA75 账本和调用次数/截止时间限制，
+不偷偷附带工具或自动重试。KNOWLEDGE 只检索 Agent 绑定库，TOOL 只调用 Agent 已准入工具，
+无任意 HTTP/代码节点；课程 API_CALL 用已注册工具替代，MCP 工具仍须审批规则。
+事件推送节点状态，最终 END 输出才是用户回答；中间分类文本不直接当成答案。
+`GET /workflows/{id}/runs` 返回整轮/节点状态、耗时、输出哈希/长度和固定错误码，不存完整变量池。
+工作流成功与最终 assistant 在同一事务提交；失败、取消、重启均为明确终态，不自动重跑。
+验收包括线性、双分支、知识检索/工具、缺变量、环/坏边、节点错误、共同预算耗尽、取消、重放不外发。

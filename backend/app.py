@@ -42,10 +42,13 @@ def create_app(db_path=None, run_worker=True):
             from .support_providers import SupportProviders
             from .support_chat import SupportChat
             from .support_knowledge import SupportKnowledge
+            from .support_workflows import SupportWorkflows
             app.state.support_providers = SupportProviders(store)
             app.state.support_knowledge = SupportKnowledge(store, app.state.support_providers)
+            app.state.support_workflows = SupportWorkflows(store, app.state.support_providers)
             app.state.support_chat = SupportChat(store, app.state.support_providers)
             app.state.support_chat.knowledge = app.state.support_knowledge
+            app.state.support_chat.workflows = app.state.support_workflows
             app.state.support_chat.recover()
             app.state.support_providers.start()
             try:
@@ -222,6 +225,30 @@ def create_app(db_path=None, run_worker=True):
     @app.post('/api/local/support/agents', status_code=201)
     async def support_agent_create(request: Request):
         return request.app.state.support_chat.agent_save(await json_body(request))
+
+    @app.get('/api/local/support/workflows')
+    def support_workflow_list(request: Request):
+        return {'items': request.app.state.support_workflows.listing()}
+
+    @app.post('/api/local/support/workflows', status_code=201)
+    async def support_workflow_create(request: Request):
+        return request.app.state.support_workflows.save(await json_body(request))
+
+    @app.get('/api/local/support/workflows/{workflow_id}')
+    def support_workflow_detail(workflow_id: str, request: Request):
+        return request.app.state.support_workflows.get(workflow_id)
+
+    @app.put('/api/local/support/workflows/{workflow_id}')
+    async def support_workflow_update(workflow_id: str, request: Request):
+        return request.app.state.support_workflows.save(await json_body(request), workflow_id)
+
+    @app.delete('/api/local/support/workflows/{workflow_id}')
+    def support_workflow_delete(workflow_id: str, request: Request):
+        return request.app.state.support_workflows.delete(workflow_id)
+
+    @app.get('/api/local/support/workflows/{workflow_id}/runs')
+    def support_workflow_runs(workflow_id: str, request: Request):
+        return {'items': request.app.state.support_workflows.runs(workflow_id)}
 
     @app.put('/api/local/support/agents/{agent_id}')
     async def support_agent_update(agent_id: str, request: Request):
