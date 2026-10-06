@@ -1,0 +1,135 @@
+{
+  "release": "da43bff8caf66ca528c85e81d81b28869c1cb9a4",
+  "document_sha256": "d1c14a121a03553e7858170663dfdf6533d55bf89c8731467392ffa1abbfd995",
+  "input_kind": "public_synthetic_twelve_chinese_clauses",
+  "runs": [
+    {
+      "id": "run_4842e9937b154d21b2c84ed957c528f4",
+      "mode": "integration_probe",
+      "created_via_browser": true,
+      "status": "succeeded",
+      "exit_reason": "COMPLETED",
+      "budget": {
+        "id": "run_4842e9937b154d21b2c84ed957c528f4",
+        "binding_digest": "aa8e5a513a4eee06e0f5e6f32296590fc2b7aeecfec3521ad29f60ab511319b3",
+        "token_limit": 200000,
+        "status": "completed",
+        "spent": 520,
+        "reserved": 0,
+        "calls": 3,
+        "remaining": 199480
+      },
+      "tool_rounds": [
+        1,
+        2
+      ],
+      "last_event": "run.succeeded",
+      "artifacts": [
+        {
+          "id": "art_2ac0d1e5930549ee832f103ba926f4b2",
+          "name": "dsh-analysis.txt",
+          "sha256": "452123e84682939754987f414863657beb1508b69b419d640061ca6cc3f1d716",
+          "size_bytes": 970
+        },
+        {
+          "id": "art_cfa86b4b3b824235b7ca0049a5573c17",
+          "name": "dsh-findings.json",
+          "sha256": "3103b994973109f5d18bd21bd6cf4bf1df7960d162609831075aeb3920558778",
+          "size_bytes": 1277
+        }
+      ],
+      "business_status": "partial",
+      "term_claim": "甲方应在验收合格且收到发票后30天内向乙方付款",
+      "exception_citations": [
+        "clause-12"
+      ],
+      "screenshot": "course-integration_probe.png",
+      "crossing_event_status_counts": {
+        "issued": 6,
+        "in_flight": 5,
+        "completed": 5,
+        "retired": 1
+      },
+      "final_receipt_status_counts": {
+        "completed": 5,
+        "retired": 1
+      },
+      "model_completed": 3,
+      "tool_completed": 2,
+      "read_clause_ids": [],
+      "normal_terminal_is_last": true
+    },
+    {
+      "id": "run_b7f78649e03a4e9db97b4bc82be5f97c",
+      "mode": "real_provider",
+      "created_via_browser": true,
+      "status": "succeeded",
+      "exit_reason": "COMPLETED",
+      "budget": {
+        "id": "run_b7f78649e03a4e9db97b4bc82be5f97c",
+        "binding_digest": "c5bbf583de5ec52e45ec5bdbf6544d2856486a4b894e829927321aa6afdb89bd",
+        "token_limit": 20000000,
+        "status": "completed",
+        "spent": 13545,
+        "reserved": 0,
+        "calls": 5,
+        "remaining": 19986455
+      },
+      "tool_rounds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "last_event": "run.succeeded",
+      "artifacts": [
+        {
+          "id": "art_69453ffc6440453194371193cb15db0c",
+          "name": "dsh-analysis.txt",
+          "sha256": "50487caa5a594a2f23c2eeac478d51760bd3808b9bfa40b0a2fb67c889accc9c",
+          "size_bytes": 1737
+        },
+        {
+          "id": "art_c8aa2227cedb4ce1bd4cfb4419466d10",
+          "name": "dsh-findings.json",
+          "sha256": "011ebcf89fc1be5729c78b87f6fd7e2dc44a87ca9a23133cf4c82096b2fdeb4a",
+          "size_bytes": 2057
+        }
+      ],
+      "business_status": "partial",
+      "term_claim": "付款期限为：甲方应在验收合格且收到发票后30天内向乙方付款。",
+      "exception_citations": [
+        "clause-12"
+      ],
+      "screenshot": "course-real_provider.png",
+      "crossing_event_status_counts": {
+        "issued": 18,
+        "in_flight": 17,
+        "completed": 17,
+        "retired": 1
+      },
+      "final_receipt_status_counts": {
+        "completed": 17,
+        "retired": 1
+      },
+      "model_completed": 5,
+      "tool_completed": 12,
+      "read_clause_ids": [
+        "clause-1",
+        "clause-12"
+      ],
+      "normal_terminal_is_last": true
+    }
+  ],
+  "runtime_after": {
+    "release": "da43bff8caf66ca528c85e81d81b28869c1cb9a4",
+    "workspace_recovery": {
+      "cleaned": 0,
+      "pending": 0,
+      "retained": 0,
+      "retries": 0
+    }
+  },
+  "postcheck_utc": "2026-10-06T23:47:07.701852+00:00",
+  "crossing_counts_note": "Event status counts include transitions; final receipt counts use the last event per crossing_id."
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": "local-release-observation@1",
+  "scope": "8876-only",
+  "phase": "healthy",
+  "service_stopped": true,
+  "old_checkout": "5939e5de2a76c6dc487cf7e062b1db901c474011",
+  "candidate": "da43bff8caf66ca528c85e81d81b28869c1cb9a4",
+  "before": {
+    "pid": 64681,
+    "started": "Tue Oct  6 20:02:52 2026"
+  },
+  "old_service_release": "ad957fb888789eccc1150d0ea0df643cce8047c9",
+  "preexisting_run_ids": [
+    "run_134be1e3af0545b9ab4c498b728b0117",
+    "run_4de9d41dcc014e078b32949b087bce43",
+    "run_3991532c26424be0b35994432f0591e2",
+    "run_274e2b1c5abf4ef5a0be1e94e0d10b12",
+    "run_445321240d334cc2aaec66fe146ca316",
+    "run_65ebdf5d79204b54b8f1a2e21966e728",
+    "run_88ac638af0f24a108b2ac35a75890377",
+    "run_4a963943bf1b45b8bca98f373fe05221",
+    "run_257429980fa34076b902c07605052f2b",
+    "run_0774efc5673d4a55a64e432317a9113e",
+    "run_025438d09d7c4099af9caf49f85f9b2b",
+    "run_7a6de2414a08415786447f4362048782",
+    "run_4ea23a322f9f4b8e8eb12ac3ccf23dbb",
+    "run_ab68dec9a70a4b78a0056546d5bb6818",
+    "run_596538589c534ce9946dcf4dfb1d943a",
+    "run_a2e4f357ed544575a2bf0fac6ae329c6",
+    "run_5df9a9201f604bafa24e2f7b3a198ddc",
+    "run_39d2f7f7b14547a2beec7600b4dfc88a",
+    "run_ce561e298d534404bf05ba45014b4c69",
+    "run_4e86c90c721a44a08bcf84c49e1191ef",
+    "run_363a60d87d3d4ec9a0b2e4562b0abe4c",
+    "run_1132d7c8e2034524a0fa7df7a4abf704",
+    "run_cf639fe1682c4c3fbade475cf1503458",
+    "run_55fba2c602304ae8934fdfd8379137a2"
+  ],
+  "backup_relative": ".local/backups/course-release-203g2_c8/dsh.db",
+  "backup_sha256": "1efa62f29e4faeab6fd25228d4eef6073ae2297af57e0ebff63db13408ceb459",
+  "after": {
+    "pid": 69819,
+    "started": "Wed Oct  7 07:43:26 2026",
+    "release": "da43bff8caf66ca528c85e81d81b28869c1cb9a4",
+    "workspace_recovery": {
+      "cleaned": 0,
+      "pending": 0,
+      "retained": 0,
+      "retries": 0
+    }
+  },
+  "deployment_succeeded": true
+}
