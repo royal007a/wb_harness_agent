@@ -1,0 +1,1466 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- <local-user>/code/ai/harnessagent/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: <local-user>/code/ai/harnessagent-dsh-course
+plugins: anyio-4.15.1
+collecting ... collected 19 items
+
+tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.433 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.656 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.777 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.78 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 0.782 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 1.05 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 1.057 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 1.058 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.331 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.344 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.345 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.347 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.35 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.375 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.538 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 4.545 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 5.052 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 5.057 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 5.059 request GET <loopback>/api/local/agent-runtime/providers/rtp_fe5265297fda4d43a782564b3ea26b12/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 5.062 response 200 <loopback>/api/local/agent-runtime/providers/rtp_fe5265297fda4d43a782564b3ea26b12/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 6.885 request GET <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 6.889 response 200 <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 7.291 request POST <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 11.052 response 200 <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 11.341 request GET <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 11.556 failed <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 11.702 response 200 <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e
+Timeout (0:01:30)!
+Thread 0x0000000174e57000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000173e4b000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000172e3f000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000171e33000 [Thread-1 (run)] (most recent call first):
+  File "<python-runtime>/lib/python3.14/selectors.py", line 548 in select
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<python-runtime>/lib/python3.14/asyncio/runners.py", line 128 in run
+  File "<python-runtime>/lib/python3.14/asyncio/runners.py", line 205 in run
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/uvicorn/server.py", line 75 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1024 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000170e27000 [asyncio-waitpid-0] (most recent call first):
+  File "<python-runtime>/lib/python3.14/asyncio/unix_events.py", line 951 in _do_waitpid
+  File "<python-runtime>/lib/python3.14/threading.py", line 1024 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001fa61dd80 (most recent call first):
+  File "<python-runtime>/lib/python3.14/selectors.py", line 548 in select
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 56 in greenlet_main
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 73.701 request GET <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 74.76 failed <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 90.601 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 90.973 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.704 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.707 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.708 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.822 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.823 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.861 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.912 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.915 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.915 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.915 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 91.916 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 94.27 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 94.737 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 94.835 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 94.839 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 94.841 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 95.154 request GET <loopback>/api/local/agent-runtime/providers/rtp_fe5265297fda4d43a782564b3ea26b12/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 95.287 response 200 <loopback>/api/local/agent-runtime/providers/rtp_fe5265297fda4d43a782564b3ea26b12/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 95.86 request GET <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 95.975 response 200 <loopback>/api/local/agent-runtime/sessions/rts_2342a3206913432ea6f6dd703bbf2a2e
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_failed_send_remains_visible_after_completion_reselection_and_reload 102.691 close 
+
+tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.116 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.406 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.851 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.856 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.86 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.962 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.968 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 2.97 response 200 <loopback>/static/paths.js
+
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] call
+ui = (<Page url='http://127.0.0.1:54171/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x109cee350>, {'id':...86e8e3fc7d8c39a5', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54171')
+status = 'queued', label = '排队中'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x109716e40>
+cb = <function Channel.send.<locals>.<lambda> at 0x109ce8670>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:54171/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+FAILEDUI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 54.53 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 54.532 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 54.533 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 54.533 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 54.534 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 54.534 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 55.032 close 
+
+tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 7.747 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 9.442 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 10.575 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 10.577 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 10.578 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 10.601 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 10.817 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 10.822 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 17.811 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.431 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.439 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.439 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.442 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.445 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.713 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.715 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.719 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.766 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.77 request GET <loopback>/api/local/agent-runtime/providers/rtp_15e5d4a846b8445197bdb7d6bb175dae/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 18.788 response 200 <loopback>/api/local/agent-runtime/providers/rtp_15e5d4a846b8445197bdb7d6bb175dae/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 22.657 request GET <loopback>/api/local/agent-runtime/sessions/rts_b52daebd3d5b44d19dbbaa589fb1af7f
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 22.69 response 200 <loopback>/api/local/agent-runtime/sessions/rts_b52daebd3d5b44d19dbbaa589fb1af7f
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 23.079 close 
+
+tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 3.602 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 5.805 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.984 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 7.002 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 7.012 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 7.012 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 7.433 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 7.665 response 200 <loopback>/static/agent-runtime.js
+Timeout (0:01:30)!
+Thread 0x0000000174e57000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000173e4b000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000172e3f000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000171e33000 [Thread-4 (run)] (most recent call first):
+  File "<python-runtime>/lib/python3.14/selectors.py", line 548 in select
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<python-runtime>/lib/python3.14/asyncio/runners.py", line 128 in run
+  File "<python-runtime>/lib/python3.14/asyncio/runners.py", line 205 in run
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/uvicorn/server.py", line 75 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1024 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000170e27000 [asyncio-waitpid-0] (most recent call first):
+  File "<python-runtime>/lib/python3.14/asyncio/unix_events.py", line 951 in _do_waitpid
+  File "<python-runtime>/lib/python3.14/threading.py", line 1024 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001fa61dd80 (most recent call first):
+  File "<python-runtime>/lib/python3.14/selectors.py", line 548 in select
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 56 in greenlet_main
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 12.02 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 12.027 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 12.181 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 12.194 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 12.217 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 12.223 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.026 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.057 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.101 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.103 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.105 request GET <loopback>/api/local/agent-runtime/providers/rtp_b10ec516f5624b07ba6c23ae1a7d13e9/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.465 response 200 <loopback>/api/local/agent-runtime/providers/rtp_b10ec516f5624b07ba6c23ae1a7d13e9/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 26.25 request GET <loopback>/api/local/agent-runtime/sessions/rts_950fed60ad4246928009cb066c614816
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 26.564 response 200 <loopback>/api/local/agent-runtime/sessions/rts_950fed60ad4246928009cb066c614816
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 27.405 close 
+
+tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 2.006 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 2.255 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 2.718 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 2.767 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 2.767 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 3.034 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 3.182 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 3.182 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.609 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.911 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.916 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.921 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.924 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.925 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.966 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.967 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 5.968 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 6.007 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 6.009 request GET <loopback>/api/local/agent-runtime/providers/rtp_8fb89746d61840879611515ddab7b4c3/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 6.01 response 200 <loopback>/api/local/agent-runtime/providers/rtp_8fb89746d61840879611515ddab7b4c3/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 6.668 request GET <loopback>/api/local/agent-runtime/sessions/rts_e4f365d3d8bf4ff18e959702f11504b9
+UI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 6.676 response 200 <loopback>/api/local/agent-runtime/sessions/rts_e4f365d3d8bf4ff18e959702f11504b9
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_successful_message_is_not_duplicated_by_exchange_card 6.82 close 
+
+tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 1.134 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 3.793 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 17.781 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 17.815 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 17.815 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 18.026 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 18.095 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 18.207 response 200 <loopback>/static/paths.js
+
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html call
+ui = (<Page url='http://127.0.0.1:55453/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10ba52d50>, {'id':...86628d7b2779b305', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:55453')
+
+    def test_exchange_and_user_text_do_not_inject_html(ui):
+        page, runtime, agent, base = ui
+        injected = '<img src=x onerror="window.uiInjected=1">'
+        created, exchange = session(runtime, agent, 'escaping', injected)
+        runtime._failure(exchange['id'], injected)
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x109716e40>
+cb = <function Channel.send.<locals>.<lambda> at 0x10d007cc0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:55453/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+FAILEDUI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.805 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.805 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.805 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.805 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.855 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.855 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.867 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.867 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.867 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.867 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.867 request GET <loopback>/api/local/agent-runtime/providers/rtp_c0fb563dd44a47e282234e0065a16c9a/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 55.867 response 200 <loopback>/api/local/agent-runtime/providers/rtp_c0fb563dd44a47e282234e0065a16c9a/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html 58.946 close 
+
+tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.172 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.658 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.764 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.767 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.769 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.809 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.836 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 1.837 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 11.866 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 11.976 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 13.489 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 13.578 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 13.578 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 13.579 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 15.739 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 15.751 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 15.751 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 15.752 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 16.453 request GET <loopback>/api/local/agent-runtime/providers/rtp_573dd6881d5244a393495700b8e684ec/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 17.057 response 200 <loopback>/api/local/agent-runtime/providers/rtp_573dd6881d5244a393495700b8e684ec/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 20.31 request GET <loopback>/api/local/agent-runtime/sessions/rts_b22ac9ea0614443baa56e8480bf0de0e
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 22.186 request GET <loopback>/api/local/agent-runtime/sessions/rts_fc44337c605b44e8bf1a39c0cecec4c6
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 22.296 failed <loopback>/api/local/agent-runtime/sessions/rts_b22ac9ea0614443baa56e8480bf0de0e net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 22.913 response 200 <loopback>/api/local/agent-runtime/sessions/rts_fc44337c605b44e8bf1a39c0cecec4c6
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection 26.002 close 
+
+tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 6.075 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 9.685 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 11.468 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 11.772 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 11.827 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 13.447 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 14.342 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 16.031 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 35.021 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 36.249 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 37.118 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 37.121 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 37.122 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 37.125 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 44.347 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 44.451 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 44.451 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 44.506 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 46.768 request GET <loopback>/api/local/agent-runtime/providers/rtp_4558065684ee40ae9a27edb050fc46ae/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 47.642 response 200 <loopback>/api/local/agent-runtime/providers/rtp_4558065684ee40ae9a27edb050fc46ae/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 53.638 request GET <loopback>/api/local/agent-runtime/sessions/rts_8ec633db28b24c9d85ce295001c08fe6
+Timeout (0:01:30)!
+Thread 0x0000000176e6f000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000175e63000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000173e4b000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000172e3f000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000171e33000 [Thread-8 (run)] (most recent call first):
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 346 in run_endpoint_function
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 690 in app
+
+Thread 0x0000000170e27000 [asyncio-waitpid-0] (most recent call first):
+  File "<python-runtime>/lib/python3.14/asyncio/unix_events.py", line 951 in _do_waitpid
+  File "<python-runtime>/lib/python3.14/threading.py", line 1024 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001fa61dd80 (most recent call first):
+  File "<python-runtime>/lib/python3.14/selectors.py", line 548 in select
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 56 in greenlet_main
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 55.096 response 200 <loopback>/api/local/agent-runtime/sessions/rts_8ec633db28b24c9d85ce295001c08fe6
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 59.924 request POST <loopback>/api/local/agent-runtime/sessions/rts_8ec633db28b24c9d85ce295001c08fe6/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 62.088 request GET <loopback>/api/local/agent-runtime/sessions/rts_4e13c540f2cb4b3f8d8ca22ca0d6a9e1
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 63.387 response 200 <loopback>/api/local/agent-runtime/sessions/rts_4e13c540f2cb4b3f8d8ca22ca0d6a9e1
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 64.539 response 200 <loopback>/api/local/agent-runtime/sessions/rts_8ec633db28b24c9d85ce295001c08fe6/messages
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_stream_completion_does_not_refetch_or_replace_other_session 67.172 close 
+
+tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 0.485 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 1.52 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 2.445 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 2.457 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 2.471 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 2.707 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 2.766 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 2.771 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 9.831 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 10.406 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 10.624 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 10.695 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 10.794 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 10.845 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 12.511 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 12.512 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 12.513 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 12.513 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 12.541 request GET <loopback>/api/local/agent-runtime/providers/rtp_daf713f83f6349bba2caf41efb6f13f3/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 12.977 response 200 <loopback>/api/local/agent-runtime/providers/rtp_daf713f83f6349bba2caf41efb6f13f3/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 19.928 request GET <loopback>/api/local/agent-runtime/sessions/rts_b0856e0855e24d8fae413d7c267af322
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 22.755 failed <loopback>/api/local/agent-runtime/sessions/rts_b0856e0855e24d8fae413d7c267af322 net::ERR_ABORTED
+
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost call
+ui = (<Page url='http://127.0.0.1:56905/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10c118750>, {'id':...a98c70f3c6c9823a', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:56905')
+
+    def test_exchange_without_visible_user_message_is_not_lost(ui):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'orphan history', 'missing from view')
+        runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        detail = runtime.session_detail(created['id'])
+        detail['messages'] = []
+        page.route('**/sessions/' + created['id'], lambda route: route.fulfill(json=detail))
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+>       pw.expect(page.locator('.exchange-status')).to_contain_text(exchange['id'])
+E       AssertionError: Locator expected to contain text 'rte_87901d505c6e4870b8dece7068c89e29'
+E       Actual value: None
+E       Error: element(s) not found 
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator(".exchange-status")
+E       
+E       Aria snapshot:
+E       - complementary:
+E         - link "H harness RUNTIME":
+E           - /url: /agent-runtime
+E         - paragraph: LOCAL PROVIDER / MODEL / AGENT
+E         - navigation:
+E           - link "◌ Agent Runtime":
+E             - /url: /agent-runtime
+E           - link "◇ Agent Lab（演示）":
+E             - /url: /agent-lab
+E         - text: 本地控制面已连接 v0.1 · 明确激活边界
+E       - main:
+E         - text: Workspace /
+E         - strong: Provider Agent Chat Runtime
+E         - text: ● EXTERNAL MODEL DISABLED
+E         - status: 详情读取超时，尚未确认终态，请重新选择会话核对。
+E         - text: PROVIDER → MODEL → AGENT → SESSION → SSE
+E         - heading "配置可见，运行授权也必须可见。" [level=1]
+E         - paragraph: 这是独立的聊天运行时，不读取或写入 Product Task / Run。默认禁止外部模型调用；不会以本地回复替代真实模型结果。
+E         - text: 默认关闭外部模型调用；配置不等于已获运行授权。 当前统计：模型 0、Provider 0、网络 0、工具绑定 0。 01 / CONFIGURE
+E         - heading "Provider、Model 与 Agent" [level=2]
+E         - emphasis: 无工具绑定
+E         - heading "Provider Profile" [level=3]
+E         - paragraph: 凭证只接受 Keychain 引用，不保存 Token；连通性检查不发网络请求。
+E         - text: 名称
+E         - textbox "名称":
+E           - /placeholder: 受控 OpenAI 兼容端点
+E         - text: 类型
+E         - combobox "类型":
+E           - option "OpenAI compatible（已实现协议）" [selected]
+E           - option "Anthropic（待实现）"
+E           - option "Ollama（待实现）"
+E         - text: Base URL
+E         - textbox "Base URL": https://example.invalid
+E         - text: Keychain credential reference 可选，例：keychain://harnessagent/provider-prod；不是密钥本身
+E         - textbox "Keychain credential reference 可选，例：keychain://harnessagent/provider-prod；不是密钥本身":
+E           - /placeholder: keychain://harnessagent/provider-name
+E         - button "保存 Provider"
+E         - article:
+E           - strong: UI test
+E           - text: openai_compatible · https://example.invalid blocked_by_runtime_gate
+E         - heading "Model Profile" [level=3]
+E         - paragraph: 模型标识由你显式维护；本系统不从远端同步列表。
+E         - text: Provider
+E         - combobox "Provider":
+E           - option "请选择" [selected]
+E           - option "UI test"
+E         - text: 展示名
+E         - textbox "展示名":
+E           - /placeholder: 主分析模型
+E         - text: 模型标识
+E         - textbox "模型标识":
+E           - /placeholder: model-id
+E         - text: 上下文窗口
+E         - spinbutton "上下文窗口": "32768"
+E         - button "保存 Model"
+E         - article:
+E           - strong: UI model
+E           - text: synthetic · 4,096 tokens
+E         - heading "Agent Profile" [level=3]
+E         - paragraph: 系统提示词、上下文轮数及输出限制是显式配置；Tools / MCP / Skills 均为 0。
+E         - text: 名称
+E         - textbox "名称":
+E           - /placeholder: 研究助手
+E         - text: 说明
+E         - textbox "说明":
+E           - /placeholder: 该 Agent 的职责边界
+E         - text: Model
+E         - combobox "Model":
+E           - option "请选择" [selected]
+E           - option "UI model"
+E         - text: System Prompt
+E         - textbox "System Prompt": 你是一个审慎的研究助手。只基于可用事实回答，并明确不确定性。
+E         - text: Temperature
+E         - spinbutton "Temperature": "0.3"
+E         - text: 最大输出
+E         - spinbutton "最大输出": "1024"
+E         - text: 最大上下文轮数
+E         - spinbutton "最大上下文轮数": "8"
+E         - button "保存 Agent"
+E         - article:
+E           - strong: UI agent
+E           - text: 2 轮上下文 · 工具绑定 0
+E         - text: 02 / CONVERSE
+E         - heading "有状态 POST SSE 对话" [level=2]
+E         - button "新建会话"
+E         - complementary:
+E           - text: 使用 Agent
+E           - combobox "使用 Agent":
+E             - option "请选择" [selected]
+E             - option "UI agent"
+E           - button "orphan history 持久会话":
+E             - strong: orphan history
+E             - text: 持久会话
+E         - status
+E         - text: 消息内容
+E         - textbox "消息内容":
+E           - /placeholder: 输入消息；系统会在发送前检查运行时门禁…
+E         - text: 纯文本安全显示 · 会话独立持久化 · 工具调用为 0
+E         - button "发送 ↗" [disabled]
+
+tests/test_agent_runtime_ui.py:218: AssertionError
+FAILEDUI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 36.357 close 
+
+tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 4.822 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 5.762 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 5.981 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 6.007 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 6.007 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 6.228 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 6.251 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 6.264 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.323 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.622 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.673 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.761 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.864 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 15.884 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 16.418 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 16.42 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 16.421 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 16.422 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 16.425 request GET <loopback>/api/local/agent-runtime/providers/rtp_432cafd1e17f4e2281eb275a2272e757/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 16.534 response 200 <loopback>/api/local/agent-runtime/providers/rtp_432cafd1e17f4e2281eb275a2272e757/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 17.608 request GET <loopback>/api/local/agent-runtime/sessions/rts_8f1af3f27eed438caf0300de84d4d1ec
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 17.678 response 200 <loopback>/api/local/agent-runtime/sessions/rts_8f1af3f27eed438caf0300de84d4d1ec
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 18.529 request POST <loopback>/api/local/agent-runtime/sessions/rts_8f1af3f27eed438caf0300de84d4d1ec/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 18.766 response 200 <loopback>/api/local/agent-runtime/sessions/rts_8f1af3f27eed438caf0300de84d4d1ec/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 18.798 request GET <loopback>/api/local/agent-runtime/sessions/rts_8f1af3f27eed438caf0300de84d4d1ec
+UI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 18.909 response 200 <loopback>/api/local/agent-runtime/sessions/rts_8f1af3f27eed438caf0300de84d4d1ec
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_early_stream_eof_never_commits_preview_as_answer 20.661 close 
+
+tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 2.148 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 3.144 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 3.313 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 3.341 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 3.388 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 3.515 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 3.528 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 3.56 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.04 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.049 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.129 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.133 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.294 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.337 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.61 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.613 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.613 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.614 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.642 request GET <loopback>/api/local/agent-runtime/providers/rtp_d3e6e2d23a5f490592ae1a194b3539b5/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 13.938 response 200 <loopback>/api/local/agent-runtime/providers/rtp_d3e6e2d23a5f490592ae1a194b3539b5/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 18.757 request GET <loopback>/api/local/agent-runtime/sessions/rts_67c5f107a30647f9a09bd5b276813343
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 19.181 response 200 <loopback>/api/local/agent-runtime/sessions/rts_67c5f107a30647f9a09bd5b276813343
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 19.846 request POST <loopback>/api/local/agent-runtime/sessions/rts_67c5f107a30647f9a09bd5b276813343/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 20.319 request GET <loopback>/api/local/agent-runtime/sessions/rts_67c5f107a30647f9a09bd5b276813343
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 20.413 failed <loopback>/api/local/agent-runtime/sessions/rts_67c5f107a30647f9a09bd5b276813343/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 20.417 response 200 <loopback>/api/local/agent-runtime/sessions/rts_67c5f107a30647f9a09bd5b276813343
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_stop_display_does_not_claim_server_cancelled 22.099 close 
+
+tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.292 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.77 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.93 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.978 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 0.979 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 1.312 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 1.508 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 1.541 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 14.197 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 14.226 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 14.387 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 14.496 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 14.527 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 14.644 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 18.792 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 18.797 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 18.797 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 19.127 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 19.203 request GET <loopback>/api/local/agent-runtime/providers/rtp_85576edd61cd4ca0b5ead4c2b5315611/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 20.577 response 200 <loopback>/api/local/agent-runtime/providers/rtp_85576edd61cd4ca0b5ead4c2b5315611/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 21.941 request GET <loopback>/api/local/agent-runtime/sessions/rts_39ccc7346c554988afa6599dd3e36faa
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 22.062 response 200 <loopback>/api/local/agent-runtime/sessions/rts_39ccc7346c554988afa6599dd3e36faa
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 25.025 request POST <loopback>/api/local/agent-runtime/sessions/rts_39ccc7346c554988afa6599dd3e36faa/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 27.274 response 200 <loopback>/api/local/agent-runtime/sessions/rts_39ccc7346c554988afa6599dd3e36faa/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 28.237 request GET <loopback>/api/local/agent-runtime/sessions/rts_39ccc7346c554988afa6599dd3e36faa
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 28.281 failed <loopback>/api/local/agent-runtime/sessions/rts_39ccc7346c554988afa6599dd3e36faa/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 28.281 response 200 <loopback>/api/local/agent-runtime/sessions/rts_39ccc7346c554988afa6599dd3e36faa
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_live_synthetic_stream_is_only_preview_until_persisted 31.314 close 
+
+tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 8.494 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 10.5 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 13.854 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 13.896 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 13.896 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 14.058 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 14.614 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 14.706 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 18.538 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 18.585 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 18.585 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 18.616 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 18.641 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 18.87 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 19.374 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 19.797 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 19.814 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 19.817 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 19.818 request GET <loopback>/api/local/agent-runtime/providers/rtp_0d9af5c8495d450eb8f89c3da99cc23b/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 19.819 response 200 <loopback>/api/local/agent-runtime/providers/rtp_0d9af5c8495d450eb8f89c3da99cc23b/readiness
+Timeout (0:01:30)!
+Thread 0x0000000175e63000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000174e57000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000173e4b000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000172e3f000 [AnyIO worker thread] (most recent call first):
+  File "<python-runtime>/lib/python3.14/threading.py", line 369 in wait
+  File "<python-runtime>/lib/python3.14/queue.py", line 199 in get
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1089 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000171e33000 [Thread-13 (run)] (most recent call first):
+  File "<python-runtime>/lib/python3.14/selectors.py", line 548 in select
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<python-runtime>/lib/python3.14/asyncio/runners.py", line 128 in run
+  File "<python-runtime>/lib/python3.14/asyncio/runners.py", line 205 in run
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/uvicorn/server.py", line 75 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1024 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x0000000170e27000 [asyncio-waitpid-0] (most recent call first):
+  File "<python-runtime>/lib/python3.14/asyncio/unix_events.py", line 951 in _do_waitpid
+  File "<python-runtime>/lib/python3.14/threading.py", line 1024 in run
+  File "<python-runtime>/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "<python-runtime>/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00000001fa61dd80 (most recent call first):
+  File "<python-runtime>/lib/python3.14/selectors.py", line 548 in select
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 2019 in _run_once
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 678 in run_forever
+  File "<python-runtime>/lib/python3.14/asyncio/base_events.py", line 707 in run_until_complete
+  File "<local-user>/code/ai/harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 56 in greenlet_main
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 28.357 request GET <loopback>/api/local/agent-runtime/sessions/rts_38bc5e15f088484ca4737a3b942a48ac
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 32.013 response 200 <loopback>/api/local/agent-runtime/sessions/rts_38bc5e15f088484ca4737a3b942a48ac
+
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] call
+ui = (<Page url='http://127.0.0.1:58507/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10c772b30>, {'id':...80e781a1741b1572', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:58507')
+title = 'Mobile session'
+
+    @pytest.mark.parametrize('title', ['Mobile session', '与 Runtime Agent 1791044226328 的会话'])
+    def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
+        page, runtime, agent, base = ui
+        sessions = [session(runtime, agent, f'{title} {i}', f'Message {i}') for i in range(4)]
+        for _created, exchange in sessions:
+            runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        page.set_viewport_size({'width': 390, 'height': 844})
+        page.goto(base + '/agent-runtime')
+        pw.expect(page.locator('#session-list button')).to_have_count(4)
+        select(page, sessions[0][0]['id'])
+>       pw.expect(page.locator('#messages')).to_contain_text('MODEL_RUNTIME_DISABLED')
+E       AssertionError: Locator expected to contain text 'MODEL_RUNTIME_DISABLED'
+E       Actual value:  
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator("#messages")
+E           3 × locator resolved to <div id="messages" class="messages" aria-busy="false" aria-live="polite"></div>
+E             - unexpected value ""
+
+tests/test_agent_runtime_ui.py:307: AssertionError
+FAILEDUI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] 100.701 close 
+
+tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 5.451 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 7.589 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 9.011 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 9.037 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 9.037 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 9.121 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 11.304 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 11.345 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 35.801 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 35.839 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 35.862 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 36.009 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 38.462 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 38.689 load 
+
+IMMEDIATE_FAILURE tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] call
+ui = (<Page url='http://127.0.0.1:59065/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10c7703d0>, {'id':...9a2bf6b893d180be', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:59065')
+title = '与 Runtime Agent 1791044226328 的会话'
+
+    @pytest.mark.parametrize('title', ['Mobile session', '与 Runtime Agent 1791044226328 的会话'])
+    def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
+        page, runtime, agent, base = ui
+        sessions = [session(runtime, agent, f'{title} {i}', f'Message {i}') for i in range(4)]
+        for _created, exchange in sessions:
+            runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        page.set_viewport_size({'width': 390, 'height': 844})
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:304: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x109716e40>
+cb = <function Channel.send.<locals>.<lambda> at 0x10c881d20>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:59065/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+FAILEDUI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 58.061 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 58.068 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 58.068 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 58.068 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 58.068 request GET <loopback>/api/local/agent-runtime/providers/rtp_6248158573bd4125817137a9f3750454/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 58.068 response 200 <loopback>/api/local/agent-runtime/providers/rtp_6248158573bd4125817137a9f3750454/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] 67.606 close 
+
+tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 5.056 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 5.528 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 6.396 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 6.397 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 6.397 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 6.435 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 6.437 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 6.464 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.128 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.129 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.134 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.143 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.187 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.188 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.239 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.29 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.297 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.297 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.314 request GET <loopback>/api/local/agent-runtime/providers/rtp_7b9f4018eb7e452b8a80e0dbd7ccc84d/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 9.319 response 200 <loopback>/api/local/agent-runtime/providers/rtp_7b9f4018eb7e452b8a80e0dbd7ccc84d/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 10.146 request GET <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 10.17 response 200 <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 10.766 request POST <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 11.811 response 200 <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 12.199 failed <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 12.245 request GET <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 13.173 response 200 <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 13.728 request GET <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 13.755 response 200 <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 14.38 request GET <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 14.386 response 200 <loopback>/api/local/agent-runtime/sessions/rts_760d49f3ddd645c39a1111462687858c
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False] 14.484 close 
+
+tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 0.458 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 3.474 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 7.284 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 7.393 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 7.426 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 7.428 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 8.045 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 8.093 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 15.639 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 15.72 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 15.784 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 15.823 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 15.843 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 16.593 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 17.999 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 18.0 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 18.0 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 18.001 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 18.113 request GET <loopback>/api/local/agent-runtime/providers/rtp_9a7c0996bf1548b6967845bebf93d565/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 18.219 response 200 <loopback>/api/local/agent-runtime/providers/rtp_9a7c0996bf1548b6967845bebf93d565/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 24.282 request GET <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 26.086 response 200 <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 33.207 request POST <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 34.476 response 200 <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 39.037 request GET <loopback>/api/local/agent-runtime/sessions/rts_2c3709597c5a447e90e64ef27131621c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 42.525 response 200 <loopback>/api/local/agent-runtime/sessions/rts_2c3709597c5a447e90e64ef27131621c
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 43.635 request GET <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 43.757 response 200 <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 46.43 request GET <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 46.975 failed <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95/messages net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 47.009 response 200 <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 47.575 request GET <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 47.67 response 200 <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 48.255 request GET <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+UI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 48.292 response 200 <loopback>/api/local/agent-runtime/sessions/rts_69f40b8f9cec4613b23374aa80811a95
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True] 48.695 close 
+
+tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.725 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 2.978 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.164 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.202 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.211 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.25 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.335 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 3.402 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.174 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.177 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.197 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.338 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.385 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.386 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.635 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.637 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.638 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.639 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.64 request GET <loopback>/api/local/agent-runtime/providers/rtp_ee0b5fd1e92646a1818c4cd8cd334cbd/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 4.951 response 200 <loopback>/api/local/agent-runtime/providers/rtp_ee0b5fd1e92646a1818c4cd8cd334cbd/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 6.798 request GET <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 7.595 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 8.409 request POST <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 8.447 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 8.447 request GET <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 8.551 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 9.112 request GET <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 9.206 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 9.76 request GET <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 9.8 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 10.413 request GET <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 10.43 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 10.947 request GET <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 10.98 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 11.699 request GET <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+UI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 11.746 response 200 <loopback>/api/local/agent-runtime/sessions/rts_122093faa2b24e8db91849e5beea9361
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation 13.021 close 
+
+tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.651 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 0.921 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 1.034 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 1.037 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 1.095 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 1.261 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 1.456 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 2.035 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 6.027 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 6.149 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 6.15 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 6.205 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 6.263 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 6.349 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 7.632 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 7.632 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 7.633 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 7.633 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 7.848 request GET <loopback>/api/local/agent-runtime/providers/rtp_fc0c14aca58d4330a1b35f845069364e/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 7.941 response 200 <loopback>/api/local/agent-runtime/providers/rtp_fc0c14aca58d4330a1b35f845069364e/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 12.509 request GET <loopback>/api/local/agent-runtime/sessions/rts_0f909fc11e094fc4808577f86bc7b775
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 12.568 response 200 <loopback>/api/local/agent-runtime/sessions/rts_0f909fc11e094fc4808577f86bc7b775
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 13.2 request POST <loopback>/api/local/agent-runtime/sessions/rts_0f909fc11e094fc4808577f86bc7b775/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 13.412 response 200 <loopback>/api/local/agent-runtime/sessions/rts_0f909fc11e094fc4808577f86bc7b775/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 13.413 request GET <loopback>/api/local/agent-runtime/sessions/rts_0f909fc11e094fc4808577f86bc7b775
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 18.885 failed <loopback>/api/local/agent-runtime/sessions/rts_0f909fc11e094fc4808577f86bc7b775 net::ERR_ABORTED
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[False] 19.95 close 
+
+tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 0.396 request GET <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 1.305 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 1.488 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 1.489 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 1.532 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 1.62 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 2.035 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 2.086 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.014 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.105 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.115 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.116 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.12 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.121 load 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.167 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.17 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.172 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.172 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.174 request GET <loopback>/api/local/agent-runtime/providers/rtp_78b267ac0a2d47f0b6908083e8659705/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 4.189 response 200 <loopback>/api/local/agent-runtime/providers/rtp_78b267ac0a2d47f0b6908083e8659705/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 5.082 request GET <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 5.117 response 200 <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 5.578 request POST <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 5.888 response 200 <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460/messages
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 5.896 request GET <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 6.795 request GET <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 6.862 failed <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460 net::ERR_ABORTED
+UI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 6.953 response 200 <loopback>/api/local/agent-runtime/sessions/rts_cb03173eba99413c870eebf2006a7460
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_reconciliation_pending_read_has_deadline_and_survives_reselection[True] 7.693 close 
+
+
+=================================== FAILURES ===================================
+_ test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] _
+
+ui = (<Page url='http://127.0.0.1:54171/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x109cee350>, {'id':...86e8e3fc7d8c39a5', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:54171')
+status = 'queued', label = '排队中'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x109716e40>
+cb = <function Channel.send.<locals>.<lambda> at 0x109ce8670>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:54171/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+________________ test_exchange_and_user_text_do_not_inject_html ________________
+
+ui = (<Page url='http://127.0.0.1:55453/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10ba52d50>, {'id':...86628d7b2779b305', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:55453')
+
+    def test_exchange_and_user_text_do_not_inject_html(ui):
+        page, runtime, agent, base = ui
+        injected = '<img src=x onerror="window.uiInjected=1">'
+        created, exchange = session(runtime, agent, 'escaping', injected)
+        runtime._failure(exchange['id'], injected)
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x109716e40>
+cb = <function Channel.send.<locals>.<lambda> at 0x10d007cc0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:55453/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____________ test_exchange_without_visible_user_message_is_not_lost ____________
+
+ui = (<Page url='http://127.0.0.1:56905/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10c118750>, {'id':...a98c70f3c6c9823a', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:56905')
+
+    def test_exchange_without_visible_user_message_is_not_lost(ui):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, 'orphan history', 'missing from view')
+        runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        detail = runtime.session_detail(created['id'])
+        detail['messages'] = []
+        page.route('**/sessions/' + created['id'], lambda route: route.fulfill(json=detail))
+        page.goto(base + '/agent-runtime')
+        select(page, created['id'])
+>       pw.expect(page.locator('.exchange-status')).to_contain_text(exchange['id'])
+E       AssertionError: Locator expected to contain text 'rte_87901d505c6e4870b8dece7068c89e29'
+E       Actual value: None
+E       Error: element(s) not found 
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator(".exchange-status")
+E       
+E       Aria snapshot:
+E       - complementary:
+E         - link "H harness RUNTIME":
+E           - /url: /agent-runtime
+E         - paragraph: LOCAL PROVIDER / MODEL / AGENT
+E         - navigation:
+E           - link "◌ Agent Runtime":
+E             - /url: /agent-runtime
+E           - link "◇ Agent Lab（演示）":
+E             - /url: /agent-lab
+E         - text: 本地控制面已连接 v0.1 · 明确激活边界
+E       - main:
+E         - text: Workspace /
+E         - strong: Provider Agent Chat Runtime
+E         - text: ● EXTERNAL MODEL DISABLED
+E         - status: 详情读取超时，尚未确认终态，请重新选择会话核对。
+E         - text: PROVIDER → MODEL → AGENT → SESSION → SSE
+E         - heading "配置可见，运行授权也必须可见。" [level=1]
+E         - paragraph: 这是独立的聊天运行时，不读取或写入 Product Task / Run。默认禁止外部模型调用；不会以本地回复替代真实模型结果。
+E         - text: 默认关闭外部模型调用；配置不等于已获运行授权。 当前统计：模型 0、Provider 0、网络 0、工具绑定 0。 01 / CONFIGURE
+E         - heading "Provider、Model 与 Agent" [level=2]
+E         - emphasis: 无工具绑定
+E         - heading "Provider Profile" [level=3]
+E         - paragraph: 凭证只接受 Keychain 引用，不保存 Token；连通性检查不发网络请求。
+E         - text: 名称
+E         - textbox "名称":
+E           - /placeholder: 受控 OpenAI 兼容端点
+E         - text: 类型
+E         - combobox "类型":
+E           - option "OpenAI compatible（已实现协议）" [selected]
+E           - option "Anthropic（待实现）"
+E           - option "Ollama（待实现）"
+E         - text: Base URL
+E         - textbox "Base URL": https://example.invalid
+E         - text: Keychain credential reference 可选，例：keychain://harnessagent/provider-prod；不是密钥本身
+E         - textbox "Keychain credential reference 可选，例：keychain://harnessagent/provider-prod；不是密钥本身":
+E           - /placeholder: keychain://harnessagent/provider-name
+E         - button "保存 Provider"
+E         - article:
+E           - strong: UI test
+E           - text: openai_compatible · https://example.invalid blocked_by_runtime_gate
+E         - heading "Model Profile" [level=3]
+E         - paragraph: 模型标识由你显式维护；本系统不从远端同步列表。
+E         - text: Provider
+E         - combobox "Provider":
+E           - option "请选择" [selected]
+E           - option "UI test"
+E         - text: 展示名
+E         - textbox "展示名":
+E           - /placeholder: 主分析模型
+E         - text: 模型标识
+E         - textbox "模型标识":
+E           - /placeholder: model-id
+E         - text: 上下文窗口
+E         - spinbutton "上下文窗口": "32768"
+E         - button "保存 Model"
+E         - article:
+E           - strong: UI model
+E           - text: synthetic · 4,096 tokens
+E         - heading "Agent Profile" [level=3]
+E         - paragraph: 系统提示词、上下文轮数及输出限制是显式配置；Tools / MCP / Skills 均为 0。
+E         - text: 名称
+E         - textbox "名称":
+E           - /placeholder: 研究助手
+E         - text: 说明
+E         - textbox "说明":
+E           - /placeholder: 该 Agent 的职责边界
+E         - text: Model
+E         - combobox "Model":
+E           - option "请选择" [selected]
+E           - option "UI model"
+E         - text: System Prompt
+E         - textbox "System Prompt": 你是一个审慎的研究助手。只基于可用事实回答，并明确不确定性。
+E         - text: Temperature
+E         - spinbutton "Temperature": "0.3"
+E         - text: 最大输出
+E         - spinbutton "最大输出": "1024"
+E         - text: 最大上下文轮数
+E         - spinbutton "最大上下文轮数": "8"
+E         - button "保存 Agent"
+E         - article:
+E           - strong: UI agent
+E           - text: 2 轮上下文 · 工具绑定 0
+E         - text: 02 / CONVERSE
+E         - heading "有状态 POST SSE 对话" [level=2]
+E         - button "新建会话"
+E         - complementary:
+E           - text: 使用 Agent
+E           - combobox "使用 Agent":
+E             - option "请选择" [selected]
+E             - option "UI agent"
+E           - button "orphan history 持久会话":
+E             - strong: orphan history
+E             - text: 持久会话
+E         - status
+E         - text: 消息内容
+E         - textbox "消息内容":
+E           - /placeholder: 输入消息；系统会在发送前检查运行时门禁…
+E         - text: 纯文本安全显示 · 会话独立持久化 · 工具调用为 0
+E         - button "发送 ↗" [disabled]
+
+tests/test_agent_runtime_ui.py:218: AssertionError
+______ test_multiple_sessions_do_not_clip_mobile_history[Mobile session] _______
+
+ui = (<Page url='http://127.0.0.1:58507/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10c772b30>, {'id':...80e781a1741b1572', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:58507')
+title = 'Mobile session'
+
+    @pytest.mark.parametrize('title', ['Mobile session', '与 Runtime Agent 1791044226328 的会话'])
+    def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
+        page, runtime, agent, base = ui
+        sessions = [session(runtime, agent, f'{title} {i}', f'Message {i}') for i in range(4)]
+        for _created, exchange in sessions:
+            runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        page.set_viewport_size({'width': 390, 'height': 844})
+        page.goto(base + '/agent-runtime')
+        pw.expect(page.locator('#session-list button')).to_have_count(4)
+        select(page, sessions[0][0]['id'])
+>       pw.expect(page.locator('#messages')).to_contain_text('MODEL_RUNTIME_DISABLED')
+E       AssertionError: Locator expected to contain text 'MODEL_RUNTIME_DISABLED'
+E       Actual value:  
+E       Call log:
+E         - Expect "to_contain_text" with timeout 5000ms
+E         - waiting for locator("#messages")
+E           3 × locator resolved to <div id="messages" class="messages" aria-busy="false" aria-live="polite"></div>
+E             - unexpected value ""
+
+tests/test_agent_runtime_ui.py:307: AssertionError
+_ test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] _
+
+ui = (<Page url='http://127.0.0.1:59065/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10c7703d0>, {'id':...9a2bf6b893d180be', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:59065')
+title = '与 Runtime Agent 1791044226328 的会话'
+
+    @pytest.mark.parametrize('title', ['Mobile session', '与 Runtime Agent 1791044226328 的会话'])
+    def test_multiple_sessions_do_not_clip_mobile_history(ui, title):
+        page, runtime, agent, base = ui
+        sessions = [session(runtime, agent, f'{title} {i}', f'Message {i}') for i in range(4)]
+        for _created, exchange in sessions:
+            runtime._failure(exchange['id'], 'MODEL_RUNTIME_DISABLED')
+        page.set_viewport_size({'width': 390, 'height': 844})
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:304: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x109716e40>
+cb = <function Channel.send.<locals>.<lambda> at 0x10c881d20>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:59065/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] - playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "http://127.0.0.1:54171/agent-runtime", waiting until "load"
+FAILED tests/test_agent_runtime_ui.py::test_exchange_and_user_text_do_not_inject_html - playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "http://127.0.0.1:55453/agent-runtime", waiting until "load"
+FAILED tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost - AssertionError: Locator expected to contain text 'rte_87901d505c6e4870b8dece7068c89e29'
+Actual value: None
+Error: element(s) not found 
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator(".exchange-status")
+
+Aria snapshot:
+- complementary:
+  - link "H harness RUNTIME":
+    - /url: /agent-runtime
+  - paragraph: LOCAL PROVIDER / MODEL / AGENT
+  - navigation:
+    - link "◌ Agent Runtime":
+      - /url: /agent-runtime
+    - link "◇ Agent Lab（演示）":
+      - /url: /agent-lab
+  - text: 本地控制面已连接 v0.1 · 明确激活边界
+- main:
+  - text: Workspace /
+  - strong: Provider Agent Chat Runtime
+  - text: ● EXTERNAL MODEL DISABLED
+  - status: 详情读取超时，尚未确认终态，请重新选择会话核对。
+  - text: PROVIDER → MODEL → AGENT → SESSION → SSE
+  - heading "配置可见，运行授权也必须可见。" [level=1]
+  - paragraph: 这是独立的聊天运行时，不读取或写入 Product Task / Run。默认禁止外部模型调用；不会以本地回复替代真实模型结果。
+  - text: 默认关闭外部模型调用；配置不等于已获运行授权。 当前统计：模型 0、Provider 0、网络 0、工具绑定 0。 01 / CONFIGURE
+  - heading "Provider、Model 与 Agent" [level=2]
+  - emphasis: 无工具绑定
+  - heading "Provider Profile" [level=3]
+  - paragraph: 凭证只接受 Keychain 引用，不保存 Token；连通性检查不发网络请求。
+  - text: 名称
+  - textbox "名称":
+    - /placeholder: 受控 OpenAI 兼容端点
+  - text: 类型
+  - combobox "类型":
+    - option "OpenAI compatible（已实现协议）" [selected]
+    - option "Anthropic（待实现）"
+    - option "Ollama（待实现）"
+  - text: Base URL
+  - textbox "Base URL": https://example.invalid
+  - text: Keychain credential reference 可选，例：keychain://harnessagent/provider-prod；不是密钥本身
+  - textbox "Keychain credential reference 可选，例：keychain://harnessagent/provider-prod；不是密钥本身":
+    - /placeholder: keychain://harnessagent/provider-name
+  - button "保存 Provider"
+  - article:
+    - strong: UI test
+    - text: openai_compatible · https://example.invalid blocked_by_runtime_gate
+  - heading "Model Profile" [level=3]
+  - paragraph: 模型标识由你显式维护；本系统不从远端同步列表。
+  - text: Provider
+  - combobox "Provider":
+    - option "请选择" [selected]
+    - option "UI test"
+  - text: 展示名
+  - textbox "展示名":
+    - /placeholder: 主分析模型
+  - text: 模型标识
+  - textbox "模型标识":
+    - /placeholder: model-id
+  - text: 上下文窗口
+  - spinbutton "上下文窗口": "32768"
+  - button "保存 Model"
+  - article:
+    - strong: UI model
+    - text: synthetic · 4,096 tokens
+  - heading "Agent Profile" [level=3]
+  - paragraph: 系统提示词、上下文轮数及输出限制是显式配置；Tools / MCP / Skills 均为 0。
+  - text: 名称
+  - textbox "名称":
+    - /placeholder: 研究助手
+  - text: 说明
+  - textbox "说明":
+    - /placeholder: 该 Agent 的职责边界
+  - text: Model
+  - combobox "Model":
+    - option "请选择" [selected]
+    - option "UI model"
+  - text: System Prompt
+  - textbox "System Prompt": 你是一个审慎的研究助手。只基于可用事实回答，并明确不确定性。
+  - text: Temperature
+  - spinbutton "Temperature": "0.3"
+  - text: 最大输出
+  - spinbutton "最大输出": "1024"
+  - text: 最大上下文轮数
+  - spinbutton "最大上下文轮数": "8"
+  - button "保存 Agent"
+  - article:
+    - strong: UI agent
+    - text: 2 轮上下文 · 工具绑定 0
+  - text: 02 / CONVERSE
+  - heading "有状态 POST SSE 对话" [level=2]
+  - button "新建会话"
+  - complementary:
+    - text: 使用 Agent
+    - combobox "使用 Agent":
+      - option "请选择" [selected]
+      - option "UI agent"
+    - button "orphan history 持久会话":
+      - strong: orphan history
+      - text: 持久会话
+  - status
+  - text: 消息内容
+  - textbox "消息内容":
+    - /placeholder: 输入消息；系统会在发送前检查运行时门禁…
+  - text: 纯文本安全显示 · 会话独立持久化 · 工具调用为 0
+  - button "发送 ↗" [disabled]
+FAILED tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[Mobile session] - AssertionError: Locator expected to contain text 'MODEL_RUNTIME_DISABLED'
+Actual value:  
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("#messages")
+    3 × locator resolved to <div id="messages" class="messages" aria-busy="false" aria-live="polite"></div>
+      - unexpected value ""
+FAILED tests/test_agent_runtime_ui.py::test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd] - playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "http://127.0.0.1:59065/agent-runtime", waiting until "load"
+================== 5 failed, 14 passed in 1413.31s (0:23:33) ===================

@@ -1,0 +1,262 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- <local-user>/code/ai/harnessagent/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: <local-user>/code/ai/harnessagent-dsh-course
+plugins: anyio-4.15.1
+collecting ... collected 19 items / 15 deselected / 4 selected
+
+tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] ASGI_BEGIN 1572340.454 /agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.437 request GET <loopback>/agent-runtime
+ASGI_HEADERS 1572340.676 /agent-runtime 200
+ASGI_FINISH 1572340.687 /agent-runtime elapsed 0.233
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.593 response 200 <loopback>/agent-runtime
+ASGI_BEGIN 1572340.783 /static/agent-runtime.css
+ASGI_BEGIN 1572340.786 /static/paths.js
+ASGI_BEGIN 1572340.787 /static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.664 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.665 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.671 request GET <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.696 finished <loopback>/agent-runtime
+ASGI_HEADERS 1572340.845 /static/agent-runtime.css 200
+ASGI_HEADERS 1572340.846 /static/agent-runtime.js 200
+ASGI_HEADERS 1572340.846 /static/paths.js 200
+ASGI_FINISH 1572340.854 /static/agent-runtime.js elapsed 0.066
+ASGI_FINISH 1572340.854 /static/agent-runtime.css elapsed 0.071
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.727 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1572340.856 /static/paths.js elapsed 0.07
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.759 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.774 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.774 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.774 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 1.775 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 10.75 request GET <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 10.763 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 10.763 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 10.764 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 10.764 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 10.764 load 
+ASGI_BEGIN 1572349.902 /api/local/agent-runtime/providers
+ASGI_BEGIN 1572350.038 /api/local/agent-runtime/models
+ASGI_BEGIN 1572350.038 /api/local/agent-runtime/agents
+ASGI_BEGIN 1572350.038 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1572350.198 /api/local/agent-runtime/providers 200
+ASGI_HEADERS 1572350.199 /api/local/agent-runtime/models 200
+ASGI_FINISH 1572350.2 /api/local/agent-runtime/providers elapsed 0.297
+ASGI_FINISH 1572350.2 /api/local/agent-runtime/models elapsed 0.162
+ASGI_HEADERS 1572350.2 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1572350.2 /api/local/agent-runtime/agents elapsed 0.162
+ASGI_HEADERS 1572350.2 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1572350.201 /api/local/agent-runtime/sessions elapsed 0.162
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.036 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.063 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.063 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.064 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.355 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.375 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.376 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 12.377 finished <loopback>/api/local/agent-runtime/sessions
+ASGI_BEGIN 1572352.799 /api/local/agent-runtime/providers/rtp_d68de71fc71840668ee2db4b09466334/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 13.708 request GET <loopback>/api/local/agent-runtime/providers/rtp_d68de71fc71840668ee2db4b09466334/readiness
+ASGI_HEADERS 1572352.921 /api/local/agent-runtime/providers/rtp_d68de71fc71840668ee2db4b09466334/readiness 200
+ASGI_FINISH 1572352.922 /api/local/agent-runtime/providers/rtp_d68de71fc71840668ee2db4b09466334/readiness elapsed 0.123
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 13.979 response 200 <loopback>/api/local/agent-runtime/providers/rtp_d68de71fc71840668ee2db4b09466334/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 13.979 finished <loopback>/api/local/agent-runtime/providers/rtp_d68de71fc71840668ee2db4b09466334/readiness
+ASGI_BEGIN 1572354.12 /api/local/agent-runtime/sessions/rts_6bbfc22b7dd14eeabf3942f4ae4b2896
+ASGI_HEADERS 1572354.19 /api/local/agent-runtime/sessions/rts_6bbfc22b7dd14eeabf3942f4ae4b2896 200
+ASGI_FINISH 1572354.191 /api/local/agent-runtime/sessions/rts_6bbfc22b7dd14eeabf3942f4ae4b2896 elapsed 0.071
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 15.212 request GET <loopback>/api/local/agent-runtime/sessions/rts_6bbfc22b7dd14eeabf3942f4ae4b2896
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 15.214 response 200 <loopback>/api/local/agent-runtime/sessions/rts_6bbfc22b7dd14eeabf3942f4ae4b2896
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 15.243 finished <loopback>/api/local/agent-runtime/sessions/rts_6bbfc22b7dd14eeabf3942f4ae4b2896
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d] 16.144 close 
+
+tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.148 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1572364.051 /agent-runtime
+ASGI_HEADERS 1572364.123 /agent-runtime 200
+ASGI_FINISH 1572364.125 /agent-runtime elapsed 0.074
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.318 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.349 request GET <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.35 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.351 request GET <loopback>/static/paths.js
+ASGI_BEGIN 1572364.179 /static/agent-runtime.css
+ASGI_BEGIN 1572364.182 /static/paths.js
+ASGI_BEGIN 1572364.182 /static/agent-runtime.js
+ASGI_HEADERS 1572364.187 /static/agent-runtime.css 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.362 finished <loopback>/agent-runtime
+ASGI_HEADERS 1572364.188 /static/agent-runtime.js 200
+ASGI_HEADERS 1572364.189 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.43 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1572364.258 /static/paths.js elapsed 0.076
+ASGI_FINISH 1572364.258 /static/agent-runtime.css elapsed 0.079
+ASGI_FINISH 1572364.261 /static/agent-runtime.js elapsed 0.079
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.486 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.487 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.487 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.65 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 0.65 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1572365.696 /api/local/agent-runtime/providers
+ASGI_BEGIN 1572365.72 /api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.899 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1572365.724 /api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.9 request GET <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1572365.729 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.904 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.906 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.907 domcontentloaded 
+ASGI_HEADERS 1572365.739 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1572365.741 /api/local/agent-runtime/providers elapsed 0.044
+ASGI_HEADERS 1572365.741 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1572365.741 /api/local/agent-runtime/agents elapsed 0.017
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.917 load 
+ASGI_HEADERS 1572365.742 /api/local/agent-runtime/models 200
+ASGI_FINISH 1572365.743 /api/local/agent-runtime/models elapsed 0.023
+ASGI_HEADERS 1572365.751 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1572365.778 /api/local/agent-runtime/sessions elapsed 0.049
+ASGI_BEGIN 1572365.782 /api/local/agent-runtime/providers/rtp_206a14c162b5438fa03171a083b79e93/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.957 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.965 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.966 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.967 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.968 finished <loopback>/api/local/agent-runtime/agents
+ASGI_HEADERS 1572365.793 /api/local/agent-runtime/providers/rtp_206a14c162b5438fa03171a083b79e93/readiness 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.968 finished <loopback>/api/local/agent-runtime/models
+ASGI_FINISH 1572365.794 /api/local/agent-runtime/providers/rtp_206a14c162b5438fa03171a083b79e93/readiness elapsed 0.012
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.969 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.969 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 1.969 request GET <loopback>/api/local/agent-runtime/providers/rtp_206a14c162b5438fa03171a083b79e93/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 2.562 response 200 <loopback>/api/local/agent-runtime/providers/rtp_206a14c162b5438fa03171a083b79e93/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 2.563 finished <loopback>/api/local/agent-runtime/providers/rtp_206a14c162b5438fa03171a083b79e93/readiness
+ASGI_BEGIN 1572367.503 /api/local/agent-runtime/sessions/rts_7c7f9c3e65ff4aaf937b67235a969459
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 3.726 request GET <loopback>/api/local/agent-runtime/sessions/rts_7c7f9c3e65ff4aaf937b67235a969459
+ASGI_HEADERS 1572367.551 /api/local/agent-runtime/sessions/rts_7c7f9c3e65ff4aaf937b67235a969459 200
+ASGI_FINISH 1572367.553 /api/local/agent-runtime/sessions/rts_7c7f9c3e65ff4aaf937b67235a969459 elapsed 0.05
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 3.781 response 200 <loopback>/api/local/agent-runtime/sessions/rts_7c7f9c3e65ff4aaf937b67235a969459
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 3.783 finished <loopback>/api/local/agent-runtime/sessions/rts_7c7f9c3e65ff4aaf937b67235a969459
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d] 4.341 close 
+
+tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 6.586 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1572400.038 /agent-runtime
+ASGI_HEADERS 1572400.166 /agent-runtime 200
+ASGI_FINISH 1572400.169 /agent-runtime elapsed 0.131
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 7.054 response 200 <loopback>/agent-runtime
+ASGI_BEGIN 1572401.717 /static/agent-runtime.css
+ASGI_BEGIN 1572401.761 /static/paths.js
+ASGI_BEGIN 1572401.763 /static/agent-runtime.js
+ASGI_HEADERS 1572401.796 /static/agent-runtime.css 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.415 request GET <loopback>/static/agent-runtime.css
+ASGI_HEADERS 1572401.807 /static/agent-runtime.js 200
+ASGI_HEADERS 1572401.807 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.416 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.418 request GET <loopback>/static/paths.js
+ASGI_FINISH 1572401.811 /static/paths.js elapsed 0.05
+ASGI_FINISH 1572401.811 /static/agent-runtime.css elapsed 0.095
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.421 response 200 <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.422 finished <loopback>/agent-runtime
+ASGI_FINISH 1572401.817 /static/agent-runtime.js elapsed 0.054
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.44 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.442 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.442 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.464 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 8.48 finished <loopback>/static/agent-runtime.js
+ASGI_BEGIN 1572406.491 /api/local/agent-runtime/providers
+ASGI_BEGIN 1572406.691 /api/local/agent-runtime/models
+ASGI_BEGIN 1572406.692 /api/local/agent-runtime/agents
+ASGI_BEGIN 1572406.995 /api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.684 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_HEADERS 1572407.078 /api/local/agent-runtime/providers 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.688 request GET <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.689 request GET <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.69 request GET <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.69 domcontentloaded 
+ASGI_FINISH 1572407.082 /api/local/agent-runtime/providers elapsed 0.59
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 13.691 load 
+ASGI_HEADERS 1572407.082 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1572407.082 /api/local/agent-runtime/agents elapsed 0.391
+ASGI_HEADERS 1572407.205 /api/local/agent-runtime/sessions 200
+ASGI_HEADERS 1572407.205 /api/local/agent-runtime/models 200
+ASGI_FINISH 1572407.206 /api/local/agent-runtime/sessions elapsed 0.211
+ASGI_FINISH 1572407.207 /api/local/agent-runtime/models elapsed 0.515
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.179 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.183 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.211 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.215 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.284 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.289 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.29 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 14.293 finished <loopback>/api/local/agent-runtime/models
+ASGI_BEGIN 1572409.508 /api/local/agent-runtime/providers/rtp_2cf0f397b99c4bb0b6091281988d8fec/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 16.19 request GET <loopback>/api/local/agent-runtime/providers/rtp_2cf0f397b99c4bb0b6091281988d8fec/readiness
+ASGI_HEADERS 1572409.587 /api/local/agent-runtime/providers/rtp_2cf0f397b99c4bb0b6091281988d8fec/readiness 200
+ASGI_FINISH 1572409.588 /api/local/agent-runtime/providers/rtp_2cf0f397b99c4bb0b6091281988d8fec/readiness elapsed 0.081
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 16.749 response 200 <loopback>/api/local/agent-runtime/providers/rtp_2cf0f397b99c4bb0b6091281988d8fec/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 16.75 finished <loopback>/api/local/agent-runtime/providers/rtp_2cf0f397b99c4bb0b6091281988d8fec/readiness
+ASGI_BEGIN 1572413.26 /api/local/agent-runtime/sessions/rts_cd347cb0f3844a3d839ea01d88bf21dc
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 19.991 request GET <loopback>/api/local/agent-runtime/sessions/rts_cd347cb0f3844a3d839ea01d88bf21dc
+ASGI_HEADERS 1572413.397 /api/local/agent-runtime/sessions/rts_cd347cb0f3844a3d839ea01d88bf21dc 200
+ASGI_FINISH 1572413.398 /api/local/agent-runtime/sessions/rts_cd347cb0f3844a3d839ea01d88bf21dc elapsed 0.137
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 20.042 response 200 <loopback>/api/local/agent-runtime/sessions/rts_cd347cb0f3844a3d839ea01d88bf21dc
+UI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 20.042 finished <loopback>/api/local/agent-runtime/sessions/rts_cd347cb0f3844a3d839ea01d88bf21dc
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88] 22.685 close 
+
+tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 4.791 request GET <loopback>/agent-runtime
+ASGI_BEGIN 1572436.454 /agent-runtime
+ASGI_HEADERS 1572436.559 /agent-runtime 200
+ASGI_FINISH 1572436.574 /agent-runtime elapsed 0.12
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 5.255 response 200 <loopback>/agent-runtime
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 5.846 request GET <loopback>/static/agent-runtime.css
+ASGI_BEGIN 1572437.287 /static/agent-runtime.css
+ASGI_BEGIN 1572437.299 /static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 5.861 request GET <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 5.863 request GET <loopback>/static/paths.js
+ASGI_BEGIN 1572437.302 /static/paths.js
+ASGI_HEADERS 1572437.409 /static/agent-runtime.css 200
+ASGI_HEADERS 1572437.41 /static/paths.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 6.014 finished <loopback>/agent-runtime
+ASGI_HEADERS 1572437.455 /static/agent-runtime.js 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 6.019 response 200 <loopback>/static/agent-runtime.css
+ASGI_FINISH 1572437.46 /static/paths.js elapsed 0.158
+ASGI_FINISH 1572437.475 /static/agent-runtime.css elapsed 0.187
+ASGI_FINISH 1572437.477 /static/agent-runtime.js elapsed 0.178
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 6.133 finished <loopback>/static/agent-runtime.css
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 6.31 response 200 <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 6.31 finished <loopback>/static/agent-runtime.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 6.31 response 200 <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 6.31 finished <loopback>/static/paths.js
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.811 domcontentloaded 
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.813 load 
+ASGI_BEGIN 1572439.252 /api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.821 request GET <loopback>/api/local/agent-runtime/providers
+ASGI_BEGIN 1572439.26 /api/local/agent-runtime/models
+ASGI_BEGIN 1572439.271 /api/local/agent-runtime/agents
+ASGI_BEGIN 1572439.305 /api/local/agent-runtime/sessions
+ASGI_HEADERS 1572439.308 /api/local/agent-runtime/providers 200
+ASGI_FINISH 1572439.309 /api/local/agent-runtime/providers elapsed 0.056
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.87 request GET <loopback>/api/local/agent-runtime/models
+ASGI_HEADERS 1572439.309 /api/local/agent-runtime/models 200
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.871 request GET <loopback>/api/local/agent-runtime/agents
+ASGI_FINISH 1572439.311 /api/local/agent-runtime/models elapsed 0.05
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.872 request GET <loopback>/api/local/agent-runtime/sessions
+ASGI_HEADERS 1572439.312 /api/local/agent-runtime/agents 200
+ASGI_FINISH 1572439.312 /api/local/agent-runtime/agents elapsed 0.041
+ASGI_HEADERS 1572439.313 /api/local/agent-runtime/sessions 200
+ASGI_FINISH 1572439.313 /api/local/agent-runtime/sessions elapsed 0.009
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.986 response 200 <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.986 response 200 <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.986 response 200 <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.987 response 200 <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.989 finished <loopback>/api/local/agent-runtime/providers
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.991 finished <loopback>/api/local/agent-runtime/models
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.992 finished <loopback>/api/local/agent-runtime/agents
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.993 finished <loopback>/api/local/agent-runtime/sessions
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 7.994 request GET <loopback>/api/local/agent-runtime/providers/rtp_058f9635ebe34ae99c53a43f4de0257a/readiness
+ASGI_BEGIN 1572439.567 /api/local/agent-runtime/providers/rtp_058f9635ebe34ae99c53a43f4de0257a/readiness
+ASGI_HEADERS 1572439.795 /api/local/agent-runtime/providers/rtp_058f9635ebe34ae99c53a43f4de0257a/readiness 200
+ASGI_FINISH 1572439.795 /api/local/agent-runtime/providers/rtp_058f9635ebe34ae99c53a43f4de0257a/readiness elapsed 0.228
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 8.503 response 200 <loopback>/api/local/agent-runtime/providers/rtp_058f9635ebe34ae99c53a43f4de0257a/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 8.505 finished <loopback>/api/local/agent-runtime/providers/rtp_058f9635ebe34ae99c53a43f4de0257a/readiness
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 10.49 request GET <loopback>/api/local/agent-runtime/sessions/rts_a920536190ab4892a1e422d383c47bf0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 11.705 response 200 <loopback>/api/local/agent-runtime/sessions/rts_a920536190ab4892a1e422d383c47bf0
+UI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 13.832 finished <loopback>/api/local/agent-runtime/sessions/rts_a920536190ab4892a1e422d383c47bf0
+PASSEDUI_NETWORK tests/test_agent_runtime_ui.py::test_exchange_without_visible_user_message_is_not_lost 15.236 close 
+
+
+================= 4 passed, 15 deselected in 159.83s (0:02:39) =================
