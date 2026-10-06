@@ -101,6 +101,42 @@ def parties(text):
     return {party for party in PARTIES if party in (text or '')}
 
 
+def _bound_parties(text):
+    """value -> parties named closest before each occurrence of that value (same quote)."""
+    bound = {}
+    for match in _TOKEN_UNIT.finditer(text or ''):
+        token, unit = match.group(1), match.group(2)
+        if unit == '元' and token.endswith('万') and len(token) > 1:
+            token, unit = token[:-1], '万元'
+        try:
+            value = (_parse_token(token), _UNIT_CLASS[unit])
+        except Unparseable:
+            continue
+        before = text[:match.start()]
+        positions = {party: before.rfind(party) for party in PARTIES if party in before}
+        if positions:
+            bound.setdefault(value, set()).add(max(positions, key=positions.get))
+    return bound
+
+
+def unbound_party_values(claim, quotes):
+    """HA-0111: for a single-party claim, values whose nearest preceding party in every
+    quote is a different party (e.g. 甲方30日支付、乙方60日开票 → "乙方30日内支付")."""
+    named = parties(claim)
+    if len(named) != 1:
+        return False
+    (party,) = named
+    try:
+        claimed = values(claim, strict=True)
+    except Unparseable:
+        return False
+    bound = {}
+    for quote in quotes:
+        for value, owners in _bound_parties(quote['text']).items():
+            bound.setdefault(value, set()).update(owners)
+    return any(value in bound and party not in bound[value] for value in claimed)
+
+
 def candidates(clauses):
     """Platform-computed clause IDs a payment review must not silently skip."""
     payment = sorted(k for k, t in clauses.items() if PAYMENT_LEXICON.search(t))
@@ -210,6 +246,14 @@ def verify(submission, clauses, seen):
     # Zero-trust content check (HA-0096): a literal quote can hide the instruction it
     # was lifted from. Flag (do not block) supported slots whose source block carries
     # deterministic instruction markers, so the published result says so.
+    unbound = [slot for slot, f in findings.items() if f['status'] != 'unknown'
+               and unbound_party_values(f['claim'], f['quotes'])]
+    if unbound:
+        # Heuristic, so a flag for human review rather than a rejection (commas and
+        # subjects in earlier sentences make proximity binding unreliable to enforce).
+        platform_gaps.append({'code': 'CLAIM_PARTY_VALUE_UNBOUND',
+                              'clause_ids': sorted({q['clause_id'] for s in unbound for q in findings[s]['quotes']},
+                                                   key=lambda k: int(k.split('-')[1]))})
     flagged = sorted({q['clause_id'] for f in findings.values() if f['status'] != 'unknown'
                       for q in f['quotes'] if INSTRUCTION_MARKERS.search(clauses[q['clause_id']])},
                      key=lambda k: int(k.split('-')[1]))
@@ -233,7 +277,8 @@ _BUSINESS_NAMES = {'mechanically_checked': '机械校验通过', 'partial': '部
 _GAP_NAMES = {'EXCEPTION_CANDIDATES_UNREAD': '有付款例外候选证据块未读取',
               'PAYMENT_CLAUSES_UNREAD': '有付款相关证据块未读取',
               'EXCEPTION_CANDIDATE_NOT_REPORTED': '读到的例外候选未在例外/冲突中报告',
-              'QUOTE_SOURCE_HAS_INSTRUCTION_MARKERS': '引文所在证据块含疑似注入指令，须人工核对原文'}
+              'QUOTE_SOURCE_HAS_INSTRUCTION_MARKERS': '引文所在证据块含疑似注入指令，须人工核对原文',
+              'CLAIM_PARTY_VALUE_UNBOUND': '结论中的主体与数值在引文中疑似不对应，须人工核对'}
 
 
 def render_text(record):
