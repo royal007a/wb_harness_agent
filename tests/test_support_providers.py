@@ -1,4 +1,4 @@
-"""HA-0080: synthetic credentials/transport only; never reads operator credentials."""
+"""HA-0090: synthetic credentials/transport only; never reads operator credentials."""
 import asyncio
 import json
 import os

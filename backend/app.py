@@ -40,7 +40,10 @@ def create_app(db_path=None, run_worker=True):
             app.state.service = service
             service.agent_runtime.recover()
             from .support_providers import SupportProviders
+            from .support_chat import SupportChat
             app.state.support_providers = SupportProviders(store)
+            app.state.support_chat = SupportChat(store, app.state.support_providers)
+            app.state.support_chat.recover()
             app.state.support_providers.start()
             try:
                 if run_worker:
@@ -163,6 +166,60 @@ def create_app(db_path=None, run_worker=True):
         if await json_body(request) != {}:
             raise Problem('VALIDATION_ERROR', '探测请求体必须为空对象。', 422)
         return await request.app.state.support_providers.probe(provider_id)
+
+    @app.get('/support', response_class=HTMLResponse)
+    def support_page(request: Request):
+        return frontend_page(request, 'support.html')
+
+    @app.get('/api/local/support/agents')
+    def support_agents(request: Request):
+        return {'items': request.app.state.support_chat.listing('agents')}
+
+    @app.post('/api/local/support/agents', status_code=201)
+    async def support_agent_create(request: Request):
+        return request.app.state.support_chat.agent_save(await json_body(request))
+
+    @app.put('/api/local/support/agents/{agent_id}')
+    async def support_agent_update(agent_id: str, request: Request):
+        return request.app.state.support_chat.agent_save(await json_body(request), agent_id)
+
+    @app.delete('/api/local/support/agents/{agent_id}')
+    def support_agent_delete(agent_id: str, request: Request):
+        return request.app.state.support_chat.agent_delete(agent_id)
+
+    @app.get('/api/local/support/sessions')
+    def support_sessions(request: Request):
+        return {'items': request.app.state.support_chat.listing('sessions')}
+
+    @app.post('/api/local/support/sessions', status_code=201)
+    async def support_session_create(request: Request):
+        return request.app.state.support_chat.create_session(await json_body(request))
+
+    @app.get('/api/local/support/sessions/{session_id}')
+    def support_session_detail(session_id: str, request: Request):
+        return request.app.state.support_chat.detail(session_id)
+
+    @app.delete('/api/local/support/sessions/{session_id}')
+    def support_session_delete(session_id: str, request: Request):
+        return request.app.state.support_chat.delete_session(session_id)
+
+    @app.post('/api/local/support/exchanges/{exchange_id}/cancel')
+    async def support_exchange_cancel(exchange_id: str, request: Request):
+        if await json_body(request) != {}:
+            raise Problem('VALIDATION_ERROR', '取消请求必须为空对象。', 422)
+        return request.app.state.support_chat.cancel(exchange_id)
+
+    @app.post('/api/local/support/sessions/{session_id}/messages')
+    async def support_message(session_id: str, request: Request):
+        if 'text/event-stream' not in request.headers.get('accept', ''):
+            raise Problem('VALIDATION_ERROR', '请使用 text/event-stream。', 406)
+        chat = request.app.state.support_chat
+        exchange = chat.begin(session_id, await json_body(request), request.headers.get('idempotency-key'))
+        async def events():
+            async with aclosing(chat.stream(exchange['id'])) as upstream:
+                async for event in upstream:
+                    yield ('event: ' + event['type'] + '\ndata: ' + json.dumps(event, ensure_ascii=False) + '\n\n').encode()
+        return StreamingResponse(events(), media_type='text/event-stream', headers={'X-Accel-Buffering': 'no', 'Cache-Control': 'no-store'})
 
     @app.get('/api/v1/engines')
     def engines():

@@ -17,7 +17,7 @@
 9. 离线反例、真实模型公开 FAQ、浏览器与重启持久验证；先8765后132，固定版本和
    受认证代理验证。仅服务200不等于业务验收。
 
-## Provider API v1（HA-0080 第一原子切片）
+## Provider API v1（HA-0090 第一原子切片）
 
 `GET/POST /api/local/support/providers`，`PUT/DELETE .../providers/{id}`，
 `POST .../providers/{id}/probe`，`GET .../status`。
@@ -25,3 +25,18 @@
 auto_probe、probe_interval_seconds（300–86400）。未知字段拒绝，字符串和集合有界。
 输出不含 api_key/ciphertext，仅 has_key。错误沿用 Problem 信封。
 编辑/删除与探测通过同一 provider 租约互斥；探测开始时先原子登记日计数和下一时间。
+
+## 会话 API v1
+
+Agent CRUD：`GET/POST /agents`、`PUT/DELETE /agents/{id}`。字段 name、provider_id、
+model、system_prompt、enabled、tools、knowledge_ids、workflow_ids、mcp_ids，以及
+max_turns(1..8)、max_output_tokens(32..8192)、token_budget(1..20000000)、
+timeout_seconds(5..300)、context_turns(1..20)。未注册工具不可配置。
+Session：`GET/POST /sessions`、`GET/DELETE /sessions/{id}`。创建时快照 Agent 配置，
+运行前重查当前 Agent/Provider 仍启用，删除活跃会话拒绝。
+`POST /sessions/{id}/messages` 使用 Idempotency-Key，body={content}；SSE
+为 start/delta/tool/done/error。delta 为未提交预览，done 只在完整协议、用量结算、
+事务提交成功后发送。`POST /exchanges/{id}/cancel` 取消指定会话执行。
+相同 key 重放终态不再调用 Provider；异 key 在 busy 时409。断线取消，不自动续模型。
+每次真实请求先走 HA-0075 预留与结算；上下文有界，缺 usage 冻结而非当0。
+重启将 queued/running 标为 failed/SUPPORT_RESTARTED；完整历史仍可读取。

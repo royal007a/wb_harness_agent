@@ -1,4 +1,4 @@
-# ADR-0080：课程智能客服平台及数据库凭证
+# ADR-0090：课程智能客服平台及数据库凭证
 
 状态：Accepted for implementation，2026-10-06 用户明确要求；尚未验收。
 
@@ -31,5 +31,5 @@ MCP 和管理界面；凭证小切片完成不代表整个目标完成。
 
 ## 验收
 
-见 `specs/testing/CUSTOMER_SUPPORT.md` 与 HA-0080 计划。加密接口依据
+见 `specs/testing/CUSTOMER_SUPPORT.md` 与 HA-0090 计划。加密接口依据
 [cryptography AEAD 文档](https://cryptography.io/en/latest/hazmat/primitives/aead/)。

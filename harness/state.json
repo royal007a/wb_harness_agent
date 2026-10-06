@@ -2,9 +2,9 @@
   "project": "HarnessAgent",
   "phase": "customer_support_implementation",
   "implementation_started": true,
-  "active_task_id": "HA-0080",
-  "active_plan": "exec-plans/active/HA-0080-customer-support.md",
-  "last_checkpoint": "Provider加密存储/自动探测已实现，18项离线测试通过，尚未导入真实凭证或部署。",
+  "active_task_id": "HA-0090",
+  "active_plan": "exec-plans/active/HA-0090-customer-support.md",
+  "last_checkpoint": "Provider加密存储/自动探测、客服Agent和持久流式会话已实现，93项相关测试通过，尚未导入真实凭证或部署。",
   "last_updated_at": "2026-10-06T07:10:00Z",
   "next_action": "继续Agent/流式会话、知识库RAG、工作流与MCP，再逐项验证并双部署；HA0079由claude独立维护DSH8876。",
   "release": "0.1.0-local"
