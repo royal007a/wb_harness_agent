@@ -1,0 +1,53 @@
+{
+  "scope": "targeted mutations, not full mutation score",
+  "results": [
+    {
+      "name": "M1_unused_failed",
+      "file": "backend/dsh_crossings.py",
+      "selector": "test_retirement_distinguishes_unused_unknown_and_historical",
+      "exit_code": 1
+    },
+    {
+      "name": "M2_unknown_retired",
+      "file": "backend/dsh_crossings.py",
+      "selector": "test_restart_unknown_budget_and_unused_retirement",
+      "exit_code": 1
+    },
+    {
+      "name": "M3_no_generation_scope",
+      "file": "backend/dsh_crossings.py",
+      "selector": "test_retirement_does_not_touch_other_generation",
+      "exit_code": 1
+    },
+    {
+      "name": "M4_missing_version",
+      "file": "backend/dsh_crossings.py",
+      "selector": "test_retirement_distinguishes_unused_unknown_and_historical",
+      "exit_code": 1
+    },
+    {
+      "name": "M5_detached_finally",
+      "file": "backend/dsh_runtime.py",
+      "selector": "test_failed_terminal_fault_does_not_commit_detached_retirement",
+      "exit_code": 1
+    },
+    {
+      "name": "M6_no_failure_retire",
+      "file": "backend/dsh_runtime.py",
+      "selector": "test_normal_failure_retires_before_terminal",
+      "exit_code": 1
+    },
+    {
+      "name": "M7_no_success_retire",
+      "file": "backend/dsh_runtime.py",
+      "selector": "test_sdk_success_retires_before_terminal_in_one_transaction",
+      "exit_code": 1
+    },
+    {
+      "name": "M8_stale_run_sequence",
+      "file": "backend/dsh_runtime.py",
+      "selector": "test_sdk_success_retires_before_terminal_in_one_transaction",
+      "exit_code": 1
+    }
+  ]
+}

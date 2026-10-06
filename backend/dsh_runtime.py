@@ -438,6 +438,8 @@ class DshRuntime:
                 raise Problem('DSH_EVIDENCE_CITATION_INVALID', '引用必须指向本轮实际读取的证据块。', 409)
             with self.store.transaction() as db:
                 check()
+                retire_crossings(self.store, db, ident, crossings.generation)
+                # Retirement emits events and advances sequence: read the updated Run.
                 current = self.store.get('runs', ident)
                 business = {}
                 if template == 'payment_terms':
@@ -474,6 +476,9 @@ class DshRuntime:
             with self.store.transaction() as db:
                 run = self.store.get('runs', ident)
                 if run['status'] not in TERMINAL:
+                    if crossings is not None:
+                        retire_crossings(self.store, db, ident, crossings.generation)
+                        run = self.store.get('runs', ident)
                     run['status'], run['exit_reason'] = 'failed', getattr(exc, 'code', 'DSH_RUNTIME_FAILED')
                     failure = {'error_code': run['exit_reason']}
                     if plan_box['plan']:
@@ -484,7 +489,11 @@ class DshRuntime:
         finally:
             if crossings is not None:
                 with self.store.transaction() as db:
-                    retire_crossings(self.store, db, ident, crossings.generation)
+                    # Cancellation must not wait on the crossing lock/Provider. Late
+                    # cleanup is allowed, but a failed terminal transaction must not
+                    # be followed by an independent retirement commit on a live Run.
+                    if self.store.get('runs', ident)['status'] in TERMINAL:
+                        retire_crossings(self.store, db, ident, crossings.generation)
 
     def _run_root(self):
         # Fixed at recovery time so a later env change cannot widen a retry's scope.

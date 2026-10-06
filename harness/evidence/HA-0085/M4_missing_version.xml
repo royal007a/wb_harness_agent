@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="3.673" timestamp="2026-10-07T00:07:08.581806+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_retirement_distinguishes_unused_unknown_and_historical" time="1.183"><failure message="assert False&#10; +  where False = all(&lt;generator object test_retirement_distinguishes_unused_unknown_and_historical.&lt;locals&gt;.&lt;genexpr&gt; at 0x10bfee880&gt;)">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10c0201a0&gt;, 'run_37819b171dfd4256add0e2a21ee3545f', &lt;backend.dsh_crossings.Crossings object at 0x10c020ad0&gt;)
+
+    def test_retirement_distinguishes_unused_unknown_and_historical(setup):
+        rt, ident, crossings = setup
+        ticket = issue(crossings)
+        other = Crossings(rt.store, ident, lambda: rt.service.check(ident))
+        rt.store.db.execute("UPDATE dsh_crossings SET status='in_flight' WHERE crossing_id=?",
+                            (ticket['crossing_id'],))
+        # A legacy failed receipt is preserved, not retrospectively interpreted as unused.
+        rt.store.db.execute("UPDATE dsh_crossings SET status='failed' WHERE generation=?", (other.generation,))
+        with rt.store.transaction() as db:
+            retire(rt.store, db, ident, crossings.generation)
+        result = {r['crossing_id']: r['status'] for r in rows(rt, crossings.generation)}
+        assert result == {'m_1': 'completed', 'm_2': 'retired', ticket['crossing_id']: 'unknown'}
+        assert rows(rt, other.generation)[0]['status'] == 'failed'
+        before = rt.store.db.total_changes
+        with rt.store.transaction() as db:
+            retire(rt.store, db, ident)
+        assert rt.store.db.total_changes == before
+        assert 'SYNTH_CROSSING_SECRET' not in json.dumps(events(rt, ident))
+&gt;       assert all(e['data'].get('schema_version') == 'dsh-crossing@2'
+                   for e in events(rt, ident) if e['event_type'] == 'dsh.crossing')
+E       assert False
+E        +  where False = all(&lt;generator object test_retirement_distinguishes_unused_unknown_and_historical.&lt;locals&gt;.&lt;genexpr&gt; at 0x10bfee880&gt;)
+
+tests/test_dsh_crossing_retirement.py:59: AssertionError</failure></testcase></testsuite></testsuites>

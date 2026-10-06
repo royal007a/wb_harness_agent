@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="6.799" timestamp="2026-10-07T00:07:22.055405+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_failed_terminal_fault_does_not_commit_detached_retirement" time="3.386"><failure message="AssertionError: assert ['retired'] == ['issued']&#10;  &#10;  At index 0 diff: 'retired' != 'issued'&#10;  Use -v to get more diff">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10e2ec1a0&gt;, 'run_f5a4f330a3f34f4790bb1538965349ee', &lt;backend.dsh_crossings.Crossings object at 0x10e2ecad0&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ccdf100&gt;
+
+    def test_failed_terminal_fault_does_not_commit_detached_retirement(setup, monkeypatch):
+        rt, ident, unrelated = setup
+        def adapter(*args, **kwargs):
+            raise Problem('SYNTHETIC_FAILURE', 'synthetic', 500)
+        monkeypatch.setattr(rt.adapter, 'run', adapter)
+        original = rt.store.event
+        def event(db, run, kind, data=None, step_id=None, **kwargs):
+            value = original(db, run, kind, data, step_id, **kwargs)
+            if kind == 'run.failed':
+                raise sqlite3.OperationalError('synthetic terminal failure')
+            return value
+        monkeypatch.setattr(rt.store, 'event', event)
+        with pytest.raises(sqlite3.OperationalError):
+            rt.execute(ident)
+        assert rt.detail(ident)['run']['status'] == 'running'
+        states = [r[0] for r in rt.store.db.execute(
+            'SELECT status FROM dsh_crossings WHERE generation!=?', (unrelated.generation,))]
+&gt;       assert states == ['issued']
+E       AssertionError: assert ['retired'] == ['issued']
+E         
+E         At index 0 diff: 'retired' != 'issued'
+E         Use -v to get more diff
+
+tests/test_dsh_crossing_retirement.py:180: AssertionError</failure></testcase></testsuite></testsuites>

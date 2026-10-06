@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="9.015" timestamp="2026-10-07T00:06:51.610079+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_retirement_does_not_touch_other_generation" time="6.057"><failure message="AssertionError: assert 'retired' == 'issued'&#10;  &#10;  - issued&#10;  + retired">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10e3d81a0&gt;, 'run_b603548c586c4bff84d7cb4292167a42', &lt;backend.dsh_crossings.Crossings object at 0x10e3d8ad0&gt;)
+
+    def test_retirement_does_not_touch_other_generation(setup):
+        rt, ident, crossings = setup
+        other = Crossings(rt.store, ident, lambda: rt.service.check(ident))
+        with rt.store.transaction() as db:
+            retire(rt.store, db, ident, crossings.generation)
+        assert rows(rt, crossings.generation)[0]['status'] == 'retired'
+&gt;       assert rows(rt, other.generation)[0]['status'] == 'issued'
+E       AssertionError: assert 'retired' == 'issued'
+E         
+E         - issued
+E         + retired
+
+tests/test_dsh_crossing_retirement.py:69: AssertionError</failure></testcase></testsuite></testsuites>

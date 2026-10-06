@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="4.871" timestamp="2026-10-07T00:12:05.782469+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_controlled_bridge_publication_sequence_without_sdk_startup" time="1.714" /></testsuite></testsuites>

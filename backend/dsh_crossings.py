@@ -9,6 +9,8 @@ import uuid
 
 from .analysis import Problem
 
+EVENT_SCHEMA = 'dsh-crossing@2'
+
 
 def fingerprint(value):
     try:
@@ -39,10 +41,12 @@ def retire(store, db, run_id, generation=None):
     rows = db.execute(query, args).fetchall()
     run = store.get('runs', run_id)
     for row in rows:
-        status = 'unknown' if row['status'] == 'in_flight' else 'failed'
+        # Issuance is not execution: an unused ticket is not a failed Provider call.
+        status = 'unknown' if row['status'] == 'in_flight' else 'retired'
         db.execute('UPDATE dsh_crossings SET status=? WHERE run_id=? AND generation=? AND crossing_id=?',
                    (status, run_id, row['generation'], row['crossing_id']))
         store.event(db, run, 'dsh.crossing', {
+            'schema_version': EVENT_SCHEMA,
             'generation': row['generation'], 'crossing_id': row['crossing_id'],
             'kind': row['kind'], 'model_round': row['model_round'],
             'tool_ordinal': row['tool_ordinal'], 'status': status,
@@ -69,7 +73,7 @@ class Crossings:
 
     def _event(self, db, item):
         self.store.event(db, self.store.get('runs', self.run_id), 'dsh.crossing',
-                         dict(generation=self.generation, **item))
+                         dict(schema_version=EVENT_SCHEMA, generation=self.generation, **item))
 
     def _insert(self, db, item):
         db.execute('''INSERT INTO dsh_crossings

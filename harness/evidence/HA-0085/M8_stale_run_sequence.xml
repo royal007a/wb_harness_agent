@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="71.009" timestamp="2026-10-07T00:08:54.904291+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_sdk_success_retires_before_terminal_in_one_transaction[free]" time="34.709"><failure message="AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T16:09:06.863384Z', 'effective_limits'...d_capabilities': ['actions.tool_call', 'artifacts.files', 'control.cancel']}, ...}, 'artifacts': [], 'plan': None, ...}&#10;assert 'failed' == 'succeeded'&#10;  &#10;  - succeeded&#10;  + failed">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10e594050&gt;, 'run_94f291c0be694729b70dea7283e8a5d2', &lt;backend.dsh_crossings.Crossings object at 0x10e594980&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cf87100&gt;
+template = 'free'
+
+    @pytest.mark.parametrize('template', ['free', 'payment_terms'])
+    def test_sdk_success_retires_before_terminal_in_one_transaction(setup, monkeypatch, template):
+        rt, ident, unrelated = setup
+        if template == 'payment_terms':
+            ident = rt.create(dict(objective='核对付款条件', document='甲方验收后30天付款。',
+                public_data_confirmed=True, mode='integration_probe', template=template),
+                'retire-payment')['initial_run']['id']
+        original, observed = rt.store.event, []
+        def event(db, run, kind, data=None, step_id=None, **kwargs):
+            if kind == 'run.succeeded':
+                observed.append((db.in_transaction, [r[0] for r in db.execute(
+                    'SELECT status FROM dsh_crossings WHERE run_id=? AND generation!=?',
+                    (ident, unrelated.generation))]))
+            return original(db, run, kind, data, step_id, **kwargs)
+        monkeypatch.setattr(rt.store, 'event', event)
+        rt.execute(ident)
+        detail = rt.detail(ident)
+&gt;       assert detail['run']['status'] == 'succeeded', detail
+E       AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T16:09:06.863384Z', 'effective_limits'...d_capabilities': ['actions.tool_call', 'artifacts.files', 'control.cancel']}, ...}, 'artifacts': [], 'plan': None, ...}
+E       assert 'failed' == 'succeeded'
+E         
+E         - succeeded
+E         + failed
+
+tests/test_dsh_crossing_retirement.py:109: AssertionError</failure></testcase><testcase classname="tests.test_dsh_crossing_retirement" name="test_sdk_success_retires_before_terminal_in_one_transaction[payment_terms]" time="28.310"><failure message="AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T16:09:44.430873Z', 'effective_limits'...s_on': ['S3'], 'error_codes': [], 'evidence_ids': [], 'missing_ids': [], ...}], 'template': 'payment_terms', ...}, ...}&#10;assert 'failed' == 'succeeded'&#10;  &#10;  - succeeded&#10;  + failed">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10f3334d0&gt;, 'run_2adc76692ab5444cb323194ff5726bac', &lt;backend.dsh_crossings.Crossings object at 0x10f3339d0&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cf876f0&gt;
+template = 'payment_terms'
+
+    @pytest.mark.parametrize('template', ['free', 'payment_terms'])
+    def test_sdk_success_retires_before_terminal_in_one_transaction(setup, monkeypatch, template):
+        rt, ident, unrelated = setup
+        if template == 'payment_terms':
+            ident = rt.create(dict(objective='核对付款条件', document='甲方验收后30天付款。',
+                public_data_confirmed=True, mode='integration_probe', template=template),
+                'retire-payment')['initial_run']['id']
+        original, observed = rt.store.event, []
+        def event(db, run, kind, data=None, step_id=None, **kwargs):
+            if kind == 'run.succeeded':
+                observed.append((db.in_transaction, [r[0] for r in db.execute(
+                    'SELECT status FROM dsh_crossings WHERE run_id=? AND generation!=?',
+                    (ident, unrelated.generation))]))
+            return original(db, run, kind, data, step_id, **kwargs)
+        monkeypatch.setattr(rt.store, 'event', event)
+        rt.execute(ident)
+        detail = rt.detail(ident)
+&gt;       assert detail['run']['status'] == 'succeeded', detail
+E       AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T16:09:44.430873Z', 'effective_limits'...s_on': ['S3'], 'error_codes': [], 'evidence_ids': [], 'missing_ids': [], ...}], 'template': 'payment_terms', ...}, ...}
+E       assert 'failed' == 'succeeded'
+E         
+E         - succeeded
+E         + failed
+
+tests/test_dsh_crossing_retirement.py:109: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="8.381" timestamp="2026-10-07T00:06:36.282885+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_restart_unknown_budget_and_unused_retirement" time="5.174"><failure message="AssertionError: assert {'completed', 'retired'} == {'completed',...d', 'unknown'}&#10;  &#10;  Extra items in the right set:&#10;  'unknown'&#10;  Use -v to get more diff">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10e9541a0&gt;, 'run_611cb21c326d4ee6b2c4b7ea3d4bb735', &lt;backend.dsh_crossings.Crossings object at 0x10e954ad0&gt;)
+
+    def test_restart_unknown_budget_and_unused_retirement(setup):
+        rt, ident, crossings = setup
+        ticket = issue(crossings)
+        rt.ledger.register_root(ident, 'a' * 64, 1000)
+        rt.ledger.reserve(ident, 'call_1', binding_digest='a' * 64, request_digest='b' * 64,
+                          input_bound=100, output_limit=100)
+        rt.ledger.mark_sent(ident, 'call_1')
+        rt.store.db.execute("UPDATE dsh_crossings SET status='in_flight' WHERE crossing_id=?", (ticket['crossing_id'],))
+        rt.recover()
+&gt;       assert {r['status'] for r in rows(rt, crossings.generation)} == {'completed', 'unknown', 'retired'}
+E       AssertionError: assert {'completed', 'retired'} == {'completed',...d', 'unknown'}
+E         
+E         Extra items in the right set:
+E         'unknown'
+E         Use -v to get more diff
+
+tests/test_dsh_crossing_retirement.py:197: AssertionError</failure></testcase></testsuite></testsuites>

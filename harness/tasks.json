@@ -3,9 +3,24 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0085",
+      "title": "DSH未使用票据退役与正常终态原子审计",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": ["未使用票据retired状态", "正常终态与退役原子性", "取消及历史兼容验证", "独立8876部署"],
+      "non_goals": ["未知调用重发", "历史事实重写", "8765及132部署", "A2证据续跑"],
+      "acceptance": ["未执行票据不报调用失败", "退役及终态同事务且序号连续", "取消不等待Provider并保留unknown", "故障反例与独立复审通过", "固定版本部署验收"],
+      "depends_on": ["HA-0083"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0085.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0085/acceptance.md", "harness/evidence/HA-0085/mutations.json"]
+    },
+    {
       "id": "HA-0084",
       "title": "课程资料分批精读与HarnessAgent优化映射",
-      "status": "running",
+      "status": "waiting_approval",
       "risk": "low",
       "scope": ["本地PDF哈希与重复清单", "相关章节总结和源码对照", "逐项优化验收设计与独立复审"],
       "non_goals": ["公开课程全文", "把盘点当精读", "在研究提交中修改运行时或部署"],

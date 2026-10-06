@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="16.083" timestamp="2026-10-07T00:13:07.206340+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_controlled_bridge_publication_sequence_without_sdk_startup" time="6.132"><failure message="AssertionError: DSH_RUNTIME_FAILED&#10;assert 'failed' == 'succeeded'&#10;  &#10;  - succeeded&#10;  + failed">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10e7941a0&gt;, 'run_55456626ff834a649b7ddaf2d1e452e4', &lt;backend.dsh_crossings.Crossings object at 0x10e794ad0&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c4ef490&gt;
+
+    def test_controlled_bridge_publication_sequence_without_sdk_startup(setup, monkeypatch):
+        """Same platform callbacks; a synthetic bridge avoids conflating SDK startup with sequence faults."""
+        rt, ident, _ = setup
+        def adapter(prompt, root, model, model_call, tool_call, emit, check, **kwargs):
+            messages = [{'role': 'user', 'content': [{'type': 'text', 'text': prompt}]}]
+            def request():
+                return {'model': model, 'purpose': 'primary', 'messages': messages,
+                        'tools': [{'name': name, 'parameters': {'type': 'object'}}
+                                  for name in ('search_document', 'read_clause')]}
+            first = model_call(envelope('m_1', request()))
+            calls = first['value']['tool_calls']
+            assert calls
+            messages.append({'role': 'assistant', 'content': [dict(type='tool-call', **c) for c in calls]})
+            for call in calls:
+                output = tool_call(envelope(call['id'], {'name': call['name'], 'arguments': json.loads(call['arguments'])}))
+                messages.append({'role': 'tool', 'toolCallId': call['id'],
+                                 'content': [{'type': 'text', 'text': output['text']}]})
+            last = model_call(envelope(first['next_model_crossing'], request()))
+            assert not last['value']['tool_calls']
+            return {'type': 'result', 'text': last['value']['text'], 'session_sha256': 'a' * 64,
+                    'turn_count': 2, 'runtime': 'deepseek-harness@0.2.1-alpha.1'}
+        monkeypatch.setattr(rt.adapter, 'run', adapter)
+        rt.execute(ident)
+        detail = rt.detail(ident)
+        assert detail['budget']['calls'] == 2
+&gt;       assert detail['run']['status'] == 'succeeded', detail['run']['exit_reason']
+E       AssertionError: DSH_RUNTIME_FAILED
+E       assert 'failed' == 'succeeded'
+E         
+E         - succeeded
+E         + failed
+
+tests/test_dsh_crossing_retirement.py:66: AssertionError</failure></testcase></testsuite></testsuites>

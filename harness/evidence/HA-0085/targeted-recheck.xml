@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="2" time="31.134" timestamp="2026-10-07T00:03:35.669444+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_sdk_success_retires_before_terminal_in_one_transaction[free]" time="13.087" /><testcase classname="tests.test_dsh_ha0082_review_probes" name="test_evidence_ids_match_completed_plan" time="10.794" /></testsuite></testsuites>

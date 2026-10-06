@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="39.928" timestamp="2026-10-07T00:08:03.013505+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_sdk_success_retires_before_terminal_in_one_transaction[free]" time="16.320"><failure message="AssertionError: assert 0 == 1&#10; +  where 0 = &lt;built-in method count of list object at 0x10979d880&gt;('retired')&#10; +    where &lt;built-in method count of list object at 0x10979d880&gt; = ['completed', 'completed', 'issued', 'completed'].count">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x109e58050&gt;, 'run_cc2859ebc12343208f483b64fd019b29', &lt;backend.dsh_crossings.Crossings object at 0x109e58980&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108863100&gt;
+template = 'free'
+
+    @pytest.mark.parametrize('template', ['free', 'payment_terms'])
+    def test_sdk_success_retires_before_terminal_in_one_transaction(setup, monkeypatch, template):
+        rt, ident, unrelated = setup
+        if template == 'payment_terms':
+            ident = rt.create(dict(objective='核对付款条件', document='甲方验收后30天付款。',
+                public_data_confirmed=True, mode='integration_probe', template=template),
+                'retire-payment')['initial_run']['id']
+        original, observed = rt.store.event, []
+        def event(db, run, kind, data=None, step_id=None, **kwargs):
+            if kind == 'run.succeeded':
+                observed.append((db.in_transaction, [r[0] for r in db.execute(
+                    'SELECT status FROM dsh_crossings WHERE run_id=? AND generation!=?',
+                    (ident, unrelated.generation))]))
+            return original(db, run, kind, data, step_id, **kwargs)
+        monkeypatch.setattr(rt.store, 'event', event)
+        rt.execute(ident)
+        detail = rt.detail(ident)
+        assert detail['run']['status'] == 'succeeded', detail
+        assert len(observed) == 1 and observed[0][0]
+&gt;       assert observed[0][1].count('retired') == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = &lt;built-in method count of list object at 0x10979d880&gt;('retired')
+E        +    where &lt;built-in method count of list object at 0x10979d880&gt; = ['completed', 'completed', 'issued', 'completed'].count
+
+tests/test_dsh_crossing_retirement.py:111: AssertionError</failure></testcase><testcase classname="tests.test_dsh_crossing_retirement" name="test_sdk_success_retires_before_terminal_in_one_transaction[payment_terms]" time="13.172"><failure message="AssertionError: assert 0 == 1&#10; +  where 0 = &lt;built-in method count of list object at 0x109e06500&gt;('retired')&#10; +    where &lt;built-in method count of list object at 0x109e06500&gt; = ['completed', 'completed', 'completed', 'issued', 'completed', 'completed'].count">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10ad4ad50&gt;, 'run_1f4a35d69160402fa54cc6519316700e', &lt;backend.dsh_crossings.Crossings object at 0x10ad4b250&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1088636f0&gt;
+template = 'payment_terms'
+
+    @pytest.mark.parametrize('template', ['free', 'payment_terms'])
+    def test_sdk_success_retires_before_terminal_in_one_transaction(setup, monkeypatch, template):
+        rt, ident, unrelated = setup
+        if template == 'payment_terms':
+            ident = rt.create(dict(objective='核对付款条件', document='甲方验收后30天付款。',
+                public_data_confirmed=True, mode='integration_probe', template=template),
+                'retire-payment')['initial_run']['id']
+        original, observed = rt.store.event, []
+        def event(db, run, kind, data=None, step_id=None, **kwargs):
+            if kind == 'run.succeeded':
+                observed.append((db.in_transaction, [r[0] for r in db.execute(
+                    'SELECT status FROM dsh_crossings WHERE run_id=? AND generation!=?',
+                    (ident, unrelated.generation))]))
+            return original(db, run, kind, data, step_id, **kwargs)
+        monkeypatch.setattr(rt.store, 'event', event)
+        rt.execute(ident)
+        detail = rt.detail(ident)
+        assert detail['run']['status'] == 'succeeded', detail
+        assert len(observed) == 1 and observed[0][0]
+&gt;       assert observed[0][1].count('retired') == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = &lt;built-in method count of list object at 0x109e06500&gt;('retired')
+E        +    where &lt;built-in method count of list object at 0x109e06500&gt; = ['completed', 'completed', 'completed', 'issued', 'completed', 'completed'].count
+
+tests/test_dsh_crossing_retirement.py:111: AssertionError</failure></testcase></testsuite></testsuites>

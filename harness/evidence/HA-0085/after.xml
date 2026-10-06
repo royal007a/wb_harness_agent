@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="11" time="70.844" timestamp="2026-10-07T00:14:12.166304+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_controlled_bridge_publication_sequence_without_sdk_startup" time="1.997" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_retirement_distinguishes_unused_unknown_and_historical" time="0.103" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_retirement_does_not_touch_other_generation" time="0.560" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_retirement_event_failure_rolls_back_all_receipts" time="0.057" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_sdk_success_retires_before_terminal_in_one_transaction[free]" time="23.039"><failure message="AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T16:14:19.767479Z', 'effective_limits'...d_capabilities': ['actions.tool_call', 'artifacts.files', 'control.cancel']}, ...}, 'artifacts': [], 'plan': None, ...}&#10;assert 'failed' == 'succeeded'&#10;  &#10;  - succeeded&#10;  + failed">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10f711810&gt;, 'run_de0391a6a0844913b701ca1fe0f5620a', &lt;backend.dsh_crossings.Crossings object at 0x10f7a6360&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10f418e20&gt;
+template = 'free'
+
+    @pytest.mark.parametrize('template', ['free', 'payment_terms'])
+    def test_sdk_success_retires_before_terminal_in_one_transaction(setup, monkeypatch, template):
+        rt, ident, unrelated = setup
+        if template == 'payment_terms':
+            ident = rt.create(dict(objective='核对付款条件', document='甲方验收后30天付款。',
+                public_data_confirmed=True, mode='integration_probe', template=template),
+                'retire-payment')['initial_run']['id']
+        original, observed = rt.store.event, []
+        def event(db, run, kind, data=None, step_id=None, **kwargs):
+            if kind == 'run.succeeded':
+                observed.append((db.in_transaction, [r[0] for r in db.execute(
+                    'SELECT status FROM dsh_crossings WHERE run_id=? AND generation!=?',
+                    (ident, unrelated.generation))]))
+            return original(db, run, kind, data, step_id, **kwargs)
+        monkeypatch.setattr(rt.store, 'event', event)
+        rt.execute(ident)
+        detail = rt.detail(ident)
+&gt;       assert detail['run']['status'] == 'succeeded', detail
+E       AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T16:14:19.767479Z', 'effective_limits'...d_capabilities': ['actions.tool_call', 'artifacts.files', 'control.cancel']}, ...}, 'artifacts': [], 'plan': None, ...}
+E       assert 'failed' == 'succeeded'
+E         
+E         - succeeded
+E         + failed
+
+tests/test_dsh_crossing_retirement.py:140: AssertionError</failure></testcase><testcase classname="tests.test_dsh_crossing_retirement" name="test_sdk_success_retires_before_terminal_in_one_transaction[payment_terms]" time="9.128" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_normal_failure_retires_before_terminal" time="15.373" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_success_event_fault_rolls_back_publication_and_retirement" time="12.310" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_failed_terminal_fault_does_not_commit_detached_retirement" time="1.021" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_restart_unknown_budget_and_unused_retirement" time="0.247" /><testcase classname="tests.test_dsh_crossing_retirement" name="test_cancel_does_not_wait_for_crossing_and_late_audit_is_honest" time="0.293" /></testsuite></testsuites>

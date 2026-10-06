@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="27.511" timestamp="2026-10-07T00:07:30.749694+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_crossing_retirement" name="test_normal_failure_retires_before_terminal" time="25.617"><failure message="AssertionError: assert 'dsh.crossing' == 'run.failed'&#10;  &#10;  - run.failed&#10;  + dsh.crossing">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10c7281a0&gt;, 'run_13e0970949fb4cfa8953842e88e7b052', &lt;backend.dsh_crossings.Crossings object at 0x10c728ad0&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a483100&gt;
+
+    def test_normal_failure_retires_before_terminal(setup, monkeypatch):
+        rt, ident, unrelated = setup
+        # Failure after the SDK returns but before publication; no extra provider request.
+        original = rt.adapter.run
+        def adapter(*args, **kwargs):
+            result = original(*args, **kwargs)
+            return dict(result, text='没有证据引用')
+        monkeypatch.setattr(rt.adapter, 'run', adapter)
+        rt.execute(ident)
+        detail = rt.detail(ident)
+        assert detail['run']['exit_reason'] == 'DSH_EVIDENCE_CITATION_INVALID'
+        assert detail['artifacts'] == []
+&gt;       assert events(rt, ident)[-1]['event_type'] == 'run.failed'
+E       AssertionError: assert 'dsh.crossing' == 'run.failed'
+E         
+E         - run.failed
+E         + dsh.crossing
+
+tests/test_dsh_crossing_retirement.py:133: AssertionError</failure></testcase></testsuite></testsuites>
