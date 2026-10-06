@@ -43,6 +43,8 @@
 
 来源完整哈希和文件名见[目录清单](JIKESUMMARY_SOURCE_INVENTORY_2026_10_06.json)。每批报告标明页码、固定项目代码、作者观点与本项目取舍。关键图像已按各报告注明的页数检查，并非每页图都检查过。
 
+独立内容抽查：mymacclaude对1936d9c的第19批GUARD_BOUNDARIES和第29批TRIAGE_COMPACTION实际核对段落给出Approved，具体文字/图像页与未核对页见[逐段复审记录](../../harness/evidence/HA-0084/triage-guard-independent-review.md)。该批准不扩展到两份报告未核对内容或其余28批。
+
 ## 已落实的八个原子切片
 
 以下“已实现”不等于“已发布”。测试范围有重叠，不把通过数相加当总覆盖率。
