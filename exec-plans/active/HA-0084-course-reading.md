@@ -1,6 +1,6 @@
 # HA-0084 课程资料分批阅读与实现映射
 
-状态：running。基线 5939e5d；worktree harnessagent-dsh-course；分支 dsh/course-hardening-20261006。
+状态：waiting_approval。基线 5939e5d；worktree harnessagent-dsh-course；分支 dsh/course-hardening-20261006。
 
 ## 交付
 
@@ -47,3 +47,5 @@
 ## 非目标
 
 不把183份的目录盘点当精读；不上传课程全文；不自动引入新引擎、K8s、遥测外发、MCP或凭据；不把研究批准当部署批准。
+
+2026-10-07收敛复审：30批70个不同SHA/826页计数与来源可追溯性Approved；只抽查一篇原文，不代表所有摘要忠实度获批。状态表述Changes Requested已修订INDEX/REVIEW_PACKET，待固定文档复核；本研究项仍waiting_approval。

@@ -15,7 +15,7 @@
       "plan": "exec-plans/active/HA-0090.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": ["harness/evidence/HA-0090/acceptance.md"]
+      "evidence": ["harness/evidence/HA-0090/acceptance.md", "harness/evidence/HA-0090/independent-review.md"]
     },
     {
       "id": "HA-0092",

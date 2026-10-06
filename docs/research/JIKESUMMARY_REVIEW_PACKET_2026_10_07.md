@@ -1,6 +1,6 @@
 # DSH课程优化复审入口
 
-本轮包含四项运行行为修复、一项评分器修复和两项测试加固。未部署，不能把定向通过或课程阅读当作发布验收。研究索引见[JIKESUMMARY_INDEX](JIKESUMMARY_INDEX_2026_10_07.md)，源码基线5939e5d；第五轮完整测试固定a5ec114，第六轮固定3036543（含HA92清理修复）。被测工作树保持冻结，研究文档单独更新。
+本轮包含五项运行行为修复（含HA90）、一项评分器修复和两项测试加固。未部署，不能把定向通过或课程阅读当作发布验收。研究索引见[JIKESUMMARY_INDEX](JIKESUMMARY_INDEX_2026_10_07.md)，源码基线5939e5d；第五轮完整测试固定a5ec114，第六轮固定3036543（含HA92清理修复）。被测工作树保持冻结，研究文档单独更新。
 
 ## 固定切片与最小复跑
 
@@ -13,6 +13,7 @@
 | HA87 | 8d1a8ba | tests/test_dsh_plan_history.py | 499/500/501/999/1000/1001；最新计划、晚创建和拒绝；稀疏游标；GET锁与零写入 |
 | HA88 | 85745bb | tests/test_dsh_payment_scoring.py | 30与300、自然日与工作日；失败无产物不算无误报；ID必须唯一且与labels完整一致 |
 | HA89 | 4b8ec1e | tests/test_dsh_runtime.py -k timeout_while_provider_waits | 先到达合成Provider再触发期限；协程取消、调用unknown与资源清理 |
+| HA90 | 77428b8；e18b35e为证据，复审范围5467dac..e18b35e | tests/test_chinese_clause_boundaries.py tests/test_chinese_clause_coverage.py tests/test_dsh_payment_findings.py | 中文条号与偏移；同父/标题关联；独立争议不误吸收；M1编号子项及Low见规格 |
 | HA91 | a5ec114 | tests/test_dsh_runtime.py -k 'cancel_while_provider_waits or sigkill_then_recover' | 明确挂起代替0.8秒返回；设置等待与取消期限分开；finally回收测试线程；kill后恢复断言不放宽 |
 | HA92 | 3036543（43dd049..3036543，含e64b03d初版） | tests/test_dsh_cleanup_errors.py tests/test_dsh_startup.py | 清理故障不覆盖主异常；正常返回不得藏在外层except后冒充成功；拒绝升级信号，其他资源仍释放；活目录保留 |
 
@@ -36,6 +37,12 @@ HA88后续实际官方SDK重跑见`harness/evidence/HA-0088/sdk-evaluation-follo
 
 HA86的高负载startup偶发失败尚无独立失败断言，不能和作者第五轮清理异常未经核对就合并归因。HA88的@2官方SDK评测已保存于036f338并补发给复审方，尚待其确认附件。
 
-后续收到HA91 a5ec114和HA92最终3036543的单独Approved：分别独立运行2项和15项通过，范围和Low见各自independent-review.md。因此HA85–89/91/92全部获得固定切片批准；阅读报告和完整发布门禁仍未通过。中文条号最终编号HA90（da56602/ebc88c6历史上先用HA93/94，编号冲突后更名，不改写历史），不属于这些批准。Claude的HA93凭据、HA94上下文反馈及后续切片仍在独立分支，不自动合并。
+后续收到HA91 a5ec114和HA92最终3036543的单独Approved：分别独立运行2项和15项通过，范围和Low见各自independent-review.md。因此HA85–89/91/92全部获得固定切片批准。随后HA90最终77428b8/e18b35e也获代码与离线行为Approved；对方报告30项、后续66项（重叠不相加），未重跑2×21次SDK评测。M1编号子项静默漏报、Markdown/无标题误关联及章标题自成块已补规格，见HA-0090/independent-review.md；弱关联/层级设计另列DSH-COVERAGE-01。中文条号最终编号HA90（da56602/ebc88c6历史上先用HA93/94，编号冲突后更名，不改写历史）。Claude的HA93凭据、HA94上下文反馈及后续切片仍在独立分支，不自动合并。
 
 每个切片单独给Approved或Changes Requested，列出实际重跑范围、未覆盖边界和阻断项。请同时提供本地结论文件路径，避免聊天卡片只显示标题。运行代码批准、阅读报告批准、真实模型与部署验收是四种不同结论；未检查部分不默认为通过。
+
+## 阅读与交付状态（2026-10-07收敛）
+
+mymacclaude对30批索引独立对账：70个不同SHA、826页、无跨批重复；清单183文件、177个SHA。计数和来源可追溯性Approved；只抽查H10一篇页面，不能扩展为70篇摘要忠实度全部Approved。报告状态表述Changes Requested，本次同步索引、HA90批准和四类状态，并限定parties()仅检查主体字样集合包含，文档修订待复核。
+
+代码切片Approved不等于完整门禁通过；第六轮3036543仍1失败。8876本轮未部署，保留ad957fb；后续候选不自动合并。
