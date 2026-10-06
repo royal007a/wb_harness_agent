@@ -235,8 +235,12 @@ def verify(submission, clauses, seen):
     unread_payment = [k for k in found['payment'] if k not in seen]
     if unread_exception:
         platform_gaps.append({'code': 'EXCEPTION_CANDIDATES_UNREAD', 'clause_ids': unread_exception})
-    elif unread_payment:
-        platform_gaps.append({'code': 'PAYMENT_CLAUSES_UNREAD', 'clause_ids': unread_payment})
+    # HA-0115: report both gaps (was elif); unread payment blocks are listed even when
+    # an exception candidate is also unread. Exception candidates are payment blocks too,
+    # so they are not repeated here.
+    unread_payment_only = [k for k in unread_payment if k not in unread_exception]
+    if unread_payment_only:
+        platform_gaps.append({'code': 'PAYMENT_CLAUSES_UNREAD', 'clause_ids': unread_payment_only})
     # Every read exception candidate must be placed in the exception or conflict slot;
     # reporting one of two candidates does not cover the other.
     reported = {q['clause_id'] for slot in ('exception', 'conflict') for q in findings[slot]['quotes']}
