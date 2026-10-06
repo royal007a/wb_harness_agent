@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="19" skipped="0" tests="20" time="0.093" timestamp="2026-10-07T06:46:54.470310+08:00" hostname="192.168.31.117"><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\n]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])">newline = '\n', indent = ''
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r\n]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])">newline = '\r\n', indent = ''
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])">newline = '\r', indent = ''
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\n]" time="0.000"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-856357a487b188f7', 'parent_id': 'parent-648a0f99a8695e12', 'index': 0, 'heading': 'document', ...}])">newline = '\n', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-856357a487b188f7', 'parent_id': 'parent-648a0f99a8695e12', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r\n]" time="0.000"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-856357a487b188f7', 'parent_id': 'parent-648a0f99a8695e12', 'index': 0, 'heading': 'document', ...}])">newline = '\r\n', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-856357a487b188f7', 'parent_id': 'parent-648a0f99a8695e12', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r]" time="0.000"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-856357a487b188f7', 'parent_id': 'parent-648a0f99a8695e12', 'index': 0, 'heading': 'document', ...}])">newline = '\r', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-856357a487b188f7', 'parent_id': 'parent-648a0f99a8695e12', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\n]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-f8fcd54692982f89', 'parent_id': 'parent-cd6756d6215cb9d1', 'index': 0, 'heading': 'document', ...}])">newline = '\n', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-f8fcd54692982f89', 'parent_id': 'parent-cd6756d6215cb9d1', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r\n]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-f8fcd54692982f89', 'parent_id': 'parent-cd6756d6215cb9d1', 'index': 0, 'heading': 'document', ...}])">newline = '\r\n', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-f8fcd54692982f89', 'parent_id': 'parent-cd6756d6215cb9d1', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-f8fcd54692982f89', 'parent_id': 'parent-cd6756d6215cb9d1', 'index': 0, 'heading': 'document', ...}])">newline = '\r', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-f8fcd54692982f89', 'parent_id': 'parent-cd6756d6215cb9d1', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341]" time="0.001"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '十'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341\u4e00]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '十一'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e8c\u5341]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '二十'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u96f6\u4e00]" time="0.001"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一百零一'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u3007\u4e8c]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一百〇二'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e24\u767e]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '两百'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u5343]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一千'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u4e07]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一万'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_arabic_heading_output_is_unchanged" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_inline_cross_reference_is_not_a_heading" time="0.000"><failure message="AssertionError: assert 1 == 2&#10; +  where 1 = len([{'id': 'parent-0c29cb2aeb622af4', 'heading': 'document', 'text': '第一条 内容\n应依照第十二条办理。\n第二条 其他\n没有新增标题。', 'start': 0, ...}])">def test_inline_cross_reference_is_not_a_heading():
+        result = build_parent_child_chunks('第一条 内容\n应依照第十二条办理。\n第二条 其他\n没有新增标题。')
+&gt;       assert len(result['parents']) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'id': 'parent-0c29cb2aeb622af4', 'heading': 'document', 'text': '第一条 内容\n应依照第十二条办理。\n第二条 其他\n没有新增标题。', 'start': 0, ...}])
+
+tests/test_chinese_clause_boundaries.py:51: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_long_chinese_clauses_are_bounded_and_not_one_clause_one_chunk" time="0.004"><failure message="AssertionError: assert '原始内容。原始内容。原始... 最后条\n最后唯一标记。' == '第二条 最后条\n最后唯一标记。'&#10;  &#10;  + 原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。&#10;    第二条 最后条&#10;    最后唯一标记。">def test_long_chinese_clauses_are_bounded_and_not_one_clause_one_chunk():
+        text = '第一条 长条款\n' + '原始内容。' * 1300 + '\n第二条 最后条\n最后唯一标记。'
+        result = build_parent_child_chunks(text, max_child_chars=400, parent_max_chars=1000)
+        assert len(result['children']) &gt; 2
+        assert all(p['char_count'] &lt;= 1000 for p in result['parents'])
+        assert all(c['char_count'] &lt;= 400 for c in result['children'])
+&gt;       assert result['children'][-1]['text'] == '第二条 最后条\n最后唯一标记。'
+E       AssertionError: assert '原始内容。原始内容。原始... 最后条\n最后唯一标记。' == '第二条 最后条\n最后唯一标记。'
+E         
+E         + 原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。
+E           第二条 最后条
+E           最后唯一标记。
+
+tests/test_chinese_clause_boundaries.py:62: AssertionError</failure></testcase></testsuite></testsuites>

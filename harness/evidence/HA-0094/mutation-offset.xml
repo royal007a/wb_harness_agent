@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="20" time="0.140" timestamp="2026-10-07T06:46:54.982936+08:00" hostname="192.168.31.117"><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\n]" time="0.001" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r\n]" time="0.001" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r]" time="0.001" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\n]" time="0.001"><failure message="ValueError: child intervals do not cover source">newline = '\n', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:110: in build_parent_child_chunks
+    validate_adaptive_chunks(result); return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '  第一条 条款1\n  唯一标记1：甲方付款。\n  第二条 条款2\n  唯一标记2：甲方付款。\n  第三条 条款3\n..., {'id': 'parent-013d438baf9069de', 'heading': '条款6', 'text': '条 条款6\n  唯一标记6：甲方付款。\n ', 'start': 124, ...}, ...], ...}
+
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+                covered.update(range(child["start"], child["end"]))
+            if any(not char.isspace() and index not in covered for index, char in enumerate(source)):
+&gt;               raise ValueError("child intervals do not cover source")
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:128: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r\n]" time="0.001"><failure message="ValueError: child intervals do not cover source">newline = '\r\n', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:110: in build_parent_child_chunks
+    validate_adaptive_chunks(result); return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '  第一条 条款1\n  唯一标记1：甲方付款。\n  第二条 条款2\n  唯一标记2：甲方付款。\n  第三条 条款3\n..., {'id': 'parent-013d438baf9069de', 'heading': '条款6', 'text': '条 条款6\n  唯一标记6：甲方付款。\n ', 'start': 124, ...}, ...], ...}
+
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+                covered.update(range(child["start"], child["end"]))
+            if any(not char.isspace() and index not in covered for index, char in enumerate(source)):
+&gt;               raise ValueError("child intervals do not cover source")
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:128: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r]" time="0.001"><failure message="ValueError: child intervals do not cover source">newline = '\r', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:110: in build_parent_child_chunks
+    validate_adaptive_chunks(result); return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '  第一条 条款1\n  唯一标记1：甲方付款。\n  第二条 条款2\n  唯一标记2：甲方付款。\n  第三条 条款3\n..., {'id': 'parent-013d438baf9069de', 'heading': '条款6', 'text': '条 条款6\n  唯一标记6：甲方付款。\n ', 'start': 124, ...}, ...], ...}
+
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+                covered.update(range(child["start"], child["end"]))
+            if any(not char.isspace() and index not in covered for index, char in enumerate(source)):
+&gt;               raise ValueError("child intervals do not cover source")
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:128: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\n]" time="0.000"><failure message="ValueError: child intervals do not cover source">newline = '\n', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:110: in build_parent_child_chunks
+    validate_adaptive_chunks(result); return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '\t第一条 条款1\n\t唯一标记1：甲方付款。\n\t第二条 条款2\n\t唯一标记2：甲方付款。\n\t第三条 条款3\n..., {'id': 'parent-372d28627efb9900', 'heading': '条款6', 'text': '六条 条款6\n\t唯一标记6：甲方付款。\n', 'start': 112, ...}, ...], ...}
+
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+                covered.update(range(child["start"], child["end"]))
+            if any(not char.isspace() and index not in covered for index, char in enumerate(source)):
+&gt;               raise ValueError("child intervals do not cover source")
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:128: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r\n]" time="0.002"><failure message="ValueError: child intervals do not cover source">newline = '\r\n', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:110: in build_parent_child_chunks
+    validate_adaptive_chunks(result); return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '\t第一条 条款1\n\t唯一标记1：甲方付款。\n\t第二条 条款2\n\t唯一标记2：甲方付款。\n\t第三条 条款3\n..., {'id': 'parent-372d28627efb9900', 'heading': '条款6', 'text': '六条 条款6\n\t唯一标记6：甲方付款。\n', 'start': 112, ...}, ...], ...}
+
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+                covered.update(range(child["start"], child["end"]))
+            if any(not char.isspace() and index not in covered for index, char in enumerate(source)):
+&gt;               raise ValueError("child intervals do not cover source")
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:128: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r]" time="0.005"><failure message="ValueError: child intervals do not cover source">newline = '\r', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:110: in build_parent_child_chunks
+    validate_adaptive_chunks(result); return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '\t第一条 条款1\n\t唯一标记1：甲方付款。\n\t第二条 条款2\n\t唯一标记2：甲方付款。\n\t第三条 条款3\n..., {'id': 'parent-372d28627efb9900', 'heading': '条款6', 'text': '六条 条款6\n\t唯一标记6：甲方付款。\n', 'start': 112, ...}, ...], ...}
+
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+                covered.update(range(child["start"], child["end"]))
+            if any(not char.isspace() and index not in covered for index, char in enumerate(source)):
+&gt;               raise ValueError("child intervals do not cover source")
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:128: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341\u4e00]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e8c\u5341]" time="0.001" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u96f6\u4e00]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u3007\u4e8c]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e24\u767e]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u5343]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u4e07]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_arabic_heading_output_is_unchanged" time="0.001" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_inline_cross_reference_is_not_a_heading" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_long_chinese_clauses_are_bounded_and_not_one_clause_one_chunk" time="0.006" /></testsuite></testsuites>

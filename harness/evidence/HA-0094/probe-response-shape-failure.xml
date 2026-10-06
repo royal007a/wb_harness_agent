@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="27" time="1.820" timestamp="2026-10-07T06:45:20.996493+08:00" hostname="192.168.31.117"><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\n]" time="0.001" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r\n]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\n]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r\n]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\n]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r\n]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341\u4e00]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e8c\u5341]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u96f6\u4e00]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u3007\u4e8c]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e24\u767e]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u5343]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u4e07]" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_arabic_heading_output_is_unchanged" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_inline_cross_reference_is_not_a_heading" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_long_chinese_clauses_are_bounded_and_not_one_clause_one_chunk" time="0.003" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_actual_sdk_can_read_twelfth_chinese_clause" time="1.707"><failure message="AssertionError: ('DSH_GATEWAY_FAILED', 2)&#10;assert 'failed' == 'succeeded'&#10;  &#10;  - succeeded&#10;  + failed">tmp_path = PosixPath('/private/tmp/pytest-of-local-user/pytest-125/test_actual_sdk_can_read_twelf0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10bbc0640&gt;
+
+    def test_actual_sdk_can_read_twelfth_chinese_clause(tmp_path, monkeypatch):
+        import json
+        from fastapi.testclient import TestClient
+        from backend.app import create_app
+        from backend.agent_runtime import KeyringCredentialResolver
+        from backend.dsh_provider import parse_response
+    
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(tmp_path.resolve() / 'owned'))
+        monkeypatch.delenv('HARNESS_DSH_REAL_ENABLED', raising=False)
+        monkeypatch.setattr(KeyringCredentialResolver, 'resolve', lambda *a: pytest.fail('no credentials'))
+        calls = []
+    
+        async def provider(payload, limit):
+            calls.append(payload)
+            results = [json.loads(m['content']) for m in payload['messages'] if m['role'] == 'tool']
+            if len(calls) == 1:
+                name, args = 'read_clause', {'clause_id': 'clause-12'}
+            else:
+                assert len(calls) == 2
+                assert results[-1]['matches'] == [{'clause_id': 'clause-12', 'text': '第十二条 条款12\n唯一标记12：甲方付款。'}]
+                return parse_response({'choices': [{'finish_reason': 'stop', 'message': {'content': '合成测试结果，引用 clause-12。'}}],
+                    'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+            return parse_response({'choices': [{'finish_reason': 'tool_calls', 'message': {'content': '',
+                'tool_calls': [{'id': 'same_across_turns', 'type': 'function', 'function': {
+                    'name': name, 'arguments': json.dumps(args, ensure_ascii=False)}}]}}],
+                'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+    
+        with TestClient(create_app(tmp_path / 'test.db', run_worker=False), base_url='http://localhost') as client:
+            response = client.post('/api/local/dsh/runs', json={
+                'objective': '核对最后一条', 'document': document(), 'mode': 'integration_probe',
+                'public_data_confirmed': True, 'timeout_seconds': 300}, headers={'Idempotency-Key': 'cn12'})
+            assert response.status_code == 201, response.text
+            ident = response.json()['initial_run']['id']
+            rt = client.app.state.service.dsh
+            rt.send_probe = provider
+            rt.execute(ident)
+            detail = rt.detail(ident)
+&gt;           assert detail['run']['status'] == 'succeeded', (detail['run']['exit_reason'], len(calls))
+E           AssertionError: ('DSH_GATEWAY_FAILED', 2)
+E           assert 'failed' == 'succeeded'
+E             
+E             - succeeded
+E             + failed
+
+tests/test_chinese_clause_boundaries.py:104: AssertionError</failure></testcase><testcase classname="tests.test_adaptive_retrieval" name="test_parent_child_prefers_structure_and_preserves_lineage" time="0.003" /><testcase classname="tests.test_adaptive_retrieval" name="test_weighted_rrf_and_parent_evidence_are_deterministic" time="0.001" /><testcase classname="tests.test_adaptive_retrieval" name="test_parent_limit_is_real_and_ids_are_content_addressed" time="0.019" /><testcase classname="tests.test_adaptive_retrieval" name="test_long_section_offsets_cover_every_non_whitespace_character" time="0.002" /><testcase classname="tests.test_adaptive_retrieval" name="test_newline_normalization_is_part_of_the_offset_contract" time="0.000" /><testcase classname="tests.test_adaptive_retrieval" name="test_slots_drive_minimal_stop_not_iteration_count" time="0.000" /></testsuite></testsuites>

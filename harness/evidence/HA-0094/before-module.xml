@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="20" skipped="0" tests="21" time="1.809" timestamp="2026-10-07T06:46:04.478222+08:00" hostname="192.168.31.117"><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\n]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])">newline = '\n', indent = ''
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r\n]" time="0.001"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])">newline = '\r\n', indent = ''
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[-\r]" time="0.000"><failure message="AssertionError: assert 1 == 12&#10; +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])">newline = '\r', indent = ''
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+        result = build_parent_child_chunks(document(newline=newline, indent=indent))
+&gt;       assert len(result['parents']) == len(result['children']) == 12
+E       AssertionError: assert 1 == 12
+E        +  where 1 = len([{'id': 'child-85ad4dfff994737d', 'parent_id': 'parent-8e16c6f8a7a6d59d', 'index': 0, 'heading': 'document', ...}])
+
+tests/test_chinese_clause_boundaries.py:27: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\n]" time="0.000"><failure message="ValueError: child intervals do not cover source">newline = '\n', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:108: in build_parent_child_chunks
+    flush()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '  第一条 条款1\n  唯一标记1：甲方付款。\n  第二条 条款2\n  唯一标记2：甲方付款。\n  第三条 条款3\n...9：甲方付款。\n  第十条 条款10\n  唯一标记10：甲方付款。\n  第十一条 条款11\n  唯一标记11：甲方付款。\n  第十二条 条款12\n  唯一标记12：甲方付款。', 'start': 4, ...}], ...}
+
+        validate_adaptive_chunks(result); return result
+    
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+&gt;               covered.update(range(child["start"], child["end"]))
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:126: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r\n]" time="0.000"><failure message="ValueError: child intervals do not cover source">newline = '\r\n', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:108: in build_parent_child_chunks
+    flush()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '  第一条 条款1\n  唯一标记1：甲方付款。\n  第二条 条款2\n  唯一标记2：甲方付款。\n  第三条 条款3\n...9：甲方付款。\n  第十条 条款10\n  唯一标记10：甲方付款。\n  第十一条 条款11\n  唯一标记11：甲方付款。\n  第十二条 条款12\n  唯一标记12：甲方付款。', 'start': 4, ...}], ...}
+
+        validate_adaptive_chunks(result); return result
+    
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+&gt;               covered.update(range(child["start"], child["end"]))
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:126: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[  -\r]" time="0.000"><failure message="ValueError: child intervals do not cover source">newline = '\r', indent = '  '
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:108: in build_parent_child_chunks
+    flush()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '  第一条 条款1\n  唯一标记1：甲方付款。\n  第二条 条款2\n  唯一标记2：甲方付款。\n  第三条 条款3\n...9：甲方付款。\n  第十条 条款10\n  唯一标记10：甲方付款。\n  第十一条 条款11\n  唯一标记11：甲方付款。\n  第十二条 条款12\n  唯一标记12：甲方付款。', 'start': 4, ...}], ...}
+
+        validate_adaptive_chunks(result); return result
+    
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+&gt;               covered.update(range(child["start"], child["end"]))
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:126: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\n]" time="0.000"><failure message="ValueError: child intervals do not cover source">newline = '\n', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:108: in build_parent_child_chunks
+    flush()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '\t第一条 条款1\n\t唯一标记1：甲方付款。\n\t第二条 条款2\n\t唯一标记2：甲方付款。\n\t第三条 条款3\n...9：甲方付款。\n\t第十条 条款10\n\t唯一标记10：甲方付款。\n\t第十一条 条款11\n\t唯一标记11：甲方付款。\n\t第十二条 条款12\n\t唯一标记12：甲方付款。', 'start': 2, ...}], ...}
+
+        validate_adaptive_chunks(result); return result
+    
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+&gt;               covered.update(range(child["start"], child["end"]))
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:126: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r\n]" time="0.001"><failure message="ValueError: child intervals do not cover source">newline = '\r\n', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:108: in build_parent_child_chunks
+    flush()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '\t第一条 条款1\n\t唯一标记1：甲方付款。\n\t第二条 条款2\n\t唯一标记2：甲方付款。\n\t第三条 条款3\n...9：甲方付款。\n\t第十条 条款10\n\t唯一标记10：甲方付款。\n\t第十一条 条款11\n\t唯一标记11：甲方付款。\n\t第十二条 条款12\n\t唯一标记12：甲方付款。', 'start': 2, ...}], ...}
+
+        validate_adaptive_chunks(result); return result
+    
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+&gt;               covered.update(range(child["start"], child["end"]))
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:126: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_twelve_chinese_clauses_keep_separate_full_slices[\t-\r]" time="0.001"><failure message="ValueError: child intervals do not cover source">newline = '\r', indent = '\t'
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+    @pytest.mark.parametrize('indent', ['', '  ', '\t'])
+    def test_twelve_chinese_clauses_keep_separate_full_slices(newline, indent):
+&gt;       result = build_parent_child_chunks(document(newline=newline, indent=indent))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_chinese_clause_boundaries.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/adaptive_retrieval.py:108: in build_parent_child_chunks
+    flush()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = {'schema_version': 'adaptive-chunk@1', 'source_text': '\t第一条 条款1\n\t唯一标记1：甲方付款。\n\t第二条 条款2\n\t唯一标记2：甲方付款。\n\t第三条 条款3\n...9：甲方付款。\n\t第十条 条款10\n\t唯一标记10：甲方付款。\n\t第十一条 条款11\n\t唯一标记11：甲方付款。\n\t第十二条 条款12\n\t唯一标记12：甲方付款。', 'start': 2, ...}], ...}
+
+        validate_adaptive_chunks(result); return result
+    
+    def validate_adaptive_chunks(result: dict) -&gt; None:
+        parents, children = result.get("parents", []), result.get("children", [])
+        parent_ids = [x.get("id") for x in parents]
+        if len(parent_ids) != len(set(parent_ids)): raise ValueError("duplicate parent id")
+        if len({x.get("id") for x in children}) != len(children): raise ValueError("duplicate child id")
+        if [x.get("index") for x in children] != list(range(len(children))): raise ValueError("child indexes must be contiguous")
+        if any(x.get("parent_id") not in parent_ids for x in children): raise ValueError("child references unknown parent")
+        source = result.get("source_text")
+        if any(not x.get("text") or x.get("char_count") != len(x["text"]) for x in children): raise ValueError("child text/length mismatch")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in children): raise ValueError("child text does not match source slice")
+        if source is not None and any(source[x["start"]:x["end"]] != x["text"] for x in parents): raise ValueError("parent text does not match source slice")
+        if source is not None:
+            covered = set()
+            for child in children:
+&gt;               covered.update(range(child["start"], child["end"]))
+E               ValueError: child intervals do not cover source
+
+backend/adaptive_retrieval.py:126: ValueError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341]" time="0.001"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '十'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u5341\u4e00]" time="0.001"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '十一'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e8c\u5341]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '二十'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u96f6\u4e00]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一百零一'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u767e\u3007\u4e8c]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一百〇二'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e24\u767e]" time="0.001"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '两百'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u5343]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一千'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_chinese_number_characters_define_boundaries[\u4e00\u4e07]" time="0.000"><failure message="AssertionError: assert ['document'] == ['前条', '后条']&#10;  &#10;  At index 0 diff: 'document' != '前条'&#10;  Right contains one more item: '后条'&#10;  Use -v to get more diff">number = '一万'
+
+    @pytest.mark.parametrize('number', ['十', '十一', '二十', '一百零一', '一百〇二', '两百', '一千', '一万'])
+    def test_chinese_number_characters_define_boundaries(number):
+        result = build_parent_child_chunks(f'第一条 前条\n正文。\n第{number}条 后条\n另文。')
+&gt;       assert [p['heading'] for p in result['parents']] == ['前条', '后条']
+E       AssertionError: assert ['document'] == ['前条', '后条']
+E         
+E         At index 0 diff: 'document' != '前条'
+E         Right contains one more item: '后条'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_boundaries.py:38: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_arabic_heading_output_is_unchanged" time="0.000" /><testcase classname="tests.test_chinese_clause_boundaries" name="test_inline_cross_reference_is_not_a_heading" time="0.000"><failure message="AssertionError: assert 1 == 2&#10; +  where 1 = len([{'id': 'parent-0c29cb2aeb622af4', 'heading': 'document', 'text': '第一条 内容\n应依照第十二条办理。\n第二条 其他\n没有新增标题。', 'start': 0, ...}])">def test_inline_cross_reference_is_not_a_heading():
+        result = build_parent_child_chunks('第一条 内容\n应依照第十二条办理。\n第二条 其他\n没有新增标题。')
+&gt;       assert len(result['parents']) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'id': 'parent-0c29cb2aeb622af4', 'heading': 'document', 'text': '第一条 内容\n应依照第十二条办理。\n第二条 其他\n没有新增标题。', 'start': 0, ...}])
+
+tests/test_chinese_clause_boundaries.py:51: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_long_chinese_clauses_are_bounded_and_not_one_clause_one_chunk" time="0.005"><failure message="AssertionError: assert '原始内容。原始内容。原始... 最后条\n最后唯一标记。' == '第二条 最后条\n最后唯一标记。'&#10;  &#10;  + 原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。&#10;    第二条 最后条&#10;    最后唯一标记。">def test_long_chinese_clauses_are_bounded_and_not_one_clause_one_chunk():
+        text = '第一条 长条款\n' + '原始内容。' * 1300 + '\n第二条 最后条\n最后唯一标记。'
+        result = build_parent_child_chunks(text, max_child_chars=400, parent_max_chars=1000)
+        assert len(result['children']) &gt; 2
+        assert all(p['char_count'] &lt;= 1000 for p in result['parents'])
+        assert all(c['char_count'] &lt;= 400 for c in result['children'])
+&gt;       assert result['children'][-1]['text'] == '第二条 最后条\n最后唯一标记。'
+E       AssertionError: assert '原始内容。原始内容。原始... 最后条\n最后唯一标记。' == '第二条 最后条\n最后唯一标记。'
+E         
+E         + 原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。原始内容。
+E           第二条 最后条
+E           最后唯一标记。
+
+tests/test_chinese_clause_boundaries.py:62: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_boundaries" name="test_actual_sdk_can_read_twelfth_chinese_clause" time="1.683"><failure message="AssertionError: ('DSH_CLAUSE_NOT_FOUND', 1)&#10;assert 'failed' == 'succeeded'&#10;  &#10;  - succeeded&#10;  + failed">tmp_path = PosixPath('/private/tmp/pytest-of-local-user/pytest-127/test_actual_sdk_can_read_twelf0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10941fe10&gt;
+
+    def test_actual_sdk_can_read_twelfth_chinese_clause(tmp_path, monkeypatch):
+        import json
+        from fastapi.testclient import TestClient
+        from backend.app import create_app
+        from backend.agent_runtime import KeyringCredentialResolver
+        from backend.dsh_provider import parse_response
+    
+        monkeypatch.setenv('HARNESS_DSH_LOCAL', 'enabled')
+        monkeypatch.setenv('HARNESS_DSH_RUN_ROOT', str(tmp_path.resolve() / 'owned'))
+        monkeypatch.delenv('HARNESS_DSH_REAL_ENABLED', raising=False)
+        monkeypatch.setattr(KeyringCredentialResolver, 'resolve', lambda *a: pytest.fail('no credentials'))
+        calls, observations = [], []
+    
+        async def provider(payload, limit):
+            calls.append(payload)
+            results = [json.loads(m['content']) for m in payload['messages'] if m['role'] == 'tool']
+            if len(calls) == 1:
+                name, args = 'read_clause', {'clause_id': 'clause-12'}
+            else:
+                observations.append(results[-1])
+                return parse_response({'choices': [{'finish_reason': 'stop', 'message': {'content': '合成测试结果，引用 clause-12。'}}],
+                    'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+            return parse_response({'choices': [{'finish_reason': 'tool_calls', 'message': {'content': '',
+                'tool_calls': [{'id': 'same_across_turns', 'type': 'function', 'function': {
+                    'name': name, 'arguments': json.dumps(args, ensure_ascii=False)}}]}}],
+                'usage': {'prompt_tokens': 10, 'completion_tokens': 10, 'total_tokens': 20}})
+    
+        with TestClient(create_app(tmp_path / 'test.db', run_worker=False), base_url='http://localhost') as client:
+            response = client.post('/api/local/dsh/runs', json={
+                'objective': '核对最后一条', 'document': document(), 'mode': 'integration_probe',
+                'public_data_confirmed': True, 'timeout_seconds': 300}, headers={'Idempotency-Key': 'cn12'})
+            assert response.status_code == 201, response.text
+            ident = response.json()['initial_run']['id']
+            rt = client.app.state.service.dsh
+            rt.send_probe = provider
+            rt.execute(ident)
+            detail = rt.detail(ident)
+&gt;           assert detail['run']['status'] == 'succeeded', (detail['run']['exit_reason'], len(calls))
+E           AssertionError: ('DSH_CLAUSE_NOT_FOUND', 1)
+E           assert 'failed' == 'succeeded'
+E             
+E             - succeeded
+E             + failed
+
+tests/test_chinese_clause_boundaries.py:103: AssertionError</failure></testcase></testsuite></testsuites>
