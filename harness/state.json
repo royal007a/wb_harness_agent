@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0081",
   "active_plan": null,
-  "last_checkpoint": "HA-0081 上下文组装器+按轮进展；verify exit0 1682 passed/22 skipped；真实豆包 7 份短合同+1 份长合同全部成功，压测（窗口1/4）安全失败；待部署8876与mymaccodex复审。",
-  "last_updated_at": "2026-10-06T08:30:00Z",
-  "next_action": "部署到8876并交mymaccodex复审。",
+  "last_checkpoint": "HA-0081 部署 8876 @27aee9f；部署后真实长合同与隐含例外合同各 1 次成功；verify exit0 1682 passed/22 skipped。",
+  "last_updated_at": "2026-10-06T09:10:00Z",
+  "next_action": "交 mymaccodex 复审 HA-0081。",
   "release": "0.1.0-local"
 }

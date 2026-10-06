@@ -15,7 +15,7 @@
       "plan": null,
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": ["harness/evidence/HA-0081/acceptance.md", "harness/evidence/HA-0081/real_runs.json", "harness/evidence/HA-0081/real_long.json", "harness/evidence/HA-0081/real_long_forced_stub.json", "harness/evidence/HA-0081/eval.json", "harness/evidence/HA-0081/verify.log", "harness/evidence/HA-0081/real_long_rep1.json", "harness/evidence/HA-0081/real_long_rep2.json", "harness/evidence/HA-0081/real_long_rep3.json"]
+      "evidence": ["harness/evidence/HA-0081/acceptance.md", "harness/evidence/HA-0081/real_runs.json", "harness/evidence/HA-0081/real_long.json", "harness/evidence/HA-0081/real_long_forced_stub.json", "harness/evidence/HA-0081/eval.json", "harness/evidence/HA-0081/verify.log", "harness/evidence/HA-0081/real_long_rep1.json", "harness/evidence/HA-0081/real_long_rep2.json", "harness/evidence/HA-0081/real_long_rep3.json", "harness/evidence/HA-0081/deployment.md"]
     },
     {
       "id": "HA-0080",
