@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="19" time="525.050" timestamp="2026-10-07T06:19:15.633563+08:00" hostname="192.168.31.117"><testcase classname="tests.test_agent_runtime_ui" name="test_failed_send_remains_visible_after_completion_reselection_and_reload" time="60.102" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[queued-\u6392\u961f\u4e2d]" time="56.485" /><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[streaming-\u751f\u6210\u4e2d]" time="257.219"><failure message="playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.&#10;Call log:&#10;  - navigating to &quot;http://127.0.0.1:50223/agent-runtime&quot;, waiting until &quot;load&quot;">ui = (&lt;Page url='about:blank'&gt;, &lt;backend.agent_runtime.AgentRuntime object at 0x10d821950&gt;, {'id': 'rta_ca37c88c06a24cd3891c8e067447db06', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:50223')
+status = 'streaming', label = '生成中'
+
+    @pytest.mark.parametrize('status,label', [('queued', '排队中'), ('streaming', '生成中'), ('cancelled', '已取消')])
+    def test_non_answer_exchange_states_are_displayed_separately(ui, status, label):
+        page, runtime, agent, base = ui
+        created, exchange = session(runtime, agent, status, '用户问题')
+        if status == 'cancelled':
+            runtime.cancel_exchange(exchange['id'])
+        elif status == 'streaming':
+            runtime._claim(exchange['id'])
+&gt;       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x10b09ae40&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x10d8292d0&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:50223/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError</failure></testcase><testcase classname="tests.test_agent_runtime_ui" name="test_non_answer_exchange_states_are_displayed_separately[cancelled-\u5df2\u53d6\u6d88]" time="33.223" /><testcase classname="tests.test_agent_runtime_ui" name="test_successful_message_is_not_duplicated_by_exchange_card" time="8.022" /><testcase classname="tests.test_agent_runtime_ui" name="test_exchange_and_user_text_do_not_inject_html" time="3.619" /><testcase classname="tests.test_agent_runtime_ui" name="test_slow_old_session_detail_cannot_replace_new_selection" time="2.522" /><testcase classname="tests.test_agent_runtime_ui" name="test_stream_completion_does_not_refetch_or_replace_other_session" time="2.255" /><testcase classname="tests.test_agent_runtime_ui" name="test_exchange_without_visible_user_message_is_not_lost" time="4.250" /><testcase classname="tests.test_agent_runtime_ui" name="test_early_stream_eof_never_commits_preview_as_answer" time="0.977" /><testcase classname="tests.test_agent_runtime_ui" name="test_stop_display_does_not_claim_server_cancelled" time="0.607" /><testcase classname="tests.test_agent_runtime_ui" name="test_live_synthetic_stream_is_only_preview_until_persisted" time="0.851" /><testcase classname="tests.test_agent_runtime_ui" name="test_multiple_sessions_do_not_clip_mobile_history[Mobile session]" time="10.269" /><testcase classname="tests.test_agent_runtime_ui" name="test_multiple_sessions_do_not_clip_mobile_history[\u4e0e Runtime Agent 1791044226328 \u7684\u4f1a\u8bdd]" time="0.556" /><testcase classname="tests.test_agent_runtime_ui" name="test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[False]" time="1.814" /><testcase classname="tests.test_agent_runtime_ui" name="test_stop_is_owned_by_sending_session_and_reconciles_late_cancel[True]" time="5.088" /><testcase classname="tests.test_agent_runtime_ui" name="test_terminal_reconciliation_is_bounded_and_does_not_invent_cancellation" time="4.386" /><testcase classname="tests.test_agent_runtime_ui" name="test_reconciliation_pending_read_has_deadline_and_survives_reselection[False]" time="13.557" /><testcase classname="tests.test_agent_runtime_ui" name="test_reconciliation_pending_read_has_deadline_and_survives_reselection[True]" time="5.921" /></testsuite></testsuites>

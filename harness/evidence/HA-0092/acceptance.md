@@ -50,3 +50,15 @@ pytest之后的verify步骤在同一固定源码上单独运行，exit 0（verif
 三个通过样本中浏览器定时器最大间隔分别约4.386、2.212、3.300秒；Python线程对应最大间隔约0.280、0.259、0.475秒。这显示通过时也有浏览器侧可见的延迟，但不能据此确定是页面长任务、调度还是其他因素；没有采集Long Task/CPU profile，也没有在同一探针下复现30秒点击失败。观察器会带来额外开销，不能把它的通过替代原完整验证，不能认定根因已修。
 
 核心时钟探针可独立复跑：把本证据目录加入PYTHONPATH，运行`.venv/bin/python -m pytest -q -s -p ui_clock_diag tests/test_agent_runtime_ui.py -k non_answer_exchange_states`。日志中的原网络/ASGI诊断来自本轮私有观察器，不把缺少它们的复跑称为逐字节相同环境。
+
+## 完整UI文件加浏览器执行计时
+
+固定0052ada（与3036543相比运行代码和测试文件没有变化），原19项全部保留并补采Chrome Performance指标和Long Task观察。结果1 failed / 18 passed，525.09秒，exit 1（ui-work-diagnostic.log/xml）。失败是streaming参数的`page.goto`等待load超过原30秒；没有点击事件，不是已收到错误Exchange内容的断言失败。
+
+失败样本观测跨度约119秒，CDP的TaskDuration增量约6.322秒、ScriptDuration约0.168秒；当前文档Long Task最大482ms。ASGI页面请求处理曾耗时28.453秒；Python100ms心跳最大间隔约6.442秒。这里的观测跨度包含诊断命令耗时，Chrome指标不是整个宿主机CPU计时，当前文档观察也不覆盖提交文档前的导航阶段。不能从这些数字精确反推等待原因，更不能宣称已证明页面业务逻辑无关。
+
+同轮只读主机采样（host-pressure-diagnostic.json）：5.642秒内Swapins增加63629页、Swapouts增加51896页，页大小16384字节；不是累计18天计数直接当瞬时负载。机器物理内存16GiB，采样附近vm.swapusage报告已用约22342MiB。确认有大量换入换出，但没有闲置环境A/B对照，因此将资源压力列为候选因素，而不是唯一根因；未停其他应用、未更改系统设置。
+
+独立CI只读检查：仓库没有`.github/`，GitHub Actions查询返回total_count=0；没有可据以替代本机失败的既有CI结果，也未创建或触发远端任务。
+
+新增观察器ui_work_diag.py和host_pressure_probe.py仅用于离线诊断，不接入verify或运行时。核心复跑在前述命令上加入`-p ui_work_diag`并移除-k筛选；仍不能把带观察器的环境当作原完整门禁。停止重复盲跑，保留失败并等待可控负载窗口及独立复审。
