@@ -22,6 +22,7 @@ from .business_budget import BusinessTokenLedger, budgeted_model_call
 from .dsh_context import assemble as assemble_context
 from .dsh_crossings import Crossings, initialize as initialize_crossings, retire as retire_crossings
 from .dsh_plan import PLAN_VERSION, failed_step as plan_failed_step, failure_point as plan_failure_point, project as project_plan, summary as plan_summary
+from .dsh_trace import project as project_trace
 from .dsh_output_scan import SCAN_VERSION, scan as scan_output
 from .dsh_findings import candidates as finding_candidates, render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
@@ -166,6 +167,14 @@ class DshRuntime:
                 return
             yield from page
             after = page[-1]['sequence']
+
+    def trace(self, ident):
+        """HA-0114: read-only per-turn projection; no writes, no artifact or document reads."""
+        with self.store.lock:
+            run = self.store.get('runs', ident)
+            if run['selected_engine'] != ENGINE:
+                raise Problem('NOT_FOUND', 'DSH Run 不存在。', 404)
+            return dict(project_trace(list(self._plan_history(ident))), run_id=ident, status=run['status'])
 
     def detail(self, ident):
         with self.store.lock:

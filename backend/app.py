@@ -151,6 +151,10 @@ def create_app(db_path=None, run_worker=True):
     def dsh_detail(run_id: str, request: Request):
         return dsh(request).detail(run_id)
 
+    @app.get('/api/local/dsh/runs/{run_id}/trace')
+    def dsh_trace(run_id: str, request: Request):
+        return dsh(request).trace(run_id)
+
     @app.get('/api/local/dsh/runs/{run_id}/events')
     def dsh_events(run_id: str, request: Request, after: int = Query(0, ge=0, le=MAX_EVENT_SEQUENCE)):
         runtime = dsh(request)
