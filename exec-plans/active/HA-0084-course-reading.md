@@ -40,6 +40,7 @@
 - 第二十六批工具准入与段间契约两篇35页全文阅读完成，累计六十二篇725页。核对注册元数据未消费、调用配额与业务幂等、弱字段检查和数值强转，见 `docs/research/JIKESUMMARY_DISPATCH_HANDOFF_2026_10_07.md`。
 - 第二十七批日志诊断与独立评审两篇20页全文阅读完成，累计六十四篇745页。核对日志行数与字节限制、RBAC建议与授权边界、评审独立性及批准版本失效，见 `docs/research/JIKESUMMARY_DIAGNOSTIC_REVIEW_2026_10_07.md`。
 - 第二十八批局部恢复与GOAP两篇22页全文阅读完成，累计六十六篇767页。区分外部效果与可撤销投影、过程终止与质量达标、规划顺序与真实执行结果，见 `docs/research/JIKESUMMARY_PLAN_EXECUTION_BOUNDARIES_2026_10_07.md`。
+- 第二十九批分诊与语义压缩两篇30页全文阅读完成，累计六十八篇797页。四个本地分支输入核对P0丢失、错误超预算及P3优先短路；记录作者对框架表的勘误，见 `docs/research/JIKESUMMARY_TRIAGE_COMPACTION_2026_10_07.md`。
 - 本研究任务不修改运行时、不部署、不调用真实 Provider；HA-0085/0086 是分开的实现任务，不能混算研究验收。
 
 ## 非目标
