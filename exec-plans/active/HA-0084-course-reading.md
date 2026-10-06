@@ -33,6 +33,7 @@
 - 第十九批工具护栏两篇24页全文阅读完成，累计四十八篇549页。用本地表达式核对域名和目录前缀问题，对照固定Pi源码区分事件改写与实际参数，见 `docs/research/JIKESUMMARY_GUARD_BOUNDARIES_2026_10_07.md`。
 - 第二十批工作流存储与执行两篇23页全文阅读完成，累计五十篇572页。核对配置示例与执行契约的差异、变量覆盖和审计失败语义，见 `docs/research/JIKESUMMARY_WORKFLOW_EXECUTION_2026_10_07.md`。
 - 第二十一批MCP接口两篇23页全文阅读完成，累计五十二篇595页。区分工具发现与授权、调试与真实副作用，并核对官方2025/2026协议生命周期差异，见 `docs/research/JIKESUMMARY_MCP_BOUNDARIES_2026_10_07.md`。没有启用MCP插件。
+- 第二十二批RAG入库两篇25页全文阅读完成，累计五十四篇620页。核对两库异步处理、删除后迟到写入和作者承认的绑定缺口，见 `docs/research/JIKESUMMARY_RAG_PIPELINE_2026_10_07.md`。没有新增Embedding或存储依赖。
 - 本研究任务不修改运行时、不部署、不调用真实 Provider；HA-0085/0086 是分开的实现任务，不能混算研究验收。
 
 ## 非目标
