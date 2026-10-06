@@ -1,0 +1,244 @@
+{
+ "note": "真实豆包经 8876 运行；只含元数据（Run ID、计划状态、提交结果、Token）；合同为仓库内合成样本。",
+ "before_timeout_fix_148dc5b": [
+  {
+   "case": "pay-01",
+   "run": "run_025438d09d7c4099af9caf49f85f9b2b",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "calls": 5,
+   "spent": 14163,
+   "reserved": 0,
+   "first_plan_seen": {
+    "S1": "pending",
+    "S2": "pending",
+    "S3": "pending",
+    "S4": "pending"
+   },
+   "final_plan": {
+    "S1": "done",
+    "S2": "done",
+    "S3": "done",
+    "S4": "done"
+   },
+   "submissions": [
+    [
+     1,
+     true,
+     null
+    ]
+   ],
+   "plan_events": 4
+  },
+  {
+   "case": "pay-09",
+   "run": "run_0774efc5673d4a55a64e432317a9113e",
+   "status": "failed",
+   "exit": "DSH_GATEWAY_FAILED",
+   "calls": 5,
+   "spent": 11885,
+   "reserved": 1280000,
+   "first_plan_seen": {
+    "S1": "pending",
+    "S2": "not_applicable",
+    "S3": "pending",
+    "S4": "pending"
+   },
+   "final_plan": {
+    "S1": "done",
+    "S2": "not_applicable",
+    "S3": "blocked",
+    "S4": "pending"
+   },
+   "submissions": [
+    [
+     1,
+     false,
+     [
+      "QUOTES_INVALID"
+     ]
+    ]
+   ],
+   "plan_events": 4
+  },
+  {
+   "case": "long-01",
+   "run": "run_257429980fa34076b902c07605052f2b",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "calls": 8,
+   "spent": 109593,
+   "reserved": 0,
+   "first_plan_seen": {
+    "S1": "pending",
+    "S2": "pending",
+    "S3": "pending",
+    "S4": "pending"
+   },
+   "final_plan": {
+    "S1": "done",
+    "S2": "done",
+    "S3": "done",
+    "S4": "done"
+   },
+   "submissions": [
+    [
+     1,
+     true,
+     null
+    ]
+   ],
+   "plan_events": 3
+  }
+ ],
+ "after_timeout_fix_bc9d3f7": [
+  {
+   "case": "pay-09",
+   "run": "run_4a963943bf1b45b8bca98f373fe05221",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "failure": null,
+   "calls": 6,
+   "spent": 17221,
+   "reserved": 0,
+   "first_plan": {
+    "S1": "pending",
+    "S2": "not_applicable",
+    "S3": "pending",
+    "S4": "pending"
+   },
+   "final_plan": {
+    "S1": "done",
+    "S2": "not_applicable",
+    "S3": "done",
+    "S4": "done"
+   },
+   "submissions": [
+    [
+     1,
+     true,
+     null
+    ]
+   ],
+   "score": {
+    "case": "pay-09",
+    "value_ok": true,
+    "exception_status": "unknown",
+    "exception_ok": true,
+    "business_status": "partial",
+    "submissions": 1
+   }
+  },
+  {
+   "case": "pay-03",
+   "run": "run_88ac638af0f24a108b2ac35a75890377",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "failure": null,
+   "calls": 6,
+   "spent": 17982,
+   "reserved": 0,
+   "first_plan": {
+    "S1": "pending",
+    "S2": "pending",
+    "S3": "pending",
+    "S4": "pending"
+   },
+   "final_plan": {
+    "S1": "done",
+    "S2": "done",
+    "S3": "done",
+    "S4": "done"
+   },
+   "submissions": [
+    [
+     1,
+     true,
+     null
+    ]
+   ],
+   "score": {
+    "case": "pay-03",
+    "value_ok": true,
+    "exception_status": "supported",
+    "exception_ok": true,
+    "business_status": "partial",
+    "submissions": 1
+   }
+  },
+  {
+   "case": "pay-07",
+   "run": "run_65ebdf5d79204b54b8f1a2e21966e728",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "failure": null,
+   "calls": 3,
+   "spent": 7271,
+   "reserved": 0,
+   "first_plan": {
+    "S1": "pending",
+    "S2": "pending",
+    "S3": "pending",
+    "S4": "pending"
+   },
+   "final_plan": {
+    "S1": "done",
+    "S2": "done",
+    "S3": "done",
+    "S4": "done"
+   },
+   "submissions": [
+    [
+     1,
+     true,
+     null
+    ]
+   ],
+   "score": {
+    "case": "pay-07",
+    "value_ok": true,
+    "exception_status": "supported",
+    "exception_ok": true,
+    "business_status": "partial",
+    "submissions": 1
+   }
+  },
+  {
+   "case": "long-01",
+   "run": "run_445321240d334cc2aaec66fe146ca316",
+   "status": "succeeded",
+   "exit": "COMPLETED",
+   "failure": null,
+   "calls": 5,
+   "spent": 48329,
+   "reserved": 0,
+   "first_plan": {
+    "S1": "pending",
+    "S2": "pending",
+    "S3": "pending",
+    "S4": "pending"
+   },
+   "final_plan": {
+    "S1": "done",
+    "S2": "done",
+    "S3": "done",
+    "S4": "done"
+   },
+   "submissions": [
+    [
+     1,
+     true,
+     null
+    ]
+   ],
+   "score": {
+    "case": "long-01",
+    "value_ok": true,
+    "exception_status": "supported",
+    "exception_ok": true,
+    "business_status": "partial",
+    "submissions": 1
+   }
+  }
+ ]
+}

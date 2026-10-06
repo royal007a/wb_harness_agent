@@ -5,7 +5,7 @@
     {
       "id": "HA-0082",
       "title": "DSH付款核对计划投影、提交历史与延迟清理（A1/C/D）",
-      "status": "in_review",
+      "status": "completed",
       "risk": "medium",
       "scope": ["平台计划dsh-plan@1与状态投影", "提交历史与摘要", "pending目录有界延迟清理"],
       "non_goals": ["证据续跑A2", "调用身份与重放防护B", "人工复原入口"],

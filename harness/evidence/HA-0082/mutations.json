@@ -1,0 +1,37 @@
+[
+ {
+  "id": "P1",
+  "mutation": "S3 一旦有过多次提交就记 done（单向推进）",
+  "result": "2 failed"
+ },
+ {
+  "id": "P2",
+  "mutation": "S1/S2 partial 阻塞 S4",
+  "result": "1 failed"
+ },
+ {
+  "id": "P3",
+  "mutation": "删除首次模型请求前的计划生成",
+  "result": "1 failed"
+ },
+ {
+  "id": "P4",
+  "mutation": "run.failed 不带 failed_step",
+  "result": "1 failed"
+ },
+ {
+  "id": "P5",
+  "mutation": "不标记 superseded_by",
+  "result": "1 failed"
+ },
+ {
+  "id": "P6",
+  "mutation": "启动后不安排延迟清理",
+  "result": "2 failed"
+ },
+ {
+  "id": "P7",
+  "mutation": "延迟清理不设上限",
+  "result": "首轮存活（测试等待不足）→ 加固测试后 1 failed"
+ }
+]
