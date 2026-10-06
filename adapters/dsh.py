@@ -10,6 +10,7 @@ import selectors
 import shutil
 import signal
 import subprocess
+import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -24,6 +25,47 @@ BRIDGE_ERRORS = {
     'DSH_RUNTIME_FAILED': ('DSH 未正常完成。', 502),
     'DSH_CANCELLED': ('DSH 已中断。', 409),
 }
+
+
+def _stop_owned_process(process):
+    """Best-effort bounded cleanup; a denied signal is not proof of exit."""
+    failed = False
+    signal_denied = False
+
+    def send(sig):
+        nonlocal failed, signal_denied
+        if signal_denied:
+            return
+        try:
+            os.killpg(process.pid, sig)
+        except ProcessLookupError:
+            pass
+        except OSError:
+            failed = signal_denied = True
+
+    send(signal.SIGTERM)
+    try:
+        process.wait(timeout=3)
+    except subprocess.TimeoutExpired:
+        if signal_denied:
+            failed = True
+        else:
+            send(signal.SIGKILL)
+            try:
+                process.wait(timeout=3)
+            except (OSError, subprocess.TimeoutExpired):
+                failed = True
+    except OSError:
+        failed = True
+    # Also stop SDK children in this owned group, unless signaling was denied.
+    send(signal.SIGKILL)
+    for pipe in (process.stdin, process.stdout):
+        if pipe is not None:
+            try:
+                pipe.close()
+            except OSError:
+                failed = True
+    return failed
 
 
 class DshAdapter:
@@ -154,26 +196,16 @@ class DshAdapter:
                 raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
             return result
         finally:
+            primary_error = sys.exception()
+            cleanup_failed = False
             if process is not None:
-                # Own process group, never a PID obtained from untrusted input.
+                cleanup_failed = _stop_owned_process(process)
+            # A failure in one resource must not skip releasing the others.
+            for close in (server.shutdown, server.server_close,
+                          lambda: thread.join(timeout=2), owned.close):
                 try:
-                    os.killpg(process.pid, signal.SIGTERM)
-                except ProcessLookupError:
-                    pass
-                try:
-                    process.wait(timeout=3)
-                except subprocess.TimeoutExpired:
-                    os.killpg(process.pid, signal.SIGKILL)
-                    process.wait(timeout=3)
-                # Reap any SDK child left after the bridge exited.
-                try:
-                    os.killpg(process.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-                if process.stdout:
-                    process.stdout.close()
-            server.shutdown()
-            server.server_close()
-            thread.join(timeout=2)
-            # Only this mkdtemp-created directory; no shared DSH/Claude home.
-            owned.close()
+                    close()
+                except OSError:
+                    cleanup_failed = True
+            if cleanup_failed and primary_error is None:
+                raise Problem('DSH_CLEANUP_FAILED', 'DSH 资源清理未确认完成。', 502)

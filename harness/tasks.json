@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0092",
+      "title": "DSH清理故障不覆盖主错误且释放资源",
+      "status": "waiting_approval",
+      "risk": "medium",
+      "scope": ["子进程清理错误隔离", "网关和租约最终释放", "确定性故障注入"],
+      "non_goals": ["绕过进程所有权", "删除活进程目录", "解释操作系统EPERM根因", "真实模型及其他端口"],
+      "acceptance": ["主异常保留", "正常结果清理失败不得发布", "后续清理执行", "活目录保留", "独立复审和完整验证"],
+      "depends_on": ["HA-0086"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0092.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0092/acceptance.md"]
+    },
+    {
       "id": "HA-0091",
       "title": "DSH取消与崩溃探针的阶段同步",
       "status": "waiting_approval",

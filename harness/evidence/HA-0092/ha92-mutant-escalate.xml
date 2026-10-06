@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="13" time="7.822" timestamp="2026-10-07T05:21:42.222918+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED]" time="1.476"><failure message="assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]&#10;  &#10;  Left contains one more item: &lt;Signals.SIGKILL: 9&gt;&#10;  Use -v to get more diff">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-111/test_signal_permission_does_no0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1091efe10&gt;
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+&gt;       assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]
+E         
+E         Left contains one more item: &lt;Signals.SIGKILL: 9&gt;
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:33: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT]" time="0.115"><failure message="assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]&#10;  &#10;  Left contains one more item: &lt;Signals.SIGKILL: 9&gt;&#10;  Use -v to get more diff">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-111/test_signal_permission_does_no1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x109338050&gt;
+code = 'DSH_INITIALIZATION_TIMEOUT'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+&gt;       assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]
+E         
+E         Left contains one more item: &lt;Signals.SIGKILL: 9&gt;
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:33: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED]" time="0.109"><failure message="assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]&#10;  &#10;  Left contains one more item: &lt;Signals.SIGKILL: 9&gt;&#10;  Use -v to get more diff">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-111/test_signal_permission_does_no2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1092a15b0&gt;
+code = 'DSH_RUNTIME_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+&gt;       assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]
+E         
+E         Left contains one more item: &lt;Signals.SIGKILL: 9&gt;
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:33: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED]" time="0.111"><failure message="assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]&#10;  &#10;  Left contains one more item: &lt;Signals.SIGKILL: 9&gt;&#10;  Use -v to get more diff">tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-111/test_signal_permission_does_no3')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10933cf30&gt;
+code = 'DSH_CANCELLED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+            run_adapter(root)
+        assert caught.value.code == code
+&gt;       assert signals == [signal.SIGTERM]  # do not escalate after denied signal
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert [&lt;Signals.SIG...s.SIGKILL: 9&gt;] == [&lt;Signals.SIGTERM: 15&gt;]
+E         
+E         Left contains one more item: &lt;Signals.SIGKILL: 9&gt;
+E         Use -v to get more diff
+
+tests/test_dsh_cleanup_errors.py:33: AssertionError</failure></testcase><testcase classname="tests.test_dsh_cleanup_errors" name="test_success_with_cleanup_fault_is_not_success" time="0.116" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[shutdown]" time="0.112" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[server_close]" time="0.113" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_later_resources_close_when_gateway_cleanup_raises[join]" time="0.106" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_os]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[wait_timeout]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdin]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[stdout]" time="0.000" /><testcase classname="tests.test_dsh_cleanup_errors" name="test_process_cleanup_faults_do_not_skip_pipes[kill]" time="0.000" /></testsuite></testsuites>

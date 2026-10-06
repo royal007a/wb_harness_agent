@@ -1,0 +1,1400 @@
+FFFFFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED] _
+
+self = <adapters.dsh.DshAdapter object at 0x10cd73380>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no0/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10ce5e350>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10ce5e350>
+emit = <function run_adapter.<locals>.forbidden at 0x10ce5e350>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 初始化失败。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cd37bb0>
+code = 'DSH_INITIALIZATION_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:160: in run
+    os.killpg(process.pid, signal.SIGTERM)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pgid = 46068, sig = <Signals.SIGTERM: 15>
+
+    def denied(pgid, sig):
+        if sig:
+            signals.append(sig)
+>           raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+E           PermissionError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:25: PermissionError
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT] _
+
+self = <adapters.dsh.DshAdapter object at 0x10cdef250>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no1/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10ce5c250>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10ce5c250>
+emit = <function run_adapter.<locals>.forbidden at 0x10ce5c250>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 初始化超时。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce9c9d0>
+code = 'DSH_INITIALIZATION_TIMEOUT'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:160: in run
+    os.killpg(process.pid, signal.SIGTERM)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pgid = 46101, sig = <Signals.SIGTERM: 15>
+
+    def denied(pgid, sig):
+        if sig:
+            signals.append(sig)
+>           raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+E           PermissionError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:25: PermissionError
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED] _
+
+self = <adapters.dsh.DshAdapter object at 0x10ced4190>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no2/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10ce5ca90>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10ce5ca90>
+emit = <function run_adapter.<locals>.forbidden at 0x10ce5ca90>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 未正常完成。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce415b0>
+code = 'DSH_RUNTIME_FAILED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:160: in run
+    os.killpg(process.pid, signal.SIGTERM)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pgid = 46105, sig = <Signals.SIGTERM: 15>
+
+    def denied(pgid, sig):
+        if sig:
+            signals.append(sig)
+>           raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+E           PermissionError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:25: PermissionError
+_ test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED] __
+
+self = <adapters.dsh.DshAdapter object at 0x10ce9e3f0>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no3/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10ce981a0>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10ce981a0>
+emit = <function run_adapter.<locals>.forbidden at 0x10ce981a0>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 已中断。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_signal_permission_does_no3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce8d7b0>
+code = 'DSH_CANCELLED'
+
+    @pytest.mark.parametrize('code', ['DSH_INITIALIZATION_FAILED', 'DSH_INITIALIZATION_TIMEOUT',
+                                     'DSH_RUNTIME_FAILED', 'DSH_CANCELLED'])
+    def test_signal_permission_does_not_mask_primary_or_skip_cleanup(tmp_path, monkeypatch, code):
+        body = json.dumps({'type': 'error', 'code': code})
+        children = child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        original = os.killpg
+        signals = []
+        def denied(pgid, sig):
+            if sig:
+                signals.append(sig)
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:160: in run
+    os.killpg(process.pid, signal.SIGTERM)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pgid = 46112, sig = <Signals.SIGTERM: 15>
+
+    def denied(pgid, sig):
+        if sig:
+            signals.append(sig)
+>           raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+E           PermissionError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:25: PermissionError
+________________ test_success_with_cleanup_fault_is_not_success ________________
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_success_with_cleanup_faul0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce8e030>
+
+    def test_success_with_cleanup_fault_is_not_success(tmp_path, monkeypatch):
+        children = child_bridge(monkeypatch,
+            'import sys; sys.stdin.readline(); print(\'{"type":"result","finalResponse":"ok"}\', flush=True)')
+        original = os.killpg
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:160: in run
+    os.killpg(process.pid, signal.SIGTERM)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pgid = 46115, sig = <Signals.SIGTERM: 15>
+
+    def denied(pgid, sig):
+        if sig:
+>           raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+E           PermissionError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:44: PermissionError
+______________ test_denied_live_group_keeps_registered_workspace _______________
+
+self = <adapters.dsh.DshAdapter object at 0x10ce420f0>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_denied_live_group_keeps_r0/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10ce9bcc0>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10ce9bcc0>
+emit = <function run_adapter.<locals>.forbidden at 0x10ce9bcc0>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 初始化失败。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_denied_live_group_keeps_r0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cf44950>
+
+    def test_denied_live_group_keeps_registered_workspace(tmp_path, monkeypatch):
+        original_killpg, original_wait = os.killpg, subprocess.Popen.wait
+        children = child_bridge(monkeypatch,
+            'import sys,time; sys.stdin.readline(); print(\'{"type":"error","code":"DSH_INITIALIZATION_FAILED"}\', flush=True); time.sleep(60)')
+        def denied(pgid, sig):
+            if sig:
+                raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+            return original_killpg(pgid, sig)
+        monkeypatch.setattr(os, 'killpg', denied)
+        root = tmp_path.resolve() / 'owned'
+        try:
+            with pytest.raises(Problem) as caught:
+>               run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:160: in run
+    os.killpg(process.pid, signal.SIGTERM)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pgid = 46119, sig = <Signals.SIGTERM: 15>
+
+    def denied(pgid, sig):
+        if sig:
+>           raise PermissionError('SYNTH_CLEANUP_PRIVATE')
+E           PermissionError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:62: PermissionError
+_______ test_later_resources_close_when_gateway_cleanup_raises[shutdown] _______
+
+self = <adapters.dsh.DshAdapter object at 0x10ce8e7a0>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_later_resources_close_whe0/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10cefc250>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10cefc250>
+emit = <function run_adapter.<locals>.forbidden at 0x10cefc250>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 初始化失败。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_later_resources_close_whe0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cf45050>
+phase = 'shutdown'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:175: in run
+    server.shutdown()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <http.server.ThreadingHTTPServer object at 0x10ce8e9c0>, args = ()
+kwargs = {}
+
+    def failing(self, *args, **kwargs):
+        result = original(self, *args, **kwargs)
+        calls.append(phase)
+>       raise OSError('SYNTH_CLEANUP_PRIVATE')
+E       OSError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:93: OSError
+_____ test_later_resources_close_when_gateway_cleanup_raises[server_close] _____
+
+self = <adapters.dsh.DshAdapter object at 0x10ce8e140>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_later_resources_close_whe1/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10ce9a400>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10ce9a400>
+emit = <function run_adapter.<locals>.forbidden at 0x10ce9a400>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 初始化失败。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_later_resources_close_whe1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce7b980>
+phase = 'server_close'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:176: in run
+    server.server_close()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <http.server.ThreadingHTTPServer object at 0x10ce8d7b0>, args = ()
+kwargs = {}
+
+    def failing(self, *args, **kwargs):
+        result = original(self, *args, **kwargs)
+        calls.append(phase)
+>       raise OSError('SYNTH_CLEANUP_PRIVATE')
+E       OSError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:93: OSError
+_________ test_later_resources_close_when_gateway_cleanup_raises[join] _________
+
+self = <adapters.dsh.DshAdapter object at 0x10ce2ad50>
+prompt = 'SYNTH_STARTUP_ONLY'
+runtime_root = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_later_resources_close_whe2/owned')
+model = 'probe'
+model_call = <function run_adapter.<locals>.forbidden at 0x10cefcca0>
+tool_call = <function run_adapter.<locals>.forbidden at 0x10cefcca0>
+emit = <function run_adapter.<locals>.forbidden at 0x10cefcca0>
+check = <function <lambda> at 0x10caf2a30>, output_limit = 2048
+tools = ('search_document', 'read_clause')
+
+    def run(self, prompt, runtime_root, model, model_call, tool_call, emit, check, *, output_limit=2048,
+            tools=('search_document', 'read_clause')):
+        owned = OwnedWorkspace(runtime_root)
+        workspace = owned.path
+        for name in ('home', 'work', 'tmp'):
+            (workspace / name).mkdir(mode=0o700)
+        capability = secrets.token_urlsafe(32)
+        errors = []
+        serial = threading.Lock()
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                if not hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + capability):
+                    self.send_response(403)
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    self.close_connection = True
+                    return
+                try:
+                    if self.path not in ('/model', '/tool') or self.headers.get('Transfer-Encoding'):
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    size = int(self.headers.get('Content-Length', '-1'))
+                    if not 0 < size <= 256 * 1024:
+                        raise Problem('DSH_GATEWAY_LIMIT', '网关请求越限。', 422)
+                    self.connection.settimeout(5)
+                    raw = self.rfile.read(size)
+                    if len(raw) != size:
+                        raise Problem('DSH_GATEWAY_PROTOCOL', '网关协议无效。', 422)
+                    body = json.loads(raw)
+                    with serial:
+                        if errors:
+                            raise errors[0]
+                        check()
+                        value = (model_call if self.path == '/model' else tool_call)(body)
+                        check()
+                    encoded = json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    errors.append(exc if isinstance(exc, Problem) else Problem('DSH_GATEWAY_FAILED', '平台网关失败。', 502))
+                    encoded = b'{"error":"DSH_GATEWAY_REJECTED"}'
+                    self.send_response(409)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(encoded)))
+                self.end_headers()
+                try:
+                    self.wfile.write(encoded)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=.1), daemon=True)
+        thread.start()
+        node = shutil.which('node')
+        if not node:
+            server.shutdown(); server.server_close()
+            owned.close()
+            raise Problem('DSH_DEPENDENCY_MISSING', '需要 Node 22 和固定版本 DSH。', 503)
+        env = {'PATH': str(Path(node).parent) + ':/usr/bin:/bin', 'HOME': str(workspace / 'home'),
+               'TMPDIR': str(workspace / 'tmp'), 'HARNESS_DSH_MODEL': model,
+               'HARNESS_DSH_GATEWAY': f'http://127.0.0.1:{server.server_port}',
+               'HARNESS_DSH_CAPABILITY': capability,
+               'HARNESS_DSH_TOOLS': ','.join(sorted(tools))}
+        process = None
+        result = None
+        try:
+            check()
+            process = subprocess.Popen([node, str(ROOT / 'dsh-adapter/bridge.mjs')],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                cwd=workspace / 'work', env=env, start_new_session=True, pass_fds=(owned.lease,))
+            owned.started(process.pid)
+            job = {'prompt': prompt, 'home': str(workspace / 'home'), 'cwd': str(workspace / 'work'),
+                   'max_output_tokens': output_limit}
+            process.stdin.write((json.dumps(job) + '\n').encode())
+            process.stdin.close()
+            buffer = bytearray()
+            total = 0
+            with selectors.DefaultSelector() as selector:
+                selector.register(process.stdout, selectors.EVENT_READ)
+                while True:
+                    check()
+                    if errors:
+                        raise errors[0]
+                    ready = selector.select(.1)
+                    if not ready:
+                        if process.poll() is not None:
+                            break
+                        continue
+                    data = os.read(process.stdout.fileno(), 8192)
+                    if not data:
+                        break
+                    total += len(data)
+                    buffer.extend(data)
+                    if total > 2 * 1024 * 1024 or len(buffer) > 128 * 1024:
+                        raise Problem('DSH_OUTPUT_LIMIT', 'DSH 输出越限。', 502)
+                    while b'\n' in buffer:
+                        line, _, rest = buffer.partition(b'\n')
+                        buffer = bytearray(rest)
+                        value = json.loads(line)
+                        if not isinstance(value, dict):
+                            raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                        if value.get('type') == 'error':
+                            check()
+                            if errors:
+                                raise errors[0]
+                            code = value.get('code')
+                            if set(value) != {'type', 'code'} or not isinstance(code, str) or code not in BRIDGE_ERRORS:
+                                raise Problem('DSH_RUNTIME_FAILED', 'DSH 未正常完成。', 502)
+                            message, status = BRIDGE_ERRORS[code]
+>                           raise Problem(code, message, status)
+E                           backend.analysis.Problem: DSH 初始化失败。
+
+adapters/dsh.py:142: Problem
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/TMP/pytest-of-weberzhao/pytest-105/test_later_resources_close_whe2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10ce7a7b0>
+phase = 'join'
+
+    @pytest.mark.parametrize('phase', ['shutdown', 'server_close', 'join'])
+    def test_later_resources_close_when_gateway_cleanup_raises(tmp_path, monkeypatch, phase):
+        body = json.dumps({'type': 'error', 'code': 'DSH_INITIALIZATION_FAILED'})
+        child_bridge(monkeypatch, f'import sys; sys.stdin.readline(); print({body!r}, flush=True)')
+        owner = dsh.threading.Thread if phase == 'join' else dsh.ThreadingHTTPServer
+        original = getattr(owner, phase)
+        calls = []
+        def failing(self, *args, **kwargs):
+            result = original(self, *args, **kwargs)
+            calls.append(phase)
+            raise OSError('SYNTH_CLEANUP_PRIVATE')
+        monkeypatch.setattr(owner, phase, failing)
+        root = tmp_path.resolve() / 'owned'
+        with pytest.raises(Problem) as caught:
+>           run_adapter(root)
+
+tests/test_dsh_cleanup_errors.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_startup.py:67: in run_adapter
+    return dsh.DshAdapter().run('SYNTH_STARTUP_ONLY', root, 'probe', model_call or forbidden,
+adapters/dsh.py:177: in run
+    thread.join(timeout=2)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Thread(Thread-9 (<lambda>), stopped daemon 6245281792)>, args = ()
+kwargs = {'timeout': 2}
+
+    def failing(self, *args, **kwargs):
+        result = original(self, *args, **kwargs)
+        calls.append(phase)
+>       raise OSError('SYNTH_CLEANUP_PRIVATE')
+E       OSError: SYNTH_CLEANUP_PRIVATE
+
+tests/test_dsh_cleanup_errors.py:93: OSError
+=============================== warnings summary ===============================
+../../../USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_FAILED]
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_INITIALIZATION_TIMEOUT]
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_RUNTIME_FAILED]
+FAILED tests/test_dsh_cleanup_errors.py::test_signal_permission_does_not_mask_primary_or_skip_cleanup[DSH_CANCELLED]
+FAILED tests/test_dsh_cleanup_errors.py::test_success_with_cleanup_fault_is_not_success
+FAILED tests/test_dsh_cleanup_errors.py::test_denied_live_group_keeps_registered_workspace
+FAILED tests/test_dsh_cleanup_errors.py::test_later_resources_close_when_gateway_cleanup_raises[shutdown]
+FAILED tests/test_dsh_cleanup_errors.py::test_later_resources_close_when_gateway_cleanup_raises[server_close]
+FAILED tests/test_dsh_cleanup_errors.py::test_later_resources_close_when_gateway_cleanup_raises[join]
+9 failed, 1 warning in 5.02s
