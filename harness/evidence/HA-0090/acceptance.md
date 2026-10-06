@@ -50,3 +50,16 @@ TMPDIR=/private/tmp .venv/bin/python harness/evidence/HA-0090/evaluate_chinese_v
 定位：新保守候选增加clause-14“争议解决”，没有付款词；原脚本在覆盖提示后把该块最后一行1299字作为结论/引文，超过现有300字限制，故被拒。说明候选扩大引入额外核对成本，并暴露脚本无法处理该分支；未改变金标，也未截短脚本答案来制造同评测绿灯。此返工尚未验收，需复审决定候选/软缺口策略并重新验证，不部署。
 
 48d32c7测试SHA：test_chinese_clause_boundaries.py=f1271b26f479c9eb44e99cdc36a4812a1d8da2ab7854ec6cfa608c8837575017；test_chinese_clause_coverage.py=54883dcf39d5b0d488a4d8bebbc26c90e7e939a64702308bb43afc8e1bc8c431。
+
+## 独立复审后的结构关联修订（77428b8）
+
+Claude 对48d32c7给出Changes Requested（消息om_x100b636393ad08a0b3da10a311be713）：全文共现会错误吸收独立争议条款。接受此意见，撤回上节的全文候选策略；历史失败证据不删除。上节把独立条款命中消失概括为“真实门禁退化”过宽，结构切分前的大块词语共现本身也不证明相关。
+
+最终策略：同块付款/例外词沿用既有规则；不同子块只在真实同父块含付款词，或本块标题路径含付款词时建立保守候选。独立相邻条款不会继承付款语境。计划和提交校验由运行时传入同一份平台切块元数据，不接受模型提供的关联。独立另一条款只写“期限延期”的隐含关系仍可能漏检，明确不声称语义覆盖。
+
+- 新文件9 passed；五个相关文件92 passed（structural-targeted.xml、structural-related.xml）。另一次命令误写了不存在的test_dsh_findings.py，pytest exit 4、未运行测试；修正为test_dsh_payment_findings.py后得到上述92项结果，没有把误命令算作产品失败。
+- 四个进程内定向突变均被捕获：去掉父块关联2 failed/6 passed；去掉标题路径关联2 failed/6 passed；不给计划传结构信息1 failed；不给提交校验传结构信息1 failed。均errors=0。后两项分别在计划candidate断言、首次提交不得提前accepted断言失败，不是导入失败。复跑脚本mutate_structural_coverage.py不写生产文件。
+- 固定脚本和标签完全不变，串行重跑阿拉伯21例、中文变体21例（payment-eval-structural-*.json）：每批77次合成模型调用；正确11/11、错值拒绝10/10、字面例外5/5、无例外4/4、隐含例外0/2。long-01均恢复succeeded/3次调用，独立争议条款不再强制报告。该结果仍只证明固定控制流程，不代表真实模型准确率。
+- 行首正文“第十条规定的……”可能误识别为标题，规格已明确；不扩大为自然语言标题识别。
+
+本修订尚待独立复审；没有真实Provider、浏览器或部署验证。完整门禁仍保留既有UI超时失败，8876未变更。

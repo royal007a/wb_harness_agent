@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="8" time="0.555" timestamp="2026-10-07T07:09:00.613656+08:00" hostname="local-review-host"><testcase classname="tests.test_chinese_clause_coverage" name="test_split_exception_uses_parent_or_payment_path[numbers0-\u4e8b\u9879-3000]" time="0.001"><failure message="AssertionError: assert [] == ['clause-4']&#10;  &#10;  Right contains one more item: 'clause-4'&#10;  Use -v to get more diff">heading = '事项', parent_limit = 3000, numbers = ('一', '二')
+
+    @pytest.mark.parametrize('heading,parent_limit', [('事项', 3000), ('付款', 1000)])
+    @pytest.mark.parametrize('numbers', [('一', '二'), ('1', '2')])
+    def test_split_exception_uses_parent_or_payment_path(heading, parent_limit, numbers):
+        text = (f'第{numbers[0]}条 {heading}\n甲方应在验收合格后30天内向乙方支付合同款。\n'
+                + '背景说明。' * 220 + '\n发生质量争议时，期限延期。\n'
+                + f'第{numbers[1]}条 争议解决\n争议提交法院处理。')
+        clauses, context = split(text, max_child_chars=400, parent_max_chars=parent_limit)
+        target = next(k for k, v in clauses.items() if '期限延期' in v)
+        last = list(clauses)[-1]
+        assert target != 'clause-1' and last != target
+        if heading == '事项':
+            assert context[target]['parent_id'] == context['clause-1']['parent_id']
+        else:
+            assert context[target]['parent_id'] != context['clause-1']['parent_id']
+&gt;       assert candidates(clauses, context)['exception'] == [target]
+E       AssertionError: assert [] == ['clause-4']
+E         
+E         Right contains one more item: 'clause-4'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_coverage.py:33: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_coverage" name="test_split_exception_uses_parent_or_payment_path[numbers0-\u4ed8\u6b3e-1000]" time="0.001" /><testcase classname="tests.test_chinese_clause_coverage" name="test_split_exception_uses_parent_or_payment_path[numbers1-\u4e8b\u9879-3000]" time="0.001"><failure message="AssertionError: assert [] == ['clause-4']&#10;  &#10;  Right contains one more item: 'clause-4'&#10;  Use -v to get more diff">heading = '事项', parent_limit = 3000, numbers = ('1', '2')
+
+    @pytest.mark.parametrize('heading,parent_limit', [('事项', 3000), ('付款', 1000)])
+    @pytest.mark.parametrize('numbers', [('一', '二'), ('1', '2')])
+    def test_split_exception_uses_parent_or_payment_path(heading, parent_limit, numbers):
+        text = (f'第{numbers[0]}条 {heading}\n甲方应在验收合格后30天内向乙方支付合同款。\n'
+                + '背景说明。' * 220 + '\n发生质量争议时，期限延期。\n'
+                + f'第{numbers[1]}条 争议解决\n争议提交法院处理。')
+        clauses, context = split(text, max_child_chars=400, parent_max_chars=parent_limit)
+        target = next(k for k, v in clauses.items() if '期限延期' in v)
+        last = list(clauses)[-1]
+        assert target != 'clause-1' and last != target
+        if heading == '事项':
+            assert context[target]['parent_id'] == context['clause-1']['parent_id']
+        else:
+            assert context[target]['parent_id'] != context['clause-1']['parent_id']
+&gt;       assert candidates(clauses, context)['exception'] == [target]
+E       AssertionError: assert [] == ['clause-4']
+E         
+E         Right contains one more item: 'clause-4'
+E         Use -v to get more diff
+
+tests/test_chinese_clause_coverage.py:33: AssertionError</failure></testcase><testcase classname="tests.test_chinese_clause_coverage" name="test_split_exception_uses_parent_or_payment_path[numbers1-\u4ed8\u6b3e-1000]" time="0.001" /><testcase classname="tests.test_chinese_clause_coverage" name="test_independent_sibling_does_not_inherit_payment_scope[\u7b2c\u4e00\u6761 \u4ed8\u6b3e\n30\u5929\u4ed8\u6b3e\u3002\n\u7b2c\u4e8c\u6761 \u4e89\u8bae\u89e3\u51b3\n\u4e89\u8bae\u63d0\u4ea4\u6cd5\u9662\u5904\u7406\u3002]" time="0.000" /><testcase classname="tests.test_chinese_clause_coverage" name="test_independent_sibling_does_not_inherit_payment_scope[\u7b2c\u4e00\u6761 \u4ed8\u6b3e\n30\u5929\u4ed8\u6b3e\u3002\n\u7b2c\u4e8c\u6761 \u72ec\u7acb\u4e8b\u9879\n\u8bbe\u5907\u7ef4\u62a4\u4e89\u8bae\u53e6\u884c\u5904\u7406\u3002]" time="0.000" /><testcase classname="tests.test_chinese_clause_coverage" name="test_independent_sibling_does_not_inherit_payment_scope[\u7b2c\u4e00\u6761 \u4ed8\u6b3e\n30\u5929\u4ed8\u6b3e\u3002\n\u7b2c\u4e8c\u6761 \u7279\u6b8a\u5b89\u6392\n\u53d1\u751f\u8d28\u91cf\u4e89\u8bae\u65f6\uff0c\u671f\u9650\u5ef6\u671f\u3002]" time="0.000" /><testcase classname="tests.test_chinese_clause_coverage" name="test_missing_context_no_payment_and_no_exception_boundaries" time="0.000" /></testsuite></testsuites>
