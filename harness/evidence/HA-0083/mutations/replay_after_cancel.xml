@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.291" timestamp="2026-10-06T19:53:04.564257+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_crossings" name="test_cancel_prevents_replay_without_duplicate_action" time="0.118"><failure message="Failed: DID NOT RAISE Problem">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10a347cb0&gt;, 'run_03fc22f9eeec4400bdfc5c0285f97e20', &lt;backend.dsh_crossings.Crossings object at 0x10a420c20&gt;)
+
+    def test_cancel_prevents_replay_without_duplicate_action(setup):
+        rt, ident, crossings = setup
+        ticket = issue(crossings)
+        crossings.invoke('tool', ticket, lambda _: {'text': 'first'})
+        rt.cancel(ident)
+        changes = rt.store.db.total_changes
+&gt;       with pytest.raises(Problem):
+             ^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Problem
+
+tests/test_dsh_crossings.py:135: Failed</failure></testcase></testsuite></testsuites>

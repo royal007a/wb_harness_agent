@@ -16,15 +16,18 @@ async function request(path, body, signal) {
   return value;
 }
 class PlatformAdapter extends LlmAdapter {
+  nextCrossing = 'm_1';
   async resolveModel(provider, model) {
     if (provider !== 'harness-platform' || model !== process.env.HARNESS_DSH_MODEL) throw new Error('MODEL_ROUTE_INVALID');
     return { provider, id: model, name: model, contextWindow: 64000 };
   }
   async *stream(options) {
-    const result = await request('/model', {
+    const receipt = await request('/model', { crossing_id: this.nextCrossing, request: {
       model: options.model, messages: options.messages, tools: options.tools || [],
       maxTokens: options.maxTokens, purpose: options.purpose || 'primary',
-    }, options.signal);
+    } }, options.signal);
+    this.nextCrossing = receipt.next_model_crossing;
+    const result = receipt.value;
     let index = 0;
     if (result.text) {
       yield { type: 'block-start', index, blockType: 'text' };
@@ -78,7 +81,9 @@ export function apply(ctx) {
       name, description: spec.description, parameters: spec.parameters,
       output: { schema: { type: 'string' }, render: (_args, value) => [{ type: 'text', text: value }] },
       async execute(args, exec) {
-        const result = await request('/tool', { name, arguments: args }, exec.signal);
+        const result = await request('/tool', {
+          crossing_id: exec.callId, request: { name, arguments: args },
+        }, exec.signal);
         return result.text;
       },
     }));

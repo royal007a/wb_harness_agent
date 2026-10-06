@@ -1,0 +1,35 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________ test_same_raw_id_and_arguments_next_round_is_new_action ____________
+
+setup = (<backend.dsh_runtime.DshRuntime object at 0x10b963cb0>, 'run_b3b651cc84d04490ad415a7e5b7c6058', <backend.dsh_crossings.Crossings object at 0x10ba38c20>)
+
+    def test_same_raw_id_and_arguments_next_round_is_new_action(setup):
+        rt, ident, crossings = setup
+        first = issue(crossings)
+        with pytest.raises(Problem, match='上一轮'):
+>           crossings.invoke('model', envelope('m_2'), lambda _: pytest.fail('unfinished predecessor'))
+
+tests/test_dsh_crossings.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'messages': []}
+
+>   crossings.invoke('model', envelope('m_2'), lambda _: pytest.fail('unfinished predecessor'))
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: unfinished predecessor
+
+tests/test_dsh_crossings.py:90: Failed
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_crossings.py::test_same_raw_id_and_arguments_next_round_is_new_action
+1 failed, 19 deselected, 1 warning in 0.31s

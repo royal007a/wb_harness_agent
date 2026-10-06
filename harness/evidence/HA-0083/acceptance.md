@@ -1,0 +1,25 @@
+# HA-0083 验证记录
+
+基线 5a83d38；任务 B，不包含 A2 证据续跑。实现、评审、部署分别记录，不以本文件代替尚未完成的验收。
+
+## 实现边界
+
+- 平台签发 Run/generation/model-round/tool-ordinal 身份，DSH 工具 ID 换成平台票据；原模型 ID 仅摘要关联。跨轮重复 call_probe_0 不被误去重。
+- 同票同内容在活动 Run 内回放首次完整响应，仅内存缓存。返回 notice/提交编号保持首次值，不重新调用工具或预算函数。
+- dsh_crossings 和 dsh.crossing 仅元数据；收据状态与审计同事务。工具动作完成到收据完成之间的故障保守 unknown，不重发，不声称跨调用 exactly-once。
+- 取消/截止先于缓存回放；恢复将 in_flight→unknown、issued→failed。原预算 sent→unknown 保留未知预留。
+- 私有协议升级，公开 HTTP 接口和上游 SDK 不变。旧 Run 可读，缓存不跨进程恢复。
+
+## 离线证据
+
+- 新增 tests/test_dsh_crossings.py：20 项，覆盖并发、改参、跨 generation、取消、收据提交故障、审计原子性、重启未知预算、缓存丢失、重复 execute 不退役其他执行代次。
+- 官方 DSH SDK + 合成 Provider：free/payment 两种模式，每次 callback 人为重复一次，逐值比较首次结果并断言 DB total_changes、预算不变，提交次数不增加。
+- 独立真实 loopback HTTP 探针：合成 Python 子进程对模型、工具各投递两次，平台实际执行各一次。这一条不是官方 SDK，也不是真实 Provider。
+- 定向内存突变：harness/dsh_crossing_mutations.py，7/7 被捕获，XML failures > 0、errors=0。每个突变只跑对应的定向用例，不是全库 mutation score；不修改源文件。
+- DSH 全部测试文件 + test_workbench.py：262 passed，见 targeted.xml/log。
+- 初次全量 3 failed / 1725 passed / 22 skipped：两个旧压缩测试的 6500 字符窗口被更长的平台票据挤满，先安全失败，未到其进展断言；仅测试窗口分别调为 7600/7100，生产 64000 不变。第三条是新 HTTP 探针继承 macOS 系统代理，已在探针显式禁用代理。修复后这 36 项定向通过。最终全量结果待下文更新。
+- 旧对抗探针按新信封升级，仍验证业务拒绝原因；不保留不带票据的兼容旁路。没有声称新文件原样放回旧版能得到行为反例（旧版没有收据模块）。
+
+## 尚待完成
+
+最终全量、独立复审、8876 固定版本部署及新版本浏览器/小额真实 Provider 冒烟。8765/132 不在本轮范围内。没有语义正确性、跨进程回放或生产多租户验收。

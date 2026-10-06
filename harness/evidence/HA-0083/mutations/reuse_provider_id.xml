@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.357" timestamp="2026-10-06T19:53:05.224429+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_crossings" name="test_same_raw_id_and_arguments_next_round_is_new_action" time="0.133"><failure message="sqlite3.IntegrityError: UNIQUE constraint failed: dsh_crossings.run_id, dsh_crossings.generation, dsh_crossings.crossing_id">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10b98bcb0&gt;, 'run_941095bb91d945a2b30f1d3095b4a009', &lt;backend.dsh_crossings.Crossings object at 0x10ba60c20&gt;)
+
+    def test_same_raw_id_and_arguments_next_round_is_new_action(setup):
+        rt, ident, crossings = setup
+        first = issue(crossings)
+        with pytest.raises(Problem, match='上一轮'):
+            crossings.invoke('model', envelope('m_2'), lambda _: pytest.fail('unfinished predecessor'))
+        calls = []
+        crossings.invoke('tool', first, lambda _: calls.append(1) or {'text': 'one'})
+&gt;       second = issue(crossings, 'm_2')
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dsh_crossings.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_dsh_crossings.py:41: in issue
+    reply = crossings.invoke('model', envelope(turn), lambda _: model_result((name, args)))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/dsh_crossings.py:135: in invoke
+    self._insert(db, entry)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;backend.dsh_crossings.Crossings object at 0x10ba60c20&gt;
+db = &lt;sqlite3.Connection object at 0x10afc0220&gt;
+item = {'crossing_id': 'call_probe_0', 'kind': 'tool', 'model_round': 2, 'tool_ordinal': 1, ...}
+
+    def _insert(self, db, item):
+&gt;       db.execute('''INSERT INTO dsh_crossings
+            (run_id,generation,crossing_id,kind,model_round,tool_ordinal,request_sha256,
+             response_sha256,origin_id_sha256,status) VALUES (?,?,?,?,?,?,?,?,?,?)''',
+            (self.run_id, self.generation, *[item[k] for k in (
+                'crossing_id', 'kind', 'model_round', 'tool_ordinal', 'request_sha256',
+                'response_sha256', 'origin_id_sha256', 'status')]))
+E       sqlite3.IntegrityError: UNIQUE constraint failed: dsh_crossings.run_id, dsh_crossings.generation, dsh_crossings.crossing_id
+
+backend/dsh_crossings.py:75: IntegrityError</failure></testcase></testsuite></testsuites>

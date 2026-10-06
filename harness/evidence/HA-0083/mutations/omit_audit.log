@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________ test_receipt_event_atomicity_before_action __________________
+
+setup = (<backend.dsh_runtime.DshRuntime object at 0x10dfc7cb0>, 'run_024ade208f994ccaa387c2ac63f9a25f', <backend.dsh_crossings.Crossings object at 0x10e0a0c20>)
+
+    def test_receipt_event_atomicity_before_action(setup):
+        rt, _, crossings = setup
+        before = rt.store.db.execute('SELECT status FROM dsh_crossings').fetchone()[0]
+        rt.store.db.execute('''CREATE TEMP TRIGGER reject_crossing BEFORE INSERT ON events
+            WHEN NEW.doc LIKE '%dsh.crossing%' BEGIN SELECT RAISE(ABORT,'synthetic'); END''')
+        with pytest.raises(Exception):
+>           crossings.invoke('model', envelope('m_1'), lambda _: pytest.fail('before commit'))
+
+tests/test_dsh_crossings.py:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'messages': []}
+
+>   crossings.invoke('model', envelope('m_1'), lambda _: pytest.fail('before commit'))
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: before commit
+
+tests/test_dsh_crossings.py:178: Failed
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_crossings.py::test_receipt_event_atomicity_before_action
+1 failed, 19 deselected, 1 warning in 0.29s

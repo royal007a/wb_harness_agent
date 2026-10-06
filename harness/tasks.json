@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0083",
+      "title": "DSH平台过境收据与同进程重放防护",
+      "status": "running",
+      "risk": "medium",
+      "scope": ["平台签发模型及工具调用身份", "有界首次响应回放与元数据收据", "unknown恢复与取消保护", "8876部署验证"],
+      "non_goals": ["证据续跑A2", "网络exactly-once", "8765及132部署"],
+      "acceptance": ["跨轮同名ID不误去重", "同票改参拒绝且并发同票只执行一次", "回放不改变计数进展或预算", "unknown及取消后不重发", "事件不保存正文", "固定版本通过复审及8876验收"],
+      "depends_on": ["HA-0082"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0083.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": []
+    },
+    {
       "id": "HA-0082",
       "title": "DSH付款核对计划投影、提交历史与延迟清理（A1/C/D）",
       "status": "completed",

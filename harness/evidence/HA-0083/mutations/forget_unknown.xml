@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.328" timestamp="2026-10-06T19:53:05.949703+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_crossings" name="test_restart_retains_unknown_and_never_resends" time="0.149"><failure message="AssertionError: assert 'failed' == 'unknown'&#10;  &#10;  - unknown&#10;  + failed">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10de07cb0&gt;, 'run_3db33619bec4480f856892082d76e34b', &lt;backend.dsh_crossings.Crossings object at 0x10ded8c20&gt;)
+
+    def test_restart_retains_unknown_and_never_resends(setup):
+        rt, ident, crossings = setup
+        rt.ledger.register_root(ident, 'a' * 64, 1000)
+        rt.ledger.reserve(ident, 'call_1', binding_digest='a' * 64, request_digest='b' * 64,
+                          input_bound=100, output_limit=100)
+        rt.ledger.mark_sent(ident, 'call_1')
+        rt.store.db.execute("UPDATE dsh_crossings SET status='in_flight' WHERE crossing_id='m_1'")
+        rt.recover()
+        assert rt.detail(ident)['run']['exit_reason'] == 'DSH_SERVER_RESTARTED'
+&gt;       assert rt.store.db.execute('SELECT status FROM dsh_crossings').fetchone()[0] == 'unknown'
+E       AssertionError: assert 'failed' == 'unknown'
+E         
+E         - unknown
+E         + failed
+
+tests/test_dsh_crossings.py:191: AssertionError</failure></testcase></testsuite></testsuites>

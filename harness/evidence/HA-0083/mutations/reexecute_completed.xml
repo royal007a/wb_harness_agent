@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.420" timestamp="2026-10-06T19:53:02.692535+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_crossings" name="test_replay_exact_mutation_safe_and_no_writes" time="0.153"><failure message="assert ({'text': '{&quot;a...d clause-4&quot;}'} == {'text': '{&quot;a...d clause-4&quot;}'}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Use -v to get more diff and 2 == 1)&#10; +  where 2 = len([1, 1])">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10a10bcb0&gt;, 'run_4c1c373624dc40e186b919c72b5be387', &lt;backend.dsh_crossings.Crossings object at 0x10a1e0c20&gt;)
+
+    def test_replay_exact_mutation_safe_and_no_writes(setup):
+        rt, ident, crossings = setup
+        ticket = issue(crossings, name='submit_findings', args={'claim': 'SYNTH_CROSSING_SECRET'})
+        calls = []
+        def action(_):
+            calls.append(1)
+            return {'text': json.dumps({'accepted': False, 'submission_number': 1, 'notice': 'read clause-4'})}
+        first = crossings.invoke('tool', ticket, action)
+        changes = rt.store.db.total_changes
+        replay = crossings.invoke('tool', ticket, action)
+&gt;       assert replay == first and len(calls) == 1
+E       assert ({'text': '{"a...d clause-4"}'} == {'text': '{"a...d clause-4"}'}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Use -v to get more diff and 2 == 1)
+E        +  where 2 = len([1, 1])
+
+tests/test_dsh_crossings.py:55: AssertionError</failure></testcase></testsuite></testsuites>

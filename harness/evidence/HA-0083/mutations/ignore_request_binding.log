@@ -1,0 +1,86 @@
+FF...                                                                    [100%]
+=================================== FAILURES ===================================
+__________ test_conflict_or_forged_identity_never_executes[arguments] __________
+
+setup = (<backend.dsh_runtime.DshRuntime object at 0x10be17cb0>, 'run_fd65e37e476c49008e1cfa29c82b44e3', <backend.dsh_crossings.Crossings object at 0x10bef0c20>)
+change = 'arguments'
+
+    @pytest.mark.parametrize('change', ['arguments', 'name', 'ticket', 'namespace', 'envelope'])
+    def test_conflict_or_forged_identity_never_executes(setup, change):
+        _, _, crossings = setup
+        request = issue(crossings)
+        kind = 'tool'
+        if change == 'arguments':
+            request['request']['arguments']['clause_id'] = 'clause-2'
+        elif change == 'name':
+            request['request']['name'] = 'search_document'
+        elif change == 'ticket':
+            request['crossing_id'] = 'call_probe_0'
+        elif change == 'namespace':
+            kind = 'model'
+        else:
+            request['extra'] = True
+        with pytest.raises(Problem):
+>           crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+
+tests/test_dsh_crossings.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'name': 'read_clause', 'arguments': {'clause_id': 'clause-2'}}
+
+>   crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: must not execute
+
+tests/test_dsh_crossings.py:117: Failed
+____________ test_conflict_or_forged_identity_never_executes[name] _____________
+
+setup = (<backend.dsh_runtime.DshRuntime object at 0x10cdb2d50>, 'run_a8e93b2d83554a2c934cbf58f9a030ef', <backend.dsh_crossings.Crossings object at 0x10cdb3390>)
+change = 'name'
+
+    @pytest.mark.parametrize('change', ['arguments', 'name', 'ticket', 'namespace', 'envelope'])
+    def test_conflict_or_forged_identity_never_executes(setup, change):
+        _, _, crossings = setup
+        request = issue(crossings)
+        kind = 'tool'
+        if change == 'arguments':
+            request['request']['arguments']['clause_id'] = 'clause-2'
+        elif change == 'name':
+            request['request']['name'] = 'search_document'
+        elif change == 'ticket':
+            request['crossing_id'] = 'call_probe_0'
+        elif change == 'namespace':
+            kind = 'model'
+        else:
+            request['extra'] = True
+        with pytest.raises(Problem):
+>           crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+
+tests/test_dsh_crossings.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'name': 'search_document', 'arguments': {'clause_id': 'clause-1'}}
+
+>   crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: must not execute
+
+tests/test_dsh_crossings.py:117: Failed
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_crossings.py::test_conflict_or_forged_identity_never_executes[arguments]
+FAILED tests/test_dsh_crossings.py::test_conflict_or_forged_identity_never_executes[name]
+2 failed, 3 passed, 15 deselected, 1 warning in 0.60s

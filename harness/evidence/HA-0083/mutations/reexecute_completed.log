@@ -1,0 +1,33 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________ test_replay_exact_mutation_safe_and_no_writes _________________
+
+setup = (<backend.dsh_runtime.DshRuntime object at 0x10a10bcb0>, 'run_4c1c373624dc40e186b919c72b5be387', <backend.dsh_crossings.Crossings object at 0x10a1e0c20>)
+
+    def test_replay_exact_mutation_safe_and_no_writes(setup):
+        rt, ident, crossings = setup
+        ticket = issue(crossings, name='submit_findings', args={'claim': 'SYNTH_CROSSING_SECRET'})
+        calls = []
+        def action(_):
+            calls.append(1)
+            return {'text': json.dumps({'accepted': False, 'submission_number': 1, 'notice': 'read clause-4'})}
+        first = crossings.invoke('tool', ticket, action)
+        changes = rt.store.db.total_changes
+        replay = crossings.invoke('tool', ticket, action)
+>       assert replay == first and len(calls) == 1
+E       assert ({'text': '{"a...d clause-4"}'} == {'text': '{"a...d clause-4"}'}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Use -v to get more diff and 2 == 1)
+E        +  where 2 = len([1, 1])
+
+tests/test_dsh_crossings.py:55: AssertionError
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_crossings.py::test_replay_exact_mutation_safe_and_no_writes
+1 failed, 19 deselected, 1 warning in 0.42s

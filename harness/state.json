@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_context_assembler_approved",
+  "phase": "dsh_crossing_receipts_implementation",
   "implementation_started": true,
-  "active_task_id": "HA-0081",
-  "active_plan": null,
-  "last_checkpoint": "HA-0081 73e7e25 获 mymaccodex Approved（代码+离线）；追加 estimate_after 按实际发送重算。8876 由 mymacclaude 维护。",
+  "active_task_id": "HA-0083",
+  "active_plan": "exec-plans/active/HA-0083.md",
+  "last_checkpoint": "HA-0082 已获复审通过；HA-0083 在独立工作区实现平台签发调用票据及内存回放，8876 尚未更新。",
   "last_updated_at": "2026-10-06T10:20:00Z",
-  "next_action": "无待办；HA-0090 为 mymaccodex 智能客服。",
+  "next_action": "实施B过境收据、独立复审、8876部署验证；A2仍待实施。",
   "release": "0.1.0-local"
 }

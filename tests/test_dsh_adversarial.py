@@ -202,8 +202,10 @@ def test_sdk_parallel_runs_do_not_share_document_or_workspace(client):
 def drive_once(prompt, root, model, model_call, tool_call, emit, check):
     request = {'model': MODEL, 'purpose': 'primary', 'messages': [],
                'tools': [{'name': 'read_clause'}, {'name': 'search_document'}]}
-    model_call(request)
-    tool_call({'name': 'read_clause', 'arguments': {'clause_id': 'clause-1'}})
+    receipt = model_call({'crossing_id': 'm_1', 'request': request})
+    call = receipt['value']['tool_calls'][0]
+    tool_call({'crossing_id': call['id'], 'request': {
+        'name': call['name'], 'arguments': json.loads(call['arguments'])}})
     return {'type': 'result', 'text': 'Answer clause-1', 'session_sha256': 'a' * 64,
             'turn_count': 1, 'runtime': 'deepseek-harness@0.2.1-alpha.1'}
 
@@ -250,10 +252,11 @@ def test_platform_second_call_reservation_exact_boundary(client, extra):
     sends = []
     async def send(*args):
         sends.append(1)
-        return parse_response(response())
+        return parse_response(response(calls=[('read_clause', {'clause_id': 'clause-1'})]
+                                       if len(sends) == 1 else None))
     def two_calls(prompt, root, model, model_call, tool_call, emit, check):
         result = drive_once(prompt, root, model, model_call, tool_call, emit, check)
-        model_call(request)
+        model_call({'crossing_id': 'm_2', 'request': request})
         return result
     rt.send_probe, rt.adapter.run = send, two_calls
     rt.execute(ident)
@@ -331,8 +334,20 @@ def test_platform_maximum_key_is_accepted_and_replayed(client):
 def test_platform_tool_policy_cannot_be_bypassed(client, name, args, code):
     ident = submit(client)
     rt = client.app.state.service.dsh
+    async def send(*_):
+        if name == 'bash':
+            # Reach the runtime policy as before; the real Provider parser rejects bash earlier.
+            value = parse_response(response(calls=[('read_clause', {'clause_id': 'clause-1'})]))
+            value.value['tool_calls'][0].update(name=name, arguments=json.dumps(args))
+            return value
+        return parse_response(response(calls=[(name, args)]))
+    rt.send_probe = send
     def probe(prompt, root, model, model_call, tool_call, emit, check):
-        tool_call({'name': name, 'arguments': args})
+        receipt = model_call({'crossing_id': 'm_1', 'request': {
+            'model': MODEL, 'purpose': 'primary', 'messages': [],
+            'tools': [{'name': 'read_clause'}, {'name': 'search_document'}]}})
+        tool_call({'crossing_id': receipt['value']['tool_calls'][0]['id'],
+                   'request': {'name': name, 'arguments': args}})
         pytest.fail('invalid tool was accepted')
     rt.adapter.run = probe
     rt.execute(ident)

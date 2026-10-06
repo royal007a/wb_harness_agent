@@ -137,7 +137,9 @@ def test_latest_turn_is_never_stubbed_even_if_that_would_fit():
 
 def test_rereading_stubbed_blocks_counts_as_progress(client, monkeypatch):
     import backend.dsh_runtime as runtime
-    monkeypatch.setattr(runtime, 'assemble_context', functools.partial(assemble, context_window=6500))
+    # HA-0083 platform tickets are longer than synthetic Provider IDs. Keep this
+    # fixture focused on re-reading omitted evidence, not ID-envelope exhaustion.
+    monkeypatch.setattr(runtime, 'assemble_context', functools.partial(assemble, context_window=7600))
     ident = submit(client, template='free', document=LONG_DOC, key='reread')
     rt = client.app.state.service.dsh
     calls = []

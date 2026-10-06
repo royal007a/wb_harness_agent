@@ -1,0 +1,51 @@
+[
+  {
+    "name": "reexecute_completed",
+    "exit_code": 1,
+    "failures": 1,
+    "errors": 0,
+    "killed": true
+  },
+  {
+    "name": "ignore_request_binding",
+    "exit_code": 1,
+    "failures": 2,
+    "errors": 0,
+    "killed": true
+  },
+  {
+    "name": "replay_after_cancel",
+    "exit_code": 1,
+    "failures": 1,
+    "errors": 0,
+    "killed": true
+  },
+  {
+    "name": "reuse_provider_id",
+    "exit_code": 1,
+    "failures": 1,
+    "errors": 0,
+    "killed": true
+  },
+  {
+    "name": "forget_unknown",
+    "exit_code": 1,
+    "failures": 1,
+    "errors": 0,
+    "killed": true
+  },
+  {
+    "name": "skip_predecessor",
+    "exit_code": 1,
+    "failures": 1,
+    "errors": 0,
+    "killed": true
+  },
+  {
+    "name": "omit_audit",
+    "exit_code": 1,
+    "failures": 1,
+    "errors": 0,
+    "killed": true
+  }
+]

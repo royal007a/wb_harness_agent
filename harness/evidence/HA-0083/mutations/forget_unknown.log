@@ -1,0 +1,31 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________ test_restart_retains_unknown_and_never_resends ________________
+
+setup = (<backend.dsh_runtime.DshRuntime object at 0x10de07cb0>, 'run_3db33619bec4480f856892082d76e34b', <backend.dsh_crossings.Crossings object at 0x10ded8c20>)
+
+    def test_restart_retains_unknown_and_never_resends(setup):
+        rt, ident, crossings = setup
+        rt.ledger.register_root(ident, 'a' * 64, 1000)
+        rt.ledger.reserve(ident, 'call_1', binding_digest='a' * 64, request_digest='b' * 64,
+                          input_bound=100, output_limit=100)
+        rt.ledger.mark_sent(ident, 'call_1')
+        rt.store.db.execute("UPDATE dsh_crossings SET status='in_flight' WHERE crossing_id='m_1'")
+        rt.recover()
+        assert rt.detail(ident)['run']['exit_reason'] == 'DSH_SERVER_RESTARTED'
+>       assert rt.store.db.execute('SELECT status FROM dsh_crossings').fetchone()[0] == 'unknown'
+E       AssertionError: assert 'failed' == 'unknown'
+E         
+E         - unknown
+E         + failed
+
+tests/test_dsh_crossings.py:191: AssertionError
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_crossings.py::test_restart_retains_unknown_and_never_resends
+1 failed, 19 deselected, 1 warning in 0.33s

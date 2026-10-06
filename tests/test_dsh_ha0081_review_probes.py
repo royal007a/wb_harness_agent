@@ -28,7 +28,8 @@ def test_result_cannot_cross_a_new_user_message():
 
 def test_full_current_copy_prevents_false_new_progress(client, monkeypatch):
     import backend.dsh_runtime as runtime
-    monkeypatch.setattr(runtime, 'assemble_context', functools.partial(assemble, context_window=6500))
+    # HA-0083: account for platform-issued tool IDs; the progress assertion is unchanged.
+    monkeypatch.setattr(runtime, 'assemble_context', functools.partial(assemble, context_window=7100))
     ident=submit(client,template='free',document=LONG_DOC,key='independent-repeat')
     rt=client.app.state.service.dsh
     requests=[]

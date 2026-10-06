@@ -1,0 +1,26 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_cancel_prevents_replay_without_duplicate_action _____________
+
+setup = (<backend.dsh_runtime.DshRuntime object at 0x10a347cb0>, 'run_03fc22f9eeec4400bdfc5c0285f97e20', <backend.dsh_crossings.Crossings object at 0x10a420c20>)
+
+    def test_cancel_prevents_replay_without_duplicate_action(setup):
+        rt, ident, crossings = setup
+        ticket = issue(crossings)
+        crossings.invoke('tool', ticket, lambda _: {'text': 'first'})
+        rt.cancel(ident)
+        changes = rt.store.db.total_changes
+>       with pytest.raises(Problem):
+             ^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Problem
+
+tests/test_dsh_crossings.py:135: Failed
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/weberzhao/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dsh_crossings.py::test_cancel_prevents_replay_without_duplicate_action
+1 failed, 19 deselected, 1 warning in 0.30s

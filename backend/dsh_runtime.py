@@ -19,6 +19,7 @@ from .adaptive_retrieval import build_parent_child_chunks
 from .analysis import Problem, digest
 from .business_budget import BusinessTokenLedger, budgeted_model_call
 from .dsh_context import assemble as assemble_context
+from .dsh_crossings import Crossings, initialize as initialize_crossings, retire as retire_crossings
 from .dsh_plan import failed_step as plan_failed_step, project as project_plan, summary as plan_summary
 from .dsh_findings import candidates as finding_candidates, render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
@@ -48,6 +49,7 @@ class DshRuntime:
     def __init__(self, service):
         self.service, self.store = service, service.store
         self.ledger = BusinessTokenLedger(self.store)
+        initialize_crossings(self.store)
         self.adapter = DshAdapter()
         self.send_probe = send_probe
         self.send_real = send_real
@@ -168,6 +170,7 @@ class DshRuntime:
 
     def execute(self, ident):
         plan_box = {'plan': None}
+        crossings = None
         try:
             with self.store.transaction() as db:
                 run = self.detail(ident)['run']
@@ -418,9 +421,11 @@ class DshRuntime:
             if created:
                 event(*created[0])
                 plan_box['plan'] = plan
+            crossings = Crossings(self.store, ident, check)
             result = self.adapter.run(prompt,
                 Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs')), MODEL,
-                model_call, tool_call, emit, check,
+                lambda body: crossings.invoke('model', body, model_call),
+                lambda body: crossings.invoke('tool', body, tool_call), emit, check,
                 **({'tools': sorted(allowed)} if allowed != TOOL_NAMES else {}))
             validate_dsh('result', result)
             cited = set(re.findall(r'clause-[0-9]+', result['text']))
@@ -476,6 +481,11 @@ class DshRuntime:
                     self.store.event(db, run, 'run.failed', failure)
                     db.execute("UPDATE business_budget_roots SET status='failed' WHERE id=? AND status='active'", (ident,))
 
+        finally:
+            if crossings is not None:
+                with self.store.transaction() as db:
+                    retire_crossings(self.store, db, ident, crossings.generation)
+
     def _run_root(self):
         # Fixed at recovery time so a later env change cannot widen a retry's scope.
         return self._cleanup_root or Path(os.getenv('HARNESS_DSH_RUN_ROOT', ROOT / '.local/dsh-runs'))
@@ -514,9 +524,13 @@ class DshRuntime:
             self._schedule_cleanup(1)
         # No automatic resume/model replay after restart.
         for run in self.store.listing('runs'):
-            if run['selected_engine'] != ENGINE or run['status'] in TERMINAL:
+            if run['selected_engine'] != ENGINE:
                 continue
             with self.store.transaction() as db:
+                retire_crossings(self.store, db, run['id'])
+                if run['status'] in TERMINAL:
+                    continue
+                run = self.store.get('runs', run['id'])
                 run['status'], run['exit_reason'] = 'failed', 'DSH_SERVER_RESTARTED'
                 self.store.event(db, run, 'run.failed', {'error_code': run['exit_reason']})
                 db.execute("UPDATE business_budget_calls SET status='unknown' WHERE root_id=? AND status='sent'", (run['id'],))

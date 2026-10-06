@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.309" timestamp="2026-10-06T19:53:06.608896+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_crossings" name="test_same_raw_id_and_arguments_next_round_is_new_action" time="0.138"><failure message="Failed: unfinished predecessor">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10b963cb0&gt;, 'run_b3b651cc84d04490ad415a7e5b7c6058', &lt;backend.dsh_crossings.Crossings object at 0x10ba38c20&gt;)
+
+    def test_same_raw_id_and_arguments_next_round_is_new_action(setup):
+        rt, ident, crossings = setup
+        first = issue(crossings)
+        with pytest.raises(Problem, match='上一轮'):
+&gt;           crossings.invoke('model', envelope('m_2'), lambda _: pytest.fail('unfinished predecessor'))
+
+tests/test_dsh_crossings.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'messages': []}
+
+&gt;   crossings.invoke('model', envelope('m_2'), lambda _: pytest.fail('unfinished predecessor'))
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: unfinished predecessor
+
+tests/test_dsh_crossings.py:90: Failed</failure></testcase></testsuite></testsuites>

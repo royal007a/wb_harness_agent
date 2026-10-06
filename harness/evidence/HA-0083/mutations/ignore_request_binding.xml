@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="5" time="0.601" timestamp="2026-10-06T19:53:03.567695+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_crossings" name="test_conflict_or_forged_identity_never_executes[arguments]" time="0.119"><failure message="Failed: must not execute">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10be17cb0&gt;, 'run_fd65e37e476c49008e1cfa29c82b44e3', &lt;backend.dsh_crossings.Crossings object at 0x10bef0c20&gt;)
+change = 'arguments'
+
+    @pytest.mark.parametrize('change', ['arguments', 'name', 'ticket', 'namespace', 'envelope'])
+    def test_conflict_or_forged_identity_never_executes(setup, change):
+        _, _, crossings = setup
+        request = issue(crossings)
+        kind = 'tool'
+        if change == 'arguments':
+            request['request']['arguments']['clause_id'] = 'clause-2'
+        elif change == 'name':
+            request['request']['name'] = 'search_document'
+        elif change == 'ticket':
+            request['crossing_id'] = 'call_probe_0'
+        elif change == 'namespace':
+            kind = 'model'
+        else:
+            request['extra'] = True
+        with pytest.raises(Problem):
+&gt;           crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+
+tests/test_dsh_crossings.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'name': 'read_clause', 'arguments': {'clause_id': 'clause-2'}}
+
+&gt;   crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: must not execute
+
+tests/test_dsh_crossings.py:117: Failed</failure></testcase><testcase classname="tests.test_dsh_crossings" name="test_conflict_or_forged_identity_never_executes[name]" time="0.055"><failure message="Failed: must not execute">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10cdb2d50&gt;, 'run_a8e93b2d83554a2c934cbf58f9a030ef', &lt;backend.dsh_crossings.Crossings object at 0x10cdb3390&gt;)
+change = 'name'
+
+    @pytest.mark.parametrize('change', ['arguments', 'name', 'ticket', 'namespace', 'envelope'])
+    def test_conflict_or_forged_identity_never_executes(setup, change):
+        _, _, crossings = setup
+        request = issue(crossings)
+        kind = 'tool'
+        if change == 'arguments':
+            request['request']['arguments']['clause_id'] = 'clause-2'
+        elif change == 'name':
+            request['request']['name'] = 'search_document'
+        elif change == 'ticket':
+            request['crossing_id'] = 'call_probe_0'
+        elif change == 'namespace':
+            kind = 'model'
+        else:
+            request['extra'] = True
+        with pytest.raises(Problem):
+&gt;           crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+
+tests/test_dsh_crossings.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'name': 'search_document', 'arguments': {'clause_id': 'clause-1'}}
+
+&gt;   crossings.invoke(kind, request, lambda _: pytest.fail('must not execute'))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: must not execute
+
+tests/test_dsh_crossings.py:117: Failed</failure></testcase><testcase classname="tests.test_dsh_crossings" name="test_conflict_or_forged_identity_never_executes[ticket]" time="0.099" /><testcase classname="tests.test_dsh_crossings" name="test_conflict_or_forged_identity_never_executes[namespace]" time="0.071" /><testcase classname="tests.test_dsh_crossings" name="test_conflict_or_forged_identity_never_executes[envelope]" time="0.058" /></testsuite></testsuites>

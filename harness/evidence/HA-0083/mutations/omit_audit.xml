@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.285" timestamp="2026-10-06T19:53:07.332506+08:00" hostname="192.168.31.117"><testcase classname="tests.test_dsh_crossings" name="test_receipt_event_atomicity_before_action" time="0.120"><failure message="Failed: before commit">setup = (&lt;backend.dsh_runtime.DshRuntime object at 0x10dfc7cb0&gt;, 'run_024ade208f994ccaa387c2ac63f9a25f', &lt;backend.dsh_crossings.Crossings object at 0x10e0a0c20&gt;)
+
+    def test_receipt_event_atomicity_before_action(setup):
+        rt, _, crossings = setup
+        before = rt.store.db.execute('SELECT status FROM dsh_crossings').fetchone()[0]
+        rt.store.db.execute('''CREATE TEMP TRIGGER reject_crossing BEFORE INSERT ON events
+            WHEN NEW.doc LIKE '%dsh.crossing%' BEGIN SELECT RAISE(ABORT,'synthetic'); END''')
+        with pytest.raises(Exception):
+&gt;           crossings.invoke('model', envelope('m_1'), lambda _: pytest.fail('before commit'))
+
+tests/test_dsh_crossings.py:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+backend/dsh_crossings.py:117: in invoke
+    value = copy.deepcopy(callback(request))
+                          ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_ = {'messages': []}
+
+&gt;   crossings.invoke('model', envelope('m_1'), lambda _: pytest.fail('before commit'))
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: before commit
+
+tests/test_dsh_crossings.py:178: Failed</failure></testcase></testsuite></testsuites>
