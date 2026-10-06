@@ -101,13 +101,20 @@ def parties(text):
     return {party for party in PARTIES if party in (text or '')}
 
 
-def candidates(clauses):
+def candidates(clauses, chunk_context=None):
     """Platform-computed clause IDs a payment review must not silently skip."""
     payment = sorted(k for k, t in clauses.items() if PAYMENT_LEXICON.search(t))
-    # A structural boundary may separate "payment" from "unless/dispute".
-    # Conservative candidates in this one document, not semantic relevance:
-    # unrelated exception words can require additional human review.
-    exception = sorted(k for k, t in clauses.items() if EXCEPTION_LEXICON.search(t)) if payment else []
+    context = chunk_context or {}
+    payment_parents = {context[k]['parent_id'] for k in payment
+                       if context.get(k, {}).get('parent_id')}
+    def payment_scope(key):
+        item = context.get(key, {})
+        return (item.get('parent_id') in payment_parents
+                or any(PAYMENT_LEXICON.search(title) for title in item.get('structural_path', [])))
+    # Only platform-provided structure links separate children. Whole-document
+    # co-occurrence or adjacency would misclassify independent dispute sections.
+    exception = sorted(k for k, t in clauses.items() if EXCEPTION_LEXICON.search(t)
+                       and (PAYMENT_LEXICON.search(t) or payment_scope(k)))
     return {'payment': payment, 'exception': exception}
 
 
@@ -134,7 +141,7 @@ def _check_quotes(slot, quotes, clauses, seen, errors):
     return good
 
 
-def verify(submission, clauses, seen):
+def verify(submission, clauses, seen, *, chunk_context=None):
     """Return {'errors': [...], 'findings': ..., 'gaps': [...], 'business_status': ...}.
 
     ``errors`` use a fixed code vocabulary only; they never echo model text.
@@ -187,7 +194,7 @@ def verify(submission, clauses, seen):
         errors.append({'slot': 'gaps', 'code': 'GAPS_INVALID'})
     if errors:
         return {'errors': errors}
-    found = candidates(clauses)
+    found = candidates(clauses, chunk_context)
     platform_gaps = []
     unread_exception = [k for k in found['exception'] if k not in seen]
     unread_payment = [k for k in found['payment'] if k not in seen]

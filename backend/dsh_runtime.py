@@ -201,6 +201,9 @@ class DshRuntime:
             document = self.store.raw(task['context']['resource_ids'][0]).decode()
             chunks = build_parent_child_chunks(document, max_child_chars=1500, parent_max_chars=3000)
             clauses = {f'clause-{i+1}': chunk['text'] for i, chunk in enumerate(chunks['children'])}
+            clause_context = {f'clause-{i+1}': {'parent_id': chunk['parent_id'],
+                              'structural_path': chunk['structural_path']}
+                              for i, chunk in enumerate(chunks['children'])}
             counts = {'model_calls': 0, 'tool_calls': 0}
             seen_clauses = set()
             template = settings.get('template', 'free')
@@ -209,7 +212,7 @@ class DshRuntime:
                         'turn': None}
             review = {'rejections': 0, 'coverage_warned': False, 'accepted': None, 'submissions': 0}
             context = {'stubbed': set(), 'last': None}
-            all_candidates = finding_candidates(clauses) if template == 'payment_terms' else {'payment': [], 'exception': []}
+            all_candidates = finding_candidates(clauses, clause_context) if template == 'payment_terms' else {'payment': [], 'exception': []}
             exception_candidates = all_candidates['exception']
             review.setdefault('history', [])
             deadline = time.monotonic() + task['limits']['timeout_seconds']
@@ -390,7 +393,7 @@ class DshRuntime:
                 # Policy: the *last* submission must pass. A rejected or gap-warned
                 # replacement withdraws any earlier acceptance.
                 review['accepted'] = None
-                checked = verify_findings(args, clauses, seen_clauses)
+                checked = verify_findings(args, clauses, seen_clauses, chunk_context=clause_context)
                 content_sha = digest(dumps(args).encode())
                 for item in review['history']:  # a new submission supersedes every earlier one
                     item['superseded_by'] = item.get('superseded_by') or number
