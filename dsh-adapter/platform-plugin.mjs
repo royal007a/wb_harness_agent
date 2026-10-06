@@ -53,9 +53,9 @@ const SLOT = {
         clause_id: { type: 'string', required: true }, text: { type: 'string', required: true } } } },
   },
 };
-const TOOLS = {
+export const TOOLS = {
   search_document: {
-    description: 'Literal substring search over the supplied document. Returns at most 3 platform clause IDs per page '
+    description: 'Literal substring search over the supplied document (ignores whitespace, case and full/half width). Returns at most 3 platform clause IDs per page '
       + 'with total and next_offset; a page is NOT full coverage. Use offset to read further pages.',
     parameters: { query: { type: 'string', required: true, description: 'literal text, not a regex' },
       offset: { type: 'integer', description: 'page offset from next_offset; default 0' } },
