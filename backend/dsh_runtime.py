@@ -24,6 +24,8 @@ from .store import dumps, uid, now
 
 ENGINE = 'engine_dsh_document'
 SEARCH_PAGE = 3
+MAX_MODEL_CALLS = 8
+MAX_TOOL_CALLS = 32  # HA-0081: was 16; long contracts with real doubao exceeded it (model calls stay 8)
 MAX_FINDINGS_REJECTIONS = 2
 # Progress is judged per model turn (HA-0081, after real doubao issued 5 parallel
 # searches in one turn): a turn makes progress if any of its actions brought new
@@ -58,7 +60,7 @@ class DshRuntime:
                 'workspace_recovery': getattr(self, 'cleanup_status', None),
                 'model': MODEL, 'base_url': BASE, 'tools': sorted(TOOL_NAMES),
                 'shell_enabled': False, 'network_tools_enabled': False,
-                'max_model_calls': 8, 'max_tool_calls': 16, 'max_token_limit': 20_000_000,
+                'max_model_calls': MAX_MODEL_CALLS, 'max_tool_calls': MAX_TOOL_CALLS, 'max_token_limit': 20_000_000,
                 'note': '联调模式使用合成 Provider；DSH 进程和工具循环为真实运行。真实 Provider 需要独立准入。'}
 
     def require_mode(self, mode):
@@ -251,7 +253,7 @@ class DshRuntime:
                 check()
                 if not isinstance(body, dict) or set(body) != {'name', 'arguments'} or body['name'] not in allowed:
                     raise Problem('DSH_TOOL_POLICY', '工具未准入。', 403)
-                if counts['tool_calls'] >= 16:
+                if counts['tool_calls'] >= MAX_TOOL_CALLS:
                     raise Problem('DSH_TOOL_LIMIT', '达到工具上限。', 409)
                 if body['name'] == FINDINGS_TOOL:
                     return submit_findings(body['arguments'])

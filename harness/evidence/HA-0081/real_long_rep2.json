@@ -1,0 +1,185 @@
+{
+ "probe": "dsh-real-payment@1",
+ "context_window_override": null,
+ "provider": "doubao-seed-2.1-lite via Ark coding/v3",
+ "note": "synthetic public contracts; real model behaviour on 5 cases, not a statistical quality claim",
+ "rows": [
+  {
+   "id": "long-01",
+   "family": "long_contract",
+   "run_id": "run_cc64b176b6344641bea51cdc40a74847",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 50.6,
+   "model_calls": 7,
+   "tokens": 92983,
+   "reserved_after": 0,
+   "tool_events": [
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause"
+   ],
+   "findings_checks": [
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 4,
+     "platform_gap_count": 0,
+     "submission_number": 1
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [
+      "clause-13"
+     ],
+     "payment": [
+      "clause-13",
+      "clause-3"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "已通读全部14个证据块并检索付款相关关键词，clause-1、2、4-12、14均为重复性模板文字，未发现与clause-3（35天付款期限）相冲突的其他付款期限或付款方式约定。",
+      "quotes": [
+       {
+        "clause_id": "clause-3",
+        "text": "甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "exception": {
+      "claim": "付款例外：交付物经第三方检测确认存在质量缺陷时，甲方可暂停支付对应部分合同款，直至缺陷整改完毕（第13条）。",
+      "quotes": [
+       {
+        "clause_id": "clause-13",
+        "text": "如交付物存在经第三方检测确认的质量缺陷，甲方可暂停支付对应部分的合同款，直至缺陷整改完毕。"
+       }
+      ],
+      "status": "supported"
+     },
+     "term": {
+      "claim": "付款期限为验收合格且收到乙方合规发票后35天内（第3条）。",
+      "quotes": [
+       {
+        "clause_id": "clause-3",
+        "text": "甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款触发条件为两项同时满足：验收合格，且甲方收到乙方开具的合规发票。",
+      "quotes": [
+       {
+        "clause_id": "clause-3",
+        "text": "甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "“合规发票”的具体判定标准未在任何证据块中定义",
+     "验收合格的具体程序与标准在clause-5（第5条 验收标准）中仅有重复性模板文字，无实质内容",
+     "逾期付款的违约责任/违约金在clause-9（第9条 违约责任）中无实质约定，无法核实逾期后果",
+     "无预付款、质保金等其他付款安排的实质条款"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-10",
+     "clause-11",
+     "clause-12",
+     "clause-13",
+     "clause-14",
+     "clause-2",
+     "clause-3",
+     "clause-4",
+     "clause-5",
+     "clause-6",
+     "clause-7",
+     "clause-8",
+     "clause-9"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 1,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "context": [
+    {
+     "estimate_before": 4031,
+     "estimate_after": 4031,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 11378,
+     "estimate_after": 11378,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 18788,
+     "estimate_after": 18788,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 25109,
+     "estimate_after": 25109,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 31360,
+     "estimate_after": 31360,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 40392,
+     "estimate_after": 40392,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 41925,
+     "estimate_after": 41925,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    }
+   ],
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": "clause-13",
+    "exception_reported_as_finding": true,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  }
+ ],
+ "tokens_total": 92983,
+ "model_calls_total": 7
+}

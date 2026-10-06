@@ -1,0 +1,166 @@
+{
+ "probe": "dsh-real-payment@1",
+ "context_window_override": null,
+ "provider": "doubao-seed-2.1-lite via Ark coding/v3",
+ "note": "synthetic public contracts; real model behaviour on 5 cases, not a statistical quality claim",
+ "rows": [
+  {
+   "id": "long-01",
+   "family": "long_contract",
+   "run_id": "run_1342504c81db441e8542eecf33c4905c",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 45.0,
+   "model_calls": 7,
+   "tokens": 64603,
+   "reserved_after": 0,
+   "tool_events": [
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "read_clause",
+    "read_clause",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document"
+   ],
+   "findings_checks": [
+    {
+     "accepted": false,
+     "error_codes": [
+      "CLAIM_PARTY_NOT_IN_QUOTE"
+     ],
+     "rejections": 1
+    },
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 3,
+     "platform_gap_count": 0,
+     "submission_number": 2
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [
+      "clause-13"
+     ],
+     "payment": [
+      "clause-13",
+      "clause-3"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "exception": {
+      "claim": "如交付物存在经第三方检测确认的质量缺陷，甲方可暂停支付对应部分的合同款，直至缺陷整改完毕",
+      "quotes": [
+       {
+        "clause_id": "clause-13",
+        "text": "如交付物存在经第三方检测确认的质量缺陷，甲方可暂停支付对应部分的合同款，直至缺陷整改完毕。"
+       }
+      ],
+      "status": "supported"
+     },
+     "term": {
+      "claim": "甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款",
+      "quotes": [
+       {
+        "clause_id": "clause-3",
+        "text": "第3条 付款期限\n甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款期限的起算触发条件为两项事实同时发生：验收合格，且甲方收到乙方开具的合规发票",
+      "quotes": [
+       {
+        "clause_id": "clause-3",
+        "text": "甲方应在验收合格且收到乙方开具的合规发票后35天内，向乙方支付当期合同款。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "已检索'35天''支付''付款''期限''验收''发票''暂停''逾期'等关键字：全文仅 clause-3 一处规定付款天数，未发现与之相冲突的付款期限条款，无法确认是否存在冲突",
+     "clause-13 仅含一条暂停支付例外，不清楚是否还有其他付款例外情形（如迟延交付、保函等）",
+     "clause-1、clause-2 及 clause-4 至 clause-12、clause-14 未逐条读取，仅通过检索确认不含付款/支付相关实质内容"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-13",
+     "clause-2",
+     "clause-3"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 2,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "context": [
+    {
+     "estimate_before": 4031,
+     "estimate_after": 4031,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 8477,
+     "estimate_after": 8477,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 14277,
+     "estimate_after": 14277,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 20191,
+     "estimate_after": 20191,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 23542,
+     "estimate_after": 23542,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 24826,
+     "estimate_after": 24826,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    },
+    {
+     "estimate_before": 25985,
+     "estimate_after": 25985,
+     "budget": 44800,
+     "stubbed_tool_results": 0
+    }
+   ],
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": "clause-13",
+    "exception_reported_as_finding": true,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  }
+ ],
+ "tokens_total": 64603,
+ "model_calls_total": 7
+}

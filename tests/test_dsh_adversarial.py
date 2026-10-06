@@ -30,7 +30,7 @@ def client(tmp_path, monkeypatch):
         yield value
 
 
-MANY_CLAUSES = '\n'.join(f'第{i}条 条款{i}\n内容编号{i}。' for i in range(1, 21))
+MANY_CLAUSES = '\n'.join(f'第{i}条 条款{i}\n内容编号{i}。' for i in range(1, 41))
 
 
 def body(**changes):
@@ -87,23 +87,23 @@ def test_sdk_exact_model_call_cap(client, requested_calls):
     assert not list(Path(os.environ['HARNESS_DSH_RUN_ROOT']).glob('run-*'))
 
 
-@pytest.mark.parametrize('requested_tools', [16, 17])
+@pytest.mark.parametrize('requested_tools', [32, 33])  # HA-0081 cap
 def test_sdk_exact_tool_call_cap(client, requested_tools):
     ident = submit(client, document=MANY_CLAUSES)
     rt = client.app.state.service.dsh
     sent = 0
     async def send(payload, limit):
         nonlocal sent
-        batch = min(4, requested_tools - sent)
+        batch = min(8, requested_tools - sent)
         start, sent = sent, sent + batch
         return parse_response(response(calls=[('read_clause', {'clause_id': f'clause-{start + i + 1}'})
                                               for i in range(batch)]))
     rt.send_probe = send
     rt.execute(ident)
-    detail = terminal(rt, ident, 'succeeded' if requested_tools == 16 else 'failed',
-                      'COMPLETED' if requested_tools == 16 else 'DSH_TOOL_LIMIT')
+    detail = terminal(rt, ident, 'succeeded' if requested_tools == 32 else 'failed',
+                      'COMPLETED' if requested_tools == 32 else 'DSH_TOOL_LIMIT')
     assert detail['budget']['calls'] == 5
-    assert sum(e['event_type'] == 'dsh.tool.completed' for e in rt.store.events(ident)) == 16
+    assert sum(e['event_type'] == 'dsh.tool.completed' for e in rt.store.events(ident)) == 32
 
 
 @pytest.mark.parametrize('usage', [

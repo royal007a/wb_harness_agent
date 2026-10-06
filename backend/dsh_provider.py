@@ -10,9 +10,9 @@ BASE = 'https://ark.cn-beijing.volces.com/api/coding/v3'
 TOOL_NAMES = {'search_document', 'read_clause'}
 FINDINGS_TOOL = 'submit_findings'
 ALL_TOOL_NAMES = TOOL_NAMES | {FINDINGS_TOOL}
-# Real doubao issued 5 parallel read_clause calls in one turn (HA-0080); the per-Run
-# cap of 16 tool executions still bounds the total.
-MAX_TOOL_CALLS_PER_RESPONSE = 8
+# Real doubao issues many parallel calls per turn on long contracts (HA-0080/0081); the
+# per-Run tool cap (dsh_runtime.MAX_TOOL_CALLS) still bounds the total.
+MAX_TOOL_CALLS_PER_RESPONSE = 16
 # Per-tool argument size: structured findings need more room than a query.
 ARGUMENT_LIMITS = {'search_document': 1024, 'read_clause': 1024, FINDINGS_TOOL: 8192}
 
