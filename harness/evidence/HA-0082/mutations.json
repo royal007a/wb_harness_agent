@@ -33,5 +33,41 @@
   "id": "P7",
   "mutation": "延迟清理不设上限",
   "result": "首轮存活（测试等待不足）→ 加固测试后 1 failed"
+ },
+ {
+  "id": "R1",
+  "round": "review-fix",
+  "mutation": "动作事件与计划更新拆成两个事务",
+  "result": "2 failed"
+ },
+ {
+  "id": "R2",
+  "round": "review-fix",
+  "mutation": "提交前先更新内存计划",
+  "result": "首轮存活 → 新增 failed_step 用已提交计划的测试后 1 failed"
+ },
+ {
+  "id": "R3",
+  "round": "review-fix",
+  "mutation": "只捕获内置 TimeoutError",
+  "result": "1 failed"
+ },
+ {
+  "id": "R4",
+  "round": "review-fix",
+  "mutation": "Service.stop 不停止清理定时器",
+  "result": "1 failed"
+ },
+ {
+  "id": "R5",
+  "round": "review-fix",
+  "mutation": "plan.step 不跟踪 evidence_ids",
+  "result": "1 failed"
+ },
+ {
+  "id": "R6",
+  "round": "review-fix",
+  "mutation": "findings Schema 强制 submissions",
+  "result": "2 failed"
  }
 ]

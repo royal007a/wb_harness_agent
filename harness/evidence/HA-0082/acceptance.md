@@ -18,3 +18,9 @@
 ## 边界
 - S1/S2 的 done 仅表示词表候选已返回给模型，不代表语义证据已找全。
 - 4 份样本只能说明这次改动没有破坏主流程，不能作为准确率结论。
+
+## 复审修订（mymaccodex 对 8d0c079 的 Changes Requested）
+- M1：工具/提交事件与它引起的计划变化在**同一事务**写入（`event(kind, value, *extra)`），提交成功后才采用新的内存计划；`failed_step` 只基于已提交计划。三种复现（拒绝后计划写失败、拒绝与投影之间取消、通过审计写失败）和工具读取同类窗口均有测试。
+- M2：`httpx.TimeoutException` 族与内置 `TimeoutError` 一起映射为 `DSH_PROVIDER_TIMEOUT`；先 `check()`，取消/Run 截止优先。
+- Low：`plan.step` 带 `evidence_ids`；`Service.stop()` 取消清理定时器、运行根目录在恢复时固定；findings Schema 的 `submissions` 改为可选以兼容旧记录（新记录总是包含）。
+- codex 10 个探针纳入 `tests/test_dsh_ha0082_review_probes.py`，全部通过；新增 3 项测试；verify 1709 passed / 22 skipped；6 个回退突变全部被抓（R2 首轮存活后补测试）。

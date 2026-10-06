@@ -933,5 +933,7 @@ class Service:
 
     def stop(self):
         self.stopping.set()
+        if self.dsh is not None:
+            self.dsh.stop()  # cancel delayed workspace cleanup with the service lifecycle
         if self.thread:
             self.thread.join()

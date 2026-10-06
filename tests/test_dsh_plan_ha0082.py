@@ -178,3 +178,58 @@ def test_provider_timeout_is_explicit_and_freezes_unknown_usage(client):
     assert detail['budget']['reserved'] > 0 and detail['budget']['status'] == 'usage_unknown'
     failed = next(e['data'] for e in rt.store.events(ident) if e['event_type'] == 'run.failed')
     assert failed['failed_step'] == 'S1'
+
+
+def test_legacy_findings_record_without_submissions_still_validates(client):
+    from backend.dsh_runtime import validate_dsh
+    ident = submit(client)
+    def script(n, results):
+        if n == 1:
+            return reply(calls=[('search_document', {'query': '付款'}), ('search_document', {'query': '付款', 'offset': 3})])
+        if n == 2:
+            return reply(calls=[('submit_findings', findings())])
+        return reply('完成')
+    rt, detail, _ = run_script(client, ident, script)
+    record = json.loads(rt.store.db.execute('SELECT body FROM artifacts WHERE id=?', (next(
+        a['id'] for a in detail['artifacts'] if a['name'] == 'dsh-findings.json'),)).fetchone()[0])
+    validate_dsh('findings', record)
+    del record['submissions']          # shape of a pre-HA-0082 record
+    validate_dsh('findings', record)
+
+
+def test_tool_event_and_plan_change_commit_together(client, monkeypatch):
+    import sqlite3
+    ident = submit(client)
+    rt = client.app.state.service.dsh
+    original = rt.store.event
+    def event(db, run, kind, data=None):
+        if kind == 'dsh.plan.step':
+            raise sqlite3.OperationalError('synthetic failure')
+        return original(db, run, kind, data)
+    monkeypatch.setattr(rt.store, 'event', event)
+    rt2, detail, _ = run_script(client, ident, lambda n, r: reply(calls=[('read_clause', {'clause_id': 'clause-1'})]) if n == 1 else reply('完成'))
+    assert detail['run']['status'] == 'failed'
+    assert not [e for e in rt.store.events(ident) if e['event_type'] == 'dsh.tool.completed']
+    failed = next(e['data'] for e in rt.store.events(ident) if e['event_type'] == 'run.failed')
+    assert failed['failed_step'] == 'S1' and statuses(detail['plan'])['S1'] == 'pending'
+
+
+def test_failed_step_uses_last_committed_plan_not_uncommitted_projection(client, monkeypatch):
+    import sqlite3
+    ident = submit(client)
+    rt = client.app.state.service.dsh
+    original = rt.store.event
+    def event(db, run, kind, data=None):
+        if kind == 'dsh.findings.checked' and data['accepted']:
+            raise sqlite3.OperationalError('synthetic failure')
+        return original(db, run, kind, data)
+    monkeypatch.setattr(rt.store, 'event', event)
+    def script(n, results):
+        if n == 1:
+            return reply(calls=[('search_document', {'query': '付款'}), ('search_document', {'query': '付款', 'offset': 3})])
+        if n == 2:
+            return reply(calls=[('submit_findings', findings())])
+        return reply('完成')
+    rt, detail, _ = run_script(client, ident, script)
+    failed = next(e['data'] for e in rt.store.events(ident) if e['event_type'] == 'run.failed')
+    assert failed['failed_step'] == 'S3', failed      # the uncommitted projection would say S4

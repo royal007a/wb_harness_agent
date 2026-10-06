@@ -120,8 +120,7 @@
         "read_clause_ids",
         "verification",
         "human_review_required",
-        "submission_number",
-        "submissions"
+        "submission_number"
       ],
       "properties": {
         "schema_version": {
@@ -447,7 +446,8 @@
                 "minimum": 1
               }
             }
-          }
+          },
+          "description": "HA-0082 起新记录总是包含；为兼容旧 findings 记录保持可选。"
         }
       }
     }
