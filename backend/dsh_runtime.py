@@ -21,7 +21,7 @@ from .analysis import Problem, digest
 from .business_budget import BusinessTokenLedger, budgeted_model_call
 from .dsh_context import assemble as assemble_context
 from .dsh_crossings import Crossings, initialize as initialize_crossings, retire as retire_crossings
-from .dsh_plan import failed_step as plan_failed_step, failure_point as plan_failure_point, project as project_plan, summary as plan_summary
+from .dsh_plan import PLAN_VERSION, failed_step as plan_failed_step, failure_point as plan_failure_point, project as project_plan, summary as plan_summary
 from .dsh_output_scan import SCAN_VERSION, scan as scan_output
 from .dsh_findings import candidates as finding_candidates, render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
@@ -38,6 +38,10 @@ MAX_FINDINGS_REJECTIONS = 2
 # Bounded; anything else (paths, malformed IDs, policy) still fails the Run.
 MAX_SOFT_TOOL_ERRORS = 2
 CLAUSE_ID = re.compile(r'clause-[1-9][0-9]{0,5}')
+# Content digests of the files that define the model-facing contract and the validator.
+CONTRACT_SHA256 = digest(b''.join((ROOT / f).read_bytes() for f in (
+    'dsh-adapter/platform-plugin.mjs', 'dsh-adapter/controlled.patch.yml')))
+VALIDATOR_SHA256 = digest((ROOT / 'backend/dsh_findings.py').read_bytes())
 
 
 def search_key(text):
@@ -461,6 +465,11 @@ class DshRuntime:
                          '调用 submit_findings 提交四个槽位（缺证据用 unknown，不要猜）；平台只发布最后一次通过校验的结构化结果，不发布你的自由文本答复。\n'
                          if template == 'payment_terms' else '')
                       + task['objective'])
+            # HA-0113: what this Run was decided with (digests only; the objective is user text).
+            versions = {'release': self.release, 'prompt_sha256': digest(prompt.encode()),
+                        'tools': sorted(allowed), 'contract_sha256': CONTRACT_SHA256,
+                        'validator_sha256': VALIDATOR_SHA256, 'plan_version': PLAN_VERSION}
+            event('dsh.run.versions', versions)
             plan, created = plan_update()  # dsh.plan.created is persisted before the first model request
             if created:
                 event(*created[0])
@@ -520,7 +529,9 @@ class DshRuntime:
                 current['status'], current['exit_reason'] = 'succeeded', 'COMPLETED'
                 self.store.event(db, current, 'run.succeeded', {'artifact_id': artifact['id'], **counts,
                     'session_sha256': result['session_sha256'], 'mode': settings['mode'],
-                    'template': template, **business, 'human_review_required': True})
+                    'template': template, **business, 'human_review_required': True,
+                    # HA-0113: kept out of dsh-findings.json so older findings readers still validate it.
+                    'versions': {k: versions[k] for k in ('release', 'validator_sha256', 'plan_version')}})
                 db.execute("UPDATE business_budget_roots SET status='completed' WHERE id=? AND status='active'", (ident,))
         except Exception as exc:
             with self.store.transaction() as db:
