@@ -84,6 +84,13 @@ def main():
             assert sum(row['kind'] == 'model' for row in completed) == detail['budget']['calls'] == success['model_calls']
             assert sum(row['kind'] == 'tool' for row in completed) == success['tool_calls']
             assert detail['budget']['reserved'] == 0
+            tools = [row for row in completed if row['kind'] == 'tool']
+            summary.update(model_calls=success['model_calls'], tool_calls=success['tool_calls'],
+                           tool_rounds=sorted({row['model_round'] for row in tools}),
+                           platform_ticket_pattern_valid=all(row['crossing_id'].startswith('t_') for row in tools),
+                           plan_status=success.get('plan_status'))
+            if mode == 'real_provider':
+                assert len(summary['tool_rounds']) >= 2
             summary['completed_crossings'] = len(completed)
             summary['artifact_hashes_verified'] = True
             for artifact in detail['artifacts']:
@@ -99,6 +106,8 @@ def main():
         assert not errors, errors
         report['browser_page_errors'] = errors
         report['workspace_recovery'] = get('/api/local/dsh/runtime')['workspace_recovery']
+        run_root = Path(re.findall(r'HARNESS_DSH_RUN_ROOT=([^"\s;]+)', job)[0])
+        report['owned_workspace_directories_remaining'] = len(list(run_root.glob('run-*')))
         (args.out / 'live.json').write_text(json.dumps(report, indent=2) + '\n')
         browser.close()
 

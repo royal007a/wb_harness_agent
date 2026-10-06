@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_crossing_receipts_implementation",
+  "phase": "dsh_crossing_receipts_verified",
   "implementation_started": true,
-  "active_task_id": "HA-0083",
-  "active_plan": "exec-plans/active/HA-0083.md",
-  "last_checkpoint": "HA-0082 已获复审通过；HA-0083 在独立工作区实现平台签发调用票据及内存回放，8876 尚未更新。",
-  "last_updated_at": "2026-10-06T10:20:00Z",
-  "next_action": "实施B过境收据、独立复审、8876部署验证；A2仍待实施。",
+  "active_task_id": null,
+  "active_plan": null,
+  "last_checkpoint": "HA-0083 7ad0793 获独立 Approved；8876 运行 ad957fb；真实豆包完成3轮工具往返（4次模型/8次工具，11508 Token）。",
+  "last_updated_at": "2026-10-06T12:05:00Z",
+  "next_action": "B已交付；A2证据续跑仍未实施，DSH-CROSSING-01/02保留为非阻塞审计改进。",
   "release": "0.1.0-local"
 }

@@ -1,0 +1,90 @@
+{
+  "release": "ad957fb888789eccc1150d0ea0df643cce8047c9",
+  "url": "http://127.0.0.1:8876/dsh",
+  "runs": [
+    {
+      "mode": "integration_probe",
+      "run_id": "run_4de9d41dcc014e078b32949b087bce43",
+      "status": "succeeded",
+      "exit_reason": "COMPLETED",
+      "budget": {
+        "id": "run_4de9d41dcc014e078b32949b087bce43",
+        "binding_digest": "aa8e5a513a4eee06e0f5e6f32296590fc2b7aeecfec3521ad29f60ab511319b3",
+        "token_limit": 200000,
+        "status": "completed",
+        "spent": 650,
+        "reserved": 0,
+        "calls": 4,
+        "remaining": 199350
+      },
+      "completed_crossings": 7,
+      "artifact_hashes_verified": true,
+      "business_status": "partial",
+      "submission_number": 1,
+      "model_calls": 4,
+      "tool_calls": 3,
+      "tool_rounds": [
+        1,
+        2,
+        3
+      ],
+      "platform_ticket_pattern_valid": true,
+      "plan_status": {
+        "S1": "done",
+        "S2": "done",
+        "S3": "done",
+        "S4": "done"
+      }
+    },
+    {
+      "mode": "real_provider",
+      "run_id": "run_134be1e3af0545b9ab4c498b728b0117",
+      "status": "succeeded",
+      "exit_reason": "COMPLETED",
+      "budget": {
+        "id": "run_134be1e3af0545b9ab4c498b728b0117",
+        "binding_digest": "c5bbf583de5ec52e45ec5bdbf6544d2856486a4b894e829927321aa6afdb89bd",
+        "token_limit": 20000000,
+        "status": "completed",
+        "spent": 11508,
+        "reserved": 0,
+        "calls": 4,
+        "remaining": 19988492
+      },
+      "completed_crossings": 12,
+      "artifact_hashes_verified": true,
+      "business_status": "partial",
+      "submission_number": 1,
+      "model_calls": 4,
+      "tool_calls": 8,
+      "tool_rounds": [
+        1,
+        2,
+        3
+      ],
+      "platform_ticket_pattern_valid": true,
+      "plan_status": {
+        "S1": "done",
+        "S2": "done",
+        "S3": "done",
+        "S4": "done"
+      }
+    }
+  ],
+  "not_evidence": [
+    "semantic_correctness",
+    "132_deployment",
+    "OS_sandbox",
+    "cross_process_replay"
+  ],
+  "pid": 64681,
+  "listener_matches_label": true,
+  "browser_page_errors": [],
+  "workspace_recovery": {
+    "cleaned": 0,
+    "pending": 0,
+    "retained": 0,
+    "retries": 0
+  },
+  "owned_workspace_directories_remaining": 0
+}

@@ -1,0 +1,17 @@
+{
+  "previous_release": "6ec6180987906f6dc6c6621fa58bc02bb64437ef",
+  "previous_head": "5a83d383cd690772f71db0c1599333a76a0000b9",
+  "new_release": "ad957fb888789eccc1150d0ea0df643cce8047c9",
+  "previous_pid": 8883,
+  "db_path": "/Users/weberzhao/code/ai/harnessagent-dsh/.local/dsh.db",
+  "backup_path": "/Users/weberzhao/code/ai/harnessagent-dsh/.local/backups/ha0083-20261006T120251Z/dsh.db",
+  "backup_quick_check": "ok",
+  "scope": "8876_only",
+  "stage": "deployed",
+  "pid": 64681,
+  "listener_matches_label": true,
+  "process_started_at": "Tue Oct  6 20:02:52 2026",
+  "time_utc": "2026-10-06T12:02:53.697720+00:00",
+  "health_release": "ad957fb888789eccc1150d0ea0df643cce8047c9",
+  "rollback": "Stop only the verified 8876 label, switch code to previous_head and restart; do not replay old model calls or roll back DB."
+}
