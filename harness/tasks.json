@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0089",
+      "title": "DSH超时阶段反例加固",
+      "status": "waiting_approval",
+      "risk": "low",
+      "scope": ["Provider到达后触发Run截止", "响应超时分类", "unknown及资源清理断言"],
+      "non_goals": ["生产期限或预算变更", "跳过失败测试", "真实Provider调用"],
+      "acceptance": ["官方SDK到达合成Provider", "恰好一次且协程取消", "unknown冻结且无产物目录", "三个期限边界及突变", "独立复审和完整门禁"],
+      "depends_on": ["HA-0086"],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0089.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0089/acceptance.md"]
+    },
+    {
       "id": "HA-0088",
       "title": "固定合成付款评测评分器纠偏",
       "status": "waiting_approval",

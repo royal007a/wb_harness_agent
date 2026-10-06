@@ -109,23 +109,52 @@ def test_provider_failure_is_terminal_and_no_retry(client):
     assert not detail['artifacts']
 
 
-def test_timeout_while_provider_waits_leaves_no_workspace_or_artifact(client):
+@pytest.mark.parametrize('boundary,reason', [
+    ('run_monotonic', 'TIMEOUT'), ('run_wall', 'TIMEOUT'), ('provider_response', 'DSH_PROVIDER_TIMEOUT'),
+])
+def test_timeout_while_provider_waits_leaves_no_workspace_or_artifact(client, monkeypatch, boundary, reason):
     import asyncio
     import os
-    ident = create(client, timeout_seconds=5)
+    from datetime import datetime, timedelta
+    from types import SimpleNamespace
+    import backend.dsh_runtime as dsh_module
+    import backend.service as service_module
+    # Real SDK initialization is allowed to finish. The deadline is crossed only
+    # after the Provider was actually dispatched; this is not a startup timeout.
+    ident = create(client, timeout_seconds=300)
     runtime = client.app.state.service.dsh
-    calls = []
+    calls, entered_at = [], []
+    expired, cancelled = threading.Event(), threading.Event()
+    if boundary == 'run_monotonic':
+        monkeypatch.setattr(dsh_module, 'time', SimpleNamespace(
+            monotonic=lambda: time.monotonic() + (301 if expired.is_set() else 0)))
+    elif boundary == 'run_wall':
+        class DeadlineDateTime(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return datetime.now(tz) + timedelta(seconds=301 if expired.is_set() else 0)
+        monkeypatch.setattr(service_module, 'datetime', DeadlineDateTime)
+    else:
+        runtime.provider_timeout_seconds = .2
     async def slow(*args):
         calls.append(1)
-        await asyncio.sleep(30)
+        entered_at.append(time.monotonic())
+        expired.set()
+        try:
+            await asyncio.sleep(2)
+        except asyncio.CancelledError:
+            cancelled.set()
+            raise
         pytest.fail('the provider wait must have been cancelled')
     runtime.send_probe = slow
-    start = time.monotonic()
     runtime.execute(ident)
-    assert time.monotonic() - start < 12
+    assert calls == [1], 'the test must reach Provider exactly once, not time out during startup'
+    assert time.monotonic() - entered_at[0] < 12
+    assert cancelled.is_set()
     detail = runtime.detail(ident)
-    assert detail['run']['exit_reason'] == 'TIMEOUT'
-    assert calls == [1]
+    assert detail['run']['exit_reason'] == reason
+    assert detail['budget']['calls'] == 1 and detail['budget']['spent'] == 0
+    assert detail['budget']['status'] == 'usage_unknown' and detail['budget']['reserved'] > 0
     assert not detail['artifacts']
     assert not list(Path(os.environ['HARNESS_DSH_RUN_ROOT']).glob('run-*'))
 

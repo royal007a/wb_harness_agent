@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="47.271" timestamp="2026-10-07T02:23:44.535657+08:00" hostname="local-test-host"><testcase classname="tests.test_dsh_runtime" name="test_timeout_while_provider_waits_leaves_no_workspace_or_artifact[run_wall-TIMEOUT]" time="38.665"><failure message="assert False&#10; +  where False = is_set()&#10; +    where is_set = &lt;threading.Event at 0x10d9f1150: unset&gt;.is_set">client = &lt;starlette.testclient.TestClient object at 0x10cd29940&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cc743e0&gt;
+boundary = 'run_wall', reason = 'TIMEOUT'
+
+    @pytest.mark.parametrize('boundary,reason', [
+        ('run_monotonic', 'TIMEOUT'), ('run_wall', 'TIMEOUT'), ('provider_response', 'DSH_PROVIDER_TIMEOUT'),
+    ])
+    def test_timeout_while_provider_waits_leaves_no_workspace_or_artifact(client, monkeypatch, boundary, reason):
+        import asyncio
+        import os
+        from datetime import datetime, timedelta
+        from types import SimpleNamespace
+        import backend.dsh_runtime as dsh_module
+        import backend.service as service_module
+        # Real SDK initialization is allowed to finish. The deadline is crossed only
+        # after the Provider was actually dispatched; this is not a startup timeout.
+        ident = create(client, timeout_seconds=300)
+        runtime = client.app.state.service.dsh
+        calls, entered_at = [], []
+        expired, cancelled = threading.Event(), threading.Event()
+        if boundary == 'run_monotonic':
+            monkeypatch.setattr(dsh_module, 'time', SimpleNamespace(
+                monotonic=lambda: time.monotonic() + (301 if expired.is_set() else 0)))
+        elif boundary == 'run_wall':
+            class DeadlineDateTime(datetime):
+                @classmethod
+                def now(cls, tz=None):
+                    return datetime.now(tz) + timedelta(seconds=301 if expired.is_set() else 0)
+            monkeypatch.setattr(service_module, 'datetime', DeadlineDateTime)
+        else:
+            runtime.provider_timeout_seconds = .2
+        async def slow(*args):
+            calls.append(1)
+            entered_at.append(time.monotonic())
+            expired.set()
+            try:
+                await asyncio.sleep(2)
+            except asyncio.CancelledError:
+                cancelled.set()
+                raise
+            pytest.fail('the provider wait must have been cancelled')
+        runtime.send_probe = slow
+        runtime.execute(ident)
+        assert calls == [1], 'the test must reach Provider exactly once, not time out during startup'
+        assert time.monotonic() - entered_at[0] &lt; 12
+&gt;       assert cancelled.is_set()
+E       assert False
+E        +  where False = is_set()
+E        +    where is_set = &lt;threading.Event at 0x10d9f1150: unset&gt;.is_set
+
+tests/test_dsh_runtime.py:153: AssertionError</failure></testcase></testsuite></testsuites>

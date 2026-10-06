@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "dsh_payment_evaluator",
+  "phase": "dsh_timeout_phase_tests",
   "implementation_started": true,
-  "active_task_id": "HA-0088",
-  "active_plan": "exec-plans/active/HA-0088.md",
+  "active_task_id": "HA-0089",
+  "active_plan": "exec-plans/active/HA-0089.md",
   "last_checkpoint": "HA-0083 7ad0793 获独立 Approved；8876 运行 ad957fb；真实豆包完成3轮工具往返（4次模型/8次工具，11508 Token）。",
-  "last_updated_at": "2026-10-06T18:12:00Z",
-  "next_action": "HA-0088固定评分36通过、旧版25失败，交独立复审；HA-0085/86/87等待复审，冻结worktree完整verify仍有两项失败未结束，暂不部署。",
+  "last_updated_at": "2026-10-06T18:20:00Z",
+  "next_action": "HA-0089三个阶段反例和突变通过；首轮全量失败保留，启动第二轮完整门禁；HA85–89待独立复审，暂不部署。",
   "release": "0.1.0-local"
 }
