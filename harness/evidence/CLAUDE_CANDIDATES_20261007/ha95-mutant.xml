@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="2.046" timestamp="2026-10-07T07:14:04.030439+08:00" hostname="local-review-host"><testcase classname="tests.test_dsh_failure_point" name="test_pure_mapping_order" time="0.000"><failure message="AssertionError: assert 'S1' == 'S3'&#10;  &#10;  - S3&#10;  + S1">def test_pure_mapping_order():
+        partial_rejected = project(CANDS, {'clause-1'}, {'submissions': 3, 'accepted': False, 'last_codes': ['QUOTES_INVALID']})
+        assert failed_step(partial_rejected) == 'S1'
+        assert failure_point(partial_rejected, 'DSH_FINDINGS_INVALID') == 'S3'
+        assert failure_point(partial_rejected, 'TIMEOUT') == 'S3'            # blocked step wins over partial S1
+        untouched = project(CANDS, set(), {'submissions': 0})
+        assert failure_point(untouched, 'DSH_PROVIDER_TIMEOUT') == 'S1'     # nothing blocked: earliest unfinished
+&gt;       assert failure_point(untouched, 'DSH_FINDINGS_MISSING') == 'S3'
+E       AssertionError: assert 'S1' == 'S3'
+E         
+E         - S3
+E         + S1
+
+tests/test_dsh_failure_point.py:15: AssertionError</failure></testcase><testcase classname="tests.test_dsh_failure_point" name="test_partial_evidence_then_repeated_rejection_points_at_s3" time="1.039" /><testcase classname="tests.test_dsh_failure_point" name="test_search_only_then_no_submission_points_at_s3" time="0.724"><failure message="AssertionError: assert ('S1' == 'S1'&#10;  &#10;    S1 and 'S1' == 'S3'&#10;  &#10;  - S3&#10;  + S1)">client = &lt;starlette.testclient.TestClient object at 0x10eb87390&gt;
+
+    def test_search_only_then_no_submission_points_at_s3(client):
+        ident = submit(client)
+        rt, detail, _ = run_script(client, ident, lambda n, r: reply(calls=[('search_document', {'query': '付款'})])
+                                   if n == 1 else reply('结束'))
+        failed = next(e['data'] for e in rt.store.events(ident) if e['event_type'] == 'run.failed')
+        assert failed['error_code'] == 'DSH_FINDINGS_MISSING'
+&gt;       assert failed['failed_step'] == 'S1' and failed['failure_point'] == 'S3'
+E       AssertionError: assert ('S1' == 'S1'
+E         
+E           S1 and 'S1' == 'S3'
+E         
+E         - S3
+E         + S1)
+
+tests/test_dsh_failure_point.py:37: AssertionError</failure></testcase></testsuite></testsuites>

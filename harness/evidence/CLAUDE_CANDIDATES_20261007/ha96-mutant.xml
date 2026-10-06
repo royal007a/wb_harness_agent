@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.782" timestamp="2026-10-07T07:14:53.673367+08:00" hostname="local-review-host"><testcase classname="tests.test_dsh_injection_flag" name="test_injected_quote_is_flagged_in_record_text_and_event" time="1.255"><failure message="StopIteration">client = &lt;starlette.testclient.TestClient object at 0x10b838c20&gt;
+
+    def test_injected_quote_is_flagged_in_record_text_and_event(client):
+        rt, detail, _ = run_injected(client, 'clause-2')
+        assert detail['run']['status'] == 'succeeded'          # flagged, not blocked (course: isolate/flag levels)
+        record = json.loads(artifact(rt, detail, 'dsh-findings.json'))
+&gt;       gap = next(g for g in record['platform_gaps'] if g['code'] == 'QUOTE_SOURCE_HAS_INSTRUCTION_MARKERS')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       StopIteration
+
+tests/test_dsh_injection_flag.py:46: StopIteration</failure></testcase></testsuite></testsuites>
