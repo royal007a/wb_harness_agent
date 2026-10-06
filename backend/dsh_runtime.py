@@ -20,7 +20,7 @@ from .analysis import Problem, digest
 from .business_budget import BusinessTokenLedger, budgeted_model_call
 from .dsh_context import assemble as assemble_context
 from .dsh_crossings import Crossings, initialize as initialize_crossings, retire as retire_crossings
-from .dsh_plan import failed_step as plan_failed_step, project as project_plan, summary as plan_summary
+from .dsh_plan import failed_step as plan_failed_step, failure_point as plan_failure_point, project as project_plan, summary as plan_summary
 from .dsh_findings import candidates as finding_candidates, render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
 from .service import ROOT, DENY, TERMINAL, validate
@@ -497,7 +497,10 @@ class DshRuntime:
                     run['status'], run['exit_reason'] = 'failed', getattr(exc, 'code', 'DSH_RUNTIME_FAILED')
                     failure = {'error_code': run['exit_reason']}
                     if plan_box['plan']:
+                        # failed_step = earliest unfinished step (kept for compatibility);
+                        # failure_point = where the failure is attributed (HA-0095).
                         failure['failed_step'] = plan_failed_step(plan_box['plan'])
+                        failure['failure_point'] = plan_failure_point(plan_box['plan'], run['exit_reason'])
                     self.store.event(db, run, 'run.failed', failure)
                     db.execute("UPDATE business_budget_roots SET status='failed' WHERE id=? AND status='active'", (ident,))
 

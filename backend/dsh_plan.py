@@ -69,6 +69,21 @@ def failed_step(plan):
     return None
 
 
+# Fixed platform error codes whose cause is a known step (jikesummary Replan下:
+# the failure point is not the earliest unfinished step).
+FAILURE_STEPS = {'DSH_FINDINGS_MISSING': 'S3', 'DSH_FINDINGS_INVALID': 'S3'}
+
+
+def failure_point(plan, error_code):
+    """Step the failure is attributed to: code mapping, then a blocked step, else earliest unfinished."""
+    if not plan:
+        return None
+    if error_code in FAILURE_STEPS:
+        return FAILURE_STEPS[error_code]
+    blocked = next((s['step_id'] for s in plan['steps'] if s['status'] == 'blocked'), None)
+    return blocked or failed_step(plan)
+
+
 def summary(plan):
     """Compact, text-free line for the trusted state message."""
     return '；'.join(f"{s['step_id']} {s['title']}：{s['status']}"
