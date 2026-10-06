@@ -4,6 +4,7 @@ import fcntl
 import ipaddress
 import json
 import os
+import secrets
 from contextlib import ExitStack, aclosing, asynccontextmanager
 from pathlib import Path
 
@@ -43,23 +44,33 @@ def create_app(db_path=None, run_worker=True):
             from .support_chat import SupportChat
             from .support_knowledge import SupportKnowledge
             from .support_workflows import SupportWorkflows
+            from .support_mcp import SupportMCP
+            from .support_refunds import DemoRefunds
             app.state.support_providers = SupportProviders(store)
             app.state.support_knowledge = SupportKnowledge(store, app.state.support_providers)
             app.state.support_workflows = SupportWorkflows(store, app.state.support_providers)
             app.state.support_chat = SupportChat(store, app.state.support_providers)
             app.state.support_chat.knowledge = app.state.support_knowledge
             app.state.support_chat.workflows = app.state.support_workflows
+            app.state.support_mcp = SupportMCP(store,app.state.support_providers,app.state.support_chat,demo_token=demo_token)
+            app.state.support_chat.mcp = app.state.support_mcp
+            app.state.support_refunds = DemoRefunds(store,app.state.support_mcp)
             app.state.support_chat.recover()
             app.state.support_providers.start()
             try:
                 if run_worker:
                     service.start()
-                yield
+                async with demo_server.session_manager.run():
+                    yield
             finally:
                 await app.state.support_knowledge.close()
                 await app.state.support_providers.close()
 
     app = FastAPI(title='HarnessAgent Local API', version='0.1.0', lifespan=lifespan, docs_url=None, redoc_url=None)
+    from .support_refunds import make_demo_mcp
+    demo_token = secrets.token_urlsafe(32)
+    demo_server, demo_app = make_demo_mcp(app,demo_token)
+    app.mount('/api/local/support/mcp-service',demo_app)
 
     def error(code, message, status, request_id=None):
         return JSONResponse({'error': {'code': code, 'message': message, 'retryable': False,
@@ -147,6 +158,47 @@ def create_app(db_path=None, run_worker=True):
     @app.get('/api/local/support/status')
     def support_status(request: Request):
         return request.app.state.support_providers.status()
+
+    @app.get('/api/local/support/mcp')
+    def support_mcp_list(request:Request):
+        return {'items':request.app.state.support_mcp.listing(),'demo_endpoint':request.app.state.support_mcp.demo_endpoint}
+
+    @app.post('/api/local/support/mcp',status_code=201)
+    async def support_mcp_create(request:Request):
+        return request.app.state.support_mcp.save(await json_body(request))
+
+    @app.put('/api/local/support/mcp/{ident}')
+    async def support_mcp_update(ident:str,request:Request):
+        return request.app.state.support_mcp.save(await json_body(request),ident)
+
+    @app.delete('/api/local/support/mcp/{ident}')
+    def support_mcp_delete(ident:str,request:Request):
+        return request.app.state.support_mcp.delete(ident)
+
+    @app.post('/api/local/support/mcp/{ident}/discover')
+    async def support_mcp_discover(ident:str,request:Request):
+        if await json_body(request)!={}: raise Problem('SUPPORT_MCP_INVALID','请求无效。',422)
+        return await request.app.state.support_mcp.discover(ident)
+
+    @app.post('/api/local/support/mcp/{ident}/debug')
+    async def support_mcp_debug(ident:str,request:Request):
+        body=await json_body(request,32768)
+        if set(body)!={'name','arguments'}: raise Problem('SUPPORT_MCP_INVALID','请求无效。',422)
+        return await request.app.state.support_mcp.invoke(ident,body['name'],body['arguments'],{'debug':True})
+
+    @app.get('/api/local/support/approvals')
+    def support_approvals(request:Request):
+        return {'items':request.app.state.support_mcp.approvals()}
+
+    @app.post('/api/local/support/approvals/{ident}/decision')
+    async def support_approval_decision(ident:str,request:Request):
+        body=await json_body(request)
+        if set(body)!={'decision'}: raise Problem('SUPPORT_APPROVAL_INVALID','请求无效。',422)
+        return await request.app.state.support_mcp.decide(ident,body['decision'])
+
+    @app.get('/api/local/support/demo-orders')
+    def support_demo_orders(request:Request):
+        return {'items':request.app.state.support_refunds.orders()}
 
     @app.get('/api/local/support/providers')
     def support_providers(request: Request):

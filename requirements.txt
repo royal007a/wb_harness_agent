@@ -8,3 +8,4 @@ PyYAML==6.0.3
 pypdf==6.16.2
 cryptography==50.0.1
 fastembed==0.8.1
+mcp==2.2.0

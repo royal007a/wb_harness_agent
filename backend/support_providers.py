@@ -102,6 +102,7 @@ class SupportProviders:
 
     def status(self):
         return {'enabled': self.enabled, 'credential_storage': 'sqlite_aes_256_gcm',
+                'release': os.environ.get('HARNESS_RELEASE_COMMIT','development'),
                 'automatic_probes_running': self.task is not None and not self.task.done(),
                 'probe_daily_limit_per_provider': 96, 'probe_max_output_tokens': 32,
                 'scope': 'single_trusted_administrator', 'provider_count': len(self.listing())}

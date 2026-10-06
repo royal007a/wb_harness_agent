@@ -3,7 +3,7 @@
 <title>智能客服 · HarnessAgent</title><link rel="stylesheet" href="/static/support.css"></head>
 <body><header><a href="/">HarnessAgent</a><h1>智能客服工作台</h1><span id="runtime">读取服务状态…</span></header>
 <p class="notice">单管理员内测 · 仅输入公开或合成资料 · 回答须人工核对。API Key 加密入库，不向模型或浏览器回显。</p>
-<nav aria-label="模块"><button data-tab="chat">客服对话</button><button data-tab="agents">Agent</button><button data-tab="knowledge">知识库</button><button data-tab="workflows">工作流</button><button data-tab="providers">模型与凭证</button></nav>
+<nav aria-label="模块"><button data-tab="chat">客服对话</button><button data-tab="agents">Agent</button><button data-tab="knowledge">知识库</button><button data-tab="workflows">工作流</button><button data-tab="mcp">MCP 与审批</button><button data-tab="providers">模型与凭证</button></nav>
 <p id="status" role="status" aria-live="polite"></p>
 <main>
 <section id="chat" class="tab"><div class="chat-layout"><aside>
@@ -20,6 +20,8 @@
 <label>单轮输出上限<input id="agent-output" type="number" min="32" max="8192" value="2048"></label>
 <label>绑定知识库（可多选，最多8个）<select id="agent-knowledge" multiple size="3"></select></label>
 <label>工作流（替代普通对话路径）<select id="agent-workflow"><option value="">不使用工作流</option></select></label>
+<label>MCP Server（可多选）<select id="agent-mcp" multiple size="3"></select></label>
+<label>准入工具（必须同时绑定所属 Server，最多8项）<select id="agent-tools" multiple size="4"></select></label>
 <label>每次消息总 Token 预算<input id="agent-budget" type="number" min="1" max="20000000" value="20000000"></label>
 <label><input id="agent-enabled" type="checkbox" checked>启用</label><button type="submit">保存 Agent</button><button type="button" id="agent-reset">新建配置</button>
 </form><p>已有会话使用创建时的 Agent 配置快照；修改配置后请新建会话。停用立即阻止后续模型请求。</p></section>
@@ -34,6 +36,10 @@
 <section id="workflows" class="tab" hidden><h2>工作流 · JSON 编排</h2>
 <p>使用 START / CONDITION / LLM / KNOWLEDGE / TOOL / END 节点。先保存，再在 Agent 里绑定并创建新会话。模型节点共享同一次消息的预算；没有任意代码或 URL 节点。</p>
 <div id="workflow-list" class="cards"></div><form id="workflow-form"><input id="workflow-id" type="hidden"><label>名称<input id="workflow-name" required maxlength="100"></label><label>说明<input id="workflow-description" maxlength="500"></label><label><input id="workflow-enabled" type="checkbox" checked>启用</label><label>节点与连线 JSON<textarea id="workflow-json" rows="18" required></textarea></label><button type="submit">保存工作流</button><button type="button" id="workflow-format">格式化</button><button type="button" id="workflow-reset">加载示例</button></form><h3>执行记录（状态与摘要，不保存中间正文）</h3><pre id="workflow-runs"></pre></section>
+<section id="mcp" class="tab" hidden><h2>MCP 工具与人工确认</h2><p>官方 MCP Streamable HTTP。只接受部署允许的端点；没有 shell。内置订单是合成演示，不发生真实退款。模型申请写操作后，必须在下方人工确认。</p>
+<div id="mcp-list" class="cards"></div><form id="mcp-form"><input id="mcp-id" type="hidden"><label>名称<input id="mcp-name" required maxlength="100" value="合成退款服务"></label><label>端点<input id="mcp-endpoint" required type="url"></label><label>只读工具名（逗号分隔；其余一律需确认）<input id="mcp-reads" value="check_refund_eligibility,get_refund_status"></label><label><input id="mcp-enabled" type="checkbox" checked>启用</label><button type="submit">保存 MCP</button><button id="mcp-reset" type="button">新建</button></form>
+<h3>工具调试</h3><form id="mcp-debug"><label>工具<select id="mcp-debug-tool"></select></label><label>参数 JSON<textarea id="mcp-args" rows="4">{"order_id":"DEMO-001"}</textarea></label><button type="submit">调用工具</button></form><pre id="mcp-debug-result"></pre>
+<h3>待确认与历史动作</h3><button id="approval-refresh" type="button">刷新审批</button><div id="approvals" class="cards"></div><details><summary>合成订单</summary><pre id="demo-orders"></pre></details></section>
 <section id="providers" class="tab" hidden><h2>模型与凭证</h2><div id="provider-list" class="cards"></div>
 <form id="provider-form"><input id="provider-id" type="hidden"><label>名称<input id="provider-name" required maxlength="100"></label>
 <label>Base URL<input id="provider-url" type="url" required value="https://ark.cn-beijing.volces.com/api/coding/v3"></label>
@@ -44,4 +50,4 @@
 <label>探测间隔（秒）<input id="provider-interval" type="number" min="300" max="86400" value="900"></label>
 <button type="submit">加密保存</button><button type="button" id="provider-reset">新建配置</button></form>
 <p>每个 Provider 每日最多96次手工/自动探测，单次输出最多32 Token。公网 HTTP 不允许上传 Key，请使用 HTTPS 或 SSH 隧道。</p></section>
-</main><script src="/static/support.js"></script><script src="/static/support-knowledge.js"></script><script src="/static/support-workflows.js"></script></body></html>
+</main><script src="/static/support.js"></script><script src="/static/support-knowledge.js"></script><script src="/static/support-workflows.js"></script><script src="/static/support-mcp.js"></script></body></html>

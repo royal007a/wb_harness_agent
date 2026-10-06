@@ -79,3 +79,24 @@ LLM 节点仅用 Agent 已配置 Provider/模型，经过同一 HA75 账本和�
 `GET /workflows/{id}/runs` 返回整轮/节点状态、耗时、输出哈希/长度和固定错误码，不存完整变量池。
 工作流成功与最终 assistant 在同一事务提交；失败、取消、重启均为明确终态，不自动重跑。
 验收包括线性、双分支、知识检索/工具、缺变量、环/坏边、节点错误、共同预算耗尽、取消、重放不外发。
+
+## MCP 与合成退款演示
+
+`GET/POST /mcp`、`PUT/DELETE /mcp/{id}`、`POST /mcp/{id}/discover`、
+`POST /mcp/{id}/debug`；配置 name/endpoint/enabled/read_only_tools。端点必须在部署
+精确允许集合内，无 stdio/shell，禁止重定向、压缩和继承代理；官方 MCP 2.2.0
+Streamable HTTP 客户端完成 initialize/tools/list/tools/call。发现不是模型调用。
+远端工具 Schema 有界且禁止外部引用；Agent 同时绑定 Server 和具体工具名，会话冻结
+Server 配置版本，停用或变化后拒绝。只读属性由管理员显式指定，不采信服务端注解。
+
+非只读工具只创建待确认动作，模型不拥有确认接口。`GET /approvals` 与
+`POST /approvals/{id}/decision`（approve/reject），绑定工具、参数、配置、会话，10分钟有效；
+会话动作必须等 Exchange 成功后才能确认，失败/取消不执行。重复确认返回原收据。
+超时或崩溃后 executing 变 unknown，不自动重试外部写入。审批记录保留供审计。
+
+内置合成退款 MCP 用官方 Server，经真实 loopback HTTP 调用；与平台同进程，不称独立部署。
+每次服务启动生成仅内存 Bearer 能力令牌，公网/浏览器无令牌不能直接调用它。
+SQLite 合成订单与退款记录支持资格查询、申请、状态查询、取消；签收7天以内、
+重复申请禁止、只有 pending 可取消。写工具还在业务侧核对已批准动作，模型不能传入
+approval_id 冒充批准。工具结果只代表演示记录变更，绝不调用银行/支付或真实退款。
+UI 包含配置、发现、JSON工具调试、审批和演示订单；所有结果按不可信文本展示。

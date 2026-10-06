@@ -13,3 +13,4 @@ harness/evidence/**/*.png
 harness/evidence/**/*.pdf
 harness/evidence/**/*.zip
 harness/evidence/**/*.tar.gz
+.venv
