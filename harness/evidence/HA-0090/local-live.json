@@ -1,0 +1,25 @@
+{
+  "base": "http://127.0.0.1:8765",
+  "synthetic_data_only": true,
+  "checks": {
+    "automatic_probe": {
+      "automatic": true,
+      "checked_at": "2026-10-06T08:11:29.686945Z",
+      "code": null,
+      "input_tokens": 38,
+      "latency_ms": 3224,
+      "output_tokens": 39,
+      "state": "reachable"
+    }
+  },
+  "status": {
+    "enabled": true,
+    "credential_storage": "sqlite_aes_256_gcm",
+    "release": "1fcb1c815dd6e4ab0b84db4ed7ec24572941b852",
+    "automatic_probes_running": true,
+    "probe_daily_limit_per_provider": 96,
+    "probe_max_output_tokens": 32,
+    "scope": "single_trusted_administrator",
+    "provider_count": 1
+  }
+}
