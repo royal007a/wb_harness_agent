@@ -351,7 +351,8 @@
                 "enum": [
                   "EXCEPTION_CANDIDATES_UNREAD",
                   "PAYMENT_CLAUSES_UNREAD",
-                  "EXCEPTION_CANDIDATE_NOT_REPORTED"
+                  "EXCEPTION_CANDIDATE_NOT_REPORTED",
+                  "QUOTE_SOURCE_HAS_INSTRUCTION_MARKERS"
                 ]
               },
               "clause_ids": {

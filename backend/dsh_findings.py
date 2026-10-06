@@ -131,6 +131,15 @@ def _check_quotes(slot, quotes, clauses, seen, errors):
     return good
 
 
+# Deterministic, conservative markers of text addressed to the model rather than to the
+# contract parties (jikesummary 零信任/护栏三明治: rules, not an LLM judge).
+INSTRUCTION_MARKERS = re.compile(
+    r'忽略(?:以上|上述|之前|前面|先前|所有)[^。\n]{0,6}(?:指令|指示|提示|要求|规则)'
+    r'|系统提示\s*[:：]|(?:请|你)(?:必须|应当|应该)?(?:直接)?按(?:此|本条|这里)(?:提交|输出|回答)'
+    r'|ignore\s+(?:all\s+|any\s+)?(?:previous|prior|above)\s+(?:instructions|prompts)'
+    r'|(?:^|\n)\s*(?:system|assistant)\s*[:：]', re.I)
+
+
 def verify(submission, clauses, seen):
     """Return {'errors': [...], 'findings': ..., 'gaps': [...], 'business_status': ...}.
 
@@ -198,6 +207,14 @@ def verify(submission, clauses, seen):
     read_unreported = [k for k in found['exception'] if k in seen and k not in reported]
     if read_unreported:
         platform_gaps.append({'code': 'EXCEPTION_CANDIDATE_NOT_REPORTED', 'clause_ids': read_unreported})
+    # Zero-trust content check (HA-0096): a literal quote can hide the instruction it
+    # was lifted from. Flag (do not block) supported slots whose source block carries
+    # deterministic instruction markers, so the published result says so.
+    flagged = sorted({q['clause_id'] for f in findings.values() if f['status'] != 'unknown'
+                      for q in f['quotes'] if INSTRUCTION_MARKERS.search(clauses[q['clause_id']])},
+                     key=lambda k: int(k.split('-')[1]))
+    if flagged:
+        platform_gaps.append({'code': 'QUOTE_SOURCE_HAS_INSTRUCTION_MARKERS', 'clause_ids': flagged})
     statuses = {f['status'] for f in findings.values()}
     if 'conflicting' in statuses:
         business = 'conflicting'
@@ -215,7 +232,8 @@ _BUSINESS_NAMES = {'mechanically_checked': '机械校验通过', 'partial': '部
                    'conflicting': '存在冲突'}
 _GAP_NAMES = {'EXCEPTION_CANDIDATES_UNREAD': '有付款例外候选证据块未读取',
               'PAYMENT_CLAUSES_UNREAD': '有付款相关证据块未读取',
-              'EXCEPTION_CANDIDATE_NOT_REPORTED': '读到的例外候选未在例外/冲突中报告'}
+              'EXCEPTION_CANDIDATE_NOT_REPORTED': '读到的例外候选未在例外/冲突中报告',
+              'QUOTE_SOURCE_HAS_INSTRUCTION_MARKERS': '引文所在证据块含疑似注入指令，须人工核对原文'}
 
 
 def render_text(record):
