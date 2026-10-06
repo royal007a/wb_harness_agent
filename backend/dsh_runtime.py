@@ -159,7 +159,7 @@ class DshRuntime:
             seen_clauses = set()
             template = settings.get('template', 'free')
             allowed = set(task['requested_permissions']['allow_tools'])
-            progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0}
+            progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0, 'read': set()}
             review = {'rejections': 0, 'coverage_warned': False, 'accepted': None, 'submissions': 0}
             deadline = time.monotonic() + task['limits']['timeout_seconds']
             def check():
@@ -249,7 +249,13 @@ class DshRuntime:
                 # Progress is judged by the platform: same normalized action or no
                 # clause the model has not already received is not new evidence.
                 fingerprint = digest(dumps({'tool': body['name'], 'args': args, 'resource': task['context']['resource_ids'][0]}).encode())
-                new = [key for key in selected if key not in seen_clauses]
+                # New evidence: a search returning a block the model never received, or the
+                # first explicit read of a block (reading a search hit in full is legitimate).
+                if body['name'] == 'read_clause':
+                    new = [key for key in selected if key not in progress['read']]
+                    progress['read'].update(selected)
+                else:
+                    new = [key for key in selected if key not in seen_clauses]
                 repeated = fingerprint in progress['fingerprints']
                 progress['fingerprints'].add(fingerprint)
                 if new:

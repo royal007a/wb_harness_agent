@@ -1,0 +1,544 @@
+{
+ "probe": "dsh-real-payment@1",
+ "provider": "doubao-seed-2.1-lite via Ark coding/v3",
+ "note": "synthetic public contracts; real model behaviour on 5 cases, not a statistical quality claim",
+ "rows": [
+  {
+   "id": "pay-01",
+   "family": "exception_after_page",
+   "run_id": "run_6f0049c06ebd4babaf50f5bd42dbe731",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 22.9,
+   "model_calls": 6,
+   "tokens": 13859,
+   "reserved_after": 0,
+   "tool_events": [
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause"
+   ],
+   "findings_checks": [
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 3,
+     "platform_gap_count": 0,
+     "submission_number": 1
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [
+      "clause-5"
+     ],
+     "payment": [
+      "clause-1",
+      "clause-2",
+      "clause-3",
+      "clause-4",
+      "clause-5"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "未发现证据块之间存在付款条件冲突",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "exception": {
+      "claim": "发生质量争议时，甲方可暂停付款直至争议解决",
+      "quotes": [
+       {
+        "clause_id": "clause-5",
+        "text": "发生质量争议时，甲方可暂停付款直至争议解决。"
+       }
+      ],
+      "status": "supported"
+     },
+     "term": {
+      "claim": "付款期限为验收合格后20天内",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后20天内向乙方支付合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款触发条件为验收合格；另见付款前乙方须开具增值税发票",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后20天内向乙方支付合同款。"
+       },
+       {
+        "clause_id": "clause-2",
+        "text": "乙方应在付款前开具增值税发票。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "clause-3（付款币种）和 clause-4（付款方式）与本次四槽位核对无直接关系，未纳入引用",
+     "clause-6 为保密条款，与付款条件无关",
+     "无其他关于逾期付款利息、违约金、付款节点分期等条款的证据"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-2",
+     "clause-3",
+     "clause-4",
+     "clause-5",
+     "clause-6"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 1,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": "clause-5",
+    "exception_reported_as_finding": true,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  },
+  {
+   "id": "pay-05",
+   "family": "exception_in_page",
+   "run_id": "run_63fc6bf549534439a1f9acac3345111b",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 27.7,
+   "model_calls": 4,
+   "tokens": 10632,
+   "reserved_after": 0,
+   "tool_events": [
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "read_clause",
+    "read_clause",
+    "read_clause"
+   ],
+   "findings_checks": [
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 3,
+     "platform_gap_count": 0,
+     "submission_number": 1
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [
+      "clause-2"
+     ],
+     "payment": [
+      "clause-1",
+      "clause-2",
+      "clause-3",
+      "clause-4",
+      "clause-5"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "exception": {
+      "claim": "付款例外：如乙方未按期提供发票，甲方有权延期付款；且乙方应在付款前开具增值税发票",
+      "quotes": [
+       {
+        "clause_id": "clause-2",
+        "text": "第2条 付款例外\n如乙方未按期提供发票，甲方有权延期付款。"
+       },
+       {
+        "clause_id": "clause-4",
+        "text": "第4条 付款发票\n乙方应在付款前开具增值税发票。"
+       }
+      ],
+      "status": "supported"
+     },
+     "term": {
+      "claim": "付款期限为验收合格后45天内支付合同款",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "第1条 付款期限\n甲方应在验收合格后45天内向乙方支付合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款触发条件为验收合格，自验收合格之日起算45天",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "第1条 付款期限\n甲方应在验收合格后45天内向乙方支付合同款。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "未发现条款间关于付款期限/触发条件的相互冲突证据，冲突槽位无证据可判定",
+     "clause-3（付款币种为人民币）、clause-5（银行转账）、clause-6（保密）与付款期限核对无关，未纳入四槽位",
+     "验收合格的具体标准、45天的起算细节（自然日/工作日）未在证据块中说明"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-2",
+     "clause-3",
+     "clause-4",
+     "clause-5",
+     "clause-6"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 1,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": "clause-2",
+    "exception_reported_as_finding": true,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  },
+  {
+   "id": "pay-09",
+   "family": "no_exception",
+   "run_id": "run_3fb13b77d2c74cb09709ceb626ab1ab4",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 22.4,
+   "model_calls": 5,
+   "tokens": 11738,
+   "reserved_after": 0,
+   "tool_events": [
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "search_document",
+    "read_clause",
+    "search_document",
+    "search_document"
+   ],
+   "findings_checks": [
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 2,
+     "platform_gap_count": 0,
+     "submission_number": 1
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [],
+     "payment": [
+      "clause-1",
+      "clause-2",
+      "clause-3",
+      "clause-4"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "exception": {
+      "claim": "",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "term": {
+      "claim": "付款期限为验收合格后45天内",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后45天内向乙方支付合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款触发条件：以验收合格为付款起算点，且乙方须在付款前开具增值税发票",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后45天内向乙方支付合同款。"
+       },
+       {
+        "clause_id": "clause-2",
+        "text": "乙方应在付款前开具增值税发票。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "文档中无付款期限/触发条件的例外条款（如验收不合格、延期付款、不可抗力等例外情形），无法核实例外槽位",
+     "文档中无相互矛盾的付款条款（各条款分别规定期限、发票、币种、方式，互不冲突），无法确认是否存在冲突"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-2",
+     "clause-3",
+     "clause-4",
+     "clause-5"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 1,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": null,
+    "exception_reported_as_finding": false,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  },
+  {
+   "id": "pay-13",
+   "family": "implicit_exception",
+   "run_id": "run_6d984d7a1fdd45cb802ab4bc9bd3d5dc",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 18.3,
+   "model_calls": 3,
+   "tokens": 7048,
+   "reserved_after": 0,
+   "tool_events": [
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause"
+   ],
+   "findings_checks": [
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 2,
+     "platform_gap_count": 0,
+     "submission_number": 1
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [],
+     "payment": [
+      "clause-1",
+      "clause-2",
+      "clause-3",
+      "clause-4",
+      "clause-5"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "未发现与90天付款期限直接矛盾的条款；瑕疵延后结算条款与期限存在张力，但无明确冲突证据。",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "exception": {
+      "claim": "例外：如甲方认为交付物存在瑕疵，可延后结算。",
+      "quotes": [
+       {
+        "clause_id": "clause-5",
+        "text": "如甲方认为交付物存在瑕疵，可延后结算。"
+       }
+      ],
+      "status": "supported"
+     },
+     "term": {
+      "claim": "付款期限为验收合格后90天内支付合同款（以人民币结算、银行转账）。",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后90天内向乙方支付合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款触发条件为：验收合格，且乙方在付款前开具增值税发票。",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后90天内向乙方支付合同款。"
+       },
+       {
+        "clause_id": "clause-2",
+        "text": "乙方应在付款前开具增值税发票。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "clause-3（币种）、clause-4（付款方式）、clause-6（保密）与期限/触发/例外/冲突四个槽位无关。",
+     "未检索到直接否定或变更90天付款期限的条款，冲突槽位缺乏证据，标记为 unknown。"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-2",
+     "clause-3",
+     "clause-4",
+     "clause-5",
+     "clause-6"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 1,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": "clause-5",
+    "exception_reported_as_finding": true,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  },
+  {
+   "id": "pay-17",
+   "family": "workday_unit",
+   "run_id": "run_ea382a51f20445a28338f1a80b315cc5",
+   "status": "succeeded",
+   "exit_reason": "COMPLETED",
+   "seconds": 27.4,
+   "model_calls": 3,
+   "tokens": 7754,
+   "reserved_after": 0,
+   "tool_events": [
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause",
+    "read_clause"
+   ],
+   "findings_checks": [
+    {
+     "accepted": true,
+     "business_status": "partial",
+     "model_gap_count": 3,
+     "platform_gap_count": 0,
+     "submission_number": 1
+    }
+   ],
+   "record": {
+    "business_status": "partial",
+    "candidates": {
+     "exception": [],
+     "payment": [
+      "clause-1",
+      "clause-2",
+      "clause-3",
+      "clause-4"
+     ]
+    },
+    "findings": {
+     "conflict": {
+      "claim": "",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "exception": {
+      "claim": "",
+      "quotes": [],
+      "status": "unknown"
+     },
+     "term": {
+      "claim": "付款期限为甲方在验收合格后20个工作日内向乙方支付合同款",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后20个工作日内向乙方支付合同款。"
+       }
+      ],
+      "status": "supported"
+     },
+     "trigger": {
+      "claim": "付款以验收合格为起算触发条件；且乙方须在付款前开具增值税发票作为前提",
+      "quotes": [
+       {
+        "clause_id": "clause-1",
+        "text": "甲方应在验收合格后20个工作日内向乙方支付合同款。"
+       },
+       {
+        "clause_id": "clause-2",
+        "text": "乙方应在付款前开具增值税发票。"
+       }
+      ],
+      "status": "supported"
+     }
+    },
+    "human_review_required": true,
+    "model_gaps": [
+     "已通读全部5个证据块（clause-1至clause-5），其中无任何付款例外条款（如逾期付款、扣款、保函、质保金、不可抗力等免责或特殊安排）",
+     "未发现条款间就付款期限或触发条件存在相互矛盾的表述",
+     "clause-3（付款方式：银行转账）、clause-4（币种：人民币）、clause-5（保密）与本次核对的期限、触发条件、例外、冲突四个槽位无关"
+    ],
+    "platform_gaps": [],
+    "read_clause_ids": [
+     "clause-1",
+     "clause-2",
+     "clause-3",
+     "clause-4",
+     "clause-5"
+    ],
+    "schema_version": "dsh-payment-findings@1",
+    "submission_number": 1,
+    "template": "payment_terms",
+    "verification": "quotes_literal_values_units_parties_checked_semantics_not_verified"
+   },
+   "score": {
+    "term_value_matches_label": true,
+    "exception_gold": null,
+    "exception_reported_as_finding": false,
+    "exception_reported_as_gap": false,
+    "false_exception_finding": false
+   }
+  }
+ ],
+ "tokens_total": 51031,
+ "model_calls_total": 21
+}

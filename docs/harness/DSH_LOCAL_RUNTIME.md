@@ -29,7 +29,7 @@ DSH 的模型/工具请求回到短期认证的 loopback 网关；平台持有 K
 
 校验失败最多纠正 2 次（每次都是一次正常的、受同一账本/8 次上限/截止时间/取消约束的模型调用）；**最后一次提交必须通过**，仍失败或从未提交则不发布。该模板下发布的 `dsh-analysis.txt` 由平台根据校验后的结构化结果生成，模型的自由文本答复不发布；另附 `dsh-findings.json`，业务状态 `mechanically_checked`/`partial`/`conflicting`，都需要人工复核。机械校验不证明语义支持（否定词翻转检不出），字面词表会漏隐含例外。
 
-`search_document` 每页 3 条，返回 `total/offset/next_offset/truncated`，可用 `offset` 翻页。平台按“工具+规范化参数+资源”指纹和“是否带来模型未收到过的证据块”判定进展：同一动作连续两次无新证据，或任意 4 个连续动作无新证据，即 `DSH_NO_PROGRESS` 提前停止（两种模板都生效）。决策见 ADR-0079，评测见 `harness/dsh_payment_eval.py`。
+`search_document` 每页 3 条，返回 `total/offset/next_offset/truncated`，可用 `offset` 翻页。平台按“工具+规范化参数+资源”指纹和“是否带来模型未收到过的证据块”判定进展：同一动作连续两次无新证据，或任意 4 个连续动作无新证据，即 `DSH_NO_PROGRESS` 提前停止（两种模板都生效）。对某个证据块的首次 `read_clause` 算新证据（即使它已在搜索结果中出现）；单次模型响应最多 8 个工具调用（HA-0080 依据真实豆包行为调整）。决策见 ADR-0079，评测见 `harness/dsh_payment_eval.py`。
 
 ## 使用与部署
 

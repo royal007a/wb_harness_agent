@@ -10,6 +10,9 @@ BASE = 'https://ark.cn-beijing.volces.com/api/coding/v3'
 TOOL_NAMES = {'search_document', 'read_clause'}
 FINDINGS_TOOL = 'submit_findings'
 ALL_TOOL_NAMES = TOOL_NAMES | {FINDINGS_TOOL}
+# Real doubao issued 5 parallel read_clause calls in one turn (HA-0080); the per-Run
+# cap of 16 tool executions still bounds the total.
+MAX_TOOL_CALLS_PER_RESPONSE = 8
 # Per-tool argument size: structured findings need more room than a query.
 ARGUMENT_LIMITS = {'search_document': 1024, 'read_clause': 1024, FINDINGS_TOOL: 8192}
 
@@ -63,7 +66,7 @@ def parse_response(value):
         message = choice['message']
         text = message.get('content') or ''
         raw_calls = message.get('tool_calls') or []
-        if not isinstance(text, str) or len(text.encode()) > 65536 or len(raw_calls) > 4:
+        if not isinstance(text, str) or len(text.encode()) > 65536 or len(raw_calls) > MAX_TOOL_CALLS_PER_RESPONSE:
             raise invalid()
         if choice['finish_reason'] != ('tool_calls' if raw_calls else 'stop'):
             raise invalid()

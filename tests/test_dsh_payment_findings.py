@@ -349,3 +349,40 @@ def test_findings_text_never_enters_events(client):
     rt, detail, _ = run_script(client, ident, script)
     assert detail['run']['status'] == 'succeeded', detail['run']
     assert secret not in json.dumps(rt.store.events(ident), ensure_ascii=False)
+
+
+# ---- HA-0080: patterns observed with real doubao ----
+
+def test_real_pattern_search_then_first_reads_of_all_hits_not_stopped(client):
+    """doubao searched, then read every hit in full: first reads are new evidence."""
+    ident = submit(client, template='free', document=DOC)
+    def script(n, results):
+        if n == 1:
+            return reply(calls=[('search_document', {'query': '付款'}), ('search_document', {'query': '例外'}),
+                                ('search_document', {'query': '争议'})])
+        if n == 2:
+            return reply(calls=[('read_clause', {'clause_id': f'clause-{i}'}) for i in range(1, 5)])
+        return reply('付款 30 天，见 clause-1。')
+    rt, detail, calls = run_script(client, ident, script)
+    assert detail['run']['status'] == 'succeeded', detail['run']
+
+
+def test_real_pattern_five_parallel_reads_in_one_turn_accepted(client):
+    document = '\n'.join(f'第{i}条 付款{i}\n内容{i}。' for i in range(1, 7))
+    ident = submit(client, template='free', document=document)
+    def script(n, results):
+        if n == 1:
+            return reply(calls=[('read_clause', {'clause_id': f'clause-{i}'}) for i in range(1, 6)])
+        return reply('见 clause-1。')
+    _, detail, _ = run_script(client, ident, script)
+    assert detail['run']['status'] == 'succeeded', detail['run']
+
+
+def test_rereading_already_read_clauses_still_stops(client):
+    ident = submit(client, template='free', document=DOC)
+    def script(n, results):
+        if n == 1:
+            return reply(calls=[('read_clause', {'clause_id': 'clause-1'})])
+        return reply(calls=[('read_clause', {'clause_id': f'clause-{1 + (n % 2)}'})])  # alternate 2,1,2,1
+    _, detail, calls = run_script(client, ident, script)
+    assert detail['run']['exit_reason'] == 'DSH_NO_PROGRESS' and len(calls) < 8

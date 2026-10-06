@@ -3,6 +3,21 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0080",
+      "title": "真实豆包合成付款合同验证与平台规则修正",
+      "status": "completed",
+      "risk": "medium",
+      "scope": ["真实Provider跑5份合成付款合同", "修正单次响应工具调用上限", "修正首次读取的进展判定"],
+      "non_goals": ["私密合同", "质量统计结论", "部署变更"],
+      "acceptance": ["真实运行结果与标注逐案对照", "修正附真实模式回归测试", "全量verify通过"],
+      "depends_on": ["HA-0079"],
+      "owner": "mymacclaude",
+      "plan": null,
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": ["harness/evidence/HA-0080/acceptance.md", "harness/evidence/HA-0080/real_runs.json", "harness/evidence/HA-0080/verify.log"]
+    },
+    {
       "id": "HA-0079",
       "title": "DSH付款条件结构化验收、覆盖缺口与无进展停止",
       "status": "completed",
