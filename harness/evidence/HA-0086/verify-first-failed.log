@@ -1,0 +1,116 @@
+{"route_methods": 155, "features": 23, "mode": "checked"}
+...................................F.................................... [  4%]
+........................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 16%]
+........................................................................ [ 20%]
+......F................................................................. [ 24%]
+........................................................sssss........... [ 28%]
+........................................................................ [ 32%]
+........................................................................ [ 36%]
+........................................................................ [ 40%]
+........................................................................ [ 44%]
+..................s.s.ss................................................ [ 48%]
+...................................................ss................... [ 52%]
+........................................................................ [ 56%]
+........................................................................ [ 60%]
+........................................................................ [ 64%]
+........................................................................ [ 68%]
+.....sssssssssss........................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 80%]
+........................................................................ [ 85%]
+........................................................................ [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+..................................................                       [100%]
+=================================== FAILURES ===================================
+__________ test_slow_old_session_detail_cannot_replace_new_selection ___________
+
+ui = (<Page url='http://127.0.0.1:52899/agent-runtime'>, <backend.agent_runtime.AgentRuntime object at 0x10da56040>, {'id':...90fb3a8ce7a643d9', 'name': 'UI agent', 'description': '', 'system_prompt': 'test only', ...}, 'http://127.0.0.1:52899')
+
+    def test_slow_old_session_detail_cannot_replace_new_selection(ui):
+        page, runtime, agent, base = ui
+        first, exchange = session(runtime, agent, 'first', 'first message')
+        runtime.cancel_exchange(exchange['id'])
+        second, exchange2 = session(runtime, agent, 'second', 'second message')
+        runtime.cancel_exchange(exchange2['id'])
+        held = []
+        page.route('**/sessions/' + first['id'], lambda route: held.append(route))
+>       page.goto(base + '/agent-runtime')
+
+tests/test_agent_runtime_ui.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py:9875: in goto
+    self._sync(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_page.py:560: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_frame.py:156: in goto
+    await self._channel.send(
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x10d211d30>
+cb = <function Channel.send.<locals>.<lambda> at 0x10c4a4bf0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+E           Call log:
+E             - navigating to "http://127.0.0.1:52899/agent-runtime", waiting until "load"
+
+../harnessagent/.venv/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+______ test_timeout_while_provider_waits_leaves_no_workspace_or_artifact _______
+
+client = <starlette.testclient.TestClient object at 0x10d3f9f20>
+
+    def test_timeout_while_provider_waits_leaves_no_workspace_or_artifact(client):
+        import asyncio
+        import os
+        ident = create(client, timeout_seconds=5)
+        runtime = client.app.state.service.dsh
+        calls = []
+        async def slow(*args):
+            calls.append(1)
+            await asyncio.sleep(30)
+            pytest.fail('the provider wait must have been cancelled')
+        runtime.send_probe = slow
+        start = time.monotonic()
+        runtime.execute(ident)
+        assert time.monotonic() - start < 12
+        detail = runtime.detail(ident)
+        assert detail['run']['exit_reason'] == 'TIMEOUT'
+>       assert calls == [1]
+E       assert [] == [1]
+E         
+E         Right contains one more item: 1
+E         Use -v to get more diff
+
+tests/test_dsh_runtime.py:128: AssertionError
+=============================== warnings summary ===============================
+../harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  USER/code/ai/harnessagent/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_agent_runtime_ui.py::test_slow_old_session_detail_cannot_replace_new_selection
+FAILED tests/test_dsh_runtime.py::test_timeout_while_provider_waits_leaves_no_workspace_or_artifact
+2 failed, 1754 passed, 22 skipped, 1 warning in 4696.46s (1:18:16)
