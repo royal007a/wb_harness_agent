@@ -5,14 +5,14 @@
     {
       "id": "HA-0079",
       "title": "DSH付款条件结构化验收、覆盖缺口与无进展停止",
-      "status": "in_review",
+      "status": "completed",
       "risk": "medium",
       "scope": ["payment_terms模板与submit_findings平台校验", "搜索分页与平台进展判定", "发布事务内结构化产物与元数据事件", "固定合成评测与标注隔离"],
       "non_goals": ["修改上游DSH Loop", "真实Provider调用或部署", "语义正确性或法律结论验收", "启用semantic/rerank或向量检索"],
       "acceptance": ["三个旧探针反向：300天不能成为已校验结果；第4条例外被发现或明确报缺口；重复读取提前停止且合法读取不误停", "结构化负例拒绝且错误不回显模型文本；纠正计入同一预算并受取消/预算优先", "定向突变全部被测试捕获；固定评测标注在运行后才读取"],
       "depends_on": ["HA-0077", "HA-0078"],
       "owner": "mymacclaude",
-      "plan": "exec-plans/active/HA-0079-dsh-payment-findings.md",
+      "plan": "exec-plans/completed/HA-0079-dsh-payment-findings.md",
       "blocked_reason": null,
       "recovery_condition": null,
       "evidence": ["harness/evidence/HA-0079/acceptance.md", "harness/evidence/HA-0079/eval.json", "harness/evidence/HA-0079/mutations.json", "harness/evidence/HA-0079/targeted.xml"]
