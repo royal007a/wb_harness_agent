@@ -30,6 +30,7 @@
 - 第十六批记忆失效与失败经验两篇25页全文阅读完成，累计四十三篇489页。区分状态与偏好、激活与可信、提醒与执行授权，见 `docs/research/JIKESUMMARY_MEMORY_FAILURES_2026_10_07.md`。
 - 第十七批权限与检查点两篇25页全文阅读完成，累计四十五篇514页。核对历史配置与当前官方文档的差异，明确文件回退不撤销账本、数据库与外部副作用，见 `docs/research/JIKESUMMARY_PERMISSION_RECOVERY_2026_10_07.md`。
 - 第十八批系统集成一篇11页全文阅读完成，累计四十六篇525页。核对短事务、实体快照、最小披露与固定错误边界，见 `docs/research/JIKESUMMARY_SYSTEM_INTEGRATION_2026_10_07.md`。
+- 第十九批工具护栏两篇24页全文阅读完成，累计四十八篇549页。用本地表达式核对域名和目录前缀问题，对照固定Pi源码区分事件改写与实际参数，见 `docs/research/JIKESUMMARY_GUARD_BOUNDARIES_2026_10_07.md`。
 - 本研究任务不修改运行时、不部署、不调用真实 Provider；HA-0085/0086 是分开的实现任务，不能混算研究验收。
 
 ## 非目标
