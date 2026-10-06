@@ -20,6 +20,7 @@
 - 第六批工具并发、TAO选择、流式前端三篇37页全文阅读完成，累计二十五篇258页；TAO鉴权图和前端布局图已渲染核对。见 `docs/research/JIKESUMMARY_TOOLS_UI_2026_10_07.md`。不把只读合同工具视为无平台副作用，不把异步点击返回当请求已到达。
 - 第七批Benchmark与三层测试两篇20页全文阅读完成，累计二十七篇278页。两条私有无模型探针验证课程评分条件不足，并实测本项目付款评分器的数值/单位和失败Run误计分，拟单列HA-0088修复。见 `docs/research/JIKESUMMARY_EVALUATION_2026_10_07.md`。
 - 第八批成本装饰器与Tracing两篇25页全文阅读完成，累计二十九篇303页。核对了Tracing实际计时日志和作者对defer问题的承认；失败不计费、原文预览和币种混用不可照搬。见 `docs/research/JIKESUMMARY_COST_TRACE_2026_10_07.md`。
+- 第九批Hooks两篇22页全文阅读完成，累计三十一篇325页；对照SDK 0.2.152核对tool_response/error/defer，渲染格式化命令后确认未引用路径和2>&1解释边界。见 `docs/research/JIKESUMMARY_HOOKS_2026_10_07.md`。
 - 本研究任务不修改运行时、不部署、不调用真实 Provider；HA-0085/0086 是分开的实现任务，不能混算研究验收。
 
 ## 非目标
