@@ -47,3 +47,22 @@
 ## not_evidence
 
 未调用真实 Provider、未部署（8765/8876/132 均未动）、未改上游 DSH Loop；不证明语义支持（否定词翻转检不出，见 `test_negation_change_is_not_mechanically_detectable`）；不是法律或投资结论验收；上下文组装器（报告 C）未实现。
+
+## 复审修订（ebcb8fa → 本提交）
+
+mymaccodex 对 ebcb8fa 给出 4 个 Medium、2 个 Low，均有独立反例。其 10 个探针原样收为 `tests/test_dsh_ha0079_review_probes.py`，作者另补 4 组（平台渲染正文、完整数值词法单元、conflicting 分支的数值/单位/主体、默认合成模式）。
+
+| 问题 | 修订 | 回归 |
+|---|---|---|
+| M1 最终正文绕过已校验结果 | `payment_terms` 正文由平台据校验结果渲染，模型自由文本不发布 | `test_final_text_cannot_reintroduce_rejected_value`、`test_published_text_is_rendered_from_verified_record` |
+| M2 conflicting 跳过机械检查 | supported/conflicting 共用数值、单位、主体检查 | `test_conflicting_claim_cannot_bypass_value_check`、`test_conflicting_branch_runs_value_unit_party_checks` |
+| M3 数值后缀误判 | 完整数值词法单元（千分位、全角、中文到万）；无法精确解析即拒绝 | `test_numerical_suffix_not_mistaken_for_whole_value`、`test_whole_numeral_tokens` |
+| M4 默认合成模式跑不通 | 内置合成 Provider 实现付款模板流程（翻页、逐字摘录、按缺口补读） | `test_default_synthetic_payment_path_is_usable`、`..._publishes_partial_with_label` |
+| Low 旧接受被复用 | 最后一次提交必须通过；产物记 `submission_number` | `test_rejected_replacement_does_not_reuse_old_acceptance` |
+| Low 只报一条例外 | 读过的每个例外候选须在 exception/conflict 引文中出现 | `test_second_exception_read_but_not_reported_stays_gap` |
+
+- 新增/定向：DSH 四个测试文件独立运行 142 passed（`targeted.xml`）。
+- 全量 `verify.sh` 独立运行 exit 0：1666 passed / 22 skipped（`verify.log`）。
+- 新增 7 项定向突变：6 项被捕获；N5（去掉数值 look-behind）为等价突变，原因见 `mutations.json`。
+- 固定评测重跑，指标与修订前一致（`eval.json`）。
+- 边界更正：此前“付款模式下 300 天发布不出去”的说法在 ebcb8fa 不成立（最终正文可绕过），本提交起才成立；`free` 模板仍发布模型草稿。

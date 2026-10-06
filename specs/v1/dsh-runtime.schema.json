@@ -119,7 +119,8 @@
         "candidates",
         "read_clause_ids",
         "verification",
-        "human_review_required"
+        "human_review_required",
+        "submission_number"
       ],
       "properties": {
         "schema_version": {
@@ -399,6 +400,11 @@
         },
         "human_review_required": {
           "const": true
+        },
+        "submission_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
         }
       }
     }

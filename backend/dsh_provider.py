@@ -108,9 +108,74 @@ async def send_real(payload, output_limit, credential):
     return parse_response(json.loads(raw))
 
 
+def _probe_reply(content=None, calls=(), usage=(100, 30)):
+    message = {'content': content}
+    if calls:
+        message['tool_calls'] = [{'id': f'call_probe_{i}', 'type': 'function', 'function': {
+            'name': name, 'arguments': json.dumps(args, ensure_ascii=False)}} for i, (name, args) in enumerate(calls)]
+    return parse_response({'choices': [{'finish_reason': 'tool_calls' if calls else 'stop', 'message': message}],
+        'usage': {'prompt_tokens': usage[0], 'completion_tokens': usage[1], 'total_tokens': sum(usage)}})
+
+
+_PROBE_LABEL = '【合成 Provider 联调，非真实模型分析】'
+
+
+def _probe_payment(payload, results):
+    """Deterministic, label-blind synthetic flow for the payment_terms template.
+
+    Proves the DSH loop, tools, verification and publication run end to end; the
+    "findings" are literal sentences copied from what was read, not analysis.
+    """
+    from .dsh_findings import EXCEPTION_LEXICON, PAYMENT_LEXICON, values
+    clauses, last = {}, None
+    for raw in results:
+        try:
+            value = json.loads(raw['content'])
+        except (TypeError, ValueError):
+            continue
+        last = value
+        items = value if isinstance(value, list) else value.get('matches', [])
+        for item in items if isinstance(items, list) else []:
+            if isinstance(item, dict) and isinstance(item.get('clause_id'), str) and isinstance(item.get('text'), str):
+                clauses[item['clause_id']] = item['text']
+    if last is None:
+        return _probe_reply(calls=[('search_document', {'query': '付款'})])
+    if isinstance(last, dict) and last.get('next_offset') is not None:
+        return _probe_reply(calls=[('search_document', {'query': '付款', 'offset': last['next_offset']})])
+    if isinstance(last, dict) and last.get('accepted') is True:
+        return _probe_reply(_PROBE_LABEL + '\n已提交结构化结果；平台将发布其校验后的版本。', usage=(200, 60))
+    if isinstance(last, dict) and 'coverage_gap' in last:
+        ids = [i for i in last['coverage_gap'].get('clause_ids', []) if isinstance(i, str)][:4]
+        return _probe_reply(calls=[('read_clause', {'clause_id': i}) for i in ids])
+    if isinstance(last, dict) and last.get('accepted') is False:
+        return _probe_reply(_PROBE_LABEL + '\n结构化结果未通过平台校验。', usage=(200, 40))
+
+    def sentences(ident):
+        body = clauses[ident].split('\n', 1)[-1]
+        return [part.strip() for part in body.split('。') if len(part.strip()) >= 2]
+    unknown = {'status': 'unknown', 'claim': '', 'quotes': []}
+    term, exception_quotes = unknown, []
+    for ident in sorted(clauses, key=lambda k: int(k.split('-')[1])):
+        for sentence in sentences(ident):
+            if term is unknown and PAYMENT_LEXICON.search(sentence) and values(sentence):
+                term = {'status': 'supported', 'claim': sentence[:300],
+                        'quotes': [{'clause_id': ident, 'text': sentence[:300]}]}
+            if EXCEPTION_LEXICON.search(sentence) and PAYMENT_LEXICON.search(sentence) and \
+                    ident not in {q['clause_id'] for q in exception_quotes}:
+                exception_quotes.append({'clause_id': ident, 'text': sentence[:300]})
+    exception = unknown
+    if exception_quotes:
+        exception = {'status': 'supported', 'claim': exception_quotes[0]['text'], 'quotes': exception_quotes[:3]}
+    findings = {'term': term, 'trigger': unknown, 'exception': exception, 'conflict': unknown,
+                'gaps': ['合成联调：触发条件与冲突未分析']}
+    return _probe_reply(calls=[('submit_findings', findings)])
+
+
 async def send_probe(payload, output_limit):
     """Explicit synthetic provider; the DSH process/loop/tools remain real."""
     results = [m for m in payload['messages'] if m['role'] == 'tool']
+    if any(t['function']['name'] == FINDINGS_TOOL for t in payload.get('tools', [])):
+        return _probe_payment(payload, results)
     if not results:
         return parse_response({'choices': [{'finish_reason': 'tool_calls', 'message': {
             'content': None, 'tool_calls': [{'id': 'call_probe_1', 'type': 'function', 'function': {

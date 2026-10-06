@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0079",
   "active_plan": "exec-plans/active/HA-0079-dsh-payment-findings.md",
-  "last_checkpoint": "HA-0079：payment_terms结构化校验、分页、无进展停止；新增32项，DSH定向122通过；verify exit0 1646 passed/22 skipped；6项定向突变全捕获；20例合成评测。未部署、未调用真实模型。",
-  "last_updated_at": "2026-10-06T04:10:00Z",
+  "last_checkpoint": "HA-0079复审修订：平台渲染正文、conflicting共用检查、完整数值解析、合成Provider付款流程、最后一次提交必须通过、例外逐项落位；定向142通过；verify exit0 1666 passed/22 skipped；未部署、未调用真实模型。",
+  "last_updated_at": "2026-10-06T05:40:00Z",
   "next_action": "mymaccodex只读review；通过后再决定是否部署到独立端口及真实Provider小额验证。",
   "release": "0.1.0-local"
 }

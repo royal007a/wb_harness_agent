@@ -16,7 +16,7 @@ from .agent_runtime import KeyringCredentialResolver, reject_sensitive
 from .adaptive_retrieval import build_parent_child_chunks
 from .analysis import Problem, digest
 from .business_budget import BusinessTokenLedger, budgeted_model_call
-from .dsh_findings import verify as verify_findings
+from .dsh_findings import render_text as render_findings, verify as verify_findings
 from .dsh_provider import MODEL, BASE, TOOL_NAMES, FINDINGS_TOOL, provider_payload, send_real, send_probe, tool_names_for
 from .service import ROOT, DENY, TERMINAL, validate
 from .store import dumps, uid, now
@@ -160,7 +160,7 @@ class DshRuntime:
             template = settings.get('template', 'free')
             allowed = set(task['requested_permissions']['allow_tools'])
             progress = {'fingerprints': set(), 'no_progress': 0, 'repeats': 0, 'notices': 0}
-            review = {'rejections': 0, 'coverage_warned': False, 'accepted': None}
+            review = {'rejections': 0, 'coverage_warned': False, 'accepted': None, 'submissions': 0}
             deadline = time.monotonic() + task['limits']['timeout_seconds']
             def check():
                 self.service.check(ident)
@@ -276,6 +276,11 @@ class DshRuntime:
                 return {'text': dumps(value) if page or warn else dumps(value['matches'])}
             def submit_findings(args):
                 counts['tool_calls'] += 1
+                review['submissions'] += 1
+                number = review['submissions']
+                # Policy: the *last* submission must pass. A rejected or gap-warned
+                # replacement withdraws any earlier acceptance.
+                review['accepted'] = None
                 checked = verify_findings(args, clauses, seen_clauses)
                 if checked['errors']:
                     review['rejections'] += 1
@@ -284,24 +289,25 @@ class DshRuntime:
                         'rejections': review['rejections']})
                     if review['rejections'] > MAX_FINDINGS_REJECTIONS:
                         raise Problem('DSH_FINDINGS_INVALID', '结构化结果多次未通过平台校验。', 409)
-                    return {'text': dumps({'accepted': False, 'errors': checked['errors'],
+                    return {'text': dumps({'accepted': False, 'submission_number': number, 'errors': checked['errors'],
                         'hint': '引文必须逐字摘自本轮读过的证据块；结论中的数值、单位、甲乙方须出现在引文中；缺证据用 unknown。'})}
                 gap = next((g for g in checked['platform_gaps'] if g['code'] == 'EXCEPTION_CANDIDATES_UNREAD'), None)
                 if gap and not review['coverage_warned']:
                     review['coverage_warned'] = True
                     event('dsh.findings.checked', {'accepted': False, 'error_codes': ['COVERAGE_GAP'],
                         'rejections': review['rejections']})
-                    return {'text': dumps({'accepted': False, 'coverage_gap': gap,
+                    return {'text': dumps({'accepted': False, 'submission_number': number, 'coverage_gap': gap,
                         'hint': '平台发现未读的付款例外候选证据块。请读取后重新提交；确实无法读取时可再次提交，将记为部分结果。'})}
-                review['accepted'] = checked
-                event('dsh.findings.checked', {'accepted': True, 'business_status': checked['business_status'],
+                review['accepted'] = dict(checked, submission_number=number, read_at_submission=sorted(seen_clauses))
+                event('dsh.findings.checked', {'accepted': True, 'submission_number': number,
+                    'business_status': checked['business_status'],
                     'platform_gap_count': len(checked['platform_gaps']), 'model_gap_count': len(checked['model_gaps'])})
-                return {'text': dumps({'accepted': True, 'business_status': checked['business_status'],
+                return {'text': dumps({'accepted': True, 'submission_number': number, 'business_status': checked['business_status'],
                     'platform_gaps': checked['platform_gaps']})}
             prompt = (f'平台文档已登记为 {len(clauses)} 个证据块，ID 范围 clause-1 到 clause-{len(clauses)}。'
                       'ID 是平台证据块编号，不等于合同原文条号。search_document 是字面子串检索，不支持正则。\n'
                       + ('这是付款条件核对：请检索并读取付款期限、触发条件、例外和冲突相关证据块，'
-                         '先调用 submit_findings 提交四个槽位（缺证据用 unknown，不要猜），通过校验后再给最终中文答复。\n'
+                         '调用 submit_findings 提交四个槽位（缺证据用 unknown，不要猜）；平台只发布最后一次通过校验的结构化结果，不发布你的自由文本答复。\n'
                          if template == 'payment_terms' else '')
                       + task['objective'])
             result = self.adapter.run(prompt,
@@ -314,29 +320,34 @@ class DshRuntime:
                 raise Problem('DSH_EVIDENCE_NOT_READ', '没有读取文档证据，拒绝发布。', 409)
             if template == 'payment_terms':
                 if review['accepted'] is None:
-                    raise Problem('DSH_FINDINGS_MISSING', '付款核对没有通过平台校验的结构化结果，拒绝发布。', 409)
-                if cited and not cited <= seen_clauses:
-                    raise Problem('DSH_EVIDENCE_CITATION_INVALID', '引用必须指向本轮实际读取的证据块。', 409)
+                    raise Problem('DSH_FINDINGS_MISSING', '付款核对的最后一次提交没有通过平台校验，拒绝发布。', 409)
             elif not cited or not cited <= seen_clauses:
                 raise Problem('DSH_EVIDENCE_CITATION_INVALID', '引用必须指向本轮实际读取的证据块。', 409)
             with self.store.transaction() as db:
                 check()
                 current = self.store.get('runs', ident)
-                artifact = self.service.pi_contract_review._publish(db, current, 'dsh-analysis.txt', result['text'], 'text/plain')
                 business = {}
                 if template == 'payment_terms':
                     accepted = review['accepted']
                     record = {'schema_version': 'dsh-payment-findings@1', 'template': template,
+                              'submission_number': accepted['submission_number'],
                               'business_status': accepted['business_status'], 'findings': accepted['findings'],
                               'model_gaps': accepted['model_gaps'], 'platform_gaps': accepted['platform_gaps'],
-                              'candidates': accepted['candidates'], 'read_clause_ids': sorted(seen_clauses),
+                              'candidates': accepted['candidates'], 'read_clause_ids': accepted['read_at_submission'],
                               'verification': 'quotes_literal_values_units_parties_checked_semantics_not_verified',
                               'human_review_required': True}
                     validate_dsh('findings', record)
+                    # The analysis text is rendered from the verified record; the model's
+                    # free-form final answer is not published in this template.
+                    artifact = self.service.pi_contract_review._publish(
+                        db, current, 'dsh-analysis.txt', render_findings(record), 'text/plain')
                     findings_artifact = self.service.pi_contract_review._publish(
                         db, current, 'dsh-findings.json', dumps(record), 'application/json')
                     business = {'business_status': accepted['business_status'],
-                                'findings_artifact_id': findings_artifact['id']}
+                                'submission_number': accepted['submission_number'],
+                                'findings_artifact_id': findings_artifact['id'], 'model_final_text_published': False}
+                else:
+                    artifact = self.service.pi_contract_review._publish(db, current, 'dsh-analysis.txt', result['text'], 'text/plain')
                 current['status'], current['exit_reason'] = 'succeeded', 'COMPLETED'
                 self.store.event(db, current, 'run.succeeded', {'artifact_id': artifact['id'], **counts,
                     'session_sha256': result['session_sha256'], 'mode': settings['mode'],

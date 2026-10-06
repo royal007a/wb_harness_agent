@@ -17,6 +17,15 @@
 7. 进展由平台判断：动作指纹 = 工具 + 规范化参数 + 资源；新证据 = 模型此前未收到的证据块。同一动作连续两次无新证据，或任意 4 个连续动作无新证据，即 `DSH_NO_PROGRESS` 停止；在停止前一次以 `notice` 提示。合法的“先搜索、再逐条读取”不会触发（最多 3 个连续无新证据）。
 8. 发布在同一事务内追加 `dsh-findings.json` 产物（Schema `findings`），事件只记固定类别、计数和业务状态，不含结论或引文。
 
+## 复审后修订（mymaccodex 对 ebcb8fa 的 Changes Requested）
+
+- **发布正文**：`payment_terms` 下 `dsh-analysis.txt` 由平台根据通过校验的结构化结果渲染（`render_text`），模型的自由文本最终答复不发布；`run.succeeded` 记 `model_final_text_published=false`。
+- **最后一次提交必须通过**：每次提交先撤销此前的接受；被拒或被提示覆盖缺口的替换提交会让旧的接受失效。产物记录 `submission_number`，与工具返回值对应。
+- **conflicting 与 supported 共用**数值/单位/主体检查，conflicting 另需两个来源。
+- **数值按完整词法单元解析**：数字串含千分位逗号、全角数字、中文数字（十/百/千/万）；混合写法（如“3千”）或含糊的“30,60”判为无法解析，结论被拒（`CLAIM_VALUE_UNPARSEABLE`），不截取后缀。
+- **例外候选逐项落位**：读过的每个例外候选都必须出现在 exception 或 conflict 槽位的引文中，否则记 `EXCEPTION_CANDIDATE_NOT_REPORTED`；报告其中一条不覆盖另一条。
+- **内置合成 Provider** 支持付款模板：搜索并翻完分页、提交逐字摘录的结构化结果、按缺口补读，页面默认的合成模式可以直接跑通该模板（产物标注合成联调）。
+
 ## 不做 / 边界
 
 - 不调用 `adaptive_retrieval.retrieval_control`：它要求六维预算且任一维为 0 即停止，而 DSH 的 `max_cost_minor=0` 表示“不批准额外付费”、rerank 未启用，都不是“已耗尽”。不传假预算值绕过它；本切片的无进展停止是独立的、只看证据进展的规则，预算仍只由持久账本裁决。

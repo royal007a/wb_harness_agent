@@ -27,12 +27,19 @@ EXCEPTION_LEXICON = re.compile(r'例外|除外|除非|暂停|争议|不适用|�
 PAYMENT_LEXICON = re.compile(r'付款|支付|结算|账期|货款|价款|合同款')
 PARTIES = ('甲方', '乙方', '丙方')
 _UNIT = r'(个工作日|工作日|自然日|个月|日|天|月|年|%|％|万元|元)'
-_NUMBER_UNIT = re.compile(r'(\d+(?:\.\d+)?)\s*' + _UNIT)
-_CN_DIGITS = {'零': 0, '一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9}
-_CN_NUMBER_UNIT = re.compile(r'([零一二两三四五六七八九十百]+)\s*' + _UNIT)
+_NUMERAL_CHARS = '0-9０-９,，.．零〇一二两三四五六七八九十百千万'
+# A numeral token is the *whole* run of numeral characters before a unit; the
+# look-behind forbids starting mid-token, so "3,030天" is never read as "030天".
+_TOKEN_UNIT = re.compile(r'(?<![' + _NUMERAL_CHARS + r'])([' + _NUMERAL_CHARS + r']+)\s*' + _UNIT)
+_CN_DIGITS = {'零': 0, '〇': 0, '一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9}
+_CN_SMALL = {'十': 10, '百': 100, '千': 1000}
 _UNIT_CLASS = {'个工作日': 'workday', '工作日': 'workday', '自然日': 'day', '日': 'day', '天': 'day',
                '个月': 'month', '月': 'month', '年': 'year', '%': 'percent', '％': 'percent',
                '万元': 'wan_yuan', '元': 'yuan'}
+
+
+class Unparseable(ValueError):
+    pass
 
 
 def _norm(text):
@@ -40,32 +47,53 @@ def _norm(text):
 
 
 def _cn_to_int(text):
-    if not text:
-        return None
-    if text == '十':
-        return 10
-    total, current = 0, 0
+    """Chinese numerals up to 万 with 十/百/千 positions; anything else is unparseable."""
+    if not text or any(c not in _CN_DIGITS and c not in _CN_SMALL and c != '万' for c in text):
+        raise Unparseable(text)
+    if text.count('万') > 1:
+        raise Unparseable(text)
+    if '万' in text:
+        high, low = text.split('万')
+        return _cn_to_int(high) * 10000 + (_cn_to_int(low) if low else 0)
+    total, current, last_unit = 0, None, 10000
     for char in text:
         if char in _CN_DIGITS:
+            if current is not None and current != 0:
+                raise Unparseable(text)  # two digits in a row, e.g. "三三"
             current = _CN_DIGITS[char]
-        elif char == '十':
-            total += (current or 1) * 10
-            current = 0
-        elif char == '百':
-            total += (current or 1) * 100
-            current = 0
-    return total + current
+        else:
+            unit = _CN_SMALL[char]
+            if unit >= last_unit:
+                raise Unparseable(text)
+            total += (1 if current is None else current) * unit
+            current, last_unit = None, unit
+    return total + (current or 0)
 
 
-def values(text):
-    """(number, unit-class) pairs, Arabic and simple Chinese numerals."""
+def _parse_token(token):
+    ascii_token = token.translate(str.maketrans('０１２３４５６７８９．，', '0123456789.,'))
+    if re.fullmatch(r'[0-9]+(?:,[0-9]{3})*(?:\.[0-9]+)?|[0-9]+(?:\.[0-9]+)?', ascii_token):
+        return float(ascii_token.replace(',', ''))
+    if re.fullmatch(r'[零〇一二两三四五六七八九十百千万]+', token):
+        return float(_cn_to_int(token))
+    raise Unparseable(token)  # mixed scripts, stray commas, "3千", etc.
+
+
+def values(text, *, strict=False):
+    """(number, unit-class) pairs from whole numeral tokens.
+
+    strict=True raises Unparseable for a numeral the parser cannot read exactly,
+    so claims are never "verified" on a truncated or guessed value.
+    """
     found = set()
-    for number, unit in _NUMBER_UNIT.findall(text or ''):
-        found.add((float(number), _UNIT_CLASS[unit]))
-    for number, unit in _CN_NUMBER_UNIT.findall(text or ''):
-        value = _cn_to_int(number)
-        if value is not None:
-            found.add((float(value), _UNIT_CLASS[unit]))
+    for token, unit in _TOKEN_UNIT.findall(text or ''):
+        if unit == '元' and token.endswith('万') and len(token) > 1:
+            token, unit = token[:-1], '万元'
+        try:
+            found.add((_parse_token(token), _UNIT_CLASS[unit]))
+        except Unparseable:
+            if strict:
+                raise
     return found
 
 
@@ -130,20 +158,24 @@ def verify(submission, clauses, seen):
             if quotes:
                 errors.append({'slot': slot, 'code': 'UNKNOWN_WITH_QUOTES'})
                 continue
-        elif status == 'supported':
+        else:  # supported / conflicting share every mechanical claim check
             if not claim or not quotes:
                 errors.append({'slot': slot, 'code': 'SUPPORTED_WITHOUT_EVIDENCE'})
                 continue
-            quoted = ''.join(q['text'] for q in quotes)
-            if not values(claim) <= values(quoted):
+            if status == 'conflicting' and len({q['clause_id'] for q in quotes}) < 2:
+                errors.append({'slot': slot, 'code': 'CONFLICT_NEEDS_TWO_SOURCES'})
+                continue
+            quoted = '\n'.join(q['text'] for q in quotes)
+            try:
+                claimed = values(claim, strict=True)
+            except Unparseable:
+                errors.append({'slot': slot, 'code': 'CLAIM_VALUE_UNPARSEABLE'})
+                continue
+            if not claimed <= values(quoted):
                 errors.append({'slot': slot, 'code': 'CLAIM_VALUE_NOT_IN_QUOTE'})
                 continue
             if not parties(claim) <= parties(quoted):
                 errors.append({'slot': slot, 'code': 'CLAIM_PARTY_NOT_IN_QUOTE'})
-                continue
-        else:  # conflicting
-            if len({q['clause_id'] for q in quotes}) < 2:
-                errors.append({'slot': slot, 'code': 'CONFLICT_NEEDS_TWO_SOURCES'})
                 continue
         findings[slot] = {'status': status, 'claim': claim, 'quotes': quotes}
     gaps = submission.get('gaps', [])
@@ -160,10 +192,11 @@ def verify(submission, clauses, seen):
         platform_gaps.append({'code': 'EXCEPTION_CANDIDATES_UNREAD', 'clause_ids': unread_exception})
     elif unread_payment:
         platform_gaps.append({'code': 'PAYMENT_CLAUSES_UNREAD', 'clause_ids': unread_payment})
-    reported = {q['clause_id'] for q in findings['exception']['quotes']}
+    # Every read exception candidate must be placed in the exception or conflict slot;
+    # reporting one of two candidates does not cover the other.
+    reported = {q['clause_id'] for slot in ('exception', 'conflict') for q in findings[slot]['quotes']}
     read_unreported = [k for k in found['exception'] if k in seen and k not in reported]
-    if read_unreported and findings['exception']['status'] == 'unknown':
-        # The model read an exception-looking clause but reported no exception.
+    if read_unreported:
         platform_gaps.append({'code': 'EXCEPTION_CANDIDATE_NOT_REPORTED', 'clause_ids': read_unreported})
     statuses = {f['status'] for f in findings.values()}
     if 'conflicting' in statuses:
@@ -174,3 +207,34 @@ def verify(submission, clauses, seen):
         business = 'mechanically_checked'
     return {'errors': [], 'findings': findings, 'model_gaps': list(gaps), 'platform_gaps': platform_gaps,
             'candidates': found, 'business_status': business}
+
+
+_SLOT_NAMES = {'term': '付款期限', 'trigger': '触发条件', 'exception': '例外', 'conflict': '冲突'}
+_STATUS_NAMES = {'supported': '有证据', 'unknown': '未知（无可核对证据）', 'conflicting': '冲突'}
+_BUSINESS_NAMES = {'mechanically_checked': '机械校验通过', 'partial': '部分结果（有未知项或缺口）',
+                   'conflicting': '存在冲突'}
+_GAP_NAMES = {'EXCEPTION_CANDIDATES_UNREAD': '有付款例外候选证据块未读取',
+              'PAYMENT_CLAUSES_UNREAD': '有付款相关证据块未读取',
+              'EXCEPTION_CANDIDATE_NOT_REPORTED': '读到的例外候选未在例外/冲突中报告'}
+
+
+def render_text(record):
+    """The only published prose for payment_terms: built from the verified record.
+
+    The model's free-form final answer is never published in this template, so it
+    cannot reintroduce a value that differs from the checked findings.
+    """
+    lines = ['付款条件核对（平台根据通过机械校验的结构化结果生成）',
+             f'结论状态：{_BUSINESS_NAMES[record["business_status"]]}，需人工复核', '']
+    for slot in SLOTS:
+        item = record['findings'][slot]
+        lines.append(f'{_SLOT_NAMES[slot]}：{_STATUS_NAMES[item["status"]]}' + (f' — {item["claim"]}' if item['claim'] else ''))
+        for quote in item['quotes']:
+            lines.append(f'  · {quote["clause_id"]}：「{quote["text"]}」')
+    if record['platform_gaps'] or record['model_gaps']:
+        lines += ['', '缺口：']
+        lines += [f'  · 平台：{_GAP_NAMES[g["code"]]}（{"、".join(g["clause_ids"])}）' for g in record['platform_gaps']]
+        lines += [f'  · 模型自述：{g}' for g in record['model_gaps']]
+    lines += ['', '校验范围：引文逐字来自本轮读过的证据块；结论中的数值、单位、甲乙方出现在引文中；例外候选是否读到并报告。',
+              '未校验：结论在语义上是否被引文支持（例如否定词）、法律效力。']
+    return '\n'.join(lines) + '\n'

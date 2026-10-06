@@ -1,12 +1,83 @@
 {
   "method": "copy file to scratch backup, apply one-line mutation, run tests/test_dsh_payment_findings.py, restore from backup (not git checkout)",
   "mutations": [
-    {"id": "M1", "file": "backend/dsh_findings.py", "removed": "claim values/units must appear in quotes", "result": "5 failed, 26 passed"},
-    {"id": "M2", "file": "backend/dsh_findings.py", "removed": "quote must be literal slice of the read clause", "result": "1 failed, 30 passed"},
-    {"id": "M3", "file": "backend/dsh_runtime.py", "removed": "no-progress stop", "result": "2 failed, 29 passed"},
-    {"id": "M4", "file": "backend/dsh_runtime.py", "removed": "first-submission coverage-gap warning", "result": "1 failed, 30 passed"},
-    {"id": "M5", "file": "backend/dsh_runtime.py", "removed": "payment_terms requires accepted findings before publish", "result": "1 failed, 30 passed"},
-    {"id": "M6", "file": "backend/dsh_findings.py", "removed": "claim parties must appear in quotes", "result": "1 failed, 30 passed"}
+    {
+      "id": "M1",
+      "file": "backend/dsh_findings.py",
+      "removed": "claim values/units must appear in quotes",
+      "result": "5 failed, 26 passed"
+    },
+    {
+      "id": "M2",
+      "file": "backend/dsh_findings.py",
+      "removed": "quote must be literal slice of the read clause",
+      "result": "1 failed, 30 passed"
+    },
+    {
+      "id": "M3",
+      "file": "backend/dsh_runtime.py",
+      "removed": "no-progress stop",
+      "result": "2 failed, 29 passed"
+    },
+    {
+      "id": "M4",
+      "file": "backend/dsh_runtime.py",
+      "removed": "first-submission coverage-gap warning",
+      "result": "1 failed, 30 passed"
+    },
+    {
+      "id": "M5",
+      "file": "backend/dsh_runtime.py",
+      "removed": "payment_terms requires accepted findings before publish",
+      "result": "1 failed, 30 passed"
+    },
+    {
+      "id": "M6",
+      "file": "backend/dsh_findings.py",
+      "removed": "claim parties must appear in quotes",
+      "result": "1 failed, 30 passed"
+    }
   ],
-  "note": "run on the 31-test file before EXCEPTION_CANDIDATE_NOT_REPORTED was added (now 32 tests); all mutations caught, files restored and diff-checked"
+  "note": "run on the 31-test file before EXCEPTION_CANDIDATE_NOT_REPORTED was added (now 32 tests); all mutations caught, files restored and diff-checked",
+  "follow_up_after_review": {
+    "commit_base": "ebcb8fa",
+    "tests": "tests/test_dsh_ha0079_review_probes.py + tests/test_dsh_payment_findings.py (52)",
+    "mutations": [
+      {
+        "id": "N1",
+        "removed": "payment_terms publishes platform-rendered text (publish model final text instead)",
+        "result": "2 failed, 50 passed"
+      },
+      {
+        "id": "N2",
+        "removed": "last submission must pass (keep stale acceptance)",
+        "result": "1 failed, 51 passed"
+      },
+      {
+        "id": "N3",
+        "removed": "strict whole-numeral parsing of claims",
+        "result": "2 failed, 50 passed"
+      },
+      {
+        "id": "N4",
+        "removed": "every read exception candidate must be placed",
+        "result": "1 failed, 51 passed"
+      },
+      {
+        "id": "N5",
+        "removed": "numeral look-behind",
+        "result": "52 passed — equivalent mutant: findall scans left to right and the greedy token class already starts at the first numeral char; the real fix is the token class (commas, 千/万) plus strict parsing, covered by N3"
+      },
+      {
+        "id": "N6",
+        "removed": "conflicting branch runs value/unit/party checks",
+        "result": "4 failed, 48 passed"
+      },
+      {
+        "id": "N7",
+        "removed": "built-in synthetic provider payment flow",
+        "result": "2 failed, 50 passed"
+      }
+    ]
+  }
 }
