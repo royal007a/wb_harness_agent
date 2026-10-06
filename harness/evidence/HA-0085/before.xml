@@ -14,7 +14,7 @@
         result = {r['crossing_id']: r['status'] for r in rows(rt, crossings.generation)}
 &gt;       assert result == {'m_1': 'completed', 'm_2': 'retired', ticket['crossing_id']: 'unknown'}
 E       AssertionError: assert {'m_1': 'comp...c': 'unknown'} == {'m_1': 'comp...c': 'unknown'}
-E         
+E
 E         Omitting 2 identical items, use -vv to show
 E         Differing items:
 E         {'m_2': 'failed'} != {'m_2': 'retired'}
@@ -29,7 +29,7 @@ tests/test_dsh_crossing_retirement.py:52: AssertionError</failure></testcase><te
             retire(rt.store, db, ident, crossings.generation)
 &gt;       assert rows(rt, crossings.generation)[0]['status'] == 'retired'
 E       AssertionError: assert 'failed' == 'retired'
-E         
+E
 E         - retired
 E         + failed
 
@@ -106,7 +106,7 @@ monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10cb71650&gt;
         assert detail['artifacts'] == []
 &gt;       assert events(rt, ident)[-1]['event_type'] == 'run.failed'
 E       AssertionError: assert 'dsh.crossing' == 'run.failed'
-E         
+E
 E         - run.failed
 E         + dsh.crossing
 
@@ -156,7 +156,7 @@ monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ec128a0&gt;
             'SELECT status FROM dsh_crossings WHERE generation!=?', (unrelated.generation,))]
 &gt;       assert states == ['issued']
 E       AssertionError: assert ['failed'] == ['issued']
-E         
+E
 E         At index 0 diff: 'failed' != 'issued'
 E         Use -v to get more diff
 
@@ -173,7 +173,7 @@ tests/test_dsh_crossing_retirement.py:180: AssertionError</failure></testcase><t
         rt.recover()
 &gt;       assert {r['status'] for r in rows(rt, crossings.generation)} == {'completed', 'unknown', 'retired'}
 E       AssertionError: assert {'completed',...d', 'unknown'} == {'completed',...d', 'unknown'}
-E         
+E
 E         Extra items in the left set:
 E         'failed'
 E         Extra items in the right set:

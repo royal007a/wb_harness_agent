@@ -16,7 +16,7 @@ monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10a483100&gt;
         assert detail['artifacts'] == []
 &gt;       assert events(rt, ident)[-1]['event_type'] == 'run.failed'
 E       AssertionError: assert 'dsh.crossing' == 'run.failed'
-E         
+E
 E         - run.failed
 E         + dsh.crossing
 

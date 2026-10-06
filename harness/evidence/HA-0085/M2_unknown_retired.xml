@@ -12,7 +12,7 @@
         rt.recover()
 &gt;       assert {r['status'] for r in rows(rt, crossings.generation)} == {'completed', 'unknown', 'retired'}
 E       AssertionError: assert {'completed', 'retired'} == {'completed',...d', 'unknown'}
-E         
+E
 E         Extra items in the right set:
 E         'unknown'
 E         Use -v to get more diff

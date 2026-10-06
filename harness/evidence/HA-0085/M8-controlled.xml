@@ -30,7 +30,7 @@ monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c4ef490&gt;
 &gt;       assert detail['run']['status'] == 'succeeded', detail['run']['exit_reason']
 E       AssertionError: DSH_RUNTIME_FAILED
 E       assert 'failed' == 'succeeded'
-E         
+E
 E         - succeeded
 E         + failed
 

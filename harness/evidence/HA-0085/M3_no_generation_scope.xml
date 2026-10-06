@@ -9,7 +9,7 @@
         assert rows(rt, crossings.generation)[0]['status'] == 'retired'
 &gt;       assert rows(rt, other.generation)[0]['status'] == 'issued'
 E       AssertionError: assert 'retired' == 'issued'
-E         
+E
 E         - issued
 E         + retired
 

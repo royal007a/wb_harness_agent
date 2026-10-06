@@ -14,7 +14,7 @@
         result = {r['crossing_id']: r['status'] for r in rows(rt, crossings.generation)}
 &gt;       assert result == {'m_1': 'completed', 'm_2': 'retired', ticket['crossing_id']: 'unknown'}
 E       AssertionError: assert {'m_1': 'comp...1': 'unknown'} == {'m_1': 'comp...1': 'unknown'}
-E         
+E
 E         Omitting 2 identical items, use -vv to show
 E         Differing items:
 E         {'m_2': 'failed'} != {'m_2': 'retired'}

@@ -23,7 +23,7 @@ template = 'free'
 &gt;       assert detail['run']['status'] == 'succeeded', detail
 E       AssertionError: {'run': {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T15:58:01.490653Z', 'effective_limits'...d_capabilities': ['actions.tool_call', 'artifacts.files', 'control.cancel']}, ...}, 'artifacts': [], 'plan': None, ...}
 E       assert 'failed' == 'succeeded'
-E         
+E
 E         - succeeded
 E         + failed
 
@@ -35,7 +35,7 @@ tests/test_dsh_crossing_retirement.py:109: AssertionError</failure></testcase><t
 &gt;       assert detail['run']['status'] == 'succeeded', detail['run']
 E       AssertionError: {'attempt_number': 1, 'based_on_run_id': None, 'created_at': '2026-10-06T15:59:42.387582Z', 'effective_limits': {'max_cost_minor': 0, 'max_input_tokens': 64000, 'max_turns': 8, 'timeout_seconds': 120}, ...}
 E       assert 'failed' == 'succeeded'
-E         
+E
 E         - succeeded
 E         + failed
 

@@ -21,7 +21,7 @@ monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10ccdf100&gt;
             'SELECT status FROM dsh_crossings WHERE generation!=?', (unrelated.generation,))]
 &gt;       assert states == ['issued']
 E       AssertionError: assert ['retired'] == ['issued']
-E         
+E
 E         At index 0 diff: 'retired' != 'issued'
 E         Use -v to get more diff
 
