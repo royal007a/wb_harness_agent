@@ -3,19 +3,19 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
-      "id": "HA-0094",
+      "id": "HA-0090",
       "title": "中文合同条号与原文偏移切块",
       "status": "waiting_approval",
       "risk": "medium",
-      "scope": ["中文条号结构边界", "原文偏移与硬限制", "DSH末块读取反例"],
+      "scope": ["中文条号结构边界", "原文偏移与硬限制", "DSH末块读取反例", "付款文档跨块例外候选"],
       "non_goals": ["语义判断", "凭据策略", "旧历史改写", "生产部署"],
       "acceptance": ["十二条中文独立切块", "缩进换行原文一致", "长条款无丢字且有界", "原有切块及DSH回归", "独立复审及完整门禁"],
       "depends_on": ["HA-0050"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0094.md",
+      "plan": "exec-plans/active/HA-0090.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": ["harness/evidence/HA-0094/acceptance.md"]
+      "evidence": ["harness/evidence/HA-0090/acceptance.md"]
     },
     {
       "id": "HA-0092",

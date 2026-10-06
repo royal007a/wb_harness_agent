@@ -104,7 +104,10 @@ def parties(text):
 def candidates(clauses):
     """Platform-computed clause IDs a payment review must not silently skip."""
     payment = sorted(k for k, t in clauses.items() if PAYMENT_LEXICON.search(t))
-    exception = sorted(k for k, t in clauses.items() if EXCEPTION_LEXICON.search(t) and PAYMENT_LEXICON.search(t))
+    # A structural boundary may separate "payment" from "unless/dispute".
+    # Conservative candidates in this one document, not semantic relevance:
+    # unrelated exception words can require additional human review.
+    exception = sorted(k for k, t in clauses.items() if EXCEPTION_LEXICON.search(t)) if payment else []
     return {'payment': payment, 'exception': exception}
 
 

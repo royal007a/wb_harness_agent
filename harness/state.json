@@ -2,10 +2,10 @@
   "project": "HarnessAgent",
   "phase": "chinese_clause_boundaries",
   "implementation_started": true,
-  "active_task_id": "HA-0094",
-  "active_plan": "exec-plans/active/HA-0094.md",
+  "active_task_id": "HA-0090",
+  "active_plan": "exec-plans/active/HA-0090.md",
   "last_checkpoint": "HA-0083 7ad0793 获独立 Approved；8876 运行 ad957fb；真实豆包完成3轮工具往返（4次模型/8次工具，11508 Token）。",
   "last_updated_at": "2026-10-06T22:48:00Z",
-  "next_action": "HA85-89/91/92代码离线均获Approved，完整门禁仍有UI超时失败。HA94中文条号与偏移完成定向验证待审；HA93保留给Claude的凭据规则修复，待另审不自动合并。不部署，8876未变。",
+  "next_action": "HA85-89/91/92代码离线均获Approved，完整门禁仍有UI超时失败。中文条号最终编号HA90，跨块例外返工89项通过待审；Claude的HA93-98独立分支未合并。不部署，8876未变。",
   "release": "0.1.0-local"
 }
