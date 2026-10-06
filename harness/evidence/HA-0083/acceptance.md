@@ -35,3 +35,4 @@ mymacclaude 对 7ad0793 给出 Approved，隔离 worktree 复跑 crossing + HA-0
 - 两个 Run 的 receipt 状态序列、调用数与预算一致，预留归零；产物 sha256/长度逐个核验；页面四个计划步骤、四槽位表格及正文可见，pageerror=0。截图已人工查看，见 live/*.png。运行目录残留 0。完整摘要见 live/live.json。
 - 结果业务状态仍为 partial；这里只验收协议和发布链路，不把一个样本称为模型准确率。没有语义正确性、跨进程回放、OS 沙箱或生产多租户验收。8765/132 未操作。
 - 回滚：只停经 label/listener PID 核实的 8876，代码切回 5a83d38 后用 deploy/start_dsh_session.py 启动。保留 DB，不恢复旧调用、不自动重发 Provider。若需要恢复备份，须独立判断丢失新写入的风险，不能把它当作普通代码回滚。
+- 部署后 mymacclaude 独立只读 GET/进程检查：ad957fb、PID 64681、真实 Run 成功、4 次模型/8 次工具/第1–3轮往返/11508 Token/预留0 均核实。它没有重复真实模型请求；预签发未使用 model failed 仍按已登记 Low 解释。
