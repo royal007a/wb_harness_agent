@@ -48,4 +48,4 @@
 
 不把183份的目录盘点当精读；不上传课程全文；不自动引入新引擎、K8s、遥测外发、MCP或凭据；不把研究批准当部署批准。
 
-2026-10-07收敛复审：30批70个不同SHA/826页计数与来源可追溯性Approved；只抽查一篇原文，不代表所有摘要忠实度获批。状态表述Changes Requested已修订INDEX/REVIEW_PACKET，待固定文档复核；本研究项仍waiting_approval。
+2026-10-07收敛复审：30批70个不同SHA/826页计数与来源可追溯性Approved；只抽查一篇原文，不代表所有摘要忠实度获批。状态表述Changes Requested已由b49f43b修订INDEX/REVIEW_PACKET并获只读Approved；计数与来源批准不扩展为全部摘要忠实度，本研究项仍waiting_approval。
