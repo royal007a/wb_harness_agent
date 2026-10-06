@@ -439,7 +439,8 @@ def test_http_fixed_route_no_retry_no_decode_and_limits(monkeypatch, status, enc
     assert str(calls[0].url) == BASE + '/chat/completions'
     assert calls[0].headers['accept-encoding'] == 'identity'
     assert json.loads(calls[0].content)['max_tokens'] == 2048
-    assert options == [{'timeout': 45, 'follow_redirects': False, 'trust_env': False}]
+    # HA-0082: real 2k-token submissions exceeded 45 s
+    assert options == [{'timeout': 120, 'follow_redirects': False, 'trust_env': False}]
     if status != 200 or encoding is not None:
         assert stream.reads == 0
 

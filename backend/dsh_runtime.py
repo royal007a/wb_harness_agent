@@ -54,6 +54,8 @@ class DshRuntime:
         # DSH-CLEANUP-01: bounded delayed retries for registered workspaces left pending at startup.
         self.cleanup_retry_seconds = float(os.getenv('HARNESS_DSH_CLEANUP_RETRY_SECONDS', '10'))
         self.cleanup_retry_limit = 6
+        # A full structured submission can take >45 s on doubao-seed-2.1-lite (HA-0082 real run).
+        self.provider_timeout_seconds = 120
         self._cleanup_timer = None
 
     def status(self):
@@ -267,10 +269,14 @@ class DshRuntime:
                             # Not a tokenizer estimate; intentionally very conservative.
                             input_counter=lambda p: 1024000 if settings['mode'] == 'real_provider' else len(dumps(p).encode()) + 4096,
                             output_limit=256000 if settings['mode'] == 'real_provider' else 2048,
-                            send=send, timeout_seconds=min(45, max(.1, deadline-time.monotonic())), cancel_event=cancel)
+                            send=send, timeout_seconds=min(self.provider_timeout_seconds, max(.1, deadline-time.monotonic())), cancel_event=cancel)
                     except asyncio.CancelledError:
                         check()
                         raise Problem('DSH_CANCELLED', 'DSH 已取消。', 409) from None
+                    except TimeoutError:
+                        check()  # the Run deadline wins if it is the cause
+                        # Sent but unanswered: usage is unknown and stays frozen; no automatic retry.
+                        raise Problem('DSH_PROVIDER_TIMEOUT', 'Provider 响应超时；用量未知，不自动重试。', 504) from None
                     finally:
                         watcher.cancel()
                         await asyncio.gather(watcher, return_exceptions=True)

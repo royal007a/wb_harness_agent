@@ -162,3 +162,19 @@ def test_delayed_retry_is_bounded(client):
     assert rt.cleanup_status['retries'] == 3 and rt.cleanup_status['pending'] == 1 and held.path.exists()
     import os as _os
     _os.close(held.lease)
+
+
+def test_provider_timeout_is_explicit_and_freezes_unknown_usage(client):
+    import asyncio
+    ident = submit(client)
+    rt = client.app.state.service.dsh
+    rt.provider_timeout_seconds = 0.5
+    async def slow(payload, limit):
+        await asyncio.sleep(5)
+    rt.send_probe = slow
+    rt.execute(ident)
+    detail = rt.detail(ident)
+    assert detail['run']['exit_reason'] == 'DSH_PROVIDER_TIMEOUT'
+    assert detail['budget']['reserved'] > 0 and detail['budget']['status'] == 'usage_unknown'
+    failed = next(e['data'] for e in rt.store.events(ident) if e['event_type'] == 'run.failed')
+    assert failed['failed_step'] == 'S1'

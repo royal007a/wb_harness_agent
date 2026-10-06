@@ -96,7 +96,8 @@ def parse_response(value):
 
 async def send_real(payload, output_limit, credential):
     body = {**payload, 'max_tokens': min(output_limit, 2048)}
-    async with httpx.AsyncClient(timeout=45, follow_redirects=False, trust_env=False) as client:
+    # The platform's budgeted call enforces the effective deadline; this is only an upper bound.
+    async with httpx.AsyncClient(timeout=120, follow_redirects=False, trust_env=False) as client:
         async with client.stream('POST', BASE + '/chat/completions', json=body,
             headers={'Authorization': 'Bearer ' + credential, 'Accept-Encoding': 'identity'}) as response:
             if response.status_code != 200:
