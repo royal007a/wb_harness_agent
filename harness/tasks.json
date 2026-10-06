@@ -105,7 +105,7 @@
       "plan": "exec-plans/active/HA-0085.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": ["harness/evidence/HA-0085/acceptance.md", "harness/evidence/HA-0085/mutations.json"]
+      "evidence": ["harness/evidence/HA-0085/acceptance.md", "harness/evidence/HA-0085/mutations.json", "harness/evidence/HA-0085/independent-review.md"]
     },
     {
       "id": "HA-0084",

@@ -32,4 +32,6 @@ HA88后续实际官方SDK重跑见`harness/evidence/HA-0088/sdk-evaluation-follo
 
 ## 复审输出
 
+已收到的明确结论：HA85 fd0b323为Approved，限代码与离线验证，详见[独立回执](../../harness/evidence/HA-0085/independent-review.md)。其余切片不因此连带批准；发布门禁仍未通过。
+
 每个切片单独给Approved或Changes Requested，列出实际重跑范围、未覆盖边界和阻断项。请同时提供本地结论文件路径，避免聊天卡片只显示标题。运行代码批准、阅读报告批准、真实模型与部署验收是四种不同结论；未检查部分不默认为通过。
