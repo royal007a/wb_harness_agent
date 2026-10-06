@@ -1,0 +1,15 @@
+{
+  "status": {
+    "enabled": true,
+    "credential_storage": "sqlite_aes_256_gcm",
+    "release": "7eaf317817fe02c754842f0c13a32e53519c7007",
+    "automatic_probes_running": true,
+    "probe_daily_limit_per_provider": 96,
+    "probe_max_output_tokens": 32,
+    "scope": "single_trusted_administrator",
+    "provider_count": 1
+  },
+  "historical_successful_sessions": 4,
+  "provider_key_retained": true,
+  "automatic_health_retained": true
+}

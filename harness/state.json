@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "customer_support_implementation",
+  "phase": "customer_support_single_admin_accepted",
   "implementation_started": true,
-  "active_task_id": "HA-0090",
-  "active_plan": "exec-plans/active/HA-0090-customer-support.md",
-  "last_checkpoint": "Provider/Agent/会话、本地BGE知识库和JSON条件工作流已实现；工作流相关53项与真实Chromium通过。尚未导入真实凭证或部署。",
-  "last_updated_at": "2026-10-06T07:10:00Z",
-  "next_action": "继续官方MCP客户端/合成退款Server与人工确认，再补HTTP合同、真实模型和双端发布；不动DSH8876。",
+  "active_task_id": null,
+  "active_plan": null,
+  "last_checkpoint": "HA-0090完整切片通过：1607/23全量；8765和132均部署7eaf317；真实Provider、BGE/RAG、工作流、官方MCP+人工审批、认证网页和重启持久验证通过。",
+  "last_updated_at": "2026-10-06T08:34:00Z",
+  "next_action": "交付单管理员公开/合成资料内测版本；生产前另做多租户/HTTPS、语义质量、容量与独立安全审查。DSH8876未改动。",
   "release": "0.1.0-local"
 }

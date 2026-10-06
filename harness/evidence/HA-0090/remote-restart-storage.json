@@ -1,0 +1,31 @@
+{
+  "db_integrity": "ok",
+  "master_mode": "0o600",
+  "plaintext_in_db_or_wal": false,
+  "plaintext_in_service_env": false,
+  "plaintext_in_service_argv": false,
+  "plaintext_in_last_200_journal_lines": false,
+  "ephemeral_basic_user_remaining": false,
+  "old_venv_retained": true,
+  "status": {
+    "enabled": true,
+    "credential_storage": "sqlite_aes_256_gcm",
+    "release": "7eaf317817fe02c754842f0c13a32e53519c7007",
+    "automatic_probes_running": true,
+    "probe_daily_limit_per_provider": 96,
+    "probe_max_output_tokens": 32,
+    "scope": "single_trusted_administrator",
+    "provider_count": 1
+  },
+  "historical_successful_sessions": 4,
+  "mcp_after_restart": "pending_refund_visible",
+  "provider_health": {
+    "automatic": true,
+    "checked_at": "2026-10-06T08:29:57.406294Z",
+    "code": null,
+    "input_tokens": 37,
+    "latency_ms": 1936,
+    "output_tokens": 1,
+    "state": "reachable"
+  }
+}

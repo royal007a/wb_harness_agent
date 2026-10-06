@@ -81,3 +81,50 @@
   真实模型查询并申请合成退款、人工确认、重复确认不再执行全部通过。
 - 浏览器真实调用后发现多会话列表撑开手机网格，补 min-width:0/minmax(0,1fr)，
   新增17会话反例通过；部署页面六模块390px无溢出、无JS错误（local-browser）。
+
+## 最终验收（2026-10-06；以上未完成字样是阶段历史）
+
+运行版本：`7eaf317817fe02c754842f0c13a32e53519c7007`。分支
+`feat/customer-support-20261006`；后续收尾提交只改状态、文档与证据。
+
+| 合同 | 可复核证据 |
+| --- | --- |
+| 1 Provider CRUD、加密凭证 | providers.xml、local-storage.json、remote-restart-storage.json；实际Key仅密文入库，master0600，DB/WAL/进程argv/env/最近200行journal无明文 |
+| 2 自动联网 | local-periodic-probe.json：启动和900秒到期两次真实探测；remote-live.json自动探测；日计数与due跨重启保存 |
+| 3 Agent能力配置 | support-suite.xml、两端live.json；Server/工具/知识库/工作流显式绑定，配置冻结/停用反例 |
+| 4 持久流式对话 | chat/ark-stream测试；两端真实SSE、用量、重放不新增调用，local-restart及remote-restart-storage；失败/取消离线反例 |
+| 5 真实向量RAG | 两端real_embedding与real_rag_chat：本地BGE512维、ready索引、来源引用；knowledge测试删除/失效/回滚 |
+| 6 工作流 | workflows.xml；两端真实LLM节点和END发布，节点记录；条件分支/预算/取消/变量/坏图反例 |
+| 7 MCP | 官方2.2.0真实HTTP发现四工具，豆包资格查询→申请待确认→人工确认→SQLite合成退款；重复确认无第二次写入 |
+| 8 UI | local-browser-final与remote-browser截图；六模块、390px、无JS错误/溢出；legacy-browser旧工作台回归 |
+| 9 双端发布 | remote-deployment.json、local-restart.json、remote-restart-storage.json、remote-browser/result.json；未认证401、认证200、HTTP Key写入403、MCP无能力令牌403 |
+
+验证计数：`verify-release.log` exit0，**1607 passed / 23 skipped**；真实Embedding显式运行
+及Linux客服测试已补充，`linux-tests.log` **82 passed / 1 skipped**（Linux未装浏览器）。
+浏览器在本机Chromium访问本机及公网真实nginx，不将未认证401冒充代理验收。
+远端stage的1414个已跟踪文件逐一SHA256核对。公网验证临时Basic用户已删除，原harness登录未改。
+
+成功的主要真实模型验收（不包括前面的失败诊断、浏览器额外对话和定时探测）：
+本机4个业务会话共6次模型调用，4911 Token；远端见 remote-live.json 中每个Exchange账本。
+失败历史保留：首次重复usage被拒；一次旧max_tokens导致2291输出超过2048预留被账本拒绝；
+两次均没有发布assistant。修复后并未修改这些失败记录来充当成功。
+
+部署地址：本机 http://127.0.0.1:8765/support ，公网 http://118.196.123.132/harness/support 。
+本机launchd label `local.harnessagent.support-session` 只在当前登录会话，机器重启需再启动；
+132沿用systemd `harnessagent`，DB `/var/lib/harnessagent/harness.db`，仅回环8765监听。
+发布前备份 `/var/backups/harnessagent/ha0090-20261006T082856Z`，内含旧应用、实际SQLite及发布回执。
+旧 `.venv` 保留，新环境 `/opt/harnessagent-support-env`；未改其他服务或DSH8876。
+失败恢复旧应用/配置不代表DB回滚。需要恢复时先停harnessagent，核对备份归属，恢复application.tar.gz
+并还原此前support.conf（此前不存在则移除本次drop-in），daemon-reload再启动；附加表不自动删除。
+主密钥须单独备份，不能丢失后自动重建；不要把主密钥或原始凭据放入Git/Evidence。
+
+边界与遗留：
+
+- 仅单管理员公开/合成资料；无多租户、独立安全review、生产压测、任意HTTP/代码节点、PDF/OCR、ANN规模或真实资金通道。JSON编辑器不是拖拽画布。
+- 真实模型在一份退款解释中把 `amount_minor=19900` 错写成“¥19900.00”，实际合成退款记录仍为19900分。
+  当前权限、参数与审批控制不能证明回答语义正确；金额/业务结论须对照原始工具记录人工核对，不将成功状态当正确率。
+- 全部回答按文本呈现，不执行模型HTML；Markdown符号可能原样显示。
+- 远端HTTP没有TLS：Key写入被拒；仍不应在该公网入口提交敏感会话。建议使用SSH隧道或另行配置HTTPS。
+- 132在清理本次旧stage和下载wheel缓存后仍仅约820MiB空闲（98%使用）。删除的247212341字节均为本次可重建缓存，正式数据/当前release/备份保留；需另行容量治理。
+- 新支持接口已有运行时严格输入与行为测试，但没有宣称补齐全站静态/动态OpenAPI。
+- 本次未独立复审，不借用DSH的Approved为客服平台背书。

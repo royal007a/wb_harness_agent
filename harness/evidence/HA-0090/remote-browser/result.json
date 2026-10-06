@@ -1,0 +1,20 @@
+{
+  "url": "http://118.196.123.132/harness/support",
+  "status": {
+    "enabled": true,
+    "credential_storage": "sqlite_aes_256_gcm",
+    "release": "7eaf317817fe02c754842f0c13a32e53519c7007",
+    "automatic_probes_running": true,
+    "probe_daily_limit_per_provider": 96,
+    "probe_max_output_tokens": 32,
+    "scope": "single_trusted_administrator",
+    "provider_count": 1
+  },
+  "unauthenticated": 401,
+  "authenticated": 200,
+  "credential_write_over_plain_http": 403,
+  "mcp_without_capability": 403,
+  "page_errors": [],
+  "mobile_no_overflow": true,
+  "temporary_auth_removed": true
+}

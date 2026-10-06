@@ -1,21 +1,21 @@
 {
   "$schema": "./task.schema.json",
-  "generated_at": "2026-10-05T10:18:00Z",
+  "generated_at": "2026-10-06T08:34:00Z",
   "tasks": [
     {
       "id": "HA-0090",
       "title": "课程智能客服平台、数据库加密凭证与自动探测",
-      "status": "running",
+      "status": "completed",
       "risk": "high",
       "scope": ["Provider与Agent管理", "加密数据库Key和受控后台探测", "流式会话、知识库RAG、JSON工作流、MCP", "先本机再132部署验证"],
       "non_goals": ["多租户计费平台", "任意宿主代码执行", "修改DSH8876部署"],
       "acceptance": ["CUSTOMER_SUPPORT.md九项逐项有真实证据", "凭证不泄露且后台探测受限", "真实合成文本模型及浏览器验证", "双环境版本与恢复证据"],
       "depends_on": ["HA-0075"],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0090-customer-support.md",
+      "plan": "exec-plans/completed/HA-0090-customer-support.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": ["harness/evidence/HA-0090/progress.md"]
+      "evidence": ["harness/evidence/HA-0090/progress.md", "harness/evidence/HA-0090/verify-release.log", "harness/evidence/HA-0090/local-live-final.json", "harness/evidence/HA-0090/local-restart.json", "harness/evidence/HA-0090/remote-deployment.json", "harness/evidence/HA-0090/remote-live.json", "harness/evidence/HA-0090/remote-restart-storage.json", "harness/evidence/HA-0090/remote-browser/result.json"]
     },
     {
       "id": "HA-0076",
