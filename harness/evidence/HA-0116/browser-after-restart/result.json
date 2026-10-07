@@ -1,0 +1,56 @@
+{
+  "tls_verification": "existing self-signed certificate; verification disabled for acceptance",
+  "real_provider_calls": 0,
+  "support": {
+    "enabled": true,
+    "credential_storage": "sqlite_aes_256_gcm",
+    "release": "561a6056ce180ea11c73b3f6ffde0615bb4eb539",
+    "automatic_probes_running": true,
+    "probe_daily_limit_per_provider": 96,
+    "probe_max_output_tokens": 32,
+    "scope": "single_trusted_administrator",
+    "provider_count": 1
+  },
+  "unauthenticated": 401,
+  "authenticated": 200,
+  "dsh_http_redirect": 308,
+  "dsh_mobile_overflow": false,
+  "page_errors": [],
+  "dsh_browser_run": {
+    "release": "da43bff8caf66ca528c85e81d81b28869c1cb9a4",
+    "run_id": "run_9b3b60c7282a450aa12c5e0676724707",
+    "new_run": false,
+    "status": "succeeded",
+    "budget": {
+      "id": "run_9b3b60c7282a450aa12c5e0676724707",
+      "binding_digest": "aa8e5a513a4eee06e0f5e6f32296590fc2b7aeecfec3521ad29f60ab511319b3",
+      "token_limit": 200000,
+      "status": "completed",
+      "spent": 520,
+      "reserved": 0,
+      "calls": 3,
+      "remaining": 199480
+    },
+    "events": 55,
+    "artifacts": [
+      {
+        "id": "art_c0224b314ba04dffb2711d37263bc170",
+        "name": "dsh-analysis.txt",
+        "size_bytes": 813,
+        "sha256": "ff3ad4cc18953011078d3929ee9d305f7ba3b32e2cf61bad93587bd10210ccc8"
+      },
+      {
+        "id": "art_205a30514f8e4c2bbd2755485005b340",
+        "name": "dsh-findings.json",
+        "size_bytes": 1093,
+        "sha256": "baa07f55df74c7464906236ebfa1532a4c38525825f0804e504b64a9fbe084a7"
+      }
+    ],
+    "business_status": "partial",
+    "real_provider_enabled": false,
+    "credential_ref_configured": false,
+    "real_provider_calls": 0,
+    "artifact_hashes_verified": true
+  },
+  "temporary_auth_removed": true
+}

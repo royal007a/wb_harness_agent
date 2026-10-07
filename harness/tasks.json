@@ -3,6 +3,39 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0116",
+      "title": "132客服与已验收DSH课程版独立部署",
+      "status": "completed",
+      "risk": "high",
+      "scope": [
+        "现有客服原位重部署并保留数据",
+        "DSH固定da43bff独立服务及认证入口",
+        "备份、预检、合成调用和持久化验收"
+      ],
+      "non_goals": [
+        "合并客服与DSH代码",
+        "复制本机凭证或数据库",
+        "启用未准入真实Provider",
+        "其他服务变更"
+      ],
+      "acceptance": [
+        "两套固定版本健康且原客服数据保留",
+        "DSH真实循环合成Provider运行及重启持久验收",
+        "认证公网入口和静态资源可用",
+        "备份与部署证据归档"
+      ],
+      "depends_on": [
+        "HA-0084"
+      ],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/completed/HA-0116-132-dual-deployment.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0116/acceptance.md"
+      ]
+    },
+    {
       "id": "HA-0090",
       "title": "中文合同条号与原文偏移切块",
       "status": "completed",

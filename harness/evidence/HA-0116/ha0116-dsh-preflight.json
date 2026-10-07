@@ -1,0 +1,36 @@
+{
+  "release": "da43bff8caf66ca528c85e81d81b28869c1cb9a4",
+  "run_id": "run_c48062d5f01645daa3a05c2e8c39bcc4",
+  "new_run": true,
+  "status": "succeeded",
+  "budget": {
+    "id": "run_c48062d5f01645daa3a05c2e8c39bcc4",
+    "binding_digest": "aa8e5a513a4eee06e0f5e6f32296590fc2b7aeecfec3521ad29f60ab511319b3",
+    "token_limit": 200000,
+    "status": "completed",
+    "spent": 520,
+    "reserved": 0,
+    "calls": 3,
+    "remaining": 199480
+  },
+  "events": 55,
+  "artifacts": [
+    {
+      "id": "art_b26534ad81174de38dbbd86ffafbe615",
+      "name": "dsh-analysis.txt",
+      "size_bytes": 813,
+      "sha256": "ff3ad4cc18953011078d3929ee9d305f7ba3b32e2cf61bad93587bd10210ccc8"
+    },
+    {
+      "id": "art_8dce96c9b04043ed85740ac2496a8f70",
+      "name": "dsh-findings.json",
+      "size_bytes": 1093,
+      "sha256": "baa07f55df74c7464906236ebfa1532a4c38525825f0804e504b64a9fbe084a7"
+    }
+  ],
+  "business_status": "partial",
+  "real_provider_enabled": false,
+  "credential_ref_configured": false,
+  "real_provider_calls": 0,
+  "artifact_hashes_verified": true
+}

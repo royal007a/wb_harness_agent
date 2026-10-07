@@ -1,0 +1,33 @@
+[Unit]
+Description=HarnessAgent DSH course runtime (independent from support)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=harness-dsh
+Group=harness-dsh
+WorkingDirectory=/opt/harnessagent-dsh
+Environment=HOME=/var/lib/harnessagent-dsh
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=HARNESS_DB=/var/lib/harnessagent-dsh/harness.db
+Environment=HARNESS_DSH_LOCAL=enabled
+Environment=HARNESS_DSH_REAL_ENABLED=0
+Environment=HARNESS_DSH_RUN_ROOT=/var/lib/harnessagent-dsh/runs
+Environment=HARNESS_AGENT_RUNTIME=disabled
+Environment=HARNESS_EXTERNAL_SKILLS=disabled
+Environment=GIT_CONFIG_COUNT=1
+Environment=GIT_CONFIG_KEY_0=safe.directory
+Environment=GIT_CONFIG_VALUE_0=/opt/harnessagent-releases/dsh-da43bff8caf6
+ExecStart=/opt/harnessagent-dsh-env/bin/python -m uvicorn backend.app:app --host 127.0.0.1 --port 8876 --workers 1 --no-access-log --timeout-graceful-shutdown 10
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/harnessagent-dsh
+
+[Install]
+WantedBy=multi-user.target

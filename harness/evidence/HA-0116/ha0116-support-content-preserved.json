@@ -1,0 +1,31 @@
+{
+  "table_content_unchanged": {
+    "support_providers": false,
+    "support_probe_days": false,
+    "support_knowledge": true,
+    "support_documents": true,
+    "support_chunks": true,
+    "support_workflows": true,
+    "support_workflow_runs": true,
+    "support_workflow_steps": true,
+    "support_agents": true,
+    "support_sessions": true,
+    "support_exchanges": true,
+    "support_messages": true,
+    "support_tool_events": true,
+    "support_mcp_servers": true,
+    "support_approvals": true,
+    "support_demo_orders": true,
+    "support_demo_refunds": true,
+    "support_demo_receipts": true,
+    "provider_config_and_ciphertext_unchanged": true,
+    "provider_changed_fields": [
+      "health",
+      "next_probe_at"
+    ],
+    "automatic_probe_calls_before_after": [
+      96,
+      97
+    ]
+  }
+}
