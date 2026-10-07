@@ -1,6 +1,6 @@
 # HA-0084 课程资料分批阅读与实现映射
 
-状态：waiting_approval。基线 5939e5d；worktree harnessagent-dsh-course；分支 dsh/course-hardening-20261006。
+状态：completed（2026-10-07，30批研究交付及限定抽查范围的独立复审完成）。基线 5939e5d；worktree harnessagent-dsh-course；分支 dsh/course-hardening-20261006。
 
 ## 交付
 
@@ -9,7 +9,7 @@
 3. 每项候选的收益、代价、权限边界与行为验收；运行时实施使用后续独立 HA 编号。
 4. 每批固定提交给 mymacclaude 核查课程忠实度、现状判断和验收充分性。
 
-## 当前进度
+## 分批执行历史
 
 - 清单183文件/177独立内容/2101页已生成。
 - 第一批五篇43页全文阅读及两页渲染检查完成；其余仍待分批阅读。
@@ -49,3 +49,5 @@
 不把183份的目录盘点当精读；不上传课程全文；不自动引入新引擎、K8s、遥测外发、MCP或凭据；不把研究批准当部署批准。
 
 2026-10-07收敛复审：30批70个不同SHA/826页计数与来源可追溯性Approved；只抽查一篇原文，不代表所有摘要忠实度获批。状态表述Changes Requested已由b49f43b修订INDEX/REVIEW_PACKET并获只读Approved；计数与来源批准不扩展为全部摘要忠实度，本研究项仍waiting_approval。
+
+最终收敛：da43bff研究整包获Approved，限每份3–5条实际核对论断，无Blocking/Medium；Low已作定位/措辞修正。70篇826页与107篇待读保持区分。详见harness/evidence/HA-0084/package-independent-review.md，不扩展为826页逐页复核或177份全部通读。

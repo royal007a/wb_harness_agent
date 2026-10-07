@@ -46,3 +46,5 @@ HA86的高负载startup偶发失败尚无独立失败断言，不能和作者第
 mymacclaude对30批索引独立对账：70个不同SHA、826页、无跨批重复；清单183文件、177个SHA。计数和来源可追溯性Approved；只抽查H10一篇页面，不能扩展为70篇摘要忠实度全部Approved。报告状态表述CR由b49f43b同步索引、HA90批准和四类状态，并限定parties()仅检查主体字样集合包含；mymacclaude的c737567f会话已只读复核Approved，M1和文档CR闭合，本次复核未重跑代码测试或SDK评测。
 
 代码切片Approved与发布验收分开记录：第六轮3036543的1失败保留；后续第七轮1852 passed/22 skipped并获只读证据Approved，8876已发布da43bff且两个新Run复核Approved。两Run均partial，不是准确率评测；运行版本关联依赖进程/时间旁证。后续候选不自动合并。
+
+最终研究收敛：da43bff的INDEX及30份报告获独立整包Approved（每份3–5条关键论断抽查，无Blocking/Medium），HA84标completed；Low定位与措辞已修。详见[整包复审](../../harness/evidence/HA-0084/package-independent-review.md)，不声称826页逐页核对，不包括未联网的外部说法，也不代替各实现切片验收。

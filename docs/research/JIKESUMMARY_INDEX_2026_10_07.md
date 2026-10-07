@@ -4,7 +4,7 @@
 
 截至2026-10-07收敛时点，已登记183份PDF、177份不同内容；全文阅读70份、826页，形成下面30批报告。数字按来源SHA去重核对，不是把目录扫描当作通读。其余107份不同内容仍未标为已读；没有读的专题不因标题就判定无关。课程原文只在本地，公开仓库只保留清单、摘要、来源定位和实现证据。
 
-实施分支为`dsh/course-hardening-20261006`，运行代码基线5939e5d，第六轮完整验证固定3036543（包含HA92清理修复）。文档另在worktree更新，不改变被测文件。HA85–89、HA91、HA92及HA90最终77428b8/e18b35e均已获代码与离线行为Approved。收敛状态分四项：阅读报告的计数和来源可追溯性获Approved（状态表述CR已由b49f43b修订并获只读Approved），不是70篇摘要忠实度全部获批；八个固定代码/测试切片获批；第七轮完整门禁1852通过/22跳过，非独占资源；8876已发布da43bff，两个新Run的发布回执获独立Approved，均partial。HA85–92按本次有限切片验收收敛completed，不扩展为语义准确率或全部阅读内容获批。逐项复跑入口见[复审包](JIKESUMMARY_REVIEW_PACKET_2026_10_07.md)。
+实施分支为`dsh/course-hardening-20261006`，运行代码基线5939e5d，第六轮完整验证固定3036543（包含HA92清理修复）。文档另在worktree更新，不改变被测文件。HA85–89、HA91、HA92及HA90最终77428b8/e18b35e均已获代码与离线行为Approved。收敛状态分四项：阅读报告的计数和来源可追溯性获Approved（状态表述CR已由b49f43b修订并获只读Approved），后续da43bff的30批研究整包获限定抽查范围Approved，HA84已完成，但不是826页逐页获批；八个固定代码/测试切片获批；第七轮完整门禁1852通过/22跳过，非独占资源；8876已发布da43bff，两个新Run的发布回执获独立Approved，均partial。HA85–92按本次有限切片验收收敛completed，不扩展为语义准确率或全部阅读内容获批。逐项复跑入口见[复审包](JIKESUMMARY_REVIEW_PACKET_2026_10_07.md)。
 
 ## 阅读导航
 
@@ -43,7 +43,7 @@
 
 来源完整哈希和文件名见[目录清单](JIKESUMMARY_SOURCE_INVENTORY_2026_10_06.json)。每批报告标明页码、固定项目代码、作者观点与本项目取舍。关键图像已按各报告注明的页数检查，并非每页图都检查过。
 
-独立内容抽查：mymacclaude对1936d9c的第19批GUARD_BOUNDARIES和第29批TRIAGE_COMPACTION实际核对段落给出Approved，具体文字/图像页与未核对页见[逐段复审记录](../../harness/evidence/HA-0084/triage-guard-independent-review.md)。该批准不扩展到两份报告未核对内容或其余28批。
+独立内容抽查：mymacclaude对1936d9c的第19批GUARD_BOUNDARIES和第29批TRIAGE_COMPACTION实际核对段落给出Approved，具体文字/图像页与未核对页见[逐段复审记录](../../harness/evidence/HA-0084/triage-guard-independent-review.md)。该批准不扩展到两份报告未核对内容或其余28批。 后续复审已通读30份报告并逐份抽查3–5条关键论断，对da43bff整包给出Approved；范围与Low修订见[整包复审记录](../../harness/evidence/HA-0084/package-independent-review.md)。此后续结论仍不扩展到未抽查页或未联网核对项。
 
 ## 已落实的八个原子切片
 

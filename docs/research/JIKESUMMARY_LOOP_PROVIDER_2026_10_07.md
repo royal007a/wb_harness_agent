@@ -55,7 +55,7 @@ p1–3让核心循环只认识Message/ToolCall/ToolResult；p4–8分别映射�
 
 ### 当前适配边界
 
-`backend/dsh_provider.py`是明确的非流式、单模型、有限工具协议；平台承担budgeted_model_call和凭据解析，sidecar只通过本地网关请求。`parse_response`检查单choice、finish_reason与工具集合、调用ID唯一性和参数尺寸；usage交业务账本结算。`backend/dsh_context.py:_pairing`在发送前再次验证历史调用/结果严格配对。
+`backend/dsh_provider.py`是明确的非流式、单模型、有限工具协议；平台承担budgeted_model_call和凭据解析，sidecar只通过本地网关请求。`parse_response`检查单choice、finish_reason与全局工具名单、调用ID唯一性和参数尺寸；每个Run实际获准的工具集合由运行时另行检查，不能把全局名单校验等同于Run授权；usage交业务账本结算。`backend/dsh_context.py:_pairing`在发送前再次验证历史调用/结果严格配对。
 
 这与`backend/provider_adapters.py`给聊天Runtime的窄SSE文本协议是两条路径，不能把聊天适配器不支持工具的限制误写成DSH也不支持。反过来，DSH通过豆包也不证明其他OpenAI兼容网关、Anthropic或其他模型都兼容。
 

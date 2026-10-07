@@ -21,12 +21,12 @@ R15第1–4页介绍模型协议、Agent循环、会话应用和终端UI的职�
 
 - 第2页把TUI画在coding-agent上方，是概念上的展示层，不是包依赖方向。`packages/coding-agent/package.json`依赖pi-tui；不能据图推断pi-tui依赖coding-agent。
 - 第4页把工具执行事件与拦截并列。`packages/agent/src/agent-loop.ts:595`发出start事件，实际工具检查另在`:722`的beforeToolCall；coding-agent在`agent-session.ts:530`安装扩展tool_call桥。业务授权应使用明确的执行拦截契约，不能只打印start事件就称已实施护栏。
-- 也不能反向概括所有订阅都不等待。固定版本底层`Agent`在`agent.ts:605`逐个await订阅者，而会话的公共`_emit`在`agent-session.ts:831`同步调用监听器，不await返回Promise。异步审计是否完成必须按具体层核对；课程中的agent_end说明不能推广成所有监听语义。
+- 也不能反向概括所有订阅都不等待。固定版本底层`Agent`在`agent.ts:606`逐个await订阅者，而会话的公共`_emit`在`agent-session.ts:831–834`同步调用监听器，不await返回Promise。异步审计是否完成必须按具体层核对；课程中的agent_end说明不能推广成所有监听语义。
 - 协议适配提供统一接口，不保证任意兼容端点的工具参数、usage、结束标记和重试语义完全相同。本项目仍需自己的窄契约与真实端点验证，不能靠填写baseUrl证明兼容。
 - 示例成本全为0是模型配置，不是实际费用为0。自动工具、默认扩展、环境读取和本地会话留存也不是业务授权；接入前要分别收紧。
 - 第1页“通读而不遗漏”是能力期待，不是完整性保证。当前付款审查的隐含例外漏检和机械校验的语义盲区，不能因为换成Pi就自然消失。
 
-因此不照搬最小示例的默认工具集，也不把DSH换成Pi。当前`dsh-adapter/platform-plugin.mjs:21`把模型请求交回平台网关，`controlled.patch.yml`关闭默认模型、重试及shell等插件。协议发送、工具许可、预算和发布仍由平台持有；框架负责受控循环。
+因此不照搬最小示例的默认工具集，也不把DSH换成Pi。当前`dsh-adapter/platform-plugin.mjs:24–26`把模型请求交回平台网关，`controlled.patch.yml`关闭默认模型、重试及shell等插件。协议发送、工具许可、预算和发布仍由平台持有；框架负责受控循环。
 
 ## 反思需要新证据与有限修改权
 
