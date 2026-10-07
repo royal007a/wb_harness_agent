@@ -1,0 +1,45 @@
+{
+  "support": {
+    "status": {
+      "enabled": true,
+      "credential_storage": "sqlite_aes_256_gcm",
+      "release": "b8e51b75ce3721c79142b11ac40d5dd44861e62b",
+      "automatic_probes_running": true,
+      "probe_daily_limit_per_provider": 96,
+      "probe_max_output_tokens": 32,
+      "scope": "single_trusted_administrator",
+      "provider_count": 1
+    },
+    "navigation_removed": true
+  },
+  "dsh": {
+    "status": {
+      "engine": "engine_dsh_document",
+      "runtime": "deepseek-harness@0.2.1-alpha.1",
+      "release": "d0f625e3f00c078a459d3a379089a349594d2c8e",
+      "installed": true,
+      "integration_probe": true,
+      "real_provider_enabled": true,
+      "credential_ref_configured": true,
+      "workspace_recovery": {
+        "cleaned": 0,
+        "pending": 0,
+        "retained": 0,
+        "retries": 0
+      },
+      "model": "doubao-seed-2.1-lite",
+      "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+      "tools": [
+        "read_clause",
+        "search_document"
+      ],
+      "shell_enabled": false,
+      "network_tools_enabled": false,
+      "max_model_calls": 8,
+      "max_tool_calls": 32,
+      "max_token_limit": 20000000,
+      "note": "联调模式使用合成 Provider；DSH 进程和工具循环为真实运行。真实 Provider 需要独立准入。"
+    },
+    "navigation_removed": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "commit": "b8e51b75ce3721c79142b11ac40d5dd44861e62b",
+  "database": "/var/lib/harnessagent/harness.db",
+  "backup": "/var/backups/harnessagent/ha0090-20261007T094820Z",
+  "status": {
+    "enabled": true,
+    "credential_storage": "sqlite_aes_256_gcm",
+    "release": "b8e51b75ce3721c79142b11ac40d5dd44861e62b",
+    "automatic_probes_running": true,
+    "probe_daily_limit_per_provider": 96,
+    "probe_max_output_tokens": 32,
+    "scope": "single_trusted_administrator",
+    "provider_count": 1
+  },
+  "old_dependency_environment_retained": true,
+  "database_rollback": false,
+  "credential_plaintext_in_environment": false,
+  "url": "http://118.196.123.132/harness/support"
+}

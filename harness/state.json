@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0090完整切片通过：1607/23全量；8765和132均部署7eaf317；真实Provider、BGE/RAG、工作流、官方MCP+人工审批、认证网页和重启持久验证通过。",
-  "last_updated_at": "2026-10-06T08:34:00Z",
+  "last_checkpoint": "HA-0117已移除百度网盘侧栏入口；本机/132客服b8e51b7、DSH d0f625e均部署。DSH当前客户端公网域名TLS重置限制已登记。",
+  "last_updated_at": "2026-10-07T09:57:04.638241+00:00",
   "next_action": "交付单管理员公开/合成资料内测版本；生产前另做多租户/HTTPS、语义质量、容量与独立安全审查。DSH8876未改动。",
   "release": "0.1.0-local"
 }
