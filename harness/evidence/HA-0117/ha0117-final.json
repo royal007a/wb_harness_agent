@@ -1,0 +1,49 @@
+{
+  "status": {
+    "support": {
+      "enabled": true,
+      "credential_storage": "sqlite_aes_256_gcm",
+      "release": "b8e51b75ce3721c79142b11ac40d5dd44861e62b",
+      "automatic_probes_running": true,
+      "probe_daily_limit_per_provider": 96,
+      "probe_max_output_tokens": 32,
+      "scope": "single_trusted_administrator",
+      "provider_count": 1
+    },
+    "dsh": {
+      "engine": "engine_dsh_document",
+      "runtime": "deepseek-harness@0.2.1-alpha.1",
+      "release": "d0f625e3f00c078a459d3a379089a349594d2c8e",
+      "installed": true,
+      "integration_probe": true,
+      "real_provider_enabled": false,
+      "credential_ref_configured": false,
+      "workspace_recovery": {
+        "cleaned": 0,
+        "pending": 0,
+        "retained": 0,
+        "retries": 0
+      },
+      "model": "doubao-seed-2.1-lite",
+      "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+      "tools": [
+        "read_clause",
+        "search_document"
+      ],
+      "shell_enabled": false,
+      "network_tools_enabled": false,
+      "max_model_calls": 8,
+      "max_tool_calls": 32,
+      "max_token_limit": 20000000,
+      "note": "\u8054\u8c03\u6a21\u5f0f\u4f7f\u7528\u5408\u6210 Provider\uff1bDSH \u8fdb\u7a0b\u548c\u5de5\u5177\u5faa\u73af\u4e3a\u771f\u5b9e\u8fd0\u884c\u3002\u771f\u5b9e Provider \u9700\u8981\u72ec\u7acb\u51c6\u5165\u3002"
+    }
+  },
+  "units": "MainPID=3462239\nExecMainStartTimestamp=Wed 2026-10-07 17:48:28 CST\nId=harnessagent.service\nActiveState=active\n\nMainPID=3462360\nExecMainStartTimestamp=Wed 2026-10-07 17:48:32 CST\nId=harnessagent-dsh.service\nActiveState=active\n",
+  "temporary_auth_removed": true,
+  "disk_free_bytes": 964251648,
+  "source_dsh": "/opt/harnessagent-releases/dsh-d0f625e3f00c",
+  "database_dsh": "/var/lib/harnessagent-dsh/harness.db",
+  "database_support": "/var/lib/harnessagent/harness.db",
+  "temporary_auth_removed_at_earlier_capture": false,
+  "final_auth_check_utc": "2026-10-07T09:55:46.911738+00:00"
+}

@@ -5,7 +5,7 @@
     {
       "id": "HA-0117",
       "title": "移除百度网盘侧栏入口并重新部署",
-      "status": "running",
+      "status": "completed",
       "risk": "high",
       "scope": [
         "三个页面移除指定导航项",
@@ -23,7 +23,7 @@
       ],
       "depends_on": [],
       "owner": "mymaccodex",
-      "plan": "exec-plans/active/HA-0117-remove-baidu-navigation.md",
+      "plan": "exec-plans/completed/HA-0117-remove-baidu-navigation.md",
       "blocked_reason": null,
       "recovery_condition": null,
       "evidence": [

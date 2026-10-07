@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": null,
   "active_plan": null,
-  "last_checkpoint": "HA-0116：132客服561a605与DSH da43bff分别部署，认证页面、两合成Run及重启持久验证通过；客服数据保留，DSH真实Provider未准入。",
-  "last_updated_at": "2026-10-07T08:42:12.820860+00:00",
+  "last_checkpoint": "HA-0117已移除百度网盘侧栏入口；本机/132客服b8e51b7、DSH d0f625e均部署。DSH当前客户端公网域名TLS重置限制已登记。",
+  "last_updated_at": "2026-10-07T09:57:04.658915+00:00",
   "next_action": "双服务入口见HA-0116回执；DSH远端真实Provider凭证/准入、证书信任及磁盘余量另列，其他候选未合入。",
   "release": "0.1.0-local"
 }

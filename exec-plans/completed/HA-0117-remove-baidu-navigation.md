@@ -4,4 +4,4 @@
 
 验收：HTML中导航链接不再出现；本机8765/8876与132两套服务固定版本健康，公网认证页面DOM确认入口消失；备份实际数据库、保留客服业务和DSH历史Run。仅HTML导航改动，沿用依赖，不运行新的模型请求。
 
-状态：running。执行者完成页面与发布验收后附harness/evidence/HA-0117/acceptance.md。
+状态：completed。导航移除和双环境发布完成，页面核对通过；DSH公网域名在当前客户端网络出现TLS重置，SSH转发和公网IP+Host检查通过，限制见harness/evidence/HA-0117/acceptance.md。
