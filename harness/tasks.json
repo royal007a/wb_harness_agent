@@ -5,7 +5,7 @@
     {
       "id": "HA-0118",
       "title": "部署验证spec与双端skill安装及独立复审",
-      "status": "running",
+      "status": "waiting_approval",
       "risk": "medium",
       "scope": [
         "部署验证spec与通用skill",

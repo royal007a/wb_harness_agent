@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "course_delivery_completed",
+  "phase": "deployment_skill_review_pending",
   "implementation_started": true,
-  "active_task_id": null,
-  "active_plan": null,
-  "last_checkpoint": "HA-0117已移除百度网盘侧栏入口；本机/132客服b8e51b7、DSH d0f625e均部署。DSH当前客户端公网域名TLS重置限制已登记。",
-  "last_updated_at": "2026-10-07T09:57:04.658915+00:00",
-  "next_action": "双服务入口见HA-0116回执；DSH远端真实Provider凭证/准入、证书信任及磁盘余量另列，其他候选未合入。",
+  "active_task_id": "HA-0118",
+  "active_plan": "exec-plans/active/HA-0118-deployment-verification-skill.md",
+  "last_checkpoint": "HA-0118 skill/spec与21项离线测试已完成，两端安装文件SHA一致；固定dc03d92已交mymacclaude只读review，未部署业务。",
+  "last_updated_at": "2026-10-07T13:18:44.320632+00:00",
+  "next_action": "等待固定版本独立review；按问题修订并同步两端安装，不将待review记为通过。",
   "release": "0.1.0-local"
 }

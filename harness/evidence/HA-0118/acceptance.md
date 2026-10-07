@@ -9,3 +9,9 @@
 校验器只证明输入声明与文件绑定一致；不联网，不独立证实日志真实性/计划完备/公网可达/数据恢复。固定plan摘要不能阻止作者重新编造一份新plan，故plan必须先经spec/需求对账，不能以机械通过替代review。安装与独立review回执随后补齐；当前不声称review通过。
 
 安装前检查发现两个用户目录中出现了llm-quant-lab用途的deployment-verification（与最初目录盘点不同）。本次没有覆盖它，将技能命名为harnessagent-deployment-verification；通用只读脚本继续可移植，自动发现描述限定HarnessAgent。
+
+## 双端安装及复审请求
+
+9564d4436b91a897e379297e5e252ae815194ee3的skill包已复制到~/.codex/skills/harnessagent-deployment-verification和~/.claude/skills/harnessagent-deployment-verification。6个文件逐一SHA匹配，各安装从/tmp独立运行同一套21测试均通过，不将重复运行计成63项覆盖。installation.json记录精确路径、文件摘要和未做会话热加载测试。
+
+dc03d9202bc46a5575b9347645e999a4c4410853（代码与9564d44相同，增加安装回执）已通过飞书om_x100b63502bb404a8b1756650e6fa077交给用户指定的mymacclaude只读复审。范围包括规范、独立反例、安装一致性及一例skill引导判定；禁止业务系统/凭证访问及共享目录写入。当前等待实际回复，未声称Approved。
