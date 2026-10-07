@@ -3,6 +3,39 @@
   "generated_at": "2026-10-06T04:00:00Z",
   "tasks": [
     {
+      "id": "HA-0118",
+      "title": "部署验证spec与双端skill安装及独立复审",
+      "status": "running",
+      "risk": "medium",
+      "scope": [
+        "部署验证spec与通用skill",
+        "离线回执校验器及反例测试",
+        "Codex与Claude同版安装",
+        "mymacclaude固定版本复审"
+      ],
+      "non_goals": [
+        "业务部署或服务重启",
+        "新增网络/模型准入",
+        "修复HA-0117公网TLS问题"
+      ],
+      "acceptance": [
+        "部署与验收状态明确分离且绕行不可替代公网必过项",
+        "离线反例及skill结构校验通过",
+        "两端安装内容与固定源码一致",
+        "Claude复审问题收敛并保留范围"
+      ],
+      "depends_on": [
+        "HA-0117"
+      ],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0118-deployment-verification-skill.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0118/acceptance.md"
+      ]
+    },
+    {
       "id": "HA-0117",
       "title": "移除百度网盘侧栏入口并重新部署",
       "status": "completed",
