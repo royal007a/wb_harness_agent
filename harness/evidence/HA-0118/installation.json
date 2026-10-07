@@ -1,0 +1,29 @@
+{
+  "source_commit": "9564d4436b91a897e379297e5e252ae815194ee3",
+  "installed_at": "2026-10-07T13:15:47.807057+00:00",
+  "source_files": {
+    "SKILL.md": "860e25e999e460ad35dbdeac6ca546a2197cb9da437c69e9e28ea9dbc09b0a87",
+    "agents/openai.yaml": "26ba335ef8d4aded22d6aec44b1717ed633a0edad6dbf6daf2a0c6b932c491db",
+    "references/evidence-contract.md": "63cb39bfd3b153c272ffcec690d79b65f738a62aa136a7c556d55b6ffaaa1cf8",
+    "references/harnessagent.md": "414c40aff30826f6931c0ea08d02ae8bd9a666c04353a2c9e4a7e81c1d9d5dec",
+    "scripts/test_verify_receipt.py": "cdc4dfc64baf80b113a9d30fed158c8788cdcf82a384d0d21aba926db4487320",
+    "scripts/verify_receipt.py": "0703ba4bd1f3588470d24f115d580ee46360d3439dd774b7058c669a7409ed19"
+  },
+  "installs": [
+    {
+      "client": "codex",
+      "path": "/Users/weberzhao/.codex/skills/harnessagent-deployment-verification",
+      "files_identical": true,
+      "installed_tests_exit": 0,
+      "hot_reload_tested": false
+    },
+    {
+      "client": "claude",
+      "path": "/Users/weberzhao/.claude/skills/harnessagent-deployment-verification",
+      "files_identical": true,
+      "installed_tests_exit": 0,
+      "hot_reload_tested": false
+    }
+  ],
+  "business_services_touched": false
+}
