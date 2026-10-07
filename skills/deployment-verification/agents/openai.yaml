@@ -1,4 +1,0 @@
-interface:
-  display_name: "部署验证"
-  short_description: "固定部署契约并核对版本、备份、公网入口与验收证据，区分已部署和已验收"
-  default_prompt: "Use $deployment-verification to define the deployment acceptance spec and verify the release evidence."

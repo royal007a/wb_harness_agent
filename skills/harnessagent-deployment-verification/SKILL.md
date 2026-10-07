@@ -1,6 +1,6 @@
 ---
-name: deployment-verification
-description: 编写或完善应用部署验收spec、选择适用测试、核对发布证据与交付结论；适用于部署、重部署和发布复核，也可仅做离线证据审查。维护本skill或安装skill本身不触发业务部署。
+name: harnessagent-deployment-verification
+description: 为HarnessAgent编写或完善部署验收spec、选择适用测试、核对发布证据与交付结论；适用于部署、重部署和发布复核，也可仅做离线证据审查。维护本skill或安装skill本身不触发业务部署。
 ---
 
 # 部署验证

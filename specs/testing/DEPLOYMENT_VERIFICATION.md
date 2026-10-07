@@ -13,7 +13,7 @@
 
 ## 可移植skill与机器合同
 
-入口：`skills/deployment-verification/SKILL.md`；通用合同：`references/evidence-contract.md`；本项目条件：`references/harnessagent.md`。安装到Codex和Claude的相同目录内容需逐文件摘要核对。
+入口：`skills/harnessagent-deployment-verification/SKILL.md`；通用合同：`references/evidence-contract.md`；本项目条件：`references/harnessagent.md`。安装到Codex和Claude的相同目录内容需逐文件摘要核对。
 
 `scripts/verify_receipt.py`使用Python标准库，只读plan、receipt与证据文件。plan摘要锁定已声明要求；核心release/identity/health、条件适用的public_entry、实际DB对应backup/preservation不可缺。它比较expected/observed、逐字节核对证据SHA、限制文件读取根目录并保存历史失败计数。它不联网、不执行日志命令，也不证明观测真实、验收计划完备或系统安全。
 
