@@ -3,6 +3,34 @@
   "generated_at": "2026-10-06T08:34:00Z",
   "tasks": [
     {
+      "id": "HA-0117",
+      "title": "移除百度网盘侧栏入口并重新部署",
+      "status": "running",
+      "risk": "high",
+      "scope": [
+        "三个页面移除指定导航项",
+        "本机及132对应服务发布验收"
+      ],
+      "non_goals": [
+        "删除连接凭证或数据",
+        "改变后端API",
+        "合并客服和DSH分支"
+      ],
+      "acceptance": [
+        "三个页面无百度网盘导航链接",
+        "本机和132版本健康且认证页面通过",
+        "备份数据库并保留现有业务记录"
+      ],
+      "depends_on": [],
+      "owner": "mymaccodex",
+      "plan": "exec-plans/active/HA-0117-remove-baidu-navigation.md",
+      "blocked_reason": null,
+      "recovery_condition": null,
+      "evidence": [
+        "harness/evidence/HA-0117/acceptance.md"
+      ]
+    },
+    {
       "id": "HA-0090",
       "title": "课程智能客服平台、数据库加密凭证与自动探测",
       "status": "completed",
