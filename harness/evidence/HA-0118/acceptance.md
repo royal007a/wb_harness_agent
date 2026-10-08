@@ -29,3 +29,5 @@ dc03d9202bc46a5575b9347645e999a4c4410853（代码与9564d44相同，增加安装
 - L5：项目映射明确132两个公布入口必须HTTPS，HTTP仅可另列重定向检查。
 
 测试：在未改校验器时，用新增回归运行32项出现预期失败（review-regression-before.txt；含subTest失败，不将失败数视为独立用例数）；修订后同32项全部通过（review-regression-after.txt），其中原21项全部保留。quick_validate、git diff --check通过。测试仅临时目录合成声明，无业务服务或Provider访问。双端更新安装回执随后记录。
+
+修订安装：22c26b1的6个文件在确认旧安装未漂移后同步到两端，更新前副本已备份（installation.json记录位置，installation-initial.json保留首版清单）。两端各自从/tmp跑相同32项测试通过，逐文件SHA与源包一致；会话热加载未测试，不累加为96项覆盖。

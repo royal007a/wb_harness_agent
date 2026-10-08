@@ -1,13 +1,13 @@
 {
-  "source_commit": "9564d4436b91a897e379297e5e252ae815194ee3",
-  "installed_at": "2026-10-07T13:15:47.807057+00:00",
+  "source_commit": "22c26b1bb35e5cededeee520571a566695daf1d7",
+  "installed_at": "20261008T041622Z",
   "source_files": {
-    "SKILL.md": "860e25e999e460ad35dbdeac6ca546a2197cb9da437c69e9e28ea9dbc09b0a87",
+    "SKILL.md": "f8823d923b3a0c763f47004ecc15e19ad8b62ff9958948a583eb6e450f05abb4",
     "agents/openai.yaml": "26ba335ef8d4aded22d6aec44b1717ed633a0edad6dbf6daf2a0c6b932c491db",
-    "references/evidence-contract.md": "63cb39bfd3b153c272ffcec690d79b65f738a62aa136a7c556d55b6ffaaa1cf8",
-    "references/harnessagent.md": "414c40aff30826f6931c0ea08d02ae8bd9a666c04353a2c9e4a7e81c1d9d5dec",
-    "scripts/test_verify_receipt.py": "cdc4dfc64baf80b113a9d30fed158c8788cdcf82a384d0d21aba926db4487320",
-    "scripts/verify_receipt.py": "0703ba4bd1f3588470d24f115d580ee46360d3439dd774b7058c669a7409ed19"
+    "references/evidence-contract.md": "187a2cf0bb33c84522441871da6fa75060d63464f16957cec8485d3f99b4f428",
+    "references/harnessagent.md": "2696851037ccb661225797dd62649e4de279102ecbf74548fc8accedbec68a31",
+    "scripts/test_verify_receipt.py": "7e0ee6177a77f10019e29216c1a5d9b7012a0414fd79db0ea11e2043a2ab56b7",
+    "scripts/verify_receipt.py": "7acc40884266b5df9c133cb981e7a621666b322b033eb88560eeb662f7511bc6"
   },
   "installs": [
     {
@@ -25,5 +25,6 @@
       "hot_reload_tested": false
     }
   ],
-  "business_services_touched": false
+  "business_services_touched": false,
+  "previous_install_backup": "/Users/weberzhao/.local/share/skill-install-backups/HA-0118-20261008T041622Z"
 }

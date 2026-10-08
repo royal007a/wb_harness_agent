@@ -4,8 +4,8 @@
   "implementation_started": true,
   "active_task_id": "HA-0118",
   "active_plan": "exec-plans/active/HA-0118-deployment-verification-skill.md",
-  "last_checkpoint": "HA-0118 skill/spec与21项离线测试已完成，两端安装文件SHA一致；固定dc03d92已交mymacclaude只读review，未部署业务。",
-  "last_updated_at": "2026-10-07T13:18:44.320632+00:00",
+  "last_checkpoint": "HA-0118 dc03d92复审CR已修订：2 Medium和5 Low；32项离线测试通过，两端安装与22c26b1逐文件一致，等待修订版复核；未部署业务。",
+  "last_updated_at": "2026-10-08T04:16:49.120901+00:00",
   "next_action": "等待固定版本独立review；按问题修订并同步两端安装，不将待review记为通过。",
   "release": "0.1.0-local"
 }

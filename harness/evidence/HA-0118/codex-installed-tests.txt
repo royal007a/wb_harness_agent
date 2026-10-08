@@ -2,16 +2,27 @@ test_changed_url_and_disabled_tls (test_verify_receipt.ReceiptTests.test_changed
 test_cli_codes_and_invalid_input_no_traceback (test_verify_receipt.ReceiptTests.test_cli_codes_and_invalid_input_no_traceback) ... ok
 test_command_exit_code_not_inferred_from_log (test_verify_receipt.ReceiptTests.test_command_exit_code_not_inferred_from_log) ... ok
 test_complete_contract (test_verify_receipt.ReceiptTests.test_complete_contract) ... ok
+test_deep_json_is_invalid_without_traceback (test_verify_receipt.ReceiptTests.test_deep_json_is_invalid_without_traceback) ... ok
 test_diagnostic_transport_never_substitutes_public (test_verify_receipt.ReceiptTests.test_diagnostic_transport_never_substitutes_public) ... ok
 test_health_does_not_cover_missing_public_entry (test_verify_receipt.ReceiptTests.test_health_does_not_cover_missing_public_entry) ... ok
+test_identity_stability_must_be_planned (test_verify_receipt.ReceiptTests.test_identity_stability_must_be_planned) ... ok
 test_json_duplicates_and_nonfinite_rejected (test_verify_receipt.ReceiptTests.test_json_duplicates_and_nonfinite_rejected) ... ok
 test_later_pass_keeps_prior_failure_count (test_verify_receipt.ReceiptTests.test_later_pass_keeps_prior_failure_count) ... ok
+test_local_only_scope_explicit_and_diagnostic_separate (test_verify_receipt.ReceiptTests.test_local_only_scope_explicit_and_diagnostic_separate) ... ok
+test_metadata_only_public_plan_rejected (test_verify_receipt.ReceiptTests.test_metadata_only_public_plan_rejected) ... ok
 test_multi_target_failure_not_averaged (test_verify_receipt.ReceiptTests.test_multi_target_failure_not_averaged) ... ok
+test_null_public_entry_reserves_check_name (test_verify_receipt.ReceiptTests.test_null_public_entry_reserves_check_name) ... ok
 test_optional_failure_is_visible (test_verify_receipt.ReceiptTests.test_optional_failure_is_visible) ... ok
+test_output_binds_plan_and_public_scope (test_verify_receipt.ReceiptTests.test_output_binds_plan_and_public_scope) ... ok
 test_path_escape_and_symlink_rejected (test_verify_receipt.ReceiptTests.test_path_escape_and_symlink_rejected) ... ok
 test_persistent_target_needs_bound_backup (test_verify_receipt.ReceiptTests.test_persistent_target_needs_bound_backup) ... ok
 test_plan_change_cannot_reuse_old_receipt (test_verify_receipt.ReceiptTests.test_plan_change_cannot_reuse_old_receipt) ... ok
 test_preaccepted_tls_exception_is_qualified (test_verify_receipt.ReceiptTests.test_preaccepted_tls_exception_is_qualified) ... ok
+test_preregistered_digest_rejects_reauthored_plan_and_receipt (test_verify_receipt.ReceiptTests.test_preregistered_digest_rejects_reauthored_plan_and_receipt) ... ok
+test_public_401_cannot_pass (test_verify_receipt.ReceiptTests.test_public_401_cannot_pass) ... ok
+test_public_502_cannot_pass (test_verify_receipt.ReceiptTests.test_public_502_cannot_pass) ... ok
+test_public_plan_cannot_expect_failure_or_loose_types (test_verify_receipt.ReceiptTests.test_public_plan_cannot_expect_failure_or_loose_types) ... ok
+test_public_success_requires_application_result (test_verify_receipt.ReceiptTests.test_public_success_requires_application_result) ... ok
 test_required_skipped_and_not_attempted (test_verify_receipt.ReceiptTests.test_required_skipped_and_not_attempted) ... ok
 test_tamper_and_missing_evidence_rejected (test_verify_receipt.ReceiptTests.test_tamper_and_missing_evidence_rejected) ... ok
 test_truthy_numeric_not_boolean (test_verify_receipt.ReceiptTests.test_truthy_numeric_not_boolean) ... ok
@@ -21,6 +32,6 @@ test_validation_does_not_execute_evidence (test_verify_receipt.ReceiptTests.test
 test_wrong_running_release (test_verify_receipt.ReceiptTests.test_wrong_running_release) ... ok
 
 ----------------------------------------------------------------------
-Ran 21 tests in 0.874s
+Ran 32 tests in 0.447s
 
 OK
