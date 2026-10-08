@@ -1,4 +1,4 @@
-# HA-0118 首版交付（等待独立review）
+# HA-0118 交付与复审记录
 
 用户要求完善部署验证spec/测试skill，安装Codex和Claude，并交由mymacclaude复审。本次只改技能、离线校验器、spec和治理记录，没有部署或重启业务，没有读取密钥或调用Provider。
 
@@ -31,3 +31,7 @@ dc03d9202bc46a5575b9347645e999a4c4410853（代码与9564d44相同，增加安装
 测试：在未改校验器时，用新增回归运行32项出现预期失败（review-regression-before.txt；含subTest失败，不将失败数视为独立用例数）；修订后同32项全部通过（review-regression-after.txt），其中原21项全部保留。quick_validate、git diff --check通过。测试仅临时目录合成声明，无业务服务或Provider访问。双端更新安装回执随后记录。
 
 修订安装：22c26b1的6个文件在确认旧安装未漂移后同步到两端，更新前副本已备份（installation.json记录位置，installation-initial.json保留首版清单）。两端各自从/tmp跑相同32项测试通过，逐文件SHA与源包一致；会话热加载未测试，不累加为96项覆盖。
+
+## 最终状态：completed（2026-10-08）
+
+mymacclaude已对aa7d0f9给出Approved，原2 Medium与5 Low闭合；原始回执、范围和旧plan迁移提示见independent-review.md。批准仅离线校验器/文档/双端安装，不扩展到公网或部署。此前“等待复审”的记录保留为历史。

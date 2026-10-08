@@ -1,11 +1,11 @@
 {
   "project": "HarnessAgent",
-  "phase": "deployment_skill_review_pending",
+  "phase": "deployment_skill_completed",
   "implementation_started": true,
-  "active_task_id": "HA-0118",
-  "active_plan": "exec-plans/active/HA-0118-deployment-verification-skill.md",
-  "last_checkpoint": "HA-0118 dc03d92复审CR已修订：2 Medium和5 Low；32项离线测试通过，两端安装与22c26b1逐文件一致，等待修订版复核；未部署业务。",
-  "last_updated_at": "2026-10-08T04:16:49.120901+00:00",
-  "next_action": "等待固定版本独立review；按问题修订并同步两端安装，不将待review记为通过。",
+  "active_task_id": null,
+  "active_plan": null,
+  "last_checkpoint": "HA-0118 aa7d0f9获mymacclaude独立Approved；32项离线测试及双端安装一致性已复核。任务闭合，不代表公网或业务部署通过。",
+  "last_updated_at": "2026-10-08T05:17:04.647932+00:00",
+  "next_action": "等待Claude提交HA-0130..0136的CR修订固定SHA，继续只读复审。",
   "release": "0.1.0-local"
 }
