@@ -102,1633 +102,720 @@
       "title": "中文合同条号与原文偏移切块",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "中文条号结构边界",
-        "原文偏移与硬限制",
-        "DSH末块读取反例",
-        "付款文档跨块例外候选"
-      ],
-      "non_goals": [
-        "语义判断",
-        "凭据策略",
-        "旧历史改写",
-        "生产部署"
-      ],
-      "acceptance": [
-        "十二条中文独立切块",
-        "缩进换行原文一致",
-        "长条款无丢字且有界",
-        "原有切块及DSH回归",
-        "独立复审及完整门禁"
-      ],
-      "depends_on": [
-        "HA-0050"
-      ],
+      "scope": ["中文条号结构边界", "原文偏移与硬限制", "DSH末块读取反例", "付款文档跨块例外候选"],
+      "non_goals": ["语义判断", "凭据策略", "旧历史改写", "生产部署"],
+      "acceptance": ["十二条中文独立切块", "缩进换行原文一致", "长条款无丢字且有界", "原有切块及DSH回归", "独立复审及完整门禁"],
+      "depends_on": ["HA-0050"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0090.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0090/acceptance.md",
-        "harness/evidence/HA-0090/independent-review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0090/acceptance.md", "harness/evidence/HA-0090/independent-review.md"]
     },
     {
       "id": "HA-0092",
       "title": "DSH清理故障不覆盖主错误且释放资源",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "子进程清理错误隔离",
-        "网关和租约最终释放",
-        "确定性故障注入"
-      ],
-      "non_goals": [
-        "绕过进程所有权",
-        "删除活进程目录",
-        "解释操作系统EPERM根因",
-        "真实模型及其他端口"
-      ],
-      "acceptance": [
-        "主异常保留",
-        "正常结果清理失败不得发布",
-        "后续清理执行",
-        "活目录保留",
-        "独立复审和完整验证"
-      ],
-      "depends_on": [
-        "HA-0086"
-      ],
+      "scope": ["子进程清理错误隔离", "网关和租约最终释放", "确定性故障注入"],
+      "non_goals": ["绕过进程所有权", "删除活进程目录", "解释操作系统EPERM根因", "真实模型及其他端口"],
+      "acceptance": ["主异常保留", "正常结果清理失败不得发布", "后续清理执行", "活目录保留", "独立复审和完整验证"],
+      "depends_on": ["HA-0086"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0092.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0092/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0092/acceptance.md"]
     },
     {
       "id": "HA-0091",
       "title": "DSH取消与崩溃探针的阶段同步",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "真实SDK进入Provider后取消",
-        "崩溃探针等待真实会话落盘",
-        "确定性挂起与协程取消断言",
-        "unknown及测试资源清理"
-      ],
-      "non_goals": [
-        "生产期限或权限变化",
-        "跳过失败用例",
-        "真实模型调用"
-      ],
-      "acceptance": [
-        "恰好到达一次且取消生效",
-        "预留冻结无产物",
-        "失败也回收测试线程",
-        "反例突变及独立复审",
-        "完整门禁"
-      ],
-      "depends_on": [
-        "HA-0089"
-      ],
+      "scope": ["真实SDK进入Provider后取消", "崩溃探针等待真实会话落盘", "确定性挂起与协程取消断言", "unknown及测试资源清理"],
+      "non_goals": ["生产期限或权限变化", "跳过失败用例", "真实模型调用"],
+      "acceptance": ["恰好到达一次且取消生效", "预留冻结无产物", "失败也回收测试线程", "反例突变及独立复审", "完整门禁"],
+      "depends_on": ["HA-0089"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0091.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0091/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0091/acceptance.md"]
     },
     {
       "id": "HA-0089",
       "title": "DSH超时阶段反例加固",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "Provider到达后触发Run截止",
-        "响应超时分类",
-        "unknown及资源清理断言"
-      ],
-      "non_goals": [
-        "生产期限或预算变更",
-        "跳过失败测试",
-        "真实Provider调用"
-      ],
-      "acceptance": [
-        "官方SDK到达合成Provider",
-        "恰好一次且协程取消",
-        "unknown冻结且无产物目录",
-        "三个期限边界及突变",
-        "独立复审和完整门禁"
-      ],
-      "depends_on": [
-        "HA-0086"
-      ],
+      "scope": ["Provider到达后触发Run截止", "响应超时分类", "unknown及资源清理断言"],
+      "non_goals": ["生产期限或预算变更", "跳过失败测试", "真实Provider调用"],
+      "acceptance": ["官方SDK到达合成Provider", "恰好一次且协程取消", "unknown冻结且无产物目录", "三个期限边界及突变", "独立复审和完整门禁"],
+      "depends_on": ["HA-0086"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0089.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0089/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0089/acceptance.md"]
     },
     {
       "id": "HA-0088",
       "title": "固定合成付款评测评分器纠偏",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "数值单位精确评分",
-        "成功产物与ID集合门槛",
-        "离线反例与评分版本"
-      ],
-      "non_goals": [
-        "生产findings校验变更",
-        "任意自然语言语义裁判",
-        "真实Provider及部署"
-      ],
-      "acceptance": [
-        "旧版反例行为失败",
-        "数值单位不误计",
-        "失败不冒充无误报",
-        "漏跑重跑不缩小分母",
-        "独立复审"
-      ],
-      "depends_on": [
-        "HA-0079"
-      ],
+      "scope": ["数值单位精确评分", "成功产物与ID集合门槛", "离线反例与评分版本"],
+      "non_goals": ["生产findings校验变更", "任意自然语言语义裁判", "真实Provider及部署"],
+      "acceptance": ["旧版反例行为失败", "数值单位不误计", "失败不冒充无误报", "漏跑重跑不缩小分母", "独立复审"],
+      "depends_on": ["HA-0079"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0088.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0088/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0088/acceptance.md"]
     },
     {
       "id": "HA-0087",
       "title": "DSH详情完整计划历史投影",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "DSH内部全历史分页投影",
-        "页边界与晚创建计划",
-        "持久状态及只读回归"
-      ],
-      "non_goals": [
-        "修改Store公共分页",
-        "证据续跑或模型重发",
-        "其他引擎变更",
-        "8765及132部署"
-      ],
-      "acceptance": [
-        "500条之后计划不陈旧",
-        "后次拒绝及证据字段准确",
-        "GET零写入零调用",
-        "基线行为失败及突变验证",
-        "独立复审及发布门禁"
-      ],
-      "depends_on": [
-        "HA-0082"
-      ],
+      "scope": ["DSH内部全历史分页投影", "页边界与晚创建计划", "持久状态及只读回归"],
+      "non_goals": ["修改Store公共分页", "证据续跑或模型重发", "其他引擎变更", "8765及132部署"],
+      "acceptance": ["500条之后计划不陈旧", "后次拒绝及证据字段准确", "GET零写入零调用", "基线行为失败及突变验证", "独立复审及发布门禁"],
+      "depends_on": ["HA-0082"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0087.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0087/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0087/acceptance.md"]
     },
     {
       "id": "HA-0086",
       "title": "DSH SDK有界启动与固定阶段错误",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "单次initialize有界等待",
-        "初始化与运行错误分类",
-        "私有错误协议白名单",
-        "取消截止与回归部署验证"
-      ],
-      "non_goals": [
-        "模型自动重试",
-        "追加Run期限或预算",
-        "原始异常外发",
-        "8765及132部署"
-      ],
-      "acceptance": [
-        "初始化失败无重试且不执行run",
-        "错误事件零原文",
-        "取消截止及网关原因优先",
-        "SDK合成回归及完整验证",
-        "固定版本独立复审及8876验收"
-      ],
-      "depends_on": [
-        "HA-0083"
-      ],
+      "scope": ["单次initialize有界等待", "初始化与运行错误分类", "私有错误协议白名单", "取消截止与回归部署验证"],
+      "non_goals": ["模型自动重试", "追加Run期限或预算", "原始异常外发", "8765及132部署"],
+      "acceptance": ["初始化失败无重试且不执行run", "错误事件零原文", "取消截止及网关原因优先", "SDK合成回归及完整验证", "固定版本独立复审及8876验收"],
+      "depends_on": ["HA-0083"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0086.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0086/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0086/acceptance.md"]
     },
     {
       "id": "HA-0085",
       "title": "DSH未使用票据退役与正常终态原子审计",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "未使用票据retired状态",
-        "正常终态与退役原子性",
-        "取消及历史兼容验证",
-        "独立8876部署"
-      ],
-      "non_goals": [
-        "未知调用重发",
-        "历史事实重写",
-        "8765及132部署",
-        "A2证据续跑"
-      ],
-      "acceptance": [
-        "未执行票据不报调用失败",
-        "退役及终态同事务且序号连续",
-        "取消不等待Provider并保留unknown",
-        "故障反例与独立复审通过",
-        "固定版本部署验收"
-      ],
-      "depends_on": [
-        "HA-0083"
-      ],
+      "scope": ["未使用票据retired状态", "正常终态与退役原子性", "取消及历史兼容验证", "独立8876部署"],
+      "non_goals": ["未知调用重发", "历史事实重写", "8765及132部署", "A2证据续跑"],
+      "acceptance": ["未执行票据不报调用失败", "退役及终态同事务且序号连续", "取消不等待Provider并保留unknown", "故障反例与独立复审通过", "固定版本部署验收"],
+      "depends_on": ["HA-0083"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0085.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0089/verify-seventh.md",
-        "harness/evidence/COURSE_RELEASE_20261007/acceptance.md",
-        "harness/evidence/COURSE_RELEASE_20261007/independent-review.md",
-        "harness/evidence/HA-0085/acceptance.md",
-        "harness/evidence/HA-0085/mutations.json",
-        "harness/evidence/HA-0085/independent-review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0089/verify-seventh.md", "harness/evidence/COURSE_RELEASE_20261007/acceptance.md", "harness/evidence/COURSE_RELEASE_20261007/independent-review.md", "harness/evidence/HA-0085/acceptance.md", "harness/evidence/HA-0085/mutations.json", "harness/evidence/HA-0085/independent-review.md"]
     },
     {
       "id": "HA-0084",
       "title": "课程资料分批精读与HarnessAgent优化映射",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "本地PDF哈希与重复清单",
-        "相关章节总结和源码对照",
-        "逐项优化验收设计与独立复审"
-      ],
-      "non_goals": [
-        "公开课程全文",
-        "把盘点当精读",
-        "在研究提交中修改运行时或部署"
-      ],
-      "acceptance": [
-        "清单可复核且无课程正文",
-        "已读待读及不采用依据分开",
-        "每项判断有来源页码和代码定位",
-        "固定提交经独立复审"
-      ],
-      "depends_on": [
-        "HA-0083"
-      ],
+      "scope": ["本地PDF哈希与重复清单", "相关章节总结和源码对照", "逐项优化验收设计与独立复审"],
+      "non_goals": ["公开课程全文", "把盘点当精读", "在研究提交中修改运行时或部署"],
+      "acceptance": ["清单可复核且无课程正文", "已读待读及不采用依据分开", "每项判断有来源页码和代码定位", "固定提交经独立复审"],
+      "depends_on": ["HA-0083"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0084-course-reading.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0084/package-independent-review.md",
-        "docs/research/JIKESUMMARY_SOURCE_INVENTORY_2026_10_06.json",
-        "docs/research/JIKESUMMARY_READING_2026_10_06.md"
-      ]
+      "evidence": ["harness/evidence/HA-0084/package-independent-review.md", "docs/research/JIKESUMMARY_SOURCE_INVENTORY_2026_10_06.json", "docs/research/JIKESUMMARY_READING_2026_10_06.md"]
     },
     {
       "id": "HA-0083",
       "title": "DSH平台过境收据与同进程重放防护",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "平台签发模型及工具调用身份",
-        "有界首次响应回放与元数据收据",
-        "unknown恢复与取消保护",
-        "8876部署验证"
-      ],
-      "non_goals": [
-        "证据续跑A2",
-        "网络exactly-once",
-        "8765及132部署"
-      ],
-      "acceptance": [
-        "跨轮同名ID不误去重",
-        "同票改参拒绝且并发同票只执行一次",
-        "回放不改变计数进展或预算",
-        "unknown及取消后不重发",
-        "事件不保存正文",
-        "固定版本通过复审及8876验收"
-      ],
-      "depends_on": [
-        "HA-0082"
-      ],
+      "scope": ["平台签发模型及工具调用身份", "有界首次响应回放与元数据收据", "unknown恢复与取消保护", "8876部署验证"],
+      "non_goals": ["证据续跑A2", "网络exactly-once", "8765及132部署"],
+      "acceptance": ["跨轮同名ID不误去重", "同票改参拒绝且并发同票只执行一次", "回放不改变计数进展或预算", "unknown及取消后不重发", "事件不保存正文", "固定版本通过复审及8876验收"],
+      "depends_on": ["HA-0082"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0083.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0083/acceptance.md",
-        "harness/evidence/HA-0083/deployment.json",
-        "harness/evidence/HA-0083/live/live.json"
-      ]
+      "evidence": ["harness/evidence/HA-0083/acceptance.md", "harness/evidence/HA-0083/deployment.json", "harness/evidence/HA-0083/live/live.json"]
     },
     {
       "id": "HA-0082",
       "title": "DSH付款核对计划投影、提交历史与延迟清理（A1/C/D）",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "平台计划dsh-plan@1与状态投影",
-        "提交历史与摘要",
-        "pending目录有界延迟清理"
-      ],
-      "non_goals": [
-        "证据续跑A2",
-        "调用身份与重放防护B",
-        "人工复原入口"
-      ],
-      "acceptance": [
-        "计划在首次模型请求前持久化且模型无法改写",
-        "S3被后续拒绝时回到blocked且不发布",
-        "partial不阻塞发布",
-        "延迟清理有界且不越权删除"
-      ],
-      "depends_on": [
-        "HA-0081"
-      ],
+      "scope": ["平台计划dsh-plan@1与状态投影", "提交历史与摘要", "pending目录有界延迟清理"],
+      "non_goals": ["证据续跑A2", "调用身份与重放防护B", "人工复原入口"],
+      "acceptance": ["计划在首次模型请求前持久化且模型无法改写", "S3被后续拒绝时回到blocked且不发布", "partial不阻塞发布", "延迟清理有界且不越权删除"],
+      "depends_on": ["HA-0081"],
       "owner": "mymacclaude",
       "plan": null,
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0082/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0082/acceptance.md"]
     },
     {
       "id": "HA-0081",
       "title": "DSH平台上下文组装器与按轮进展判定",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "发送前配对校验、可信状态、70%预算与可回读省略",
-        "按模型轮的进展判定",
-        "真实豆包短/长合同回归与压测"
-      ],
-      "non_goals": [
-        "模型摘要式压缩",
-        "改上游DSH Loop",
-        "真实tokenizer"
-      ],
-      "acceptance": [
-        "组装不破坏配对、最新一轮不省略、超预算拒发",
-        "事件只含元数据",
-        "真实运行与压测结果如实记录"
-      ],
-      "depends_on": [
-        "HA-0080"
-      ],
+      "scope": ["发送前配对校验、可信状态、70%预算与可回读省略", "按模型轮的进展判定", "真实豆包短/长合同回归与压测"],
+      "non_goals": ["模型摘要式压缩", "改上游DSH Loop", "真实tokenizer"],
+      "acceptance": ["组装不破坏配对、最新一轮不省略、超预算拒发", "事件只含元数据", "真实运行与压测结果如实记录"],
+      "depends_on": ["HA-0080"],
       "owner": "mymacclaude",
       "plan": null,
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0081/acceptance.md",
-        "harness/evidence/HA-0081/real_runs.json",
-        "harness/evidence/HA-0081/real_long.json",
-        "harness/evidence/HA-0081/real_long_forced_stub.json",
-        "harness/evidence/HA-0081/eval.json",
-        "harness/evidence/HA-0081/verify.log",
-        "harness/evidence/HA-0081/real_long_rep1.json",
-        "harness/evidence/HA-0081/real_long_rep2.json",
-        "harness/evidence/HA-0081/real_long_rep3.json",
-        "harness/evidence/HA-0081/deployment.md"
-      ]
+      "evidence": ["harness/evidence/HA-0081/acceptance.md", "harness/evidence/HA-0081/real_runs.json", "harness/evidence/HA-0081/real_long.json", "harness/evidence/HA-0081/real_long_forced_stub.json", "harness/evidence/HA-0081/eval.json", "harness/evidence/HA-0081/verify.log", "harness/evidence/HA-0081/real_long_rep1.json", "harness/evidence/HA-0081/real_long_rep2.json", "harness/evidence/HA-0081/real_long_rep3.json", "harness/evidence/HA-0081/deployment.md"]
     },
     {
       "id": "HA-0080",
       "title": "真实豆包合成付款合同验证与平台规则修正",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "真实Provider跑5份合成付款合同",
-        "修正单次响应工具调用上限",
-        "修正首次读取的进展判定"
-      ],
-      "non_goals": [
-        "私密合同",
-        "质量统计结论",
-        "部署变更"
-      ],
-      "acceptance": [
-        "真实运行结果与标注逐案对照",
-        "修正附真实模式回归测试",
-        "全量verify通过"
-      ],
-      "depends_on": [
-        "HA-0079"
-      ],
+      "scope": ["真实Provider跑5份合成付款合同", "修正单次响应工具调用上限", "修正首次读取的进展判定"],
+      "non_goals": ["私密合同", "质量统计结论", "部署变更"],
+      "acceptance": ["真实运行结果与标注逐案对照", "修正附真实模式回归测试", "全量verify通过"],
+      "depends_on": ["HA-0079"],
       "owner": "mymacclaude",
       "plan": null,
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0080/acceptance.md",
-        "harness/evidence/HA-0080/real_runs.json",
-        "harness/evidence/HA-0080/verify.log",
-        "harness/evidence/HA-0080/deployment.md"
-      ]
+      "evidence": ["harness/evidence/HA-0080/acceptance.md", "harness/evidence/HA-0080/real_runs.json", "harness/evidence/HA-0080/verify.log", "harness/evidence/HA-0080/deployment.md"]
     },
     {
       "id": "HA-0079",
       "title": "DSH付款条件结构化验收、覆盖缺口与无进展停止",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "payment_terms模板与submit_findings平台校验",
-        "搜索分页与平台进展判定",
-        "发布事务内结构化产物与元数据事件",
-        "固定合成评测与标注隔离"
-      ],
-      "non_goals": [
-        "修改上游DSH Loop",
-        "真实Provider调用或部署",
-        "语义正确性或法律结论验收",
-        "启用semantic/rerank或向量检索"
-      ],
-      "acceptance": [
-        "三个旧探针反向：300天不能成为已校验结果；第4条例外被发现或明确报缺口；重复读取提前停止且合法读取不误停",
-        "结构化负例拒绝且错误不回显模型文本；纠正计入同一预算并受取消/预算优先",
-        "定向突变全部被测试捕获；固定评测标注在运行后才读取"
-      ],
-      "depends_on": [
-        "HA-0077",
-        "HA-0078"
-      ],
+      "scope": ["payment_terms模板与submit_findings平台校验", "搜索分页与平台进展判定", "发布事务内结构化产物与元数据事件", "固定合成评测与标注隔离"],
+      "non_goals": ["修改上游DSH Loop", "真实Provider调用或部署", "语义正确性或法律结论验收", "启用semantic/rerank或向量检索"],
+      "acceptance": ["三个旧探针反向：300天不能成为已校验结果；第4条例外被发现或明确报缺口；重复读取提前停止且合法读取不误停", "结构化负例拒绝且错误不回显模型文本；纠正计入同一预算并受取消/预算优先", "定向突变全部被测试捕获；固定评测标注在运行后才读取"],
+      "depends_on": ["HA-0077", "HA-0078"],
       "owner": "mymacclaude",
       "plan": "exec-plans/completed/HA-0079-dsh-payment-findings.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0079/acceptance.md",
-        "harness/evidence/HA-0079/eval.json",
-        "harness/evidence/HA-0079/mutations.json",
-        "harness/evidence/HA-0079/targeted.xml"
-      ]
+      "evidence": ["harness/evidence/HA-0079/acceptance.md", "harness/evidence/HA-0079/eval.json", "harness/evidence/HA-0079/mutations.json", "harness/evidence/HA-0079/targeted.xml"]
     },
     {
       "id": "HA-0078",
       "title": "补充DSH边界、并发、故障和离线协议验证",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "DSH真实SDK合成Provider边界",
-        "编排并发与事务故障",
-        "离线HTTP和目录清理反例"
-      ],
-      "non_goals": [
-        "生产代码修改或部署",
-        "真实模型费用和Keychain",
-        "质量对比及OS沙箱验收"
-      ],
-      "acceptance": [
-        "新增测试按证据层级区分且可重复运行",
-        "相关全量回归与定向突变有结果",
-        "新缺陷如实登记而不隐藏"
-      ],
-      "depends_on": [
-        "HA-0077"
-      ],
+      "scope": ["DSH真实SDK合成Provider边界", "编排并发与事务故障", "离线HTTP和目录清理反例"],
+      "non_goals": ["生产代码修改或部署", "真实模型费用和Keychain", "质量对比及OS沙箱验收"],
+      "acceptance": ["新增测试按证据层级区分且可重复运行", "相关全量回归与定向突变有结果", "新缺陷如实登记而不隐藏"],
+      "depends_on": ["HA-0077"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0078-dsh-validation.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0078/acceptance.md",
-        "harness/evidence/HA-0078/dsh.xml",
-        "harness/evidence/HA-0078/mutations.json",
-        "harness/evidence/HA-0078/verify.log"
-      ]
+      "evidence": ["harness/evidence/HA-0078/acceptance.md", "harness/evidence/HA-0078/dsh.xml", "harness/evidence/HA-0078/mutations.json", "harness/evidence/HA-0078/verify.log"]
     },
     {
       "id": "HA-0077",
       "title": "独立DSH分支的受控工具循环与本地部署",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "官方DSH SDK进程与平台模型工具桥",
-        "独立Run及元数据事件和受控产物",
-        "独立本地8876页面、部署、验证和review"
-      ],
-      "non_goals": [
-        "修改main或8765",
-        "部署132",
-        "开放shell或任意网络工具",
-        "迁移既有Claude/Pi认证边界"
-      ],
-      "acceptance": [
-        "实际DSH执行模型→工具→下一轮并生成产物",
-        "预算、取消、超时、隐私及错误路径有行为测试",
-        "独立本地URL可访问并固定提交交付review"
-      ],
-      "depends_on": [
-        "HA-0075",
-        "HA-0076"
-      ],
+      "scope": ["官方DSH SDK进程与平台模型工具桥", "独立Run及元数据事件和受控产物", "独立本地8876页面、部署、验证和review"],
+      "non_goals": ["修改main或8765", "部署132", "开放shell或任意网络工具", "迁移既有Claude/Pi认证边界"],
+      "acceptance": ["实际DSH执行模型→工具→下一轮并生成产物", "预算、取消、超时、隐私及错误路径有行为测试", "独立本地URL可访问并固定提交交付review"],
+      "depends_on": ["HA-0075", "HA-0076"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0077-dsh-local-runtime.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0077/acceptance.md",
-        "harness/evidence/HA-0077/review-fixes.xml",
-        "harness/evidence/HA-0077/before-review-fixes.xml",
-        "harness/evidence/HA-0077/verify-final.log",
-        "harness/evidence/HA-0077/browser.json",
-        "harness/evidence/HA-0077/deployment.json",
-        "harness/evidence/HA-0077/workbench/browser.json"
-      ]
+      "evidence": ["harness/evidence/HA-0077/acceptance.md", "harness/evidence/HA-0077/review-fixes.xml", "harness/evidence/HA-0077/before-review-fixes.xml", "harness/evidence/HA-0077/verify-final.log", "harness/evidence/HA-0077/browser.json", "harness/evidence/HA-0077/deployment.json", "harness/evidence/HA-0077/workbench/browser.json"]
     },
     {
       "id": "HA-0076",
       "title": "业务Adapter内容与持久观察事件分流",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Native和Pi观察事件白名单投影",
-        "Pi stderr不传播正文",
-        "行为反例、兼容与双环境发布验证"
-      ],
-      "non_goals": [
-        "历史正文清理",
-        "子进程环境及目录隔离",
-        "真实Provider桥和开门禁",
-        "完整A/B/C方案验收"
-      ],
-      "acceptance": [
-        "正文秘密不进入新观察事件且合法产物仍可生成",
-        "定向和全量验证通过",
-        "固定提交review及先8765后132的发布证据或明确阻塞"
-      ],
-      "depends_on": [
-        "HA-0027",
-        "HA-0068"
-      ],
+      "scope": ["Native和Pi观察事件白名单投影", "Pi stderr不传播正文", "行为反例、兼容与双环境发布验证"],
+      "non_goals": ["历史正文清理", "子进程环境及目录隔离", "真实Provider桥和开门禁", "完整A/B/C方案验收"],
+      "acceptance": ["正文秘密不进入新观察事件且合法产物仍可生成", "定向和全量验证通过", "固定提交review及先8765后132的发布证据或明确阻塞"],
+      "depends_on": ["HA-0027", "HA-0068"],
       "owner": "mymaccodex",
       "plan": "exec-plans/active/HA-0076-runtime-event-projection.md",
       "blocked_reason": "事件投影代码已完成，144定向及全量1530/16与verify通过，待独立review；8765未监听，Background调用方被现有gui发布预检拒绝，未部署132。",
       "recovery_condition": "从Aqua执行既有gui发布，或用户批准并验证新的user/501拓扑；先8765后132。",
-      "evidence": [
-        "harness/evidence/HA-0076/acceptance.md",
-        "harness/evidence/HA-0076/targeted.xml",
-        "harness/evidence/HA-0076/before.xml",
-        "harness/evidence/HA-0076/verify.log",
-        "harness/evidence/HA-0076/deployment-preflight.json"
-      ]
+      "evidence": ["harness/evidence/HA-0076/acceptance.md", "harness/evidence/HA-0076/targeted.xml", "harness/evidence/HA-0076/before.xml", "harness/evidence/HA-0076/verify.log", "harness/evidence/HA-0076/deployment-preflight.json"]
     },
     {
       "id": "HA-0075",
       "title": "业务模型持久共享Token账本与调用边界",
       "status": "waiting_approval",
       "risk": "medium",
-      "scope": [
-        "根子Run共享预留和一次性结算",
-        "未知用量熔断、取消与显式恢复",
-        "异步调用包装器和离线行为测试",
-        "修正全仓验证中复现的ZIP测试夹具时间戳不确定性"
-      ],
-      "non_goals": [
-        "真实HTTP或SDK传输",
-        "改变现有业务路由或准入",
-        "部署尚未接入的组件"
-      ],
-      "acceptance": [
-        "并发与持久化预算不重置、不重复花费",
-        "缺失或异常usage冻结根，不自动重试",
-        "调用前门禁及取消异常行为测试和工作台回归通过"
-      ],
-      "depends_on": [
-        "HA-0074"
-      ],
+      "scope": ["根子Run共享预留和一次性结算", "未知用量熔断、取消与显式恢复", "异步调用包装器和离线行为测试", "修正全仓验证中复现的ZIP测试夹具时间戳不确定性"],
+      "non_goals": ["真实HTTP或SDK传输", "改变现有业务路由或准入", "部署尚未接入的组件"],
+      "acceptance": ["并发与持久化预算不重置、不重复花费", "缺失或异常usage冻结根，不自动重试", "调用前门禁及取消异常行为测试和工作台回归通过"],
+      "depends_on": ["HA-0074"],
       "owner": "mymaccodex",
       "plan": "exec-plans/active/HA-0075-business-token-ledger.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0075/acceptance.md",
-        "harness/evidence/HA-0075/verification.json",
-        "harness/evidence/HA-0075/targeted.xml",
-        "harness/evidence/HA-0075/related-final.xml",
-        "harness/evidence/HA-0075/zip-fixture-before.xml"
-      ]
+      "evidence": ["harness/evidence/HA-0075/acceptance.md", "harness/evidence/HA-0075/verification.json", "harness/evidence/HA-0075/targeted.xml", "harness/evidence/HA-0075/related-final.xml", "harness/evidence/HA-0075/zip-fixture-before.xml"]
     },
     {
       "id": "HA-0074",
       "title": "固化业务模型选择、Token预算意图及接入差距",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "无密记录用户确认的模型、端点、业务用途及Token上限",
-        "只读核对业务Runtime接入差距"
-      ],
-      "non_goals": [
-        "真实模型接入或调用",
-        "凭证落盘和开门禁",
-        "业务或双部署验收"
-      ],
-      "acceptance": [
-        "明确区分用户确认、待实现预算约束及未验证能力",
-        "任务注册表校验和diff检查通过，生产代码和准入档案不变"
-      ],
+      "scope": ["无密记录用户确认的模型、端点、业务用途及Token上限", "只读核对业务Runtime接入差距"],
+      "non_goals": ["真实模型接入或调用", "凭证落盘和开门禁", "业务或双部署验收"],
+      "acceptance": ["明确区分用户确认、待实现预算约束及未验证能力", "任务注册表校验和diff检查通过，生产代码和准入档案不变"],
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0074-business-model-selection.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0074/acceptance.md",
-        "docs/decisions/ADR-0074-business-model-selection.md"
-      ]
+      "evidence": ["harness/evidence/HA-0074/acceptance.md", "docs/decisions/ADR-0074-business-model-selection.md"]
     },
     {
       "id": "HA-0073",
       "title": "外部Skill HTTP合同与损坏包输入边界",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "四类外部Skill HTTP合同",
-        "损坏ZIP/manifest输入错误",
-        "合成执行、生命周期、故障和回放验证"
-      ],
-      "non_goals": [
-        "新增沙箱权限或启用模型",
-        "真实容器隔离或多租户验收",
-        "绕过本机部署132"
-      ],
-      "acceptance": [
-        "三套合同与实际正负实例一致",
-        "坏包拒绝且不执行，DB故障不半写",
-        "基线反例、突变、相关和全量verify",
-        "固定提交独立review及双部署证据"
-      ],
-      "depends_on": [
-        "HA-0052",
-        "HA-0062"
-      ],
+      "scope": ["四类外部Skill HTTP合同", "损坏ZIP/manifest输入错误", "合成执行、生命周期、故障和回放验证"],
+      "non_goals": ["新增沙箱权限或启用模型", "真实容器隔离或多租户验收", "绕过本机部署132"],
+      "acceptance": ["三套合同与实际正负实例一致", "坏包拒绝且不执行，DB故障不半写", "基线反例、突变、相关和全量verify", "固定提交独立review及双部署证据"],
+      "depends_on": ["HA-0052", "HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0073-external-skill-http-contracts.md",
       "blocked_reason": "9cfc351独立Approved；UTF-8文件名遗漏修复，60新/200相关与全量1430/16通过。仍待兼容本机拓扑后的双部署，未把代码批准当发布验收。",
       "recovery_condition": "兼容本机拓扑批准后先8765再132验收。",
-      "evidence": [
-        "harness/evidence/HA-0073/acceptance.md",
-        "harness/evidence/HA-0073/mutation-plan.json",
-        "harness/evidence/HA-0073/mutation-results-release.json",
-        "harness/evidence/HA-0073/remaining-empty-responses.json",
-        "harness/evidence/HA-0073/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0073/acceptance.md", "harness/evidence/HA-0073/mutation-plan.json", "harness/evidence/HA-0073/mutation-results-release.json", "harness/evidence/HA-0073/remaining-empty-responses.json", "harness/evidence/HA-0073/review.md"]
     },
     {
       "id": "HA-0072",
       "title": "Memory图写入合同与支撑来源时间边界",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Entity/Relation写入三套HTTP合同",
-        "支撑Source时间一致性",
-        "回放、生命周期、事务反例和定向突变"
-      ],
-      "non_goals": [
-        "自动抽取或图推理",
-        "FTS影子擦除及认证",
-        "绕过本机部署132"
-      ],
-      "acceptance": [
-        "三套Schema覆盖正负分支与公开错误",
-        "当前无效支撑拒绝且失败不半写",
-        "固定基线行为反例、突变及全量verify",
-        "固定提交独立review和双部署证据"
-      ],
-      "depends_on": [
-        "HA-0070",
-        "HA-0071"
-      ],
+      "scope": ["Entity/Relation写入三套HTTP合同", "支撑Source时间一致性", "回放、生命周期、事务反例和定向突变"],
+      "non_goals": ["自动抽取或图推理", "FTS影子擦除及认证", "绕过本机部署132"],
+      "acceptance": ["三套Schema覆盖正负分支与公开错误", "当前无效支撑拒绝且失败不半写", "固定基线行为反例、突变及全量verify", "固定提交独立review和双部署证据"],
+      "depends_on": ["HA-0070", "HA-0071"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0072-memory-graph-write-contracts.md",
       "blocked_reason": "5241fe4独立Approved；42新/176指定及26基线反例核实，2 Low为证据问题，损坏XML已固定版本重跑并修正引用。仍待兼容本机拓扑后的双部署。",
       "recovery_condition": "本机拓扑批准后先8765再132验收。",
-      "evidence": [
-        "harness/evidence/HA-0072/acceptance.md",
-        "harness/evidence/HA-0072/mutation-plan.json",
-        "harness/evidence/HA-0072/mutation-results-final.json",
-        "harness/evidence/HA-0072/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0072/acceptance.md", "harness/evidence/HA-0072/mutation-plan.json", "harness/evidence/HA-0072/mutation-results-final.json", "harness/evidence/HA-0072/review.md"]
     },
     {
       "id": "HA-0071",
       "title": "FTS缺模块的M1写入降级与数据库故障传播",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "限定FTS初始化缺模块降级",
-        "M1生命周期与查询故障传播",
-        "故障矩阵、事务重试、重启与回归突变"
-      ],
-      "non_goals": [
-        "FTS影子词项擦除",
-        "启用semantic或模型",
-        "在线重建与大库性能",
-        "绕过本机部署132"
-      ],
-      "acceptance": [
-        "缺模块M1写入及生命周期可用，context明确503",
-        "真实DB/程序故障不吞且事务不半写",
-        "基线行为反例、重启及定向突变",
-        "全量verify、独立review和双部署证据"
-      ],
-      "depends_on": [
-        "HA-0070"
-      ],
+      "scope": ["限定FTS初始化缺模块降级", "M1生命周期与查询故障传播", "故障矩阵、事务重试、重启与回归突变"],
+      "non_goals": ["FTS影子词项擦除", "启用semantic或模型", "在线重建与大库性能", "绕过本机部署132"],
+      "acceptance": ["缺模块M1写入及生命周期可用，context明确503", "真实DB/程序故障不吞且事务不半写", "基线行为反例、重启及定向突变", "全量verify、独立review和双部署证据"],
+      "depends_on": ["HA-0070"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0071-memory-fts-availability.md",
       "blocked_reason": "7a03b99独立Approved；165相关与旧28行为反例复跑，3 Low/1信息已登记。全量1328/16和verify仅作者运行；待兼容本机拓扑后的双部署。",
       "recovery_condition": "兼容本机拓扑批准后先8765再132验收。",
-      "evidence": [
-        "harness/evidence/HA-0071/acceptance.md",
-        "harness/evidence/HA-0071/mutation-plan.json",
-        "harness/evidence/HA-0071/mutation-results.json",
-        "harness/evidence/HA-0071/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0071/acceptance.md", "harness/evidence/HA-0071/mutation-plan.json", "harness/evidence/HA-0071/mutation-results.json", "harness/evidence/HA-0071/review.md"]
     },
     {
       "id": "HA-0070",
       "title": "Memory删除传播到历史内容收据且禁止旧键复活",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Retain/Entity/Relation内容收据的删除传播",
-        "保留digest的无正文失效标记与旧库启动清理",
-        "事务回滚、重启、跨Bank隔离及并发回放测试"
-      ],
-      "non_goals": [
-        "物理磁盘/WAL/备份擦除",
-        "删除独立来源或其他产品的相同文本",
-        "FTS缺模块写入退化或启用模型",
-        "绕过本机部署132"
-      ],
-      "acceptance": [
-        "固定基线行为反例与定向突变可重跑",
-        "删除和内容收据失效原子且保留幂等冲突",
-        "旧键409不写入不泄露不复活，非关联收据不变",
-        "定向全量verify、固定提交review与双部署证据"
-      ],
-      "depends_on": [
-        "HA-0069"
-      ],
+      "scope": ["Retain/Entity/Relation内容收据的删除传播", "保留digest的无正文失效标记与旧库启动清理", "事务回滚、重启、跨Bank隔离及并发回放测试"],
+      "non_goals": ["物理磁盘/WAL/备份擦除", "删除独立来源或其他产品的相同文本", "FTS缺模块写入退化或启用模型", "绕过本机部署132"],
+      "acceptance": ["固定基线行为反例与定向突变可重跑", "删除和内容收据失效原子且保留幂等冲突", "旧键409不写入不泄露不复活，非关联收据不变", "定向全量verify、固定提交review与双部署证据"],
+      "depends_on": ["HA-0069"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0070-memory-receipt-deletion.md",
       "blocked_reason": "4c17c47独立Approved；新32和旧23行为反例复跑，旧库升级及事务验证通过。2 Low/1 Info已登记；待兼容本机拓扑后的双部署。",
       "recovery_condition": "先本机再132部署并核验启动清理与备份边界。",
-      "evidence": [
-        "harness/evidence/HA-0070/acceptance.md",
-        "harness/evidence/HA-0070/mutation-plan.json",
-        "harness/evidence/HA-0070/mutation-results.json",
-        "harness/evidence/HA-0070/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0070/acceptance.md", "harness/evidence/HA-0070/mutation-plan.json", "harness/evidence/HA-0070/mutation-results.json", "harness/evidence/HA-0070/review.md"]
     },
     {
       "id": "HA-0069",
       "title": "Memory写入生命周期HTTP契约与失败边界",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Retain/撤回/删除三类公开响应",
-        "损坏准入档案降级和删除请求体拒绝",
-        "生命周期、回放、事务失败及三套Schema负例"
-      ],
-      "non_goals": [
-        "启用semantic或模型",
-        "身份认证和全库删除清理改造",
-        "绕过本机部署132"
-      ],
-      "acceptance": [
-        "基线行为反例可重跑",
-        "源静态动态合同与实际HTTP一致",
-        "失败不提交业务状态、重放不执行",
-        "定向全量verify、固定提交review及双部署证据"
-      ],
-      "depends_on": [
-        "HA-0066"
-      ],
+      "scope": ["Retain/撤回/删除三类公开响应", "损坏准入档案降级和删除请求体拒绝", "生命周期、回放、事务失败及三套Schema负例"],
+      "non_goals": ["启用semantic或模型", "身份认证和全库删除清理改造", "绕过本机部署132"],
+      "acceptance": ["基线行为反例可重跑", "源静态动态合同与实际HTTP一致", "失败不提交业务状态、重放不执行", "定向全量verify、固定提交review及双部署证据"],
+      "depends_on": ["HA-0066"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0069-memory-write-contracts.md",
       "blocked_reason": "3d83bd5独立Approved；40新/165指定及旧35行为失败核实，真实h11 DELETE与2 Low/2说明登记。仍待兼容本机拓扑后的双部署。",
       "recovery_condition": "兼容本机拓扑明确后先本机再132发布。",
-      "evidence": [
-        "harness/evidence/HA-0069/acceptance.md",
-        "harness/evidence/HA-0069/mutation-plan.json",
-        "harness/evidence/HA-0069/mutation-results.json",
-        "harness/evidence/HA-0069/remaining-empty-responses.json",
-        "harness/evidence/HA-0069/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0069/acceptance.md", "harness/evidence/HA-0069/mutation-plan.json", "harness/evidence/HA-0069/mutation-results.json", "harness/evidence/HA-0069/remaining-empty-responses.json", "harness/evidence/HA-0069/review.md"]
     },
     {
       "id": "HA-0068",
       "title": "Pi Product Run终态、Gate回放与分页合同",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Pi Product Run五入口公开合同",
-        "Gate原子终态与幂等回放、取消后禁止发布",
-        "事件分页及最新Gate、正反例和突变"
-      ],
-      "non_goals": [
-        "启用真实Pi模型或法律评测",
-        "新增身份认证或重做通用幂等框架",
-        "绕过本机部署132"
-      ],
-      "acceptance": [
-        "生命周期反例在基线按行为失败",
-        "三套合同与真实HTTP实例一致且拒绝坏实例",
-        "分页不跳号、Gate回放不写入、终态不可覆盖",
-        "定向全量verify、固定提交review与双部署证据"
-      ],
-      "depends_on": [
-        "HA-0062",
-        "HA-0067"
-      ],
+      "scope": ["Pi Product Run五入口公开合同", "Gate原子终态与幂等回放、取消后禁止发布", "事件分页及最新Gate、正反例和突变"],
+      "non_goals": ["启用真实Pi模型或法律评测", "新增身份认证或重做通用幂等框架", "绕过本机部署132"],
+      "acceptance": ["生命周期反例在基线按行为失败", "三套合同与真实HTTP实例一致且拒绝坏实例", "分页不跳号、Gate回放不写入、终态不可覆盖", "定向全量verify、固定提交review与双部署证据"],
+      "depends_on": ["HA-0062", "HA-0067"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0068-pi-product-run-contracts.md",
       "blocked_reason": "697ef73独立Approved，38新/185相关及旧30反例核实；2 Low测试缺口与3 Info登记。双部署仍待HA-0056兼容本机拓扑。",
       "recovery_condition": "兼容本机拓扑明确后先本机再132部署验收。",
-      "evidence": [
-        "harness/evidence/HA-0068/acceptance.md",
-        "harness/evidence/HA-0068/mutations.md",
-        "harness/evidence/HA-0068/remaining-empty-responses.json",
-        "harness/evidence/HA-0068/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0068/acceptance.md", "harness/evidence/HA-0068/mutations.md", "harness/evidence/HA-0068/remaining-empty-responses.json", "harness/evidence/HA-0068/review.md"]
     },
     {
       "id": "HA-0067",
       "title": "Pi离线管线HTTP与分阶段SSE契约",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Pi runtime及四个离线管线POST",
-        "源静态动态请求响应和分阶段SSE",
-        "真实PDF实例、错误、幂等和定向突变"
-      ],
-      "non_goals": [
-        "Pi Product Run五入口合同",
-        "模型准入或法律评测",
-        "绕过本机部署132"
-      ],
-      "acceptance": [
-        "旧空声明反例按行为失败",
-        "三份合同与实际HTTP一致并拒绝错误阶段数据",
-        "无执行和无外发、重放无写入证据",
-        "固定提交review及先本机后132发布证据"
-      ],
-      "depends_on": [
-        "HA-0062"
-      ],
+      "scope": ["Pi runtime及四个离线管线POST", "源静态动态请求响应和分阶段SSE", "真实PDF实例、错误、幂等和定向突变"],
+      "non_goals": ["Pi Product Run五入口合同", "模型准入或法律评测", "绕过本机部署132"],
+      "acceptance": ["旧空声明反例按行为失败", "三份合同与实际HTTP一致并拒绝错误阶段数据", "无执行和无外发、重放无写入证据", "固定提交review及先本机后132发布证据"],
+      "depends_on": ["HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0067-pi-pipeline-http-contracts.md",
       "blocked_reason": "868f4b3独立Approved，新56/指定96及旧54行为反例已核实；2 Low和1 Info登记。仍待HA-0056兼容本机拓扑后的双部署。",
       "recovery_condition": "本机兼容拓扑明确并验收后先本机再132部署。",
-      "evidence": [
-        "harness/evidence/HA-0067/acceptance.md",
-        "harness/evidence/HA-0067/mutations.md",
-        "harness/evidence/HA-0067/remaining-empty-responses.json",
-        "harness/evidence/HA-0067/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0067/acceptance.md", "harness/evidence/HA-0067/mutations.md", "harness/evidence/HA-0067/remaining-empty-responses.json", "harness/evidence/HA-0067/review.md"]
     },
     {
       "id": "HA-0066",
       "title": "Memory与Research读取公开响应契约",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Memory runtime/Bank列表详情创建",
-        "三类Research根Run列表",
-        "源静态动态合同实例、反例和突变"
-      ],
-      "non_goals": [
-        "模型准入或Memory认证",
-        "全部研究写入详情合同",
-        "越过本机部署132"
-      ],
-      "acceptance": [
-        "旧版空声明反例按行为失败",
-        "实际实例和坏实例在三份合同下一致",
-        "退化状态历史读取及无副作用保护",
-        "固定提交review及先本机再132发布证据"
-      ],
-      "depends_on": [
-        "HA-0061",
-        "HA-0062"
-      ],
+      "scope": ["Memory runtime/Bank列表详情创建", "三类Research根Run列表", "源静态动态合同实例、反例和突变"],
+      "non_goals": ["模型准入或Memory认证", "全部研究写入详情合同", "越过本机部署132"],
+      "acceptance": ["旧版空声明反例按行为失败", "实际实例和坏实例在三份合同下一致", "退化状态历史读取及无副作用保护", "固定提交review及先本机再132发布证据"],
+      "depends_on": ["HA-0061", "HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0066-memory-research-read-contracts.md",
       "blocked_reason": "5429c62独立Approved，108项及旧36行为反例核实，2 Low与1 Info已登记；等待HA-0056兼容本机拓扑后的双部署。",
       "recovery_condition": "兼容本机拓扑明确并验收后先本机再132发布。",
-      "evidence": [
-        "harness/evidence/HA-0066/acceptance.md",
-        "harness/evidence/HA-0066/mutations.md",
-        "harness/evidence/HA-0066/remaining-empty-responses.json",
-        "harness/evidence/HA-0066/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0066/acceptance.md", "harness/evidence/HA-0066/mutations.md", "harness/evidence/HA-0066/remaining-empty-responses.json", "harness/evidence/HA-0066/review.md"]
     },
     {
       "id": "HA-0065",
       "title": "Product事件游标边界与契约负例保护",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "int64游标和Event/Artifact引用格式",
-        "422/required/const/UTC负例及突变",
-        "实际HTTP实例、旧反例和完整验证"
-      ],
-      "non_goals": [
-        "统一全系统request_id或认证",
-        "全库引用完整性或序列耗尽写入恢复",
-        "越过本机部署132"
-      ],
-      "acceptance": [
-        "旧边界和引用反例按行为失败",
-        "静态动态源Schema与HTTP一致且拒绝坏实例",
-        "关键约束删除突变被回归抓住",
-        "定向全量verify、固定提交review及双部署证据"
-      ],
-      "depends_on": [
-        "HA-0062"
-      ],
+      "scope": ["int64游标和Event/Artifact引用格式", "422/required/const/UTC负例及突变", "实际HTTP实例、旧反例和完整验证"],
+      "non_goals": ["统一全系统request_id或认证", "全库引用完整性或序列耗尽写入恢复", "越过本机部署132"],
+      "acceptance": ["旧边界和引用反例按行为失败", "静态动态源Schema与HTTP一致且拒绝坏实例", "关键约束删除突变被回归抓住", "定向全量verify、固定提交review及双部署证据"],
+      "depends_on": ["HA-0062"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0065-product-contract-boundaries.md",
       "blocked_reason": "e6e1fb9独立Approved，112项及旧28行为反例核实，2 Low及2 Info已登记；双部署仍等待HA-0056兼容本机拓扑。",
       "recovery_condition": "兼容本机拓扑明确并验收后先本机再132发布。",
-      "evidence": [
-        "harness/evidence/HA-0065/acceptance.md",
-        "harness/evidence/HA-0065/mutations.md",
-        "harness/evidence/HA-0065/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0065/acceptance.md", "harness/evidence/HA-0065/mutations.md", "harness/evidence/HA-0065/review.md"]
     },
     {
       "id": "HA-0064",
       "title": "Team幂等缓存回放重新验证当前访问资格",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Foundation/Task/Attention/Session/Recovery共25写入口",
-        "只读回放授权与scope绑定",
-        "HTTP旧反例、零写入、状态推进和重启回归"
-      ],
-      "non_goals": [
-        "新增认证或撤销API",
-        "全系统幂等或缓存签名审计",
-        "绕过本机发布132"
-      ],
-      "acceptance": [
-        "各入口旧缓存失权反例失败",
-        "当前资格拒绝且合法收据不重执行业务",
-        "定向全量verify和固定提交独立review",
-        "兼容本机拓扑后先本机再132发布"
-      ],
-      "depends_on": [
-        "HA-0063"
-      ],
+      "scope": ["Foundation/Task/Attention/Session/Recovery共25写入口", "只读回放授权与scope绑定", "HTTP旧反例、零写入、状态推进和重启回归"],
+      "non_goals": ["新增认证或撤销API", "全系统幂等或缓存签名审计", "绕过本机发布132"],
+      "acceptance": ["各入口旧缓存失权反例失败", "当前资格拒绝且合法收据不重执行业务", "定向全量verify和固定提交独立review", "兼容本机拓扑后先本机再132发布"],
+      "depends_on": ["HA-0063"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0064-team-replay-authorization.md",
       "blocked_reason": "0ee58a0已独立Approved；287新增及25旧行为反例核实，128项额外探针通过；2 Low和1 Info已登记。双部署仍等待HA-0056兼容本机拓扑。",
       "recovery_condition": "兼容本机拓扑明确并验收后，先本机再132发布。",
-      "evidence": [
-        "harness/evidence/HA-0064/acceptance.md",
-        "harness/evidence/HA-0064/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0064/acceptance.md", "harness/evidence/HA-0064/review.md"]
     },
     {
       "id": "HA-0063",
       "title": "区分Team持久记录损坏与合法权限撤销",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "五类Foundation持久记录Schema和SQL键绑定",
-        "Channel共享code/status过滤",
-        "HTTP反例、合法inactive与失败回滚"
-      ],
-      "non_goals": [
-        "修补正式数据或新增认证",
-        "全库孤立引用扫描和时间真实性",
-        "绕过本机先发132"
-      ],
-      "acceptance": [
-        "旧版未知状态/错域/错误码组合反例按行为失败",
-        "损坏明确500且合法权限语义保持",
-        "定向全量verify和独立review证据",
-        "兼容本机拓扑明确后先本机再132部署"
-      ],
-      "depends_on": [
-        "HA-0060"
-      ],
+      "scope": ["五类Foundation持久记录Schema和SQL键绑定", "Channel共享code/status过滤", "HTTP反例、合法inactive与失败回滚"],
+      "non_goals": ["修补正式数据或新增认证", "全库孤立引用扫描和时间真实性", "绕过本机先发132"],
+      "acceptance": ["旧版未知状态/错域/错误码组合反例按行为失败", "损坏明确500且合法权限语义保持", "定向全量verify和独立review证据", "兼容本机拓扑明确后先本机再132部署"],
+      "depends_on": ["HA-0060"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0063-team-state-integrity.md",
       "blocked_reason": "116a164已独立Approved，新64/相关182通过，旧18行为反例及15/16突变核实；2个Low已登记。实际双部署仍等待HA-0056兼容本机拓扑决定。",
       "recovery_condition": "本机兼容拓扑明确并验收后，先本机再132发布。",
-      "evidence": [
-        "harness/evidence/HA-0063/acceptance.md",
-        "harness/evidence/HA-0063/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0063/acceptance.md", "harness/evidence/HA-0063/review.md"]
     },
     {
       "id": "HA-0062",
       "title": "对齐核心Product HTTP静态动态响应契约",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "核心Product/Resource/health/sample响应Schema",
-        "Task详情/取消/事件等静态文档漂移",
-        "HTTP正反例、生命周期、错误和独立review"
-      ],
-      "non_goals": [
-        "修改业务响应或新执行权限",
-        "冒充全部模块OpenAPI已完整",
-        "跳过本机部署132"
-      ],
-      "acceptance": [
-        "旧静态错拒和动态空过反例按行为失败",
-        "实际HTTP与静态/动态/源Schema一致并拒绝空及损坏实例",
-        "核心完整生命周期和相关全量验证通过",
-        "固定提交独立review及先本机后132发布证据"
-      ],
-      "depends_on": [
-        "HA-0053"
-      ],
+      "scope": ["核心Product/Resource/health/sample响应Schema", "Task详情/取消/事件等静态文档漂移", "HTTP正反例、生命周期、错误和独立review"],
+      "non_goals": ["修改业务响应或新执行权限", "冒充全部模块OpenAPI已完整", "跳过本机部署132"],
+      "acceptance": ["旧静态错拒和动态空过反例按行为失败", "实际HTTP与静态/动态/源Schema一致并拒绝空及损坏实例", "核心完整生命周期和相关全量验证通过", "固定提交独立review及先本机后132发布证据"],
+      "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0062-product-http-contracts.md",
       "blocked_reason": "7ac1498已独立Approved，新52/相关190通过；4组Low已登记，before.xml的早期测试版本限制已纠正。实际双部署仍等待HA-0056本机兼容拓扑决定。",
       "recovery_condition": "用户明确本机兼容拓扑并验收后先本机再132发布，核验部署OpenAPI与实际响应。",
-      "evidence": [
-        "harness/evidence/HA-0062/acceptance.md",
-        "harness/evidence/HA-0062/review.md"
-      ]
+      "evidence": ["harness/evidence/HA-0062/acceptance.md", "harness/evidence/HA-0062/review.md"]
     },
     {
       "id": "HA-0061",
       "title": "补齐剩余只读入口的HTTP行为验证",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "11个未观测读取入口",
-        "列表内容/生命周期/详情一致/重启与HEAD",
-        "Schema缺口、全量证据和独立review"
-      ],
-      "non_goals": [
-        "真实Provider/CLI或权限拓扑变更",
-        "把入口观测等同功能完成",
-        "替代后续公开机器响应契约"
-      ],
-      "acceptance": [
-        "逐入口有真实HTTP正反例与明确字段断言",
-        "native列表测试不执行SDK且关闭门禁后历史仍可读",
-        "相关/全量/观察器通过且缺口如实列出",
-        "固定提交独立review"
-      ],
-      "depends_on": [
-        "HA-0053"
-      ],
+      "scope": ["11个未观测读取入口", "列表内容/生命周期/详情一致/重启与HEAD", "Schema缺口、全量证据和独立review"],
+      "non_goals": ["真实Provider/CLI或权限拓扑变更", "把入口观测等同功能完成", "替代后续公开机器响应契约"],
+      "acceptance": ["逐入口有真实HTTP正反例与明确字段断言", "native列表测试不执行SDK且关闭门禁后历史仍可读", "相关/全量/观察器通过且缺口如实列出", "固定提交独立review"],
+      "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0061-read-surfaces.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0061/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0061/acceptance.md"]
     },
     {
       "id": "HA-0060",
       "title": "统一 Team 列表与 Snapshot 的可见性拒绝和故障语义",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "四类列表与Session Task snapshot不吞故障",
-        "Recovery扫描前协议主体检查",
-        "HTTP故障与事务回归、证据和独立review"
-      ],
-      "non_goals": [
-        "新认证或运行时准入",
-        "修改Snapshot业务范围或修复既有损坏数据",
-        "跳过本机部署132"
-      ],
-      "acceptance": [
-        "旧四类列表503反例行为失败",
-        "仅已列明不可见错误可过滤且其他错误如实返回",
-        "有效过滤、数据故障、事务回滚、相关与全量验证通过",
-        "固定提交独立review及本机先于132部署证据"
-      ],
-      "depends_on": [
-        "HA-0053"
-      ],
+      "scope": ["四类列表与Session Task snapshot不吞故障", "Recovery扫描前协议主体检查", "HTTP故障与事务回归、证据和独立review"],
+      "non_goals": ["新认证或运行时准入", "修改Snapshot业务范围或修复既有损坏数据", "跳过本机部署132"],
+      "acceptance": ["旧四类列表503反例行为失败", "仅已列明不可见错误可过滤且其他错误如实返回", "有效过滤、数据故障、事务回滚、相关与全量验证通过", "固定提交独立review及本机先于132部署证据"],
+      "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0060-team-list-errors.md",
       "blocked_reason": "fff8d75已获独立Approved：新增74、相关174通过，旧5反例按行为失败；非法status枚举静默隐藏的Low另行登记。双部署仍等待HA-0056本机拓扑决定。",
       "recovery_condition": "固定提交独立复核；兼容本机调用拓扑明确并验证后，先本机再132部署。",
-      "evidence": [
-        "harness/evidence/HA-0060/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0060/acceptance.md"]
     },
     {
       "id": "HA-0059",
       "title": "补 Team HTTP 读写验证并修复 Channel 列表可见性",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Workspace创建和成员授予HTTP验证",
-        "Agent/Channel/Session列表当前协议可见性",
-        "撤销/归档/clearance故障回归与独立review"
-      ],
-      "non_goals": [
-        "新增认证/撤销管理API",
-        "真实Agent调度或模型调用",
-        "绕过本机先部署132"
-      ],
-      "acceptance": [
-        "旧版三组列表与详情矛盾确实失败",
-        "当前不可访问Channel不出现在列表",
-        "HTTP正反例和拒绝不变/幂等通过",
-        "相关全量验证、固定提交review、双部署证据"
-      ],
-      "depends_on": [
-        "HA-0053"
-      ],
+      "scope": ["Workspace创建和成员授予HTTP验证", "Agent/Channel/Session列表当前协议可见性", "撤销/归档/clearance故障回归与独立review"],
+      "non_goals": ["新增认证/撤销管理API", "真实Agent调度或模型调用", "绕过本机先部署132"],
+      "acceptance": ["旧版三组列表与详情矛盾确实失败", "当前不可访问Channel不出现在列表", "HTTP正反例和拒绝不变/幂等通过", "相关全量验证、固定提交review、双部署证据"],
+      "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0059-team-read-visibility.md",
       "blocked_reason": "8a7e840已获独立Approved；18项通过、旧3反例重跑失败。既有列表吞故障由HA-0060跟进；实际双部署仍等待HA-0056本机拓扑决定。",
       "recovery_condition": "固定提交独立复审通过；本机兼容拓扑明确后先本机再132发布并核对实际HTTP行为。",
-      "evidence": [
-        "harness/evidence/HA-0059/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0059/acceptance.md"]
     },
     {
       "id": "HA-0058",
       "title": "修复 OpenAPI Schema 归属并补 Lab/Runtime 实例验证",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "已注册Schema冲突检查与引用完整性",
-        "Lab/Runtime/研究Skill定义隔离",
-        "两套聊天接口响应合同与HTTP实例正反例"
-      ],
-      "non_goals": [
-        "新运行时或Provider准入",
-        "业务权限或持久ID变更",
-        "用本轮冒充全系统全部接口已验收"
-      ],
-      "acceptance": [
-        "旧版错拒或错放的反例确实失败",
-        "注册原子拒绝冲突且动态引用完整",
-        "Lab/Runtime静态动态与实际请求响应对齐",
-        "相关和全量验证、独立review、双部署证据"
-      ],
-      "depends_on": [
-        "HA-0053"
-      ],
+      "scope": ["已注册Schema冲突检查与引用完整性", "Lab/Runtime/研究Skill定义隔离", "两套聊天接口响应合同与HTTP实例正反例"],
+      "non_goals": ["新运行时或Provider准入", "业务权限或持久ID变更", "用本轮冒充全系统全部接口已验收"],
+      "acceptance": ["旧版错拒或错放的反例确实失败", "注册原子拒绝冲突且动态引用完整", "Lab/Runtime静态动态与实际请求响应对齐", "相关和全量验证、独立review、双部署证据"],
+      "depends_on": ["HA-0053"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0058-openapi-contracts.md",
       "blocked_reason": "2bd4af8已获独立Approved：26项通过、旧7行为反例失败；const数据内的ref投影与runtime零计数字段的Low已登记。真实发布仍需HA-0056兼容本机拓扑选择，未部署。",
       "recovery_condition": "固定提交独立复审通过；HA-0056本机拓扑确认并验证后先本机再132发布，核验实部署OpenAPI。",
-      "evidence": [
-        "harness/evidence/HA-0058/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0058/acceptance.md"]
     },
     {
       "id": "HA-0057",
       "title": "修复 Provider 流截断和 EOF 被误判成功",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "有界 text-only SSE 协议和显式终止判定",
-        "真实 Adapter 到 Runtime/HTTP 的离线失败回归",
-        "错误契约、全量证据、独立 review 与双环境发布"
-      ],
-      "non_goals": [
-        "真实模型准入或费用保证",
-        "自动重试或 Provider fallback",
-        "Product Run/Skill 桥接"
-      ],
-      "acceptance": [
-        "EOF/length/上游错误不发布 assistant 或 done",
-        "正常帧和 usage 可用，异常帧有界失败且不泄漏上游秘密",
-        "重放和取消保持唯一执行权，旧反例、新回归和全量通过",
-        "固定提交独立 review 与先本机后132部署证据"
-      ],
-      "depends_on": [
-        "HA-0054"
-      ],
+      "scope": ["有界 text-only SSE 协议和显式终止判定", "真实 Adapter 到 Runtime/HTTP 的离线失败回归", "错误契约、全量证据、独立 review 与双环境发布"],
+      "non_goals": ["真实模型准入或费用保证", "自动重试或 Provider fallback", "Product Run/Skill 桥接"],
+      "acceptance": ["EOF/length/上游错误不发布 assistant 或 done", "正常帧和 usage 可用，异常帧有界失败且不泄漏上游秘密", "重放和取消保持唯一执行权，旧反例、新回归和全量通过", "固定提交独立 review 与先本机后132部署证据"],
+      "depends_on": ["HA-0054"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0057-provider-stream-integrity.md",
       "blocked_reason": "85fc7d3与压缩修复986ed1d均代码独立Approved；相关143项及全量457 passed/16 skipped通过；实际部署仍需HA-0056兼容调用拓扑决定，未启用真实模型。",
       "recovery_condition": "代码独立复核，HA-0056本机拓扑确认并验证后，先本机再132固定版本发布。",
-      "evidence": [
-        "harness/evidence/HA-0057/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0057/acceptance.md"]
     },
     {
       "id": "HA-0056",
       "title": "修复 launchd 发布预检、身份绑定和恢复证据",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "bootout前会话域预检及命令绝对超时",
-        "端口释放、进程/提交身份绑定和失败回执",
-        "故障注入、双端发布与独立 review"
-      ],
-      "non_goals": [
-        "自动回滚数据库或应用代码",
-        "强杀其他服务",
-        "开启模型或改变沙箱权限"
-      ],
-      "acceptance": [
-        "不兼容会话在停服务前拒绝；exit5不盲重试，错误和超时有界退出",
-        "端口释放和新进程/提交身份可核对，回退未经健康验证不得称成功",
-        "旧缺陷反例、新回归、双端固定版本 Evidence 可复核"
-      ],
+      "scope": ["bootout前会话域预检及命令绝对超时", "端口释放、进程/提交身份绑定和失败回执", "故障注入、双端发布与独立 review"],
+      "non_goals": ["自动回滚数据库或应用代码", "强杀其他服务", "开启模型或改变沙箱权限"],
+      "acceptance": ["不兼容会话在停服务前拒绝；exit5不盲重试，错误和超时有界退出", "端口释放和新进程/提交身份可核对，回退未经健康验证不得称成功", "旧缺陷反例、新回归、双端固定版本 Evidence 可复核"],
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0056-local-deployment-recovery.md",
       "blocked_reason": "ce490c5代码已获独立Approved，45项定向及全量390 passed/16 skipped通过，Low已记录；本机兼容调用拓扑未明确，实际双部署未执行。",
       "recovery_condition": "固定代码独立复核；取得兼容Aqua调用环境，或由用户明确批准同uid user/501 + Aqua/Background备选并补规格实现验证后，先本机再132部署。",
-      "evidence": [
-        "harness/evidence/HA-0056/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0056/acceptance.md"]
     },
     {
       "id": "HA-0055",
       "title": "修复 Runtime 持久错误展示与会话选择竞态",
       "status": "blocked",
       "risk": "medium",
-      "scope": [
-        "Exchange 持久状态与模型回答分开呈现",
-        "SSE 结束回读和会话异步选择隔离",
-        "稳定浏览器回归与双端部署"
-      ],
-      "non_goals": [
-        "启用真实 Provider 或工具",
-        "修改后端生命周期/身份体系",
-        "Product Run 桥接"
-      ],
-      "acceptance": [
-        "发送结束/重选/刷新后三种路径失败与取消状态仍可见",
-        "成功回答不重复，未持久化输出不假报成功，无 HTML 注入",
-        "旧详情/流响应不覆盖新选择，390px 与相关回归通过",
-        "本机与 132 发布、可复核证据和独立 review"
-      ],
+      "scope": ["Exchange 持久状态与模型回答分开呈现", "SSE 结束回读和会话异步选择隔离", "稳定浏览器回归与双端部署"],
+      "non_goals": ["启用真实 Provider 或工具", "修改后端生命周期/身份体系", "Product Run 桥接"],
+      "acceptance": ["发送结束/重选/刷新后三种路径失败与取消状态仍可见", "成功回答不重复，未持久化输出不假报成功，无 HTML 注入", "旧详情/流响应不覆盖新选择，390px 与相关回归通过", "本机与 132 发布、可复核证据和独立 review"],
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0055-runtime-status-ui.md",
       "blocked_reason": "2f8a30c已获独立Approved，19项UI通过，Low已登记；尚待HA-0056本机部署恢复，未发布到8765/132。",
       "recovery_condition": "HA-0056固定代码复核通过并明确本机拓扑后，按先本机再132发布并完成实页验收。",
-      "evidence": [
-        "harness/evidence/HA-0055/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0055/acceptance.md"]
     },
     {
       "id": "HA-0054",
       "title": "修复 Agent Runtime 唯一执行权和取消终态",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "Exchange 原子认领、终态不变与 Session 活动请求隔离",
-        "取消关闭上游、输出/等待上限、重启失败收敛",
-        "回归、双端部署及独立审查"
-      ],
-      "non_goals": [
-        "启用真实 Provider 或工具",
-        "Product Run/Skill 桥接",
-        "身份体系与通用自动恢复"
-      ],
-      "acceptance": [
-        "旧缺陷被回归测试捕获，新实现无重复 Provider 和取消后发布",
-        "HTTP 与服务层生命周期、重启、全量验证通过",
-        "本机和 132 发布证据、门禁不变、独立 review"
-      ],
+      "scope": ["Exchange 原子认领、终态不变与 Session 活动请求隔离", "取消关闭上游、输出/等待上限、重启失败收敛", "回归、双端部署及独立审查"],
+      "non_goals": ["启用真实 Provider 或工具", "Product Run/Skill 桥接", "身份体系与通用自动恢复"],
+      "acceptance": ["旧缺陷被回归测试捕获，新实现无重复 Provider 和取消后发布", "HTTP 与服务层生命周期、重启、全量验证通过", "本机和 132 发布证据、门禁不变、独立 review"],
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0054-runtime-lifecycle.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0054/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0054/acceptance.md"]
     },
     {
       "id": "HA-0053",
       "title": "全功能接口审查：建立可复核测试规格与基线",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "枚举全部 HTTP/页面/静态入口与非 HTTP 功能，写入 specs/testing",
-        "记录逐接口测试观测及功能验收缺口，不将路由访问当作行为验收",
-        "重跑基线、修复测试确定性并登记运行时缺陷，由 mymacclaude 独立审查"
-      ],
-      "non_goals": [
-        "将默认关闭的真实模型或数据外发自动启用",
-        "把契约/Mock 测试当作真实模型证据",
-        "将本阶段通过当作 12 小时完整目标已完成"
-      ],
-      "acceptance": [
-        "代码中的所有注册路由与版本化接口清单一致，新增/删除遗漏会失败",
-        "功能矩阵明确实现边界、规格、命令及尚缺验证",
-        "逐接口观测包含测试 ID/结果/状态码且不保存请求正文或凭证",
-        "基线失败有复现、处理和重跑证据；独立 review 有据可查"
-      ],
-      "depends_on": [
-        "HA-0052"
-      ],
+      "scope": ["枚举全部 HTTP/页面/静态入口与非 HTTP 功能，写入 specs/testing", "记录逐接口测试观测及功能验收缺口，不将路由访问当作行为验收", "重跑基线、修复测试确定性并登记运行时缺陷，由 mymacclaude 独立审查"],
+      "non_goals": ["将默认关闭的真实模型或数据外发自动启用", "把契约/Mock 测试当作真实模型证据", "将本阶段通过当作 12 小时完整目标已完成"],
+      "acceptance": ["代码中的所有注册路由与版本化接口清单一致，新增/删除遗漏会失败", "功能矩阵明确实现边界、规格、命令及尚缺验证", "逐接口观测包含测试 ID/结果/状态码且不保存请求正文或凭证", "基线失败有复现、处理和重跑证据；独立 review 有据可查"],
+      "depends_on": ["HA-0052"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0053-system-verification.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0053/acceptance.md",
-        "harness/evidence/HA-0053/12h-completion-audit.md"
-      ]
+      "evidence": ["harness/evidence/HA-0053/acceptance.md", "harness/evidence/HA-0053/12h-completion-audit.md"]
     },
     {
       "id": "HA-0052",
       "title": "补齐并受限启用双环境外部 Skill 沙箱",
       "status": "waiting_approval",
       "risk": "high",
-      "scope": [
-        "显式 Linux Docker 与 Colima backend",
-        "loopback-only 包及执行入口、有界输出和并发",
-        "本机与 132 镜像、真实隔离验证和受限启用"
-      ],
-      "non_goals": [
-        "公网任意代码执行",
-        "真实模型/MCP/联网/凭据注入",
-        "多租户安全认证或 Product Run 集成"
-      ],
-      "acceptance": [
-        "两端真实容器的成功/超时/只读/断网/输出上限/清理验证",
-        "代理执行拒绝、默认关闭、幂等与现有工作台回归",
-        "版本、实际 DB 备份、镜像与健康 Evidence 可复核"
-      ],
-      "depends_on": [
-        "HA-0028",
-        "HA-0051"
-      ],
+      "scope": ["显式 Linux Docker 与 Colima backend", "loopback-only 包及执行入口、有界输出和并发", "本机与 132 镜像、真实隔离验证和受限启用"],
+      "non_goals": ["公网任意代码执行", "真实模型/MCP/联网/凭据注入", "多租户安全认证或 Product Run 集成"],
+      "acceptance": ["两端真实容器的成功/超时/只读/断网/输出上限/清理验证", "代理执行拒绝、默认关闭、幂等与现有工作台回归", "版本、实际 DB 备份、镜像与健康 Evidence 可复核"],
+      "depends_on": ["HA-0028", "HA-0051"],
       "owner": "mymaccodex",
       "plan": "exec-plans/active/HA-0052-external-skill-deployment.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0052/acceptance.md",
-        "harness/evidence/HA-0052/deployment.json",
-        "harness/evidence/HA-0052/remote-deployment.json",
-        "harness/evidence/HA-0052/local-external-skills.xml",
-        "harness/evidence/HA-0052/remote-external-skills.xml"
-      ]
+      "evidence": ["harness/evidence/HA-0052/acceptance.md", "harness/evidence/HA-0052/deployment.json", "harness/evidence/HA-0052/remote-deployment.json", "harness/evidence/HA-0052/local-external-skills.xml", "harness/evidence/HA-0052/remote-external-skills.xml"]
     },
     {
       "id": "HA-0051",
       "title": "修复子路径前端资源并双环境重新部署",
       "status": "waiting_approval",
       "risk": "high",
-      "scope": [
-        "统一 /harness 子路径的页面、API、下载与 SSE URL",
-        "保留鉴权和运行时门禁的本地与 132 发布",
-        "浏览器与路径回归"
-      ],
-      "non_goals": [
-        "改变 Basic 账号或密码",
-        "抢占同机其他站点的 /api 或 /static",
-        "启用真实模型或外部检索"
-      ],
-      "acceptance": [
-        "根路径和代理前缀下 CSS/JS/API/导航一致",
-        "示例分析、产物下载与窄屏浏览器通过",
-        "两端部署版本与健康记录，备份真实远端数据库"
-      ],
-      "depends_on": [
-        "HA-0050"
-      ],
+      "scope": ["统一 /harness 子路径的页面、API、下载与 SSE URL", "保留鉴权和运行时门禁的本地与 132 发布", "浏览器与路径回归"],
+      "non_goals": ["改变 Basic 账号或密码", "抢占同机其他站点的 /api 或 /static", "启用真实模型或外部检索"],
+      "acceptance": ["根路径和代理前缀下 CSS/JS/API/导航一致", "示例分析、产物下载与窄屏浏览器通过", "两端部署版本与健康记录，备份真实远端数据库"],
+      "depends_on": ["HA-0050"],
       "owner": "mymaccodex",
       "plan": "exec-plans/active/HA-0051-proxy-paths.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0051/acceptance.md",
-        "harness/evidence/HA-0051/deployment.json"
-      ]
+      "evidence": ["harness/evidence/HA-0051/acceptance.md", "harness/evidence/HA-0051/deployment.json"]
     },
     {
       "id": "HA-0050",
       "title": "实现父子 Chunk 与 Slot 驱动动态检索切片",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "结构边界父子 Chunk",
-        "确定性加权 RRF",
-        "Slot/Gap 最小充分停止",
-        "入库检索评估闭环"
-      ],
-      "non_goals": [
-        "embedding/semantic/api",
-        "外部网络与真实 Provider",
-        "自动扩大预算",
-        "生产 reranker/缓存"
-      ],
-      "acceptance": [
-        "adaptive-chunk@1 Schema 与父子 lineage 校验",
-        "weighted RRF 与 Slot/Gap 测试",
-        "verify.sh 全量通过且证据如实记录"
-      ],
-      "depends_on": [
-        "HA-0049"
-      ],
+      "scope": ["结构边界父子 Chunk", "确定性加权 RRF", "Slot/Gap 最小充分停止", "入库检索评估闭环"],
+      "non_goals": ["embedding/semantic/api", "外部网络与真实 Provider", "自动扩大预算", "生产 reranker/缓存"],
+      "acceptance": ["adaptive-chunk@1 Schema 与父子 lineage 校验", "weighted RRF 与 Slot/Gap 测试", "verify.sh 全量通过且证据如实记录"],
+      "depends_on": ["HA-0049"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0050-adaptive-chunk-retrieval.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0050/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0050/acceptance.md"]
     },
     {
       "id": "HA-0049",
       "title": "设计 Agentic RAG 最小目标与预算控制",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "迭代式检索与 Agentic RAG 边界",
-        "最小充分检索、动态预算、缓存失效与端到端评测契约"
-      ],
-      "non_goals": [
-        "自主数据源/工具选择运行时",
-        "embedding/RRF/reranker/外部网络/Provider/缓存实现"
-      ],
-      "acceptance": [
-        "retrieval-state@2 Schema 与三目标 fixture 可校验",
-        "目标/预算/缓存/评测映射到 Task/Run/Evidence/Gate",
-        "默认 fail-closed 且不声称 Agentic RAG available"
-      ],
-      "depends_on": [
-        "HA-0048"
-      ],
+      "scope": ["迭代式检索与 Agentic RAG 边界", "最小充分检索、动态预算、缓存失效与端到端评测契约"],
+      "non_goals": ["自主数据源/工具选择运行时", "embedding/RRF/reranker/外部网络/Provider/缓存实现"],
+      "acceptance": ["retrieval-state@2 Schema 与三目标 fixture 可校验", "目标/预算/缓存/评测映射到 Task/Run/Evidence/Gate", "默认 fail-closed 且不声称 Agentic RAG available"],
+      "depends_on": ["HA-0048"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0049-agentic-rag-goal-budget.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0049/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0049/acceptance.md"]
     },
     {
       "id": "HA-0048",
       "title": "固化迭代式检索控制契约与评测门禁",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "Retrieval State JSON Schema",
-        "非重复 Query、增量合并、停止条件和排序公式",
-        "确定性检索评测口径"
-      ],
-      "non_goals": [
-        "embedding/RRF/reranker",
-        "外部网络、真实 Provider 或模型化 Query Expansion",
-        "自动事实冲突裁决"
-      ],
-      "acceptance": [
-        "Schema、计划、ADR、Harness 文档和 Evidence 互相引用",
-        "默认阈值、query_key、近似重复、novelty、排序和 source trust 口径可机器校验",
-        "评测与复审证据归档"
-      ],
-      "depends_on": [
-        "HA-0031"
-      ],
+      "scope": ["Retrieval State JSON Schema", "非重复 Query、增量合并、停止条件和排序公式", "确定性检索评测口径"],
+      "non_goals": ["embedding/RRF/reranker", "外部网络、真实 Provider 或模型化 Query Expansion", "自动事实冲突裁决"],
+      "acceptance": ["Schema、计划、ADR、Harness 文档和 Evidence 互相引用", "默认阈值、query_key、近似重复、novelty、排序和 source trust 口径可机器校验", "评测与复审证据归档"],
+      "depends_on": ["HA-0031"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0048-iterative-retrieval-control.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0048/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0048/acceptance.md"]
     },
     {
       "id": "HA-0047",
       "title": "实现 Pi 合同审查 metadata-only TUI 事件渲染",
       "status": "completed",
       "risk": "low",
-      "scope": [
-        "preview/finding/done 事件的终端摘要渲染",
-        "JSONL CLI 与宽度限制"
-      ],
-      "non_goals": [
-        "pi-tui/真实 Pi runtime/模型与工具执行"
-      ],
-      "acceptance": [
-        "定向 CLI/单元测试通过",
-        "全量 Harness 验证通过"
-      ],
-      "depends_on": [
-        "HA-0046"
-      ],
+      "scope": ["preview/finding/done 事件的终端摘要渲染", "JSONL CLI 与宽度限制"],
+      "non_goals": ["pi-tui/真实 Pi runtime/模型与工具执行"],
+      "acceptance": ["定向 CLI/单元测试通过", "全量 Harness 验证通过"],
+      "depends_on": ["HA-0046"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0047-pi-contract-tui-renderer.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0047/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0047/acceptance.md"]
     },
     {
       "id": "HA-0046",
       "title": "接入 Pi 合同审查 ChatPanel SSE 事件适配",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "Public PDF 离线 review 的 preview/finding/done 结构化 SSE 事件"
-      ],
-      "non_goals": [
-        "真实模型/Provider、自动 Gate、正文外发"
-      ],
-      "acceptance": [
-        "Accept=text/event-stream 时事件顺序稳定且不含原文",
-        "全量验证与双部署健康检查通过"
-      ],
-      "depends_on": [
-        "HA-0045"
-      ],
+      "scope": ["Public PDF 离线 review 的 preview/finding/done 结构化 SSE 事件"],
+      "non_goals": ["真实模型/Provider、自动 Gate、正文外发"],
+      "acceptance": ["Accept=text/event-stream 时事件顺序稳定且不含原文", "全量验证与双部署健康检查通过"],
+      "depends_on": ["HA-0045"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0046-pi-contract-review-stream.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0046/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0046/acceptance.md"]
     },
     {
       "id": "HA-0045",
       "title": "实现 Pi metadata-only Guard Contract",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "工具调用/结果、上下文、Provider 请求的机器准入契约",
-        "未知能力、路径、域名、敏感内容、预算的 fail-closed 评估"
-      ],
-      "non_goals": [
-        "真实模型/Provider/网络/文件执行",
-        "OS 沙箱与身份认证"
-      ],
-      "acceptance": [
-        "security-check API 幂等且 Schema 有效",
-        "定向与全量验证通过",
-        "本机和公网部署 health=ok"
-      ],
-      "depends_on": [
-        "HA-0044"
-      ],
+      "scope": ["工具调用/结果、上下文、Provider 请求的机器准入契约", "未知能力、路径、域名、敏感内容、预算的 fail-closed 评估"],
+      "non_goals": ["真实模型/Provider/网络/文件执行", "OS 沙箱与身份认证"],
+      "acceptance": ["security-check API 幂等且 Schema 有效", "定向与全量验证通过", "本机和公网部署 health=ok"],
+      "depends_on": ["HA-0044"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0045-pi-security-guard.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0045/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0045/acceptance.md"]
     },
     {
       "id": "HA-0044",
@@ -1746,16 +833,12 @@
         "POST /api/local/pi-contract-pipeline/review 通过 Schema，调用方不能伪造 chunk",
         "Skill validator、定向回归与全量 harness/verify 通过；本机与公网 health=ok"
       ],
-      "depends_on": [
-        "HA-0043"
-      ],
+      "depends_on": ["HA-0043"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0044-contract-risk-skill-baseline.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0044/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0044/acceptance.md"]
     },
     {
       "id": "HA-0043",
@@ -1803,10 +886,7 @@
         "负责人已明确选择仅设计；当前不创建 identity probe 或认证实现 Work Item",
         "文档链接、任务 Schema 与本机/远端 metadata-only 运行态检查通过"
       ],
-      "depends_on": [
-        "HA-0040",
-        "HA-0041"
-      ],
+      "depends_on": ["HA-0040", "HA-0041"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0042-team-identity-admission.md",
       "blocked_reason": null,
@@ -1836,12 +916,7 @@
         "每 identity/Channel 单 active Session，Handoff CAS/一次性继承/重新 snapshot 均稳定；Task/Attention 状态不被 Session 操作修改或绕过",
         "定向/全量回归、OpenAPI、本机与远端备份/健康/认证边界及无密 Evidence 完整，外部能力保持关闭"
       ],
-      "depends_on": [
-        "HA-0037",
-        "HA-0039",
-        "HA-0040",
-        "HA-0038"
-      ],
+      "depends_on": ["HA-0037", "HA-0039", "HA-0040", "HA-0038"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0041-team-session-continuity-handoff.md",
       "blocked_reason": null,
@@ -1875,11 +950,7 @@
         "单 identity 不会并行领取两件 attention work，租约到期不清除 work mark，新 sequence 阻断过期写入",
         "定向/全量回归、OpenAPI、本机与远端备份/健康/认证边界及无密 Evidence 完整，外部能力保持关闭"
       ],
-      "depends_on": [
-        "HA-0037",
-        "HA-0039",
-        "HA-0040"
-      ],
+      "depends_on": ["HA-0037", "HA-0039", "HA-0040"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0038-team-attention-inbox-freshness.md",
       "blocked_reason": null,
@@ -1911,10 +982,7 @@
         "legacy Team Task 不被静默授予新身份，运行时明确 protocol identity 不是登录认证",
         "定向/全量回归、OpenAPI、双环境发布健康与无密 Evidence 完整"
       ],
-      "depends_on": [
-        "HA-0037",
-        "HA-0039"
-      ],
+      "depends_on": ["HA-0037", "HA-0039"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0040-team-workspace-identity-channel-boundary.md",
       "blocked_reason": null,
@@ -1946,9 +1014,7 @@
         "Reminder/硬停止不扩大权限或自动执行，且没有 Handoff + Gate pass 不能 resolved",
         "定向/全量回归、OpenAPI、本机和远端发布健康验证以及无密 Evidence 完整"
       ],
-      "depends_on": [
-        "HA-0037"
-      ],
+      "depends_on": ["HA-0037"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0039-recovery-loop-guard.md",
       "blocked_reason": null,
@@ -1980,9 +1046,7 @@
         "版本/角色/父子状态不满足时稳定拒绝，重启后审计状态仍可读取",
         "全量测试、OpenAPI、双环境发布/健康/API/认证边界 Evidence 完整"
       ],
-      "depends_on": [
-        "HA-0036"
-      ],
+      "depends_on": ["HA-0036"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0037-team-task-handoff-gate.md",
       "blocked_reason": null,
@@ -1994,37 +1058,7 @@
         "harness/evidence/HA-0037/acceptance.md"
       ]
     },
-    {
-      "id": "HA-0036",
-      "title": "实现 Fact Lineage Evidence 纠正链",
-      "status": "completed",
-      "risk": "high",
-      "scope": [
-        "已知 Fact ID 的同 Bank supersede 历史链",
-        "current/history applicability、time/lifecycle/隔离反例",
-        "双环境发布 Evidence"
-      ],
-      "non_goals": [
-        "自然语言冲突裁决、模型、语义/vector、Reflect 或自动记忆"
-      ],
-      "acceptance": [
-        "返回可追溯有界历史而不把 superseded 当当前结论",
-        "time/lifecycle/隔离/无原文测试和部署通过"
-      ],
-      "depends_on": [
-        "HA-0029",
-        "HA-0034"
-      ],
-      "owner": "mymaccodex",
-      "plan": "exec-plans/completed/HA-0036-fact-lineage-evidence.md",
-      "blocked_reason": null,
-      "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0036/manifest.json",
-        "harness/evidence/HA-0036/all-tests.xml",
-        "harness/evidence/HA-0036/deployment.json"
-      ]
-    },
+    {"id":"HA-0036","title":"实现 Fact Lineage Evidence 纠正链","status":"completed","risk":"high","scope":["已知 Fact ID 的同 Bank supersede 历史链","current/history applicability、time/lifecycle/隔离反例","双环境发布 Evidence"],"non_goals":["自然语言冲突裁决、模型、语义/vector、Reflect 或自动记忆"],"acceptance":["返回可追溯有界历史而不把 superseded 当当前结论","time/lifecycle/隔离/无原文测试和部署通过"],"depends_on":["HA-0029","HA-0034"],"owner":"mymaccodex","plan":"exec-plans/completed/HA-0036-fact-lineage-evidence.md","blocked_reason":null,"recovery_condition":null,"evidence":["harness/evidence/HA-0036/manifest.json","harness/evidence/HA-0036/all-tests.xml","harness/evidence/HA-0036/deployment.json"]},
     {
       "id": "HA-0035",
       "title": "实现 M2-B Semantic Retrieval Admission Gate",
@@ -2044,10 +1078,7 @@
         "不完整或伪造的 admitted 输入被 Schema/校验器拒绝，且回归通过",
         "本机和远端默认关闭部署、备份、健康、Runtime/认证验证完成"
       ],
-      "depends_on": [
-        "HA-0031",
-        "HA-0034"
-      ],
+      "depends_on": ["HA-0031", "HA-0034"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0035-semantic-retrieval-admission-gate.md",
       "blocked_reason": null,
@@ -2083,11 +1114,7 @@
         "时间、lifecycle、隔离、重启与评测反例通过",
         "本机和远端备份/发布/健康/API/认证验证完成，外部能力仍关闭"
       ],
-      "depends_on": [
-        "HA-0031",
-        "HA-0032",
-        "HA-0033"
-      ],
+      "depends_on": ["HA-0031", "HA-0032", "HA-0033"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0034-memory-temporal-read-safety.md",
       "blocked_reason": null,
@@ -2122,9 +1149,7 @@
         "别名/类型、时间、supersede/retract/delete、重启/未知/敏感输入和评测反例通过",
         "本机与远端发布、备份、健康、API/认证边界验证完成；所有外部能力仍关闭"
       ],
-      "depends_on": [
-        "HA-0032"
-      ],
+      "depends_on": ["HA-0032"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0033-memory-entity-catalog-m3b.md",
       "blocked_reason": null,
@@ -2158,10 +1183,7 @@
         "两跳、时间、新旧关系、retract/delete/supersede、环路、幂等、重启与诚实 empty 反例的合成评测通过",
         "本机和远端经备份、健康、认证边界和新端点验证；模型和外部能力仍关闭"
       ],
-      "depends_on": [
-        "HA-0029",
-        "HA-0031"
-      ],
+      "depends_on": ["HA-0029", "HA-0031"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0032-explicit-memory-graph-m3a.md",
       "blocked_reason": null,
@@ -2194,10 +1216,7 @@
         "索引重建、supersede/retract/delete/过期、敏感输入和合成评测通过",
         "本机与远端部署均经备份、健康、认证边界和新增端点验证，外部门禁仍关闭"
       ],
-      "depends_on": [
-        "HA-0029",
-        "HA-0030"
-      ],
+      "depends_on": ["HA-0029", "HA-0030"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0031-memory-context-m2a.md",
       "blocked_reason": null,
@@ -2228,10 +1247,7 @@
         "本机与远端 runtime 端点可用，认证代理仍拒绝未认证访问，外部 Skill gate 仍关闭",
         "备份、同步、systemd/nginx、版本和健康结果已写入无密 Evidence"
       ],
-      "depends_on": [
-        "HA-0028",
-        "HA-0029"
-      ],
+      "depends_on": ["HA-0028", "HA-0029"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0030-dual-environment-deployment.md",
       "blocked_reason": null,
@@ -2261,9 +1277,7 @@
         "supersede/retract/delete 后证据正确演化，删除清除可控正文并留无正文审计/tombstone",
         "Evidence Bundle 不含原始 Source 正文且只宣称 keyword/temporal read-back；L2 回归、重启、安全与 Evidence 完整"
       ],
-      "depends_on": [
-        "HA-0028"
-      ],
+      "depends_on": ["HA-0028"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0029-memory-plane-m1.md",
       "blocked_reason": null,
@@ -2295,9 +1309,7 @@
         "登记后内容摘要不可变且执行前复核；代码仅在固定禁网非 root 一次性容器中执行并被清理",
         "L2 契约/安全/故障与可用 Colima 的 L3 隔离探针通过，证据完整"
       ],
-      "depends_on": [
-        "HA-0026"
-      ],
+      "depends_on": ["HA-0026"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0028-external-skill-isolation.md",
       "blocked_reason": null,
@@ -2328,9 +1340,7 @@
         "固定版本 SDK 以原生 Agent/AgentDefinition/本地插件/MCP 构造三角色并保留父子事件关联",
         "来源工具、报告、故障/预算/取消与 Evidence 通过；真实 L3 仅在明确配置和授权后运行"
       ],
-      "depends_on": [
-        "HA-0026"
-      ],
+      "depends_on": ["HA-0026"],
       "owner": "mymaccodex",
       "plan": "exec-plans/active/HA-0027-native-claude-research-runtime.md",
       "blocked_reason": null,
@@ -2364,9 +1374,7 @@
         "三个专项可在全局上限 3 内并发，父报告只汇总摘要一致的 Child 证据，缺失风险明确未评估",
         "默认模型/Provider/网络/外部工具调用为零；契约、故障、取消、重跑、浏览器和 Evidence 通过"
       ],
-      "depends_on": [
-        "HA-0025"
-      ],
+      "depends_on": ["HA-0025"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0026-research-multi-agent-simulation.md",
       "blocked_reason": null,
@@ -2398,9 +1406,7 @@
         "会话历史按上下文上限裁剪；失败不伪造 assistant 内容；SSE/幂等/取消有回归验证",
         "默认环境模型/Provider/网络/工具调用均为零，并有 L2/L3、浏览器和部署证据"
       ],
-      "depends_on": [
-        "HA-0024"
-      ],
+      "depends_on": ["HA-0024"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0025-provider-agent-chat-runtime.md",
       "blocked_reason": null,
@@ -2434,9 +1440,7 @@
         "浏览器通过 fetch 接收 POST SSE delta/done，取消/错误可恢复，刷新后会话历史仍存在",
         "L2 回归、浏览器、链接/Schema/安全检查和 launchd 健康检查通过，模型/Provider/网络调用为零"
       ],
-      "depends_on": [
-        "HA-0023"
-      ],
+      "depends_on": ["HA-0023"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0024-local-agent-lab.md",
       "blocked_reason": null,
@@ -2467,9 +1471,7 @@
         "HA-0008 所需授权信息可审计且不含秘密",
         "回归、链接、任务 Schema 与零运行时能力变化 Evidence 完整"
       ],
-      "depends_on": [
-        "HA-0022"
-      ],
+      "depends_on": ["HA-0022"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0023-p0-activation-decision-brief.md",
       "blocked_reason": null,
@@ -2499,9 +1501,7 @@
         "TD-021/022 更新，通用 TAO runtime 缺口登记为 TD-023",
         "文档链接、任务 Schema 和现有回归通过且运行时能力未变"
       ],
-      "depends_on": [
-        "HA-0021"
-      ],
+      "depends_on": ["HA-0021"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0022-plan-execution-coverage-audit.md",
       "blocked_reason": null,
@@ -2532,9 +1532,7 @@
         "Try/Cancel/失败路径不解决 Gap，成功绑定恢复才解决并写事件",
         "全量/浏览器/Schema/安全与零模型网络任意代码 Evidence 完整"
       ],
-      "depends_on": [
-        "HA-0020"
-      ],
+      "depends_on": ["HA-0020"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0021-local-replan-gap-state.md",
       "blocked_reason": null,
@@ -2566,9 +1564,7 @@
         "Confirm CAS 只能创建一个同 Task 的恢复 Run；Cancel 只终结未确认 Attempt",
         "计划、Evidence、API/UI、L3 故障/浏览器回归与零模型/网络/任意代码 Evidence 完整"
       ],
-      "depends_on": [
-        "HA-0019"
-      ],
+      "depends_on": ["HA-0019"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0020-local-deterministic-replan-tcc.md",
       "blocked_reason": null,
@@ -2585,58 +1581,25 @@
       "title": "实现本地固定分析器 Checkpoint / Restore 产品纵向切片",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "固定统计后的单一持久 Checkpoint",
-        "同 Task 的严格绑定恢复 Run",
-        "本地 API/UI、L3 故障注入与浏览器验收"
-      ],
-      "non_goals": [
-        "通用 Replan、动态 Plan 或模型执行",
-        "跨引擎/跨 Task/跨资源恢复",
-        "从 cancelled/succeeded Run 恢复或改写旧 Run"
-      ],
-      "acceptance": [
-        "checkpoint/restore 必须机械绑定 Task、资源、适配器、权限、预算与状态摘要",
-        "兼容恢复创建新 Run 且旧 Run 不变；不兼容无副作用拒绝",
-        "L3 回归、故障注入、重启和浏览器 Evidence 通过且模型/网络/任意代码调用为零"
-      ],
-      "depends_on": [
-        "HA-0018"
-      ],
+      "scope": ["固定统计后的单一持久 Checkpoint", "同 Task 的严格绑定恢复 Run", "本地 API/UI、L3 故障注入与浏览器验收"],
+      "non_goals": ["通用 Replan、动态 Plan 或模型执行", "跨引擎/跨 Task/跨资源恢复", "从 cancelled/succeeded Run 恢复或改写旧 Run"],
+      "acceptance": ["checkpoint/restore 必须机械绑定 Task、资源、适配器、权限、预算与状态摘要", "兼容恢复创建新 Run 且旧 Run 不变；不兼容无副作用拒绝", "L3 回归、故障注入、重启和浏览器 Evidence 通过且模型/网络/任意代码调用为零"],
+      "depends_on": ["HA-0018"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0019-local-checkpoint-restore-vertical-slice.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0019/manifest.json",
-        "harness/evidence/HA-0019/all-tests.xml",
-        "harness/evidence/HA-0019/browser-checkpoint-restore.json",
-        "harness/evidence/HA-0019/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0019/manifest.json", "harness/evidence/HA-0019/all-tests.xml", "harness/evidence/HA-0019/browser-checkpoint-restore.json", "harness/evidence/HA-0019/acceptance.md"]
     },
     {
       "id": "HA-0018",
       "title": "实现隔离 Checkpoint / Restore 的 Replan 纵向探针",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "确定性内存 checkpoint/restore probe",
-        "Plan→Try→Confirm→restore 端到端演练",
-        "摘要篡改拒绝与无运行时副作用 Evidence"
-      ],
-      "non_goals": [
-        "注册 Product adapter、API 或数据库迁移",
-        "创建/恢复 Product Run",
-        "调用模型、工具、网络或开放用户 Replan"
-      ],
-      "acceptance": [
-        "probe 的 restore 只能在摘要绑定一致时恢复正确下一节点",
-        "篡改 checkpoint 的 resource/adapter/权限/预算/状态摘要被拒绝",
-        "完整 L2 回归与 Evidence 证明 runtime_enabled=false 且无 Product 副作用"
-      ],
-      "depends_on": [
-        "HA-0017"
-      ],
+      "scope": ["确定性内存 checkpoint/restore probe", "Plan→Try→Confirm→restore 端到端演练", "摘要篡改拒绝与无运行时副作用 Evidence"],
+      "non_goals": ["注册 Product adapter、API 或数据库迁移", "创建/恢复 Product Run", "调用模型、工具、网络或开放用户 Replan"],
+      "acceptance": ["probe 的 restore 只能在摘要绑定一致时恢复正确下一节点", "篡改 checkpoint 的 resource/adapter/权限/预算/状态摘要被拒绝", "完整 L2 回归与 Evidence 证明 runtime_enabled=false 且无 Product 副作用"],
+      "depends_on": ["HA-0017"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0018-isolated-checkpoint-restore-probe.md",
       "blocked_reason": null,
@@ -2652,24 +1615,10 @@
       "title": "建立 checkpoint-enabled Replan 适配器准入评估",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "读取 Adapter descriptor 的离线能力判定",
-        "当前本地分析器的 restore 不可用证据",
-        "合成完整 descriptor 的 runtime probe 边界测试"
-      ],
-      "non_goals": [
-        "探测或执行适配器",
-        "开放 API、注册引擎或修改 Product Run",
-        "把准入评估等同真实运行时批准"
-      ],
-      "acceptance": [
-        "缺少 checkpoint/restore/cancel/structured output 的 descriptor 必须 ineligible",
-        "当前 LocalAnalyticsAdapter 的真实 descriptor 被机械拒绝",
-        "完整合成 descriptor 最多获得 eligible_for_runtime_probe，L2 Evidence 明确 runtime_enabled=false"
-      ],
-      "depends_on": [
-        "HA-0016"
-      ],
+      "scope": ["读取 Adapter descriptor 的离线能力判定", "当前本地分析器的 restore 不可用证据", "合成完整 descriptor 的 runtime probe 边界测试"],
+      "non_goals": ["探测或执行适配器", "开放 API、注册引擎或修改 Product Run", "把准入评估等同真实运行时批准"],
+      "acceptance": ["缺少 checkpoint/restore/cancel/structured output 的 descriptor 必须 ineligible", "当前 LocalAnalyticsAdapter 的真实 descriptor 被机械拒绝", "完整合成 descriptor 最多获得 eligible_for_runtime_probe，L2 Evidence 明确 runtime_enabled=false"],
+      "depends_on": ["HA-0016"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0017-replan-adapter-admission.md",
       "blocked_reason": null,
@@ -2685,24 +1634,10 @@
       "title": "硬化 Plan / Replan 的证据、Checkpoint 与 Confirm 摘要绑定",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "Claim 的证据与可靠性条件",
-        "Checkpoint 的兼容/资源/权限/预算摘要绑定",
-        "Replan Try/Confirm 的摘要和新 Run 引用约束"
-      ],
-      "non_goals": [
-        "新增 API、数据库迁移或运行时恢复",
-        "调用模型、工具或外部服务",
-        "改变固定 CSV 或研究演示的执行语义"
-      ],
-      "acceptance": [
-        "Schema 拒绝无证据的 supported Claim、不可恢复 Checkpoint 和未绑定的 confirmed Replan",
-        "固定评测、反例测试、全量 L2 回归与独立 Evidence 通过",
-        "文档和状态明确仍为 Proposed 的离线合同"
-      ],
-      "depends_on": [
-        "HA-0015"
-      ],
+      "scope": ["Claim 的证据与可靠性条件", "Checkpoint 的兼容/资源/权限/预算摘要绑定", "Replan Try/Confirm 的摘要和新 Run 引用约束"],
+      "non_goals": ["新增 API、数据库迁移或运行时恢复", "调用模型、工具或外部服务", "改变固定 CSV 或研究演示的执行语义"],
+      "acceptance": ["Schema 拒绝无证据的 supported Claim、不可恢复 Checkpoint 和未绑定的 confirmed Replan", "固定评测、反例测试、全量 L2 回归与独立 Evidence 通过", "文档和状态明确仍为 Proposed 的离线合同"],
+      "depends_on": ["HA-0015"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0016-execution-control-contract-hardening.md",
       "blocked_reason": null,
@@ -2719,24 +1654,10 @@
       "title": "建立 Plan / Evidence / Gap / Checkpoint 的 Replan 控制合同",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "G4C、TAO、六出口与 TCC 的机器契约",
-        "纯确定性状态 reducer 与合成故障/恢复评测",
-        "ADR、架构/API/质量/安全文档与 Evidence"
-      ],
-      "non_goals": [
-        "修改现有 CSV 或研究演示 Run 语义",
-        "调用模型、工具或外部服务",
-        "开放用户 Replan API 或从本地 Checkpoint 恢复"
-      ],
-      "acceptance": [
-        "PlanRevision、Evidence、Claim、Gap、CheckpointProjection、ReplanAttempt 可由 Schema 验证且无原文/密钥字段",
-        "候选 Action、可信状态传播、Try 与 TCC 均有合成夹具与单元测试",
-        "L2 回归、敏感信息检查、文档和结构化 Evidence 完整；现有运行时边界未被夸大"
-      ],
-      "depends_on": [
-        "HA-0014"
-      ],
+      "scope": ["G4C、TAO、六出口与 TCC 的机器契约", "纯确定性状态 reducer 与合成故障/恢复评测", "ADR、架构/API/质量/安全文档与 Evidence"],
+      "non_goals": ["修改现有 CSV 或研究演示 Run 语义", "调用模型、工具或外部服务", "开放用户 Replan API 或从本地 Checkpoint 恢复"],
+      "acceptance": ["PlanRevision、Evidence、Claim、Gap、CheckpointProjection、ReplanAttempt 可由 Schema 验证且无原文/密钥字段", "候选 Action、可信状态传播、Try 与 TCC 均有合成夹具与单元测试", "L2 回归、敏感信息检查、文档和结构化 Evidence 完整；现有运行时边界未被夸大"],
+      "depends_on": ["HA-0014"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0015-plan-replan-control-contract.md",
       "blocked_reason": null,
@@ -2753,24 +1674,10 @@
       "title": "建立模型化意图路由离线评测与影子门禁",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "合成去标识评测语料与机器契约",
-        "影子候选输出、评分、阈值与覆盖校验",
-        "模型调用前的隐私、回滚和 Evidence 门禁"
-      ],
-      "non_goals": [
-        "配置或调用任何模型端点",
-        "读取真实聊天、Task、资源或网盘数据",
-        "改变 rules@1、自动创建 Task 或用户可见路由"
-      ],
-      "acceptance": [
-        "fixture、候选输出和策略均可 Schema 验证且不含原文回显路径",
-        "评分器可检测摘要/覆盖/预测一一对应/阈值问题",
-        "扩展语料与规则诊断、L2 回归、文档和 Evidence 完整"
-      ],
-      "depends_on": [
-        "HA-0013"
-      ],
+      "scope": ["合成去标识评测语料与机器契约", "影子候选输出、评分、阈值与覆盖校验", "模型调用前的隐私、回滚和 Evidence 门禁"],
+      "non_goals": ["配置或调用任何模型端点", "读取真实聊天、Task、资源或网盘数据", "改变 rules@1、自动创建 Task 或用户可见路由"],
+      "acceptance": ["fixture、候选输出和策略均可 Schema 验证且不含原文回显路径", "评分器可检测摘要/覆盖/预测一一对应/阈值问题", "扩展语料与规则诊断、L2 回归、文档和 Evidence 完整"],
+      "depends_on": ["HA-0013"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0014-intent-model-evaluation-preparation.md",
       "blocked_reason": null,
@@ -2787,24 +1694,10 @@
       "title": "实现本地意图契约、槽位澄清与规则路由",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "Intent Contract 与槽位 Schema",
-        "无模型缺槽澄清、规则路由与拒识",
-        "固定评测集、工作台预检和回归 Evidence"
-      ],
-      "non_goals": [
-        "真实模型、向量/RAG、长期记忆或动态 few-shot",
-        "自动选引擎或隐式创建/执行 Task",
-        "外部数据、网盘文件访问或模型调用"
-      ],
-      "acceptance": [
-        "预检响应可通过 Schema，且不回显目标正文",
-        "缺槽/拒识不会创建 Task，准备就绪仍需用户显式提交",
-        "固定评测集与 L2 契约/安全/UI 验证通过"
-      ],
-      "depends_on": [
-        "HA-0006"
-      ],
+      "scope": ["Intent Contract 与槽位 Schema", "无模型缺槽澄清、规则路由与拒识", "固定评测集、工作台预检和回归 Evidence"],
+      "non_goals": ["真实模型、向量/RAG、长期记忆或动态 few-shot", "自动选引擎或隐式创建/执行 Task", "外部数据、网盘文件访问或模型调用"],
+      "acceptance": ["预检响应可通过 Schema，且不回显目标正文", "缺槽/拒识不会创建 Task，准备就绪仍需用户显式提交", "固定评测集与 L2 契约/安全/UI 验证通过"],
+      "depends_on": ["HA-0006"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0013-intent-contract-routing.md",
       "blocked_reason": null,
@@ -2822,24 +1715,10 @@
       "title": "实现百度网盘官方 OAuth 连接底座",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "官方 OAuth 授权码与本机回调",
-        "Keychain 凭证与无密审计",
-        "契约/故障测试和本地部署"
-      ],
-      "non_goals": [
-        "分享链接爬取或验证码绕过",
-        "访问真实网盘文件",
-        "将凭证持久化至 SQLite 或仓库"
-      ],
-      "acceptance": [
-        "state、回调、令牌交换和刷新受控且可测试",
-        "凭证与脱敏边界可验证",
-        "真实连通仅在用户创建应用并授权后进行"
-      ],
-      "depends_on": [
-        "HA-0009"
-      ],
+      "scope": ["官方 OAuth 授权码与本机回调", "Keychain 凭证与无密审计", "契约/故障测试和本地部署"],
+      "non_goals": ["分享链接爬取或验证码绕过", "访问真实网盘文件", "将凭证持久化至 SQLite 或仓库"],
+      "acceptance": ["state、回调、令牌交换和刷新受控且可测试", "凭证与脱敏边界可验证", "真实连通仅在用户创建应用并授权后进行"],
+      "depends_on": ["HA-0009"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0010-baidu-netdisk-oauth.md",
       "blocked_reason": null,
@@ -2858,24 +1737,10 @@
       "title": "验证百度网盘真实 OAuth 连通",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "用户本机无回显 Keychain/launchd 配置助手",
-        "用户自有官方应用的 OAuth URL、回调、令牌交换与刷新核验",
-        "使用独立测试账号记录无密连通证据"
-      ],
-      "non_goals": [
-        "读取、下载或解析真实网盘文件",
-        "分享链接抓取、Cookie 复用或验证码绕过",
-        "在聊天或 Evidence 中存储凭证"
-      ],
-      "acceptance": [
-        "用户本人完成官方登录授权且状态变为 connected",
-        "令牌刷新在无密证据下可验证",
-        "官方应用当前 scope/回调兼容性已记录"
-      ],
-      "depends_on": [
-        "HA-0010"
-      ],
+      "scope": ["用户本机无回显 Keychain/launchd 配置助手", "用户自有官方应用的 OAuth URL、回调、令牌交换与刷新核验", "使用独立测试账号记录无密连通证据"],
+      "non_goals": ["读取、下载或解析真实网盘文件", "分享链接抓取、Cookie 复用或验证码绕过", "在聊天或 Evidence 中存储凭证"],
+      "acceptance": ["用户本人完成官方登录授权且状态变为 connected", "令牌刷新在无密证据下可验证", "官方应用当前 scope/回调兼容性已记录"],
+      "depends_on": ["HA-0010"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0011-baidu-netdisk-live-oauth.md",
       "blocked_reason": null,
@@ -2894,124 +1759,49 @@
       "title": "实现百度网盘分享链接官方客户端下载 Skill",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "当前聊天/明确引用的分享链接校验",
-        "仅本机官方客户端下载交接",
-        "Claude Skill 同步与本地路径认领"
-      ],
-      "non_goals": [
-        "列目录或脚本/API 直链下载",
-        "Cookie/验证码/浏览器自动化",
-        "自动解析、移动、删除或上传文件"
-      ],
-      "acceptance": [
-        "不回显或保存分享 URL、pwd 或凭证",
-        "仅启动固定官方客户端，脚本不发网络请求",
-        "下载路径与脱敏边界通过测试，Claude 同步可追溯"
-      ],
-      "depends_on": [
-        "HA-0011"
-      ],
+      "scope": ["当前聊天/明确引用的分享链接校验", "仅本机官方客户端下载交接", "Claude Skill 同步与本地路径认领"],
+      "non_goals": ["列目录或脚本/API 直链下载", "Cookie/验证码/浏览器自动化", "自动解析、移动、删除或上传文件"],
+      "acceptance": ["不回显或保存分享 URL、pwd 或凭证", "仅启动固定官方客户端，脚本不发网络请求", "下载路径与脱敏边界通过测试，Claude 同步可追溯"],
+      "depends_on": ["HA-0011"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0012-baidu-share-link-client-skill.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0012/acceptance.md",
-        "harness/evidence/HA-0012/tests.xml",
-        "harness/evidence/HA-0012/claude-sync.json"
-      ]
+      "evidence": ["harness/evidence/HA-0012/acceptance.md", "harness/evidence/HA-0012/tests.xml", "harness/evidence/HA-0012/claude-sync.json"]
     },
     {
-      "id": "HA-0009",
-      "title": "一小时多专项 Child Run 编排切片",
-      "status": "completed",
-      "risk": "high",
-      "scope": [
-        "材料核验与 P1 准备规格",
-        "离线演示扇出、持久状态、配额、取消与失败汇总",
-        "API/UI、本地部署与回归证据"
-      ],
-      "non_goals": [
-        "真实 Claude/第三方模型调用",
-        "未审查 ClawHub 安装",
-        "真实投资或 ST 判断"
-      ],
-      "acceptance": [
-        "上下文/引用与权限隔离验证",
-        "并发、预算、取消、失败和恢复通过",
-        "浏览器可运行且明确标记为演示"
-      ],
-      "depends_on": [
-        "HA-0007"
-      ],
-      "owner": "mymaccodex",
-      "plan": "exec-plans/completed/HA-0009-child-run-orchestration.md",
-      "blocked_reason": null,
-      "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0009/acceptance.md",
-        "harness/evidence/HA-0009/manifest.json",
-        "harness/evidence/HA-0009/all-tests.xml",
-        "harness/evidence/HA-0009/browser.json",
-        "harness/evidence/HA-0009/baseline/browser.json",
-        "harness/evidence/HA-0009/claude-configuration.json"
-      ]
+      "id":"HA-0009", "title":"一小时多专项 Child Run 编排切片", "status":"completed", "risk":"high",
+      "scope":["材料核验与 P1 准备规格", "离线演示扇出、持久状态、配额、取消与失败汇总", "API/UI、本地部署与回归证据"],
+      "non_goals":["真实 Claude/第三方模型调用", "未审查 ClawHub 安装", "真实投资或 ST 判断"],
+      "acceptance":["上下文/引用与权限隔离验证", "并发、预算、取消、失败和恢复通过", "浏览器可运行且明确标记为演示"],
+      "depends_on":["HA-0007"], "owner":"mymaccodex",
+      "plan":"exec-plans/completed/HA-0009-child-run-orchestration.md", "blocked_reason":null, "recovery_condition":null,
+      "evidence":["harness/evidence/HA-0009/acceptance.md", "harness/evidence/HA-0009/manifest.json", "harness/evidence/HA-0009/all-tests.xml", "harness/evidence/HA-0009/browser.json", "harness/evidence/HA-0009/baseline/browser.json", "harness/evidence/HA-0009/claude-configuration.json"]
     },
     {
       "id": "HA-0007",
       "title": "引擎契约、VM 沙箱与 Skill 脚本验证",
       "status": "completed",
       "risk": "high",
-      "scope": [
-        "固定分析器生命周期边界",
-        "Colima 隔离探针和脚本模型 SDK 验证",
-        "本地 Skill 确定性脚本与就绪状态"
-      ],
-      "non_goals": [
-        "真实模型效果验收",
-        "启用 Claude 或金融联网抓取",
-        "生产隔离认证"
-      ],
-      "acceptance": [
-        "固定分析器回归及伪造事件拒绝",
-        "隔离、取消、超时、SDK 多轮探针通过",
-        "Skill 脚本可重复计算，缺失模型时不启用真实路由"
-      ],
-      "depends_on": [
-        "HA-0006"
-      ],
+      "scope": ["固定分析器生命周期边界", "Colima 隔离探针和脚本模型 SDK 验证", "本地 Skill 确定性脚本与就绪状态"],
+      "non_goals": ["真实模型效果验收", "启用 Claude 或金融联网抓取", "生产隔离认证"],
+      "acceptance": ["固定分析器回归及伪造事件拒绝", "隔离、取消、超时、SDK 多轮探针通过", "Skill 脚本可重复计算，缺失模型时不启用真实路由"],
+      "depends_on": ["HA-0006"],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0007-engine-boundary.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0007/probe.json",
-        "harness/evidence/HA-0007/all-tests.xml",
-        "harness/evidence/HA-0007/browser.json",
-        "harness/evidence/HA-0007/acceptance.md"
-      ]
+      "evidence": ["harness/evidence/HA-0007/probe.json", "harness/evidence/HA-0007/all-tests.xml", "harness/evidence/HA-0007/browser.json", "harness/evidence/HA-0007/acceptance.md"]
     },
     {
       "id": "HA-0008",
       "title": "批准模型连接并验证真实 Agent",
       "status": "blocked",
       "risk": "high",
-      "scope": [
-        "批准端点的模型能力、费用和取消探针",
-        "单列分组聚合真实适配器准入"
-      ],
-      "non_goals": [
-        "静默复用其他项目凭证",
-        "多引擎并行扩展"
-      ],
-      "acceptance": [
-        "真实模型输入输出及用量可追溯",
-        "结果独立回算、预算和取消验证后开放显式路由"
-      ],
-      "depends_on": [
-        "HA-0007"
-      ],
+      "scope": ["批准端点的模型能力、费用和取消探针", "单列分组聚合真实适配器准入"],
+      "non_goals": ["静默复用其他项目凭证", "多引擎并行扩展"],
+      "acceptance": ["真实模型输入输出及用量可追溯", "结果独立回算、预算和取消验证后开放显式路由"],
+      "depends_on": ["HA-0007"],
       "owner": "mymaccodex",
       "plan": "exec-plans/blocked/HA-0008-model-connection.md",
       "blocked_reason": "未配置本项目获准使用的模型端点、模型 ID、凭证引用和测试预算",
@@ -3023,29 +1813,15 @@
       "title": "实现并本地部署前后端工作台",
       "status": "completed",
       "risk": "medium",
-      "scope": [
-        "按用户 2026-09-12 授权实现本地单用户前后端",
-        "CSV 固定分析、持久 Task/Run、事件与产物",
-        "取消、重跑、契约/故障测试和 launchd 部署"
-      ],
-      "non_goals": [
-        "完整 CodeAct P0 验收",
-        "真实模型、远程沙箱、多租户和长期记忆"
-      ],
-      "acceptance": [
-        "浏览器完成 CSV 上传、分析、报告下载与重跑",
-        "持久化、幂等、取消、失败和重启测试通过",
-        "本机 8765 服务可访问，具备启动停止与恢复文档"
-      ],
+      "scope": ["按用户 2026-09-12 授权实现本地单用户前后端", "CSV 固定分析、持久 Task/Run、事件与产物", "取消、重跑、契约/故障测试和 launchd 部署"],
+      "non_goals": ["完整 CodeAct P0 验收", "真实模型、远程沙箱、多租户和长期记忆"],
+      "acceptance": ["浏览器完成 CSV 上传、分析、报告下载与重跑", "持久化、幂等、取消、失败和重启测试通过", "本机 8765 服务可访问，具备启动停止与恢复文档"],
       "depends_on": [],
       "owner": "mymaccodex",
       "plan": "exec-plans/completed/HA-0006-local-workbench.md",
       "blocked_reason": null,
       "recovery_condition": null,
-      "evidence": [
-        "harness/evidence/HA-0006/manifest.json",
-        "harness/evidence/HA-0006/test-results.xml"
-      ]
+      "evidence": ["harness/evidence/HA-0006/manifest.json", "harness/evidence/HA-0006/test-results.xml"]
     },
     {
       "id": "HA-0001",
@@ -3098,9 +1874,7 @@
         "服务重启、重复请求、取消和超时测试通过",
         "工具调用经策略校验且可关联完整追踪"
       ],
-      "depends_on": [
-        "HA-0001"
-      ],
+      "depends_on": ["HA-0001"],
       "owner": null,
       "plan": null,
       "blocked_reason": null,
@@ -3127,9 +1901,7 @@
         "隔离验证证明不能访问宿主未挂载路径、密钥或公网",
         "ADR-0006 与 ADR-0007 有接受、修改或拒绝结论"
       ],
-      "depends_on": [
-        "HA-0001"
-      ],
+      "depends_on": ["HA-0001"],
       "owner": null,
       "plan": null,
       "blocked_reason": null,
@@ -3156,10 +1928,7 @@
         "取消、超时、资源越限和沙箱失败映射稳定",
         "没有适配器直写控制面事实存储"
       ],
-      "depends_on": [
-        "HA-0002",
-        "HA-0003"
-      ],
+      "depends_on": ["HA-0002", "HA-0003"],
       "owner": null,
       "plan": null,
       "blocked_reason": null,
@@ -3186,9 +1955,7 @@
         "能力不匹配返回 MODEL_CAPABILITY_MISMATCH",
         "ADR-0008 有接受、修改或拒绝结论"
       ],
-      "depends_on": [
-        "HA-0001"
-      ],
+      "depends_on": ["HA-0001"],
       "owner": null,
       "plan": null,
       "blocked_reason": null,
