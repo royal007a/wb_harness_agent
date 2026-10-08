@@ -26,7 +26,7 @@ class ReceiptTests(unittest.TestCase):
                 {'id': 'release', 'required': True, 'expected': {'release': 'fixed-sha'}},
                 {'id': 'identity', 'required': True, 'expected': {'service': 'dsh', 'identity_stable': True}},
                 {'id': 'health', 'required': True, 'expected': {'state': 'ok'}},
-                {'id': 'public_entry', 'required': True, 'expected': {'url': 'https://example.test/dsh', 'transport': 'direct', 'tls': 'verified'}},
+                {'id': 'public_entry', 'required': True, 'expected': {'url': 'https://example.test/dsh', 'transport': 'direct', 'tls': 'verified', 'http_status': 200, 'application_ok': True}},
                 {'id': 'ui', 'required': True, 'expected': {'removed_count': 0}}
             ]}]}
         self.receipt = self.make_receipt()
@@ -45,6 +45,86 @@ class ReceiptTests(unittest.TestCase):
 
     def test_complete_contract(self):
         self.assertEqual(self.state(), 'verified')
+
+    def test_metadata_only_public_plan_rejected(self):
+        expected = self.plan['targets'][0]['checks'][3]['expected']
+        del expected['http_status']; del expected['application_ok']
+        self.receipt = self.make_receipt()
+        self.attempt('public_entry')['observed'].update(http_status=502, business_dom=False)
+        with self.assertRaises(Invalid):self.state()
+
+    def test_public_502_cannot_pass(self):
+        self.attempt('public_entry')['observed']['http_status'] = 502
+        self.assertEqual(self.state(), 'failed')
+
+    def test_public_401_cannot_pass(self):
+        self.attempt('public_entry')['observed']['http_status'] = 401
+        self.assertEqual(self.state(), 'failed')
+
+    def test_public_success_requires_application_result(self):
+        self.attempt('public_entry')['observed']['application_ok'] = False
+        self.assertEqual(self.state(), 'failed')
+        del self.attempt('public_entry')['observed']['application_ok']
+        self.assertEqual(self.state(), 'failed')
+
+    def test_public_plan_cannot_expect_failure_or_loose_types(self):
+        for fields in [{'http_status': 401}, {'http_status': 502}, {'http_status': True},
+                       {'http_status': 200.0}, {'application_ok': 1}, {'application_ok': False}]:
+            with self.subTest(fields=fields):
+                plan = copy.deepcopy(self.plan)
+                plan['targets'][0]['checks'][3]['expected'].update(fields)
+                with self.assertRaises(Invalid):validate_plan(plan)
+
+    def test_null_public_entry_reserves_check_name(self):
+        target = self.plan['targets'][0]; target['public_entry'] = None
+        target['checks'][3]['expected'] = {'url': 'http://127.0.0.1:8876/dsh', 'transport': 'ssh_forward'}
+        self.receipt = self.make_receipt()
+        with self.assertRaises(Invalid):self.state()
+
+    def test_local_only_scope_explicit_and_diagnostic_separate(self):
+        target = self.plan['targets'][0]; target['public_entry'] = None
+        target['checks'][3].update(id='ssh_diagnostic', required=False,
+                                  expected={'transport': 'ssh_forward'})
+        self.receipt = self.make_receipt()
+        result = verify(self.plan, self.receipt, self.root)
+        self.assertEqual(result['verification'], 'verified')
+        self.assertIs(result['targets'][0]['public_entry_required'], False)
+        self.assertNotIn('public_entry', result['targets'][0]['checks'])
+
+    def test_identity_stability_must_be_planned(self):
+        expected = self.plan['targets'][0]['checks'][1]['expected']
+        for value in [None, False, 1]:
+            with self.subTest(value=value):
+                if value is None:expected.pop('identity_stable')
+                else:expected['identity_stable'] = value
+                with self.assertRaises(Invalid):validate_plan(self.plan)
+
+    def test_output_binds_plan_and_public_scope(self):
+        result = verify(self.plan, self.receipt, self.root)
+        self.assertEqual(result['plan_sha256'], digest(self.plan))
+        self.assertIs(result['targets'][0]['public_entry_required'], True)
+
+    def test_preregistered_digest_rejects_reauthored_plan_and_receipt(self):
+        original = digest(self.plan)
+        self.plan['targets'][0]['checks'][-1]['required'] = False
+        self.receipt = self.make_receipt()
+        p, r = self.root / 'plan.json', self.root / 'receipt.json'
+        p.write_text(json.dumps(self.plan)); r.write_text(json.dumps(self.receipt))
+        command = [sys.executable, str(Path(__file__).with_name('verify_receipt.py')),
+                   str(p), str(r), '--evidence-root', str(self.root), '--expected-plan-sha256']
+        valid = subprocess.run(command + [digest(self.plan)], capture_output=True, text=True)
+        self.assertEqual(valid.returncode, 0)
+        invalid = subprocess.run(command + [original], capture_output=True, text=True)
+        self.assertEqual(invalid.returncode, 2)
+        self.assertEqual(json.loads(invalid.stderr)['verification'], 'invalid')
+
+    def test_deep_json_is_invalid_without_traceback(self):
+        p = self.root / 'deep.json'; p.write_text('[' * 2000 + '0' + ']' * 2000)
+        result = subprocess.run([sys.executable, str(Path(__file__).with_name('verify_receipt.py')),
+                                 str(p), '--digest'], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(json.loads(result.stderr)['verification'], 'invalid')
+        self.assertNotIn('Traceback', result.stderr)
 
     def test_wrong_running_release(self):
         self.attempt('release')['observed']['release'] = 'old-sha'

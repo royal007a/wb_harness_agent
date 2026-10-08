@@ -15,3 +15,17 @@
 9564d4436b91a897e379297e5e252ae815194ee3的skill包已复制到~/.codex/skills/harnessagent-deployment-verification和~/.claude/skills/harnessagent-deployment-verification。6个文件逐一SHA匹配，各安装从/tmp独立运行同一套21测试均通过，不将重复运行计成63项覆盖。installation.json记录精确路径、文件摘要和未做会话热加载测试。
 
 dc03d9202bc46a5575b9347645e999a4c4410853（代码与9564d44相同，增加安装回执）已通过飞书om_x100b63502bb404a8b1756650e6fa077交给用户指定的mymacclaude只读复审。范围包括规范、独立反例、安装一致性及一例skill引导判定；禁止业务系统/凭证访问及共享目录写入。当前等待实际回复，未声称Approved。
+
+## dc03d92 review修订（2026-10-08）
+
+独立review：飞书om_x100b634536d944a8b29f69b6905efd3，Changes Requested，2 Medium与5 Low。该结论未被作者自测替代，当前仍待修订版复核。
+
+- M1：公网计划必须声明整数2xx的http_status与application_ok=true；仅URL/transport/TLS的计划直接invalid。401/502观察值及200但应用失败均failed；修改期望为失败状态也invalid。合同示例同步。
+- M2：public_entry=null时禁止同名检查；诊断另名登记。输出public_entry_required明确是否包含公网验收。
+- L1：identity.expected必须含严格布尔identity_stable=true，缺失/false/1均invalid。health仍按计划中的具体健康断言核对，不以统一状态名代替不同服务语义。
+- L2：输出plan_sha256；spec要求发布前登记，CLI新增--expected-plan-sha256，可拒绝事后同时重写plan/receipt。登记时间/身份仍需独立证据，不由校验器证明。
+- L3：SKILL与合同强制最终报告逐目标列prior_failed_attempts（包括0），关联原失败原因/证据。最后成功仍可verified，重试本身不自动变成例外，历史失败不可隐去。
+- L4：RecursionError按invalid/exit2返回，无traceback。
+- L5：项目映射明确132两个公布入口必须HTTPS，HTTP仅可另列重定向检查。
+
+测试：在未改校验器时，用新增回归运行32项出现预期失败（review-regression-before.txt；含subTest失败，不将失败数视为独立用例数）；修订后同32项全部通过（review-regression-after.txt），其中原21项全部保留。quick_validate、git diff --check通过。测试仅临时目录合成声明，无业务服务或Provider访问。双端更新安装回执随后记录。
